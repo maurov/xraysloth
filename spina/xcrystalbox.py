@@ -24,6 +24,11 @@ __status__ = "in progress"
 __date__ = "Apr 2014"
 
 import sys, os
+import subprocess
+from optparse import OptionParser
+from datetime import date
+import numpy as np
+from peakfit import fit_splitpvoigt, fit_results
 
 # check XOP is correctly installed and define DIFFPAT_EXEC
 HAS_XOP = False
@@ -41,20 +46,15 @@ try:
         try:
             DIFFPAT_EXEC = os.environ["DIFFPAT_EXEC"]
         except KeyError:
-            print "Please set the environment variable DIFFPAT_EXEC"
+            print("Please set the environment variable DIFFPAT_EXEC")
             sys.exit(1)
 except KeyError: 
-   print "Please set the environment variable XOP_HOME"
+   print("Please set the environment variable XOP_HOME")
    sys.exit(1)
 
-import subprocess
-from optparse import OptionParser
-from datetime import date
-import numpy as np
-
-# SpectroX: https://github.com/maurov/spectrox
-DATA_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
-from peakfit import fit_splitpvoigt, fit_results
+# ../xop/data
+_pardir = os.path.realpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.pardir))
+DATA_DIR = os.path.join(_pardir, 'xop', 'data')
 
 class XCrystalBox(object):
     """ XCrystalBox
@@ -320,7 +320,7 @@ def test_Si444_ene():
     ene_pos = 10000.
     ene_dscan = 2
     si_d111 = 3.1355
-    from braggutils import bragg_th
+    from bragg import bragg_th
     t.setopt('scan_pos', bragg_th(ene_pos, si_d111, n=4))
     t.setopt('scan_min', ene_pos-ene_dscan)
     t.setopt('scan_max', ene_pos+ene_dscan)
