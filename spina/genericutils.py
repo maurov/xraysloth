@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-SpectroX: generic utilities for daily work
+generic utilities for daily work
 
 TODO
 ====
@@ -32,13 +32,21 @@ def getPyMcaMain():
     """ show PyMcaMain from a shell (e.g. IPython) and return its obj """
     from matplotlib import rcParams
     rcParams['text.usetex'] = False
+    HAS_PYMCA = False
     try:
-        from PyMca import PyMcaMain
-    except:
         from PyMca5.PyMcaGui.pymca import PyMcaMain
-    m = PyMcaMain.PyMcaMain()
-    m.show()
-    return m
+        HAS_PYMCA = True
+    except:
+        from PyMca import PyMcaMain
+        HAS_PYMCA = True
+
+    if HAS_PYMCA:
+        m = PyMcaMain.PyMcaMain()
+        m.show()
+        return m
+    else:
+        print("PyMca not found")
+        return 0
 
 ### Matplotlib ###
 def mplSetPubFont(size=8, usetex=True):

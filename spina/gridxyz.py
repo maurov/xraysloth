@@ -5,7 +5,7 @@
 Utilities to work with 2D grids and interpolation
 """
 
-from __future__ import division
+from __future__ import division, print_function
 
 __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
@@ -23,7 +23,7 @@ import numpy as np
 ### GLOBAL VARIABLES ###
 MODNAME = '_math'
 
-def _gridxyz(xcol, ycol, zcol, xystep=None, lib='scipy', method='cubic'):
+def gridxyz(xcol, ycol, zcol, xystep=None, lib='scipy', method='cubic'):
     """ grid (X, Y, Z) 1D data on a 2D regular mesh
     
     Parameters
@@ -55,33 +55,33 @@ def _gridxyz(xcol, ycol, zcol, xystep=None, lib='scipy', method='cubic'):
         try:
             from matplotlib.mlab import griddata
         except ImportError:
-            print "Error: cannot load griddata from Matplotlib"
+            print("Error: cannot load griddata from Matplotlib")
             return
         if not (method == 'nn' or method == 'nearest'):
             warnings.warn("method {0} not supported by {1}".format(method, lib))
-        print "Gridding data with {0}...".format(lib)
+        print("Gridding data with {0}...".format(lib))
         zz = griddata(xcol, ycol, zcol, xx, yy)
         return xgrid, ygrid, zz
     elif ('scipy' in lib.lower()):
         try:
             from scipy.interpolate import griddata
         except ImportError:
-            print "Error: cannot load griddata from Scipy"
+            print("Error: cannot load griddata from Scipy")
             return
-        print "Gridding data with {0}...".format(lib)
+        print("Gridding data with {0}...".format(lib))
         zz = griddata((xcol, ycol), zcol, (xgrid[None,:], ygrid[:,None]), method=method)
         return xgrid, ygrid, zz
 
 ### LARCH ###
-def gridxyz(xcol, ycol, zcol, xystep=None, method='cubic', lib='scipy', _larch=None):
-    """ Larch equivalent of _gridxyz() """
+def gridxyz_larch(xcol, ycol, zcol, xystep=None, method='cubic', lib='scipy', _larch=None):
+    """ Larch equivalent of gridxyz() """
     if _larch is None:
         raise Warning("Larch broken?")
-    return _gridxyz(xcol, ycol, zcol, xystep=xystep, method=method, lib=lib)
-gridxyz.__doc__ += _gridxyz.__doc__
+    return gridxyz(xcol, ycol, zcol, xystep=xystep, method=method, lib=lib)
+gridxyz_larch.__doc__ += gridxyz.__doc__
 
 def registerLarchPlugin():
-    return (MODNAME, {'gridxyz': gridxyz})
+    return (MODNAME, {'gridxyz': gridxyz_larch})
 
 if __name__ == '__main__':
     pass

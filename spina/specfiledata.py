@@ -35,35 +35,47 @@ __date__ = "Aug 2014"
 import os, sys
 import numpy as np
 
-# Mauro's Larch Plugins (https://github.com/maurov/larch_plugins)
-HAS_GRIDUTILS = False
+from __future__ import print_function
+
+HAS_GRIDXYZ = False
 try:
-    from gridutils import _gridxyz
-    HAS_GRIDUTILS = True
+    from gridxyz import gridxyz
+    HAS_GRIDXYZ = True
 except:
     pass
 
-# PyMca
+# PyMca5
+HAS_PYMCA5 = False
 HAS_SPECFILE = False
 try:
-    from PyMca import specfilewrapper as specfile
+    from PyMca5.PyMcaIO import specfilewrapper as specfile
+    HAS_PYMCA5 = True
     HAS_SPECFILE = True
 except ImportError:
     try:
-        from PyMca import specfile
+        from PyMca import specfilewrapper as specfile
         HAS_SPECFILE = True
     except ImportError:
         try:
-            from PyMca5.PyMcaIO import specfilewrapper as specfile
+            from PyMca import specfile
             HAS_SPECFILE = True
         except ImportError:
             pass
+
+# SimpleMath from PyMca
 HAS_SIMPLEMATH = False
-try:
-    from PyMca import SimpleMath
-    HAS_SIMPLEMATH = True
-except ImportError:
-    pass
+if HAS_PYMCA5:
+    try:
+        from PyMca5.PyMcaMath import SimpleMath
+        HAS_SIMPLEMATH = True
+    except ImportError:
+        pass
+else:
+    try:
+        from PyMca import SimpleMath
+        HAS_SIMPLEMATH = True
+    except ImportError:
+        pass
 
 ### UTILITIES (the class is below!)
 def _str2rng(rngstr, keeporder=True):
@@ -349,8 +361,8 @@ class SpecfileData(object):
         return xcol, ycol, zcol
 
     def grid_map(self, xcol, ycol, zcol, xystep=None, lib='scipy', method='cubic'):
-        if HAS_GRIDUTILS is True:
-            return _gridxyz(xcol, ycol, zcol, xystep=xystep, lib=lib, method=method)
+        if HAS_GRIDXYZ is True:
+            return gridxyz(xcol, ycol, zcol, xystep=xystep, lib=lib, method=method)
         else:
             return
 

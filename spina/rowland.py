@@ -53,8 +53,7 @@ import sys, os
 import math
 import numpy as np
 
-#SpectroX (https://github.com/maurov/spectrox)
-from rotation_matrix import rotate
+from rotmatrix import rotate
 
 DEBUG = False
 
