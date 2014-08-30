@@ -28,14 +28,12 @@ __credits__ = "Matt Newville"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
 __year__ = "2013-2014"
-__version__ = "0.9.6"
+__version__ = "0.9.7"
 __status__ = "Beta"
 __date__ = "Aug 2014"
 
 import os, sys
 import numpy as np
-
-from __future__ import print_function
 
 HAS_GRIDXYZ = False
 try:
@@ -78,17 +76,22 @@ else:
         pass
 
 ### UTILITIES (the class is below!)
-def _str2rng(rngstr, keeporder=True):
+def _str2rng(rngstr, keeporder=True, rebin=None):
     """ simple utility to convert a generic string representing a
     compact list of scans to a sorted list of integers
+
+    Parameters
+    ----------
+    rngstr : string with given syntax (see Example below)
+    keeporder : boolean [True], to keep the original order
+                keeporder=False turn into a sorted list
+    rebin : integer [None], force rebinning of the final range
 
     Example
     -------
     > _str2rng('100, 7:9, 130:140:5, 14, 16:18:1')
     > [7, 8, 9, 14, 16, 17, 18, 100, 130, 135, 140]
 
-    NOTE: by default it keeps the original order, this can be turned
-          into a sorted list by the keyword argument 'keeporder=False'
     """
     _rng = []
     for _r in rngstr.split(', '): #the space is important!
@@ -107,6 +110,12 @@ def _str2rng(rngstr, keeporder=True):
             _rng.extend(range(int(_rsplit2[0]), int(_rsplit2[1])+1, int(_rsplit2[2])))
         else:
             raise NameError('Too many colon in {0}'.format(_r))
+
+    if rebin is not None:
+        try:
+            _rng = _rng[::int(rebin)]
+        except:
+            raise NameError("Wrong rebin={0}".format(int(rebin)))
 
     #create the list and return it (removing the duplicates)
     _rngout = [int(x) for x in _rng]
@@ -127,12 +136,27 @@ def _mot2array(motor, acopy):
     a = np.ones_like(acopy)
     return np.multiply(a, motor)
 
-def _div_check(num, dnum):
+def _checkZeroDiv(num, dnum):
     """simple division check to avoid ZeroDivisionError"""
     try:
         return num/dnum
     except ZeroDivisionError:
         print("ERROR: found a division by zero")
+
+def _checkScans(scans):
+    """ simple checker for scans input """
+    if scans is None:
+        raise NameError("Provide a string or list of scans to load")
+    if type(scans) == str:
+        try:
+            nscans = _str2rng(scans)
+        except:
+            raise NameError("scans string '{0}' not understood by str2rng".format(scans))
+    elif type(scans) == list:
+        nscans = scans
+    else:
+        raise NameError("Provide a string or list of scans to load")
+    return nscans
 
 def _pymca_average(xdats, zdats):
     """ call to SimpleMath.average() method from PyMca/SimpleMath.py
@@ -152,6 +176,25 @@ def _pymca_average(xdats, zdats):
     else:
         raise NameError("SimpleMath is not available -- this operation cannot be performed!")
 
+def _pymca_smooth(xdats, zdats):
+    """ call to SimpleMath.smooth() method from PyMca/SimpleMath.py
+
+    Parameters
+    ----------
+    - xdats, ydats : lists of arrays contaning the data to merge
+
+    Returns
+    -------
+    - xmrg, zmrg : 1D arrays containing the merged data
+    """
+    if HAS_SIMPLEMATH:
+        sm = SimpleMath.SimpleMath()
+        print("Smoothing data...")
+        return sm.smooth(xdats, zdats)
+    else:
+        raise NameError("SimpleMath is not available -- this operation cannot be performed!")
+
+
 ### MAIN CLASS
 class SpecfileData(object):
     """SpecfileData object"""
@@ -162,7 +205,7 @@ class SpecfileData(object):
         if (HAS_SPECFILE is False):
             print("WARNING: 'specfile' is missing -> check requirements!")
             return
-        if fname is None:
+        if (fname is None):
             raise NameError("Provide a SPEC data file to load with full path")
         elif not os.path.isfile(fname):
             raise OSError("File not found: '%s'" % fname)
@@ -174,6 +217,7 @@ class SpecfileData(object):
                 self.sf = specfile.Specfile(fname) #sf = specfile file
                 print("Loaded SPEC file: {0}".format(fname))
                 # print("The total number of scans is: {0}".format(self.sf.scanno())
+        #if HAS_SIMPLEMATH: self.sm = SimpleMath.SimpleMath()
         #set common attributes
         self.cntx = cntx
         self.cnty = cnty
@@ -283,13 +327,13 @@ class SpecfileData(object):
         if norm is not None:
             _zlabel = "{0} norm by {1}".format(_zlabel, norm)
             if norm == "max":
-                scan_datz = _div_check(scan_datz, np.max(scan_datz))
+                scan_datz = _checkZeroDiv(scan_datz, np.max(scan_datz))
             elif norm == "max-min":
-                scan_datz = _div_check(scan_datz-np.min(scan_datz), np.max(scan_datz)-np.min(scan_datz))
+                scan_datz = _checkZeroDiv(scan_datz-np.min(scan_datz), np.max(scan_datz)-np.min(scan_datz))
             elif norm == "area":
-                scan_datz = _div_check(scan_datz-np.min(scan_datz), np.trapz(scan_datz, x=scan_datx))
+                scan_datz = _checkZeroDiv(scan_datz-np.min(scan_datz), np.trapz(scan_datz, x=scan_datx))
             elif norm == "sum":
-                scan_datz = _div_check(scan_datz-np.min(scan_datz), np.sum(scan_datz))
+                scan_datz = _checkZeroDiv(scan_datz-np.min(scan_datz), np.sum(scan_datz))
             else:
                 raise NameError("Provide a correct normalization type string")
 
@@ -316,6 +360,7 @@ class SpecfileData(object):
         else:
             return scan_datx, scan_datz, scan_mots, scan_info
 
+
     def get_map(self, scans=None, **kws):
         """ get a map composed of many scans repeated at different
         position of a given motor
@@ -338,14 +383,14 @@ class SpecfileData(object):
         csec = kws.get('csec', self.csec)
         norm = kws.get('norm', self.norm)
         #check inputs - some already checked in get_scan()
-        if scans is None:
-            raise NameError("Provide a string representing the scans to load in the map - e.g. '100, 7:15, 50:90:3'")
+        nscans = _checkScans(scans)
         if cnty is None:
             raise NameError("Provide the name of an existing motor")
-
+        #
         _counter = 0
-        for scan in _str2rng(str(scans)):
-            x, z, moty = self.get_scan(scan=scan, cntx=cntx, cnty=cnty, csig=csig, cmon=cmon, csec=csec, scnt=None, norm=norm)
+        for scan in nscans:
+            x, z, moty = self.get_scan(scan=scan, cntx=cntx, cnty=cnty, csig=csig,
+                                       cmon=cmon, csec=csec, scnt=None, norm=norm)
             y = _mot2array(moty, x)
             print("Loading scan {0} into the map...".format(scan))
             if _counter == 0:
@@ -366,6 +411,51 @@ class SpecfileData(object):
         else:
             return
 
+    def get_scans(self, scans=None, motinfo=True, **kws):
+        """ get a list of scans
+
+        Parameters
+        ----------
+        scans : string or list of scans to load [None]; the format of the
+                string is intended to be parsed by '_str2rng()'
+        motinfo : boolean [True] returns also motors and scaninfo
+                  dictionaries (see self.get_scan())
+
+        Returns
+        -------
+        xdats, zdats : list of arrays
+        if motinfo: return mdats, idats dictionaries also
+        """
+        #get keywords arguments
+        cntx = kws.get('cntx', self.cntx)
+        csig = kws.get('csig', self.csig)
+        cmon = kws.get('cmon', self.cmon)
+        csec = kws.get('csec', self.csec)
+        norm = kws.get('norm', self.norm)
+        #
+        nscans = _checkScans(scans)
+        #
+        _ct = 0
+        xdats = []
+        zdats = []
+        mdats = []
+        idats = []
+        for scan in nscans:
+            _x, _z, _m, _i = self.get_scan(scan=scan, cntx=cntx, cnty=None, csig=csig,
+                                           cmon=cmon, csec=csec, scnt=None, norm=norm)
+            xdats.append(_x)
+            zdats.append(_z)
+            if motinfo:
+                mdats.append(_m)
+                idats.append(_i)
+            print("Loading scan {0}...".format(scan))
+            _ct += 1
+        if motinfo:
+            return xdats, zdats, mdats, idats
+        else:
+            return xdats, zdats
+
+
     def get_mrg(self, scans=None, action='average', **kws):
         """ get a merged scan from a list of scans
 
@@ -383,42 +473,89 @@ class SpecfileData(object):
         -------
         xmrg, zmrg : 1D arrays
         """
-        #get keywords arguments
-        cntx = kws.get('cntx', self.cntx)
-        cnty = kws.get('cnty', self.cnty)
-        csig = kws.get('csig', self.csig)
-        cmon = kws.get('cmon', self.cmon)
-        csec = kws.get('csec', self.csec)
-        norm = kws.get('norm', self.norm)
-        #check inputs - some already checked in get_scan()
-        if scans is None:
-            raise NameError("Provide a string representing the scans to merge - e.g. '100, 7:15, 50:90:3'")
+        #check inputs - some already checked in get_scan()/get_scans()
+        nscans = _checkScans(scans)
+        
+        actions = ['single', 'average', 'join']
+        if not action in actions:
+            raise NameError("'action={0}' not in known actions {1}".format(actions))
 
-        _ct = 0
-        xdats = []
-        zdats = []
-        #mdats = []
-        #idats = []
-        for scan in _str2rng(str(scans)):
-            _x, _z, _m, _i = self.get_scan(scan=scan, cntx=cntx, cnty=None, csig=csig,
-                                           cmon=cmon, csec=csec, scnt=None, norm=norm)
-            xdats.append(_x)
-            zdats.append(_z)
-            #mdats.append(_m)
-            #idats.append(_i)
-            print("Loading scan {0}...".format(scan))
-            _ct += 1
-
+        # moved to get_scans
+        xdats, zdats = self.get_scans(scans=nscans, motinfo=False, **kws)
+        
         # override 'action' keyword if it is only one scan
-        if len(_str2rng(str(scans))) == 1:
+        if len(nscans) == 1:
             action = 'single'
-
+            #print("WARNING(get_mrg): len(scans)==1 -> using 'action=single'")
         if action == 'average':
             return _pymca_average(xdats, zdats)
         elif action == 'join':
             return np.concatenate(xdats, axis=0), np.concatenate(zdats, axis=0)
         elif action == 'single':
             return xdats[0], zdats[0]
+
+    def get_mrgs_by(self, scans='all', nbin=1, **kws):
+        """ get merge by groups of scans
+
+        Parameters
+        ----------
+        
+        scans : string ['all'] to pass to _str2rng, if 'all', sf.scanno() is taken
+
+        nbin : int [1]
+
+        Returns
+        -------
+        xmrgs, zmrgs : lists of merged arrays
+        """
+        #get keywords arguments
+        cntx = kws.get('cntx', self.cntx)
+        csig = kws.get('csig', self.csig)
+        cmon = kws.get('cmon', self.cmon)
+        csec = kws.get('csec', self.csec)
+        norm = kws.get('norm', self.norm)
+        action = kws.get('action', 'average')
+        #
+        xmrgs = []
+        zmrgs = []
+        if scans == 'all':
+            scans = '{0}:{1}'.format(1, self.sf.scanno())
+        try:
+            nScans = _str2rng(scans)
+            nAvg = nScans[::nbin]
+        except:
+            raise NameError("wrong 'scans'/'nbin' parameters!")
+        nScansLast = len(nScans)%nbin
+        for iAvg, Avg in enumerate(nAvg):
+            iStart = iAvg*nbin
+            if Avg == nAvg[-1] and not nScansLast == 0:
+                print('WARNING: avg {0} is of {1} scans only'.format(iAvg, nScansLast))
+                nAdd = nScansLast
+            else:
+                nAdd = nbin
+            mscans = nScans[iStart:iStart+nAdd]
+            #print("avg {0}: scans='{1}'".format(iAvg, str(mscans)))
+            _xmrg, _zmrg = self.get_mrg(scans=mscans, action=action, cntx=cntx, cnty=None,
+                                        csig=csig, cmon=cmon, csec=csec, scnt=None, norm=norm)
+            xmrgs.append(_xmrg)
+            zmrgs.append(_zmrg)
+        return xmrgs, zmrgs
+
+    def get_smooth(self, scans=None, dats=None, method='SM', **kws):
+        """ get smoothed data using a list of scans or dats
+
+        Parameters
+        ----------
+        scans: 
+
+        Returns
+        -------
+
+        xsmooth, zsmooth: list of smoothed scans/dats
+        """
+        return _pymca_smooth(xdats, zdats)
+
+
 
 ### LARCH ###
 def _specfiledata_getdoc(method):
@@ -478,105 +615,25 @@ def spec_getmrg2group(fname, scans=None, cntx=None, csig=None, cmon=None, csec=N
     return group
 spec_getmrg2group.__doc__ += _specfiledata_getdoc('get_mrg')
 
-def str2rng(rngstr, keeporder=True, _larch=None):
+def str2rng_larch(rngstr, keeporder=True, _larch=None):
     """ larch equivalent of _str2rng() """
     if _larch is None:
         raise Warning("larch broken?")
     return _str2rng(rngstr, keeporder=keeporder)
-str2rng.__doc__ = _str2rng.__doc__
+str2rng_larch.__doc__ = _str2rng.__doc__
 
 def registerLarchPlugin():
     if HAS_PYMCA:
         return ('_io', {'read_specfile_scan': spec_getscan2group,
                         'read_specfile_map' : spec_getmap2group,
                         'read_specfile_mrg' : spec_getmrg2group,
-                        'str2rng' : str2rng
+                        'str2rng' : str2rng_larch
                         })
     else:
         return ('_io', {})
 
-### TESTS ###
-def test01():
-    """ test get_scan method """
-    fname = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tests', 'specfile_test.dat')
-    signal = 'zap_det_dtc'
-    monitor = 'arr_I02sum'
-    seconds = 'arr_seconds'
-    counter = 'arr_hdh_ene'
-    motor = 'Spec.Energy'
-    motor_counter = 'arr_xes_en'
-    scan = 3
-    t = SpecfileData(fname)
-    for norm in [None, "area", "max", "max-min", "sum"]:
-        x, y, motors, infos = t.get_scan(scan, cntx=counter, csig=signal, cmon=monitor, csec=seconds, norm=norm)
-        print("Read scan {0} with normalization {1}".format(scan, norm))
-        import matplotlib.pyplot as plt
-        plt.ion()
-        plt.figure(num=test01.__doc__)
-        plt.plot(x, y)
-        plt.xlabel(infos["xlabel"])
-        plt.ylabel(infos["ylabel"])
-        plt.show()
-        raw_input("Press Enter to close the plot window and continue...")
-        plt.close()
-
-def test02(nlevels):
-    """ test get_map method """
-    import matplotlib.pyplot as plt
-    import matplotlib.cm as cm
-    fname = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tests', 'specfile_test.dat')
-    rngstr = '5:70'
-    counter = 'arr_hdh_ene'
-    motor = 'Spec.Energy'
-    motor_counter = 'arr_xes_en'
-    signal = 'zap_det_dtc'
-    monitor = 'arr_I02sum'
-    seconds = 'arr_seconds'
-    norm = None #normalizing each scan does not make sense, the whole map has to be normalized!
-    xystep = 0.05
-    t = SpecfileData(fname)
-    xcol, ycol, zcol = t.get_map(scans=rngstr, cntx=counter, cnty=motor, csig=signal, cmon=monitor, csec=seconds, norm=norm)
-    etcol = xcol-ycol
-    x, y, zz = t.grid_map(xcol, ycol, zcol, xystep=xystep)
-    ex, et, ezz = t.grid_map(xcol, etcol, zcol, xystep=xystep)
-    fig = plt.figure(num=test02.__doc__)
-    ax = fig.add_subplot(121)
-    ax.set_title('gridded data')
-    cax = ax.contourf(x, y, zz, nlevels, cmap=cm.Paired_r)
-    ax = fig.add_subplot(122)
-    ax.set_title('energy transfer')
-    cax = ax.contourf(ex, et, ezz, nlevels, cmap=cm.Paired_r)
-    cbar = fig.colorbar(cax)
-    plt.show()
-    raw_input("Press Enter to close the plot and continue...")
-    plt.close()
-
-def test03():
-    """ test get_mrg method """
-    fname = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tests', 'specfile_test.dat')
-    signal = 'zap_det_dtc'
-    monitor = 'arr_I02sum'
-    seconds = 'arr_seconds'
-    counter = 'arr_hdh_ene'
-    motor = 'Spec.Energy'
-    motor_counter = 'arr_xes_en'
-    scans = '72, 74'
-    t = SpecfileData(fname)
-    for norm in [None, "area", "max-min", "sum"]:
-        x, y = t.get_mrg(scans, cntx=counter, csig=signal, cmon=monitor, csec=seconds, norm=norm)
-        print("Merged scans '{0}' with normalization {1}".format(scans, norm))
-        import matplotlib.pyplot as plt
-        plt.ion()
-        plt.figure(num=test03.__doc__)
-        plt.plot(x, y)
-        plt.xlabel(counter)
-        plt.ylabel("merged with norm {0}".format(norm))
-        plt.show()
-        raw_input("Press Enter to continue...")
-        plt.close()
-
 if __name__ == '__main__':
-    """ to run some tests/examples on this class, uncomment the following """
+    """ test/examples in examples/specfiledata_test.py """
     #test01()
     #test02(100)
     #test03
