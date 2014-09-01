@@ -8,7 +8,6 @@ Software (http://www.certif.com/)
 Requirements
 ============
 - specfilewrapper from PyMca distribution (http://pymca.sourceforge.net/)
-- gridutils plugin (https://github.com/maurov/larch_plugins)
 
 Related
 =======
@@ -34,7 +33,11 @@ __date__ = "Aug 2014"
 
 import os, sys
 import numpy as np
+from scipy.interpolate import interp1d
+from scipy.ndimage import map_coordinates
 
+
+# to grid X,Y,Z column data
 HAS_GRIDXYZ = False
 try:
     from gridxyz import gridxyz
@@ -42,7 +45,7 @@ try:
 except:
     pass
 
-# PyMca5
+# PyMca5 or PyMca (4.7 branch)
 HAS_PYMCA5 = False
 HAS_SPECFILE = False
 try:
@@ -75,6 +78,21 @@ else:
     except ImportError:
         pass
 
+# SG module from PyMca
+HAS_SGMODULE = False
+if HAS_PYMCA5:
+    try:
+        from PyMca5.PyMcaMath import SGModule
+        HAS_SGMODULE = True
+    except ImportError:
+        pass
+else:
+    try:
+        from PyMca import SGModule
+        HAS_SGMODULE = True
+    except ImportError:
+        pass
+        
 ### UTILITIES (the class is below!)
 def _str2rng(rngstr, keeporder=True, rebin=None):
     """ simple utility to convert a generic string representing a
@@ -111,15 +129,15 @@ def _str2rng(rngstr, keeporder=True, rebin=None):
         else:
             raise NameError('Too many colon in {0}'.format(_r))
 
-    if rebin is not None:
-        try:
-            _rng = _rng[::int(rebin)]
-        except:
-            raise NameError("Wrong rebin={0}".format(int(rebin)))
-
     #create the list and return it (removing the duplicates)
     _rngout = [int(x) for x in _rng]
 
+    if rebin is not None:
+        try:
+            _rngout = _rngout[::int(rebin)]
+        except:
+            raise NameError("Wrong rebin={0}".format(int(rebin)))
+    
     def uniquify(seq):
         # Order preserving uniquifier by Dave Kirby
         seen = set()
@@ -176,24 +194,108 @@ def _pymca_average(xdats, zdats):
     else:
         raise NameError("SimpleMath is not available -- this operation cannot be performed!")
 
-def _pymca_smooth(xdats, zdats):
-    """ call to SimpleMath.smooth() method from PyMca/SimpleMath.py
+def _pymca_SG(ydat, npoints=3, degree=1, order=0):
+    """call to symmetric Savitzky-Golay filter in PyMca
 
     Parameters
     ----------
-    - xdats, ydats : lists of arrays contaning the data to merge
+    ydat : 1D array contaning the data to smooth
+    npoints : integer [3], means that 2*npoints+1 values contribute
+              to the smoother.
+    degree : degree of fitting polynomial
+    order : is degree of implicit differentiation
+            0 means that filter results in smoothing of function
+            1 means that filter results in smoothing the first
+              derivative of function.
+            and so on ...
+   
+    Returns
+    -------
+    ys : smoothed array
+    """
+    if HAS_SGMODULE:
+        return SGModule.getSavitzkyGolay(ydat, npoints=npoints, degree=degree, order=order)
+    else:
+        raise NameError("SGModule is not available -- this operation cannot be performed!")
+
+def savitzky_golay(y, window_size, order, deriv=0):
+    # code from from scipy cookbook
+    """Smooth (and optionally differentiate) data with a Savitzky-Golay
+    filter.  The Savitzky-Golay filter removes high frequency noise
+    from data.  It has the advantage of preserving the original shape
+    and features of the signal better than other types of filtering
+    approaches, such as moving averages techhniques.
+    
+    Parameters
+    ----------
+    y : array_like, shape (N,)
+        the values of the time history of the signal.
+    window_size : int
+                  the length of the window. Must be an odd integer
+                  number.
+    order : int
+            the order of the polynomial used in the filtering. Must be
+            less then `window_size` - 1.
+    deriv: int
+           the order of the derivative to compute (default = 0 means
+           only smoothing)
 
     Returns
     -------
-    - xmrg, zmrg : 1D arrays containing the merged data
-    """
-    if HAS_SIMPLEMATH:
-        sm = SimpleMath.SimpleMath()
-        print("Smoothing data...")
-        return sm.smooth(xdats, zdats)
-    else:
-        raise NameError("SimpleMath is not available -- this operation cannot be performed!")
+    ys : ndarray, shape (N)
+         the smoothed signal (or it's n-th derivative).
 
+    Notes
+    -----
+    The Savitzky-Golay is a type of low-pass filter, particularly
+    suited for smoothing noisy data. The main idea behind this
+    approach is to make for each point a least-square fit with a
+    polynomial of high order over a odd-sized window centered at the
+    point.
+
+    Examples
+    --------
+    t = np.linspace(-4, 4, 500)
+    y = np.exp( -t**2 ) + np.random.normal(0, 0.05, t.shape)
+    ysg = savitzky_golay(y, window_size=31, order=4)
+    import matplotlib.pyplot as plt
+    plt.plot(t, y, label='Noisy signal')
+    plt.plot(t, np.exp(-t**2), 'k', lw=1.5, label='Original signal')
+    plt.plot(t, ysg, 'r', label='Filtered signal')
+    plt.legend()
+    plt.show()
+    
+    References
+    ----------
+    .. [1] A. Savitzky, M. J. E. Golay, Smoothing and Differentiation
+           of Data by Simplified Least Squares Procedures. Analytical
+           Chemistry, 1964, 36 (8), pp 1627-1639.
+
+    .. [2] Numerical Recipes 3rd Edition: The Art of Scientific
+           Computing W.H. Press, S.A. Teukolsky, W.T. Vetterling,
+           B.P. Flannery Cambridge University Press ISBN-13:
+           9780521880688
+    """
+    try:
+        window_size = abs(int(window_size))
+        order = abs(int(order))
+    except ValueError(msg):
+        raise ValueError("window_size and order have to be of type int")
+    if window_size % 2 != 1 or window_size < 1:
+        raise TypeError("window_size size must be a positive odd number")
+    if window_size < order + 2:
+        raise TypeError("window_size is too small for the polynomials order")
+    order_range = range(order+1)
+    half_window = (window_size -1) // 2
+    # precompute coefficients
+    b = np.mat([[k**i for i in order_range] for k in range(-half_window, half_window+1)])
+    m = np.linalg.pinv(b).A[deriv]
+    # pad the signal at the extremes with
+    # values taken from the signal itself
+    firstvals = y[0] - np.abs( y[1:half_window+1][::-1] - y[0] )
+    lastvals = y[-1] + np.abs(y[-half_window-1:-1][::-1] - y[-1])
+    y = np.concatenate((firstvals, y, lastvals))
+    return np.convolve(m, y, mode='valid')
 
 ### MAIN CLASS
 class SpecfileData(object):
@@ -360,7 +462,6 @@ class SpecfileData(object):
         else:
             return scan_datx, scan_datz, scan_mots, scan_info
 
-
     def get_map(self, scans=None, **kws):
         """ get a map composed of many scans repeated at different
         position of a given motor
@@ -495,18 +596,18 @@ class SpecfileData(object):
             return xdats[0], zdats[0]
 
     def get_mrgs_by(self, scans='all', nbin=1, **kws):
-        """ get merge by groups of scans
+        """get merge by groups of scans
 
         Parameters
         ----------
-        
-        scans : string ['all'] to pass to _str2rng, if 'all', sf.scanno() is taken
-
-        nbin : int [1]
+        scans : string ['all'] to pass to _str2rng, if 'all',
+                sf.scanno() is taken
+        nbin : int [1], number of scans to merge together
 
         Returns
         -------
         xmrgs, zmrgs : lists of merged arrays
+
         """
         #get keywords arguments
         cntx = kws.get('cntx', self.cntx)
@@ -541,22 +642,49 @@ class SpecfileData(object):
             zmrgs.append(_zmrg)
         return xmrgs, zmrgs
 
-    def get_smooth(self, scans=None, dats=None, method='SM', **kws):
-        """ get smoothed data using a list of scans or dats
+    def get_mrgs_rep(self, scans='all', nrep=1, **kws):
+        """ get merge by groups of repetitions
 
         Parameters
         ----------
-        scans: 
+       
+        """
+        print("Not yet implemented!")
+        
+    def get_filter(self, ydats, method='scipySG', **kws):
+        """ get filtered data using a list of ydats and given method
 
+        Parameters
+        ----------
+        ydats : list of 1D arrays
+        method : 'scipySG' -> Savitsky Golay filter from Scipy (see savitzky_golay())
+                 'pymcaSG' -> Savitsky Golay filter from PyMca (see _pymca_SG())
+        
         Returns
         -------
-
-        xsmooth, zsmooth: list of smoothed scans/dats
+        ysdats : list of 1D smoothed arrays
         """
-        return _pymca_smooth(xdats, zdats)
-
-
-
+        if method == 'pymcaSG':
+            npoints = kws.get('npoints', 9)
+            degree = kws.get('degree', 4)
+            order = kws.get('order', 0)
+            ysdats = []
+            print("Smoothing data with Savitzky-Golay filter (pymca)...")
+            for y in ydats:
+                ysdats.append(_pymca_SG(y, npoints=npoints, degree=degree, order=order))
+            return ysdats
+        elif method == 'scipySG':
+            window_size = kws.get('window_size', 9)
+            order = kws.get('order', 4)
+            deriv = kws.get('deriv', 0)
+            ysdats = []
+            print("Smoothing data with Savitzky-Golay filter (scipy)...")
+            for y in ydats:
+                ysdats.append(savitzky_golay(y, window_size=window_size, order=order, deriv=deriv))
+            return ysdats
+        else:
+            raise NameError("method not known!")
+            
 ### LARCH ###
 def _specfiledata_getdoc(method):
     """ to get the docstring of method inside a class """
