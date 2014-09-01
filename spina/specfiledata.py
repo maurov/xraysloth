@@ -27,7 +27,7 @@ __credits__ = "Matt Newville"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
 __year__ = "2013-2014"
-__version__ = "0.9.7"
+__version__ = "0.9.8"
 __status__ = "Beta"
 __date__ = "Aug 2014"
 
@@ -35,7 +35,6 @@ import os, sys
 import numpy as np
 from scipy.interpolate import interp1d
 from scipy.ndimage import map_coordinates
-
 
 # to grid X,Y,Z column data
 HAS_GRIDXYZ = False
@@ -92,7 +91,15 @@ else:
         HAS_SGMODULE = True
     except ImportError:
         pass
-        
+
+# specfiledatawriter
+HAS_SFDW = False
+try:
+    from specfiledatawriter import SpecfileDataWriter
+    HAS_SFDW = True
+except ImportError:
+    pass
+
 ### UTILITIES (the class is below!)
 def _str2rng(rngstr, keeporder=True, rebin=None):
     """ simple utility to convert a generic string representing a
@@ -684,7 +691,26 @@ class SpecfileData(object):
             return ysdats
         else:
             raise NameError("method not known!")
-            
+
+    def write_ascii(self, scans, **kws):
+        """ export single scans to separate ascii files """
+        if not HAS_SFDW:
+            raise ImportError('specfiledatawriter required for this method!!!')
+        #get keywords arguments
+        cntx = kws.get('cntx', self.cntx)
+        csig = kws.get('csig', self.csig)
+        cmon = kws.get('cmon', self.cmon)
+        csec = kws.get('csec', self.csec)
+        norm = kws.get('norm', self.norm)
+
+        nscans = _checkScans(scans)
+        for scn in nscans:
+            x, y, m, i = self.get_scan(scan=scn, scnt=None, cntx=cntx, cnty=None, csig=csig, cmon=cmon, csec=csec, norm=norm)
+            fout = SpecfileDataWriter('{0}_S{1}'.format(self.fname, str(scn).rjust(3, '0')))
+            fout.wHeader(epoch=self.sf.epoch(), date=self.sf.date(), title='spec2spec', motnames=self.sf.allmotors())
+            fout.wScan(['Energy', '{0}'.format(i['zlabel'])], [x, y], title='{0}'.format(self.sd.command()), motpos=self.sd.allmotorpos())
+        
+           
 ### LARCH ###
 def _specfiledata_getdoc(method):
     """ to get the docstring of method inside a class """
