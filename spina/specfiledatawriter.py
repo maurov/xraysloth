@@ -74,7 +74,7 @@ class SpecfileDataWriter(object):
                     pass
         self.scan = self.scanStart + 1
 
-    def wHeader(self, title=None, motnames=None, comms=None):
+    def wHeader(self, epoch=None, date=None, title=None, motnames=None, comms=None):
         """write the header to file by over-writing
 
         Parameters
@@ -95,16 +95,25 @@ class SpecfileDataWriter(object):
             return
 
         _hl = [ '#F {0}'.format(self.fn) ]
-        _hl.append('#E {0}'.format(int(time.time())))
-        _hl.append('#D {0}'.format(time.ctime()))
+        # epoch
+        if epoch is not None:
+            _hl.append('#E {0}'.format(epoch))
+        else:
+            _hl.append('#E {0}'.format(int(time.time())))
+        # date
+        if date is not None:
+            _hl.append('#D {0}'.format(date))
+        else:
+            _hl.append('#D {0}'.format(time.ctime()))
+        # title
         _hl.append('#C {0}'.format(str(title)))
-
+        # motnames
         if motnames is not None:
             _mnl = ['#O0 ']
             for _mn in motnames:
                 _mnl.append(str(_mn))
             _hl.append('{0}'.format('  '.join(_mnl)))
-
+        # comms
         if comms is not None:
             for _com in comms:
                 _hl.append('#C {0}'.format(str(_com)))
