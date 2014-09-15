@@ -1,4 +1,0 @@
-xspina
-======
-
-x-ray spina
