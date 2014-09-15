@@ -13,6 +13,7 @@ __status__ = "in progress"
 __date__ = "Sept 2014"
 
 import sys, os
+import numpy as np
 
 # https://github.com/maurov/xrayspina
 _curDir = os.path.dirname(os.path.realpath(__file__))
@@ -22,10 +23,21 @@ sys.path.append(_spinaDir)
 
 from peakfit import fit_splitpvoigt, fit_results
 
+try:
+    from PyMca5.PyMcaIO import specfilewrapper as specfile
+except:
+    try:
+        from PyMca import specfilewrapper as specfile
+    except:
+        from PyMca import specfile
+
 def test_mock():
     # create mock data
     import numpy as np
-    from PyMca import SpecfitFuns
+    try:
+        from PyMca5.PyMcaMath.fitting import SpecfitFuns
+    except:
+        from PyMca import SpecfitFuns
     x = np.linspace(0, 50, 200)
     noise = np.random.normal(size=len(x), scale=10)
     y = 80.0 - x*0.25 + noise
@@ -35,12 +47,8 @@ def test_mock():
 
 def test_diffpat(fname=None):
     # tests on 'diff_pat.dat'
-    try:
-        from PyMca import specfilewrapper as specfile
-    except:
-        from PyMca import specfile
     if fname is None:
-        fname = os.path.join(_curdir, 'peakfit_test_diffpat.dat')
+        fname = os.path.join(_curDir, 'peakfit_test_diffpat.dat')
     try:
         sf = specfile.Specfile(fname)
     except:
@@ -55,12 +63,8 @@ def test_diffpat(fname=None):
 
 def test_real(scanno, fname=None, noreturn=False):
     # tests on real data
-    try:
-        from PyMca import specfilewrapper as specfile
-    except:
-        from PyMca import specfile
     if fname is None:
-        fname = 'align_jn_01'
+        fname = os.path.join(_curDir, 'peakfit_test_real.dat')
     try:
         sf = specfile.Specfile(fname)
     except:
