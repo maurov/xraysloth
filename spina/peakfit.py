@@ -23,11 +23,17 @@ __date__ = "May 2014"
 import sys, os
 import numpy as np
 
+HAS_PYMCA = False
+HAS_PYMCA5 = False
 try:
-    from PyMca import Specfit, SpecfitFunctions
-    HAS_PYMCA = True
+    from PyMca5.PyMcaMath.fitting import Specfit, SpecfitFunctions
+    HAS_PYMCA5 = True
 except:
-    HAS_PYMCA = False
+    try:
+        from PyMca import Specfit, SpecfitFunctions
+        HAS_PYMCA = True
+    except:
+        pass
 
 try:
     IN_IPYTHON = __IPYTHON__
@@ -120,8 +126,8 @@ def fit_splitpvoigt(x, y, dy=False,\
     def _estimate_splitpvoigt2(xx, yy, zzz, xscaling=1.0, yscaling=None, npeaks=npeaks):
         """wrap to SpecfitFunctions.estimate_splitpvoigt to limit to npeaks"""
         currpars, currcons = sff.estimate_splitpvoigt(xx, yy, zzz, xscaling, yscaling)
-        #print currpars
-        #print currcons
+        #print(currpars)
+        #print(currcons)
         newpars = currpars[:5*npeaks]
         newcons = currcons[:][:5*npeaks]
         return newpars, newcons
@@ -146,7 +152,7 @@ def fit_splitpvoigt(x, y, dy=False,\
 
     # check again, if still empty, init splitpvoigt manually
     if not len(fit.theorylist):
-        print 'Warning: using manual import of Split Pseudo-Voigt'
+        print('Warning: using manual import of Split Pseudo-Voigt')
         sff = SpecfitFunctions.SpecfitFunctions()
         conf_fun = sff.configure(**dconf)
         fit.addtheory('Split Pseudo-Voigt', sff.splitpvoigt, ['Height','Position','LowFWHM', 'HighFWHM', 'Eta'], _estimate_splitpvoigt2)
@@ -166,12 +172,26 @@ def fit_splitpvoigt(x, y, dy=False,\
     # RESULTS
     yfit = fit.gendata(x=x, parameters=fit.paramlist)
     residual = y-yfit
+
+    # outputs
+    pk_area = np.trapz(yfit, x=x)
+    fit.resdict = fit_results(fit, output='dict', pk_info=True)
+    fit.resdict.update({'area' : pk_area})
+    fit.yfit = yfit
+    fit.residual = residual
+    
     # print results
     if show_res is True:
         fit_results(fit, output='print', pk_info=True)
+    
     # plot
     if plot is True:
-        from PyMca import ScanWindow
+        if HAS_PYMCA5:
+            from PyMca5.PyMcaGui import ScanWindow
+        elif HAS_PYMCA:
+            from PyMca import ScanWindow
+        else:
+            return fit, 0
         if (not IN_IPYTHON):
             from PyMca import PyMcaQt as qt
             qtApp = qt.QApplication([])
@@ -183,12 +203,6 @@ def fit_splitpvoigt(x, y, dy=False,\
         pw.show()
         if (not IN_IPYTHON):
             qtApp.exec_()
-    # outputs
-    pk_area = np.trapz(yfit, x=x)
-    fit.resdict = fit_results(fit, output='dict', pk_info=True)
-    fit.resdict.update({'area' : pk_area})
-    fit.yfit = yfit
-    fit.residual = residual
     if plot is True:
         return fit, pw
     else:
@@ -266,65 +280,6 @@ def fit_results(fitobj, output='print', pk_info=True):
     else:
         return '\n'.join(out)
     
-def test_mock():
-    # create mock data
-    import numpy as np
-    from PyMca import SpecfitFuns
-    x = np.linspace(0, 50, 200)
-    noise = np.random.normal(size=len(x), scale=10)
-    y = 80.0 - x*0.25 + noise
-    y = y + 89*SpecfitFuns.splitpvoigt([12.5, 30.75, 12.0, 5.0, 0.5], x)
-    fit, pw = fit_splitpvoigt(x, y, plot=True, show_res=True)
-    return x, y, fit, pw
-
-def test_diffpath(fname=None):
-    # tests on 'diff_pat.dat'
-    try:
-        from PyMca import specfilewrapper as specfile
-    except:
-        from PyMca import specfile
-    if fname is None:
-        fname = 'diff_pat.dat'
-    try:
-        sf = specfile.Specfile(fname)
-    except:
-        print '{0} not found'.format(fname)
-        return
-    sd = sf.select('1')
-    x = sd.datacol(1)
-    y = sd.datacol(7)
-    sf = 0 # close file
-    fit, pw = fit_splitpvoigt(x, y, plot=True, show_res=True)
-    return x, y, fit, pw
-
-def test_real(scanno, fname=None, noreturn=False):
-    # tests on real data
-    try:
-        from PyMca import specfilewrapper as specfile
-    except:
-        from PyMca import specfile
-    if fname is None:
-        fname = 'align_jn_01'
-    try:
-        sf = specfile.Specfile(fname)
-    except:
-        print '{0} not found'.format(fname)
-        return
-    sd = sf.select(str(scanno))
-    x = sd.datacol(1)*1000 #eV
-    csig = 'apd'
-    cmon = 'I02'
-    csec = 'Seconds'
-    y = sd.datacol(csig)/sd.datacol(cmon)*np.mean(sd.datacol(cmon))/sd.datacol(csec) #cps
-    fit, pw = fit_splitpvoigt(x, y, dy=True, bkg='Constant', plot=True, show_res=True)
-    if noreturn:
-        raw_input("Press Enter to return (kills plot window)...")
-        return
-    else:
-        return x, y, fit, pw
-
 if __name__ == '__main__':
-    #pass
-    #x, y, fit, pw = test_mock()
-    #x, y, fit, pw = test_diffpath()
-    x, y, fit, pw = test_real(45)
+    pass
+    # TESTS are in examples/peakfit_tests.py
