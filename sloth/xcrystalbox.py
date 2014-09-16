@@ -29,6 +29,7 @@ from optparse import OptionParser
 from datetime import date
 import numpy as np
 from peakfit import fit_splitpvoigt, fit_results
+from scipy.interpolate import interp1d
 
 # check XOP is correctly installed and define DIFFPAT_EXEC
 HAS_XOP = False
@@ -156,9 +157,10 @@ class XCrystalBox(object):
         self.checkopts()
 
     def showhelp(self):
-        print self.__doc__
+        print(self.__doc__)
 
     def checkopts(self):
+        """ performs a global check on setted options """
         # bragg file
         if (self.opts['bragg_file'] is None):
             raise NameError("missing 'bragg_file'")
@@ -212,10 +214,11 @@ class XCrystalBox(object):
                 raise NameError('Poisson ratio not given')
 
     def setopt(self, opt, value):
+        """ set option and run global check """
         self.opts[opt] = value
         self.checkopts()
 
-    def winpfile(self):
+    def writeInpFile(self, fname='xcrystal.inp'):
         """ write xcrystal.inp """
         outlst = ['{bragg_file}']
         outlst.append('{crys_type}')
@@ -240,95 +243,74 @@ class XCrystalBox(object):
             
         outstr = '\n'.join(outlst)
         outstr = outstr.format(**self.opts)
-        print outstr
-        f = open('xcrystal.inp', 'w')
-        f.write(outstr)
-        f.close()
+        #print(outstr)
+        with open('{0}'.format(fname), 'w') as f:
+            f.write(outstr)
         
     def run(self):
         """ runs diff_pat """
-        self.winpfile() # write xcrystal.inp
+        self.writeInpFile() # write xcrystal.inp
         cmdstr = '{} < xcrystal.inp'.format(DIFFPAT_EXEC)
-        print cmdstr
+        print(cmdstr)
         try:
             subprocess.call(cmdstr, shell=True) 
         except OSError:
-            print "check 'diff_pat' executable exists!"
+            print("check 'diff_pat' executable exists!")
 
-    def evaluate(self):
-        """ evaluate diff_pat.dat """
+
+    def loadRefl(self, fname='diff_pat.dat', pol='s', kind='cubic', fill_value=0.):
+        """ load reflectivity curve and interpolate
+
+        Parameters
+        ----------
+
+        fname : string, [diff_path.dat]
+                file with reflectivity curve (SPEC format!)
+        pol : string, polarization ['s']
+              's' sigma
+              'p' pi
+              'circ' circular
+              
+        kind : str or int ['cubic'] the kind of interpolation as a
+              string (‘linear’, ‘nearest’, ‘zero’, ‘slinear’,
+              ‘quadratic, ‘cubic’ where ‘slinear’, ‘quadratic’ and
+              ‘cubic’ refer to a spline interpolation of first, second
+              or third order) or as an integer specifying the order of
+              the spline interpolator to use.
+
+        fill_value : float, [0] this value will be used to fill in for
+                     requested points outside of the data range
+        
+        """
         try:
             from PyMca import specfilewrapper as specfile
         except:
             from PyMca import specfile
-        sf = specfile.Specfile('diff_pat.dat')
-        sd = sf.select('1')
-        self.x = sd.datacol(1)
-        self.y = sd.datacol(7)
-        sf = 0 # close file
+        if pol == 's':
+            scol = 7
+        elif pol == 'p':
+            scol = 6
+        elif pol == 'circ':
+            scol = 5
+        else:
+            raise NameError("XCrystalBox.loadRefl: wrong polarization keyword")
+        try:
+            sf = specfile.Specfile(fname)
+            sd = sf.select('1')
+            self.x = sd.datacol(1)
+            self.y = sd.datacol(int(scol))
+            sf = 0 # close file
+        except:
+            raise NameError("XCrystalBox.loadRefl: wrong file format")
+        self.refl = interp1d(self.x, self.y, kind=kind, bounds_error=False, fill_value=fill_value)
+                    
+    def fitRefl(self, fname='diff_pat.dat', pol='s'):
+        """ evaluate diff_pat.dat """
+        self.loadRefl(fname=fname, pol=pol)
         self.fit, self.pw = fit_splitpvoigt(self.x, self.y, plot=True)
 
-### TESTING ###
-def test_Si444():
-    odict = dict(creator = 'XCrystalBox/test',
-                 today = date.today(),
-                 bragg_file = 'Si_444-E_2000_20000_50-A_3-T_1.bragg',
-                 crys_mat = 'Si',
-                 crys_refl = (1,1,1),
-                 crys_type = 2,
-                 geom = 0,
-                 mos_spread = None,
-                 thickness = 0.04,
-                 asym = 0.0,
-                 scan_mode = 3,
-                 scan_pos = 8000,
-                 scan_ang_unit = 3,
-                 scan_min = -50.,
-                 scan_max = 50.,
-                 scan_npts = 400,
-                 r_sag = 0,
-                 r_mer = 50.,
-                 elast_prompt = 0,
-                 elast_info = 0,
-                 poisson_ratio = 0.22)
-    t = XCrystalBox(opts=odict)
-    return t
-
-def test_Si444_ene():
-    odict = dict(creator = 'XCrystalBox/test',
-                 today = date.today(),
-                 bragg_file = 'Si_444-E_2000_20000_50-A_3-T_1.bragg',
-                 crys_mat = 'Si',
-                 crys_refl = (1,1,1),
-                 crys_type = 2,
-                 geom = 0,
-                 mos_spread = None,
-                 thickness = 0.04,
-                 asym = 0.0,
-                 scan_mode = 4,
-                 scan_pos = 8000,
-                 scan_ang_unit = 3,
-                 scan_min = -1.,
-                 scan_max = 1.,
-                 scan_npts = 400,
-                 r_sag = 0,
-                 r_mer = 50.,
-                 elast_prompt = 0,
-                 elast_info = 0,
-                 poisson_ratio = 0.22)
-    t = XCrystalBox(opts=odict)
-    ene_pos = 10000.
-    ene_dscan = 2
-    si_d111 = 3.1355
-    from bragg import bragg_th
-    t.setopt('scan_pos', bragg_th(ene_pos, si_d111, n=4))
-    t.setopt('scan_min', ene_pos-ene_dscan)
-    t.setopt('scan_max', ene_pos+ene_dscan)
-    return t
-
+        
 if __name__ == '__main__':
-    #pass
-    t = test_Si444_ene()
-    t.run()
-    t.evaluate()
-    fit_results(t.fit)
+    # tests in examples/xcrystalbox_tests.py
+    pass
+
