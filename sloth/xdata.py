@@ -84,13 +84,71 @@ SHELLS = ('K',
           'O1', 'O2', 'O3', 'O4', 'O5',
           'P1', 'P2', 'P3')
 
-# TODO
-LINES = ('KL3', 'KL2', 'KM3', 'KM2',
-         'L1L2', 'L1M3', 'L1O2', 'L2M4', 'L2N4', 'L3M5', 'L3N5', 'L3M1')
+LINES = ('KA1', 'KA2', 'KA3',
+         'KB1', 'KB2', 'KB3', 'KB4', 'KB5',
+         'LA1', 'LA2',
+         'LB1', 'LB2', 'LB3', 'LB4', 'LB5', 'LB6',
+         'LG1', 'LG2', 'LG3', 'LG6',
+         'LL', 'LE',
+         'MA1', 'MA2',
+         'MB',
+         'MG')
+# Ln in Hepheastus is LE in Xraylib
+# Mz in Hepheastus not in Xraylib (the single transitions yes!)
+
+TRANSITIONS = ('KL3', 'KL2', 'KL1',
+               'KM3', 'KN3', 'KM2', 'KN5', 'KM5',
+               'L3M5', 'L3M4',
+               'L2M4', 'L3N5', 'L1M3', 'L1M2', 'L3O45', 'L3N1',
+               'L2N4', 'L1N2', 'L1N3', 'L2O4',
+               'L3M1', 'L2M1',
+               'M5N7', 'M5N6',
+               'M4N6',
+               'M3N5')
+
+# INDEX DICTIONARY: KEYS=LINES : VALUES=(LINES[IDX], SHELLS[IDX_XAS], SHELLS[IDX_XES])
+LINES2TRANS = {'KA1' : (0, 0, 3),
+               'KA2' : (1, 0, 2),
+               'KA3' : (2, 0, 1),
+               'KB1' : (3, 0, 6),
+               'KB2' : (4, 0, 11),
+               'KB3' : (5, 0, 5),
+               'KB4' : (6, 0, 13),
+               'KB5' : (7, 0, 8),
+               'LA1' : (8, 3, 8),
+               'LA2' : (9, 3, 7),
+               'LB1' : (10, 2, 7),
+               'LB2' : (11, 3, 13),
+               'LB3' : (12, 1, 6),
+               'LB4' : (13, 1, 5),
+               'LB5' : (14, 3, 19), #WARNING: here is only O4
+               'LB6' : (15, 3, 9),
+               'LG1' : (16, 2, 12),
+               'LG2' : (17, 1, 10),
+               'LG3' : (18, 1, 11),
+               'LG6' : (19, 2, 19),
+               'LL' : (20, 3, 4),
+               'LE' : (21, 2, 4),
+               'MA1' : (22, 8, 15),
+               'MA2' : (23, 8, 14),
+               'MB' : (24, 7, 14),
+               'MG' : (25, 6, 13)}
+
+def mapLine2Trans(line):
+    """ returns a tuple of strings mapping the transitions for a given line """
+    try:
+        idx = LINES2TRANS[line]
+        return (LINES[idx[0]], TRANSITIONS[idx[0]], SHELLS[idx[1]], SHELLS[idx[2]])
+    except:
+        print('ERROR: line {0} not in the list; returning 0'.format(line))
+        return 0
 
 ### XRAYLIB-BASED FUNCTIONS ###
 def find_edge(emin, emax, shells=None):
     """ return the edge energy in a given energy range [emin,emax] (eV)"""
+    if HAS_XRAYLIB is False:
+        print('ERROR: xraylib required')
+        return 0
     if shells is None:
         shells = SHELLS
     for el in ELEMENTS:
@@ -101,6 +159,9 @@ def find_edge(emin, emax, shells=None):
 
 def find_line(emin, emax, elements=None, lines=None):
     """ return the line energy in a given energy range [emin,emax] (eV)"""
+    if HAS_XRAYLIB is False:
+        print('ERROR: xraylib required')
+        return 0
     if lines is None:
         lines = LINES
     if elements is None:
@@ -113,6 +174,9 @@ def find_line(emin, emax, elements=None, lines=None):
 
 def ene_res(emin, emax, shells=['K']):
     """ used in spectro.py """
+    if HAS_XRAYLIB is False:
+        print('ERROR: xraylib required')
+        return 0
     s = {}
     s['el'] = []
     s['en'] = []
@@ -131,6 +195,20 @@ def ene_res(emin, emax, shells=['K']):
                 s['dee'].append(ch/edge)
     return s
 
+
+def fluo_width(elem=None, line=None):
+    """ returns the line width in eV"""
+    if HAS_XRAYLIB is False:
+        print('ERROR: xraylib required')
+        return 0
+    if ((elem is None) or (line is None)):
+        print('ERROR: element or edge not given, returning 0')
+        return 0
+    else:
+        ln = mapLine2Trans(line)
+        lw_xas = xl.AtomicLevelWidth(xl.SymbolToAtomicNumber(elem), getattr(xl, ln[2]+'_SHELL'))*1000
+        lw_xes = xl.AtomicLevelWidth(xl.SymbolToAtomicNumber(elem), getattr(xl, ln[3]+'_SHELL'))*1000
+        return lw_xas + lw_xes
 
 ### LARCH-BASED FUNCTIONS ###
 def _core_width(element=None, edge=None):
