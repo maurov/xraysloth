@@ -25,8 +25,6 @@ TODO
 - [] get_ene_index: substitute with more elegant
      'np.argmin(np.abs(ene-(x)))'
 - [] atan_gamma_fdmnes: define atan_gamma as in FDMNES
-- [] 2D convolution
-
 """
 
 __author__ = "Mauro Rovezzi"
@@ -49,15 +47,19 @@ from optparse import OptionParser
 from datetime import date
 from string import Template
 import numpy as np
-from larch import use_plugin_path
 
-use_plugin_path('math')
-from mathutils import index_of, index_nearest
-from lineshapes import gaussian, lorentzian
+HAS_LARCH = False
+try:
+    from larch import use_plugin_path
+    use_plugin_path('math')
+    #from mathutils import index_of, index_nearest #not used, get_ene_index() instead
+    from lineshapes import gaussian, lorentzian
+    HAS_LARCH = True
+except:
+    pass
 
-use_plugin_path('xray')
-from xraydb import xrayDB
-
+from xdata import _core_width
+    
 def get_ene_index(ene, cen, hwhm):
     """ returns the min/max indexes for array ene at (cen-hwhm) and (cen+hwhm)
     very similar to index_of in larch
@@ -75,18 +77,6 @@ def get_ene_index(ene, cen, hwhm):
     except:
         print 'index not found for {0} +/- {1}'.format(cen, hwhm)
         return None, None
-
-def _core_width(element=None, edge=None):
-    """returns core hole width for a given element and edge
-
-    See 'core_width' in Larch
-    """
-    if ((element is None) or (edge is None)):
-        print 'WARNING: element or edge not given, returning 0'
-        return 0
-    else:
-        xdb = xrayDB()
-        return xdb.corehole_width(element=element, edge=edge)
 
 def lin_gamma(ene, fwhm=1.0, linbroad=None):
     """returns constant or linear energy-dependent broadening
