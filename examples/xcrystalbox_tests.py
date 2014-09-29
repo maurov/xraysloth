@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-""" examples/tests for xcrystalbox
-
-"""
+""" examples/tests for xcrystalbox """
 
 __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
@@ -14,15 +12,7 @@ __version__ = "0.0.2"
 __status__ = "in progress"
 __date__ = "Sept 2014"
 
-import sys, os
 from datetime import date
-
-# https://github.com/maurov/xrayspina
-_curDir = os.path.dirname(os.path.realpath(__file__))
-_parDir = os.path.realpath(os.path.join(_curDir, os.path.pardir))
-_spinaDir = os.path.join(_parDir, 'spina')
-sys.path.append(_spinaDir)
-
 from xcrystalbox import XCrystalBox
 
 ### TESTING ###

@@ -18,12 +18,6 @@ __version__ = "0.9.6"
 __status__ = "Beta"
 __date__ = "Aug 2014"
 
-import os, sys
-# https://github.com/maurov/xrayspina
-_curDir = os.path.dirname(os.path.realpath(__file__))
-_parDir = os.path.realpath(os.path.join(_curDir, os.path.pardir))
-_spinaDir = os.path.join(_parDir, 'spina')
-sys.path.append(_spinaDir)
 from specfiledata import SpecfileData
 
 ### TESTS ###

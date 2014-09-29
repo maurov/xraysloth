@@ -17,12 +17,6 @@ __version__ = "0.1.3"
 __status__ = "in progress"
 __date__ = "Aug 2014"
 
-import os, sys
-# https://github.com/maurov/xrayspina
-_curDir = os.path.dirname(os.path.realpath(__file__))
-_parDir = os.path.realpath(os.path.join(_curDir, os.path.pardir))
-_spinaDir = os.path.join(_parDir, 'spina')
-sys.path.append(_spinaDir)
 from dthetaxz import dThetaXZ, mapCase2Num, mapNum2Case, getMeshMasked, getDthetaDats, writeScanDats
 from dthetaxz_plot import plotEffScatt, plotScanThetaFile
 

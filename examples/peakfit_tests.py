@@ -12,15 +12,7 @@ __version__ = "0.0.2"
 __status__ = "in progress"
 __date__ = "Sept 2014"
 
-import sys, os
 import numpy as np
-
-# https://github.com/maurov/xrayspina
-_curDir = os.path.dirname(os.path.realpath(__file__))
-_parDir = os.path.realpath(os.path.join(_curDir, os.path.pardir))
-_spinaDir = os.path.join(_parDir, 'spina')
-sys.path.append(_spinaDir)
-
 from peakfit import fit_splitpvoigt, fit_results
 
 try:

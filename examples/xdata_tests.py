@@ -14,13 +14,7 @@ __version__ = "0.0.2"
 __status__ = "in progress"
 __date__ = "Sept 2014"
 
-# https://github.com/maurov/xrayspina
-_curDir = os.path.dirname(os.path.realpath(__file__))
-_parDir = os.path.realpath(os.path.join(_curDir, os.path.pardir))
-_spinaDir = os.path.join(_parDir, 'spina')
-sys.path.append(_spinaDir)
-
-from xdata import ene_res
+from xdata import ene_res, fluo_width
 
 ### TESTS/EXAMPLES
 def testEresLinesKLM(emin, emax):
@@ -45,6 +39,13 @@ def testEresLinesKLM(emin, emax):
     #
     return dees
 
+def testFluoWidth(elem='Au', lines=['LB6', 'LB4', 'LB1', 'LB2', 'LB3', 'LB5']):
+    """returns the line width for the lines of a given element
+    this example: Au Lbeta lines
+    """
+    for line in lines:
+        print("{0} {1} : {2:>.4f} eV".format(elem, line, fluo_width(elem, line)))
+    
 if __name__ == '__main__':
     pass
     #dees = testEresLinesKLM(2000, 5000)
