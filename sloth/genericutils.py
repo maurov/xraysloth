@@ -10,6 +10,8 @@ TODO
 
 """
 
+import numpy as np
+
 __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
@@ -19,6 +21,21 @@ __version__ = "0.0.1"
 __status__ = "in progress"
 __date__ = "Aug 2014"
 
+### Numpy ###
+def imin(arr, check=False):
+    """ index of minimum value """
+    _im = np.argmin(arr)
+    if check:
+        print('Check: {0} = {1}'.format(np.min(arr), arr[_im]))
+    return _im
+        
+def imax(arr, check=False):
+    """ index of maximum value """
+    _im = np.argmax(arr)
+    if check:
+        print('Check: {0} = {1}'.format(np.max(arr), arr[_im]))
+    return _im
+        
 ### IPython ###
 def ipythonAutoreload():
     """ force ipython to autoreload imported modules """
