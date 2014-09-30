@@ -45,9 +45,9 @@ __credits__ = ""
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
 __year__ = "2014"
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 __status__ = "in progress"
-__date__ = "Aug 2014"
+__date__ = "Sept 2014"
 
 import sys, os
 import math
@@ -91,7 +91,7 @@ class RowlandCircle(object):
         Rm : [1000] radius of the Rowland circle (meridional radius) in mm
         alpha : miscut angle in deg (TODO) the angle between the surface
                 of the crystal and the normal of the Bragg planes (0 <= alpha <= \pi/2)
-        aL : float, analyser center distance from the chi rotation  (affects => Chi, SagOff)
+        aL : float, distance of analyser center from the chi rotation  (affects => Chi, SagOff)
         d : crystal d-spacing in \AA (this is simply an utility to convert theta to energy - in eV)
         inCircle : sample inside the Rowland cicle (dispersive)
                    [False] otherwise give the y offset
@@ -188,18 +188,14 @@ class RowlandCircle(object):
         """ analyser sagittal offset from the center one """
         if Rs is None: Rs = self.Rs
         if aL is None: aL = self.aL
-        aXoff0 = aXoff
-        rchi0 = self.getChi(aXoff0, Rs=Rs, aL=0, inDeg=False)
-        SagOff0 = cs_h(aXoff0*2, Rs)        
-        aXoff = aXoff0 + aL
-        Rs2 = Rs + aL
-        rchi = self.getChi(aXoff, Rs=Rs2, aL=aL, inDeg=False)
-        aXoff2 = aXoff - aL * math.sin(rchi)
-        print('aXoff2 = {0}'.format(aXoff2))
-        SagOff = cs_h(aXoff2*2, Rs)
+        rchi = self.getChi(aXoff, Rs=Rs, aL=aL, inDeg=False)
+        aXoff0 = aXoff - aL*math.sin(rchi)
+        rchi0 = self.getChi(aXoff0, Rs=Rs, aL=0, inDeg=False) # this is equal to rchi!
+        SagOff0 = cs_h(aXoff0*2, Rs)
+        SagOff = SagOff0 - aL*math.cos(rchi)
         if self.showInfos:
             _tmpl_ihead = "INFO: {0:=^10} {1:=^12} {2:=^13}"
-            _tmpl_idata = "INFO: {0:^ 10.4f} {1:^ 12.4f} {2:^ 13.4f}"
+            _tmpl_idata = "INFO: {0:^ 10.5f} {1:^ 12.5f} {2:^ 13.5f}"
             print(_tmpl_ihead.format('Chi', 'aXoff', 'SagOff'))
             print(_tmpl_idata.format(math.degrees(rchi), aXoff, SagOff))
             print(_tmpl_ihead.format('Chi0', 'aXoff0', 'SagOff0'))
@@ -293,48 +289,7 @@ class RcHoriz(RowlandCircle):
             Aside = rotate(Acen, SDax, Chi)
             return Aside
 
-### TESTS ###
-def testSagOff(Rm, theta0, aXoff, aL=100.):
-    rc = RcHoriz(Rm, theta0, aL=aL, showInfos=True)
-    rc.getSagOff(aXoff)
-
-def testChiOpt():
-    #from specfiledatawriter import SpecfileDataWrite
-    #fname = 'testChiOpt.spec'
-    #sfout = SpecfileDataWriter(fname)
-    ths = np.linspace(34., 86., 27.) #theta scan
-    rms = [250., 500.]
-    als = [0., 25., 50., 100.]
-    agxs = [0., 5.]
-    dres = {'rm' : [],
-            'th' : [],
-            'al' : [],
-            'chi' : [],
-            'axoff' : [],
-            'sagoff' : [],
-            'chi0' : [],
-            'axoff0' : [],
-            'sagoff0' : []}
-    for rm in rms:
-        for al in als:
-            rc = RcHoriz(rm, aL=al, showInfos=False)
-            axoff = acenx(5, asx=25., agx=5.)
-            for th in ths:
-                rc.setTheta0(th)
-                #[math.degrees(rchi), aXoff, SagOff, math.degrees(rchi0), aXoff0, SagOff0]
-                lso = rc.getSagOff(axoff, retAll=True)
-                dres['rm'].append(rm)
-                dres['th'].append(th)
-                dres['al'].append(al)
-                dres['chi'].append(lso[0])
-                dres['axoff'].append(lso[1])
-                dres['sagoff'].append(lso[2])
-                dres['chi0'].append(lso[3])
-                dres['axoff0'].append(lso[4])
-                dres['sagoff0'].append(lso[5])
-    return dres
 
 if __name__ == "__main__":
-    #pass
-    testSagOff(250., 35., 150., aL=90.)
-    #dres = testChiOpt()
+    #tests/examples in rowland_tests.py
+    pass
