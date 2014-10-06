@@ -20,6 +20,14 @@ sys.path.append(_libDir)
 
 from rowland import cs_h, acenx, RcHoriz, RcVert
 
+ALAT_SI = 5.431065 # Ang at 25C
+ALAT_GE = 5.6579060 # Ang at 25C
+from bragg import d_cubic
+dSi111 = d_cubic(ALAT_SI, (1,1,1))
+dGe111 = d_cubic(ALAT_GE, (1,1,1))
+dSi220 = d_cubic(ALAT_SI, (2,2,0))
+dGe220 = d_cubic(ALAT_GE, (2,2,0))
+
 ### TESTS ###
 def testSagOff(Rm, theta0, aXoff, aL=100.):
     rc = RcHoriz(Rm, theta0, aL=aL, showInfos=True)
@@ -61,8 +69,13 @@ def testChiOpt():
                 dres['sagoff0'].append(lso[5])
     return dres
 
-
+def testAzOff(eDelta, Rm=500., theta0=35, d=dSi111):
+    t = RcHoriz(Rm=Rm, theta0=theta0, d=d)
+    return t.getAzOff(eDelta)
+    
 if __name__ == "__main__":
     #pass
-    testSagOff(250., 35., 150., aL=12.)
+    #testSagOff(250., 35., 150., aL=12.)
     #dres = testChiOpt()
+    testAzOff(0.5)
+    
