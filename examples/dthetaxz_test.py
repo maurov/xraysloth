@@ -17,6 +17,10 @@ __version__ = "0.1.3"
 __status__ = "in progress"
 __date__ = "Aug 2014"
 
+import sys
+from __init__ import _libDir
+sys.path.append(_libDir)
+
 from dthetaxz import dThetaXZ, mapCase2Num, mapNum2Case, getMeshMasked, getDthetaDats, writeScanDats
 from dthetaxz_plot import plotEffScatt, plotScanThetaFile
 

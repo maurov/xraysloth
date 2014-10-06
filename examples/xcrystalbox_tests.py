@@ -12,8 +12,13 @@ __version__ = "0.0.2"
 __status__ = "in progress"
 __date__ = "Sept 2014"
 
-from datetime import date
+import sys
+from __init__ import _libDir
+sys.path.append(_libDir)
+
 from xcrystalbox import XCrystalBox
+
+from datetime import date
 
 ### TESTING ###
 def test_Si444():

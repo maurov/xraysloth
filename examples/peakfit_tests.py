@@ -12,8 +12,13 @@ __version__ = "0.0.2"
 __status__ = "in progress"
 __date__ = "Sept 2014"
 
-import numpy as np
+import sys
+from __init__ import _libDir
+sys.path.append(_libDir)
+
 from peakfit import fit_splitpvoigt, fit_results
+
+import numpy as np
 
 try:
     from PyMca5.PyMcaIO import specfilewrapper as specfile

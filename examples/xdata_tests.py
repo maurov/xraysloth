@@ -14,6 +14,10 @@ __version__ = "0.0.2"
 __status__ = "in progress"
 __date__ = "Sept 2014"
 
+import sys
+from __init__ import _libDir
+sys.path.append(_libDir)
+
 from xdata import ene_res, fluo_width
 
 ### TESTS/EXAMPLES

@@ -18,6 +18,10 @@ __version__ = "0.9.6"
 __status__ = "Beta"
 __date__ = "Aug 2014"
 
+import sys
+from __init__ import _libDir
+sys.path.append(_libDir)
+
 from specfiledata import SpecfileData
 
 ### TESTS ###
