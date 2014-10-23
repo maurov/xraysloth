@@ -21,10 +21,10 @@ __credits__ = ""
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __owner__ = "Mauro Rovezzi"
 __organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2011-2013"
+__year__ = "2011-2014"
 __version__ = "0.1.6"
 __status__ = "Alpha"
-__date__ = "Dec 2013"
+__date__ = "Octo 2014"
 
 ### IMPORTS ###
 import os, sys
@@ -33,7 +33,24 @@ from datetime import datetime
 from collections import deque
 import glob
 from scipy.interpolate import interp1d
-from larch import use_plugin_path, Group
+
+# Larch
+HAS_LARCH = False
+try:
+    from larch import use_plugin_path, Group
+    HAS_LARCH = True
+    # load Larch Plugins
+    use_plugin_path('io')
+    from columnfile import _read_ascii
+    use_plugin_path('wx')
+    from plotter import _plot, _scatterplot, _plot_text
+    use_plugin_path('math')
+    from mathutils import _interp
+    use_plugin_path('xafs')
+    from xafsft import xftf, xftr, xftf_prep, xftf_fast, xftr_fast, ftwindow
+    from pre_edge import pre_edge
+except ImportError:
+    pass
 
 # PyMca
 HAS_PYMCA = False
@@ -43,18 +60,7 @@ try:
 except ImportError:
     pass
 
-# Larch Plugins
-use_plugin_path('io')
-from columnfile import _read_ascii
-use_plugin_path('wx')
-from plotter import _plot, _scatterplot, _plot_text
-use_plugin_path('math')
-from mathutils import _interp
-use_plugin_path('xafs')
-from xafsft import xftf, xftr, xftf_prep, xftf_fast, xftr_fast, ftwindow
-from pre_edge import pre_edge
-
-# Mauro's Larch Plugins (https://github.com/maurov/larch_plugins)
+# Mauro's Larch Plugins (https://github.com/maurov/xraysloth)
 from specfiledata import _str2rng as str2rng
 from specfiledata import spec_getmap2group, spec_getmrg2group
 from rixsdata_plotter import RixsDataPlotter
@@ -87,9 +93,12 @@ class GsList(object):
     friends"""
     def __init__(self, kwsd=None, _larch=None):
         if _larch is None:
-            from larch import Interpreter
-            self._larch = Interpreter()
-            self._inlarch = False
+            if HAS_LARCH:
+                from larch import Interpreter
+                self._larch = Interpreter()
+                self._inlarch = False
+            else:
+                raise NameError('GsList requires Larch')
         else:
             self._larch = _larch
             self._inlarch = True

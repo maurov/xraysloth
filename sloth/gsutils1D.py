@@ -18,28 +18,36 @@ __credits__ = ""
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __owner__ = "Mauro Rovezzi"
 __organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2013"
+__year__ = "2013-2014"
 __version__ = "0.0.1"
 __status__ = "Alpha"
-__date__ = "Dec 2013"
+__date__ = "Oct 2014"
 
 ### IMPORTS ###
 import os, sys
 import numpy as np
+from datetime import datetime
+
 # Larch
-from larch import use_plugin_path, Group
-# Larch Plugins
-use_plugin_path('io')
-from columnfile import _read_ascii
-use_plugin_path('wx')
-from plotter import _plot, _scatterplot, _plot_text
-use_plugin_path('math')
-from mathutils import _interp
-from fitpeak import fit_peak
-use_plugin_path('xafs')
-from xafsft import xftf, xftr, xftf_prep, xftf_fast, xftr_fast, ftwindow
-from pre_edge import pre_edge
-# Mauro's Larch Plugins (https://github.com/maurov/larch_plugins)
+HAS_LARCH = False
+try:
+    from larch import use_plugin_path, Group
+    HAS_LARCH = True
+    # Larch Plugins
+    use_plugin_path('io')
+    from columnfile import _read_ascii
+    use_plugin_path('wx')
+    from plotter import _plot, _scatterplot, _plot_text
+    use_plugin_path('math')
+    from mathutils import _interp
+    from fitpeak import fit_peak
+    use_plugin_path('xafs')
+    from xafsft import xftf, xftr, xftf_prep, xftf_fast, xftr_fast, ftwindow
+    from pre_edge import pre_edge
+except ImportError:
+    pass
+    
+# Mauro's Larch Plugins (https://github.com/maurov/xraysloth)
 from specfiledata import _str2rng as str2rng
 from specfiledata import spec_getmap2group, spec_getmrg2group
 from rixsdata_plotter import RixsDataPlotter
@@ -48,10 +56,14 @@ from gsutils import GsList
 # PyMca
 HAS_PYMCA = False
 try:
-    from PyMca import ScanWindow
+    from PyMca5.PyMcaGui import ScanWindow
     HAS_PYMCA = True
 except ImportError:
-    pass
+    try:
+        from PyMca import ScanWindow
+        HAS_PYMCA = True
+    except ImportError:
+        pass
 
 # DEBUG
 if 'DEBUG' in globals():
@@ -156,7 +168,7 @@ class GsList1D(GsList):
             self.mkinterpxy(xmin=xmin, xmax=xmax)
             cmdiff = self.getcom(ref, xattr='xnew', yattr='ynew') - self.getcom(g, xattr='xnew', yattr='ynew')
             self.gs[g].x = self.gs[g].x + cmdiff
-            print '{0}.x shifted by {1}'.format(self.gs[g].label, cmdiff)
+            print('{0}.x shifted by {1}'.format(self.gs[g].label, cmdiff))
             if set_attr:
                 self.gs[g].xcalib = cmdiff
         else:
@@ -198,14 +210,14 @@ class GsList1D(GsList):
                 xstep = min(np.diff(xref))
             xnew = np.linspace(xmin, xmax, (xmax-xmin)/xstep)
         if DEBUG:
-            print 'DEBUG: {0} interp, {1} to {2}, {3} xstep = {4} points'.format(kind, xmin, xmax, xstep, len(xnew))
+            print('DEBUG: {0} interp, {1} to {2}, {3} xstep = {4} points'.format(kind, xmin, xmax, xstep, len(xnew)))
         self.selector(sel)
         for _n, _g in enumerate(self.gs_sel):
             try:
                 setattr(_g, 'xnew', xnew)
                 setattr(_g, 'ynew', _interp(getattr(_g, xattr), getattr(_g, yattr), xnew, kind=kind))
                 if DEBUG:
-                    print 'DEBUG: group {0} interpolated'.format(_n)
+                    print('DEBUG: group {0} interpolated'.format(_n))
             except AttributeError:
                 pass
 
@@ -296,7 +308,7 @@ class GsList1D(GsList):
                 self.pw.setGeometry(50, 50, 700, 700)
                 self.pw.show()
         if sel == '*':
-            print 'Plotting all...'
+            print('Plotting all...')
             self.show()
             sel = range(len(self.gs))
         if replace:
@@ -371,7 +383,7 @@ class GsListExafs(GsList1D):
                 try:
                     setattr(_g, _attr, _g.chi*_g.k**int(kw))
                 except AttributeError:
-                    print "group {0} ({1}): attr {3} does not exist".format(_n, _g.label, _attr)
+                    print("group {0} ({1}): attr {3} does not exist".format(_n, _g.label, _attr))
 
     def mkftf(self, **kws):
         """ forward Fourier transform
@@ -394,7 +406,7 @@ class GsListExafs(GsList1D):
                 _k = getattr(_g, xattr)
                 _chi = getattr(_g, yattr)
             except AttributeError:
-                print "group {0} ({1}): attr {3} does not exist".format(_n, _g.label, _attr)
+                print("group {0} ({1}): attr {3} does not exist".format(_n, _g.label, _attr))
                 continue
             
             xftf(_k, _chi, group=_g, kmin=kmin, kmax=kmax, dk=dk,
@@ -435,7 +447,7 @@ class GsListExafs(GsList1D):
                         xshift=xshift, ystack=ystack, xscale=xscale, yscale=yscale,
                         xmin=0, xmax=8, xlabel=self.kwsd['plot']['xlabelR'], ylabel=self.kwsd['plot']['ylabelR'])
         if 'Q' in space.upper():
-            print 'to do'
+            print('Not implemented yet.')
 
 class GsListXes(GsList1D):
     """ GsList for XES scans """
@@ -474,7 +486,7 @@ class GsListXes(GsList1D):
                 try:
                     setattr(_g, 'iad_area', iad_area)
                     setattr(_g, 'iad_max', iad_max)
-                    print 'DEBUG: {0}: area {1}\t max {2}'.format(_n, iad_area, iad_max)
+                    print('DEBUG: {0}: area {1}\t max {2}'.format(_n, iad_area, iad_max))
                     setattr(_g, 'iad_yda', yda)
                     setattr(_g, 'iad_ydm', ydm)
                 except AttributeError:
@@ -484,7 +496,7 @@ class GsListXes(GsList1D):
             self.iads.area.append(iad_area)
             self.iads.max.append(iad_max)
         if _debug:
-            print "DEBUG: written attributes 'iad_yda' and 'iad_ydm' for fine check"
+            print("DEBUG: written attributes 'iad_yda' and 'iad_ydm' for fine check")
         if plot:
             self.plotiads()
 
@@ -495,13 +507,13 @@ class GsListXes(GsList1D):
         win = kws.get('win', 2)
         show_legend = kws.get('show_legend', self.kwsd['plot']['show_legend'])
         legend_loc = kws.get('legend_loc', self.kwsd['plot']['legend_loc'])
-        xlabel = kws.get('xlabel', None)
-        ylabel = kws.get('ylabel', 'IAD (arb. units)')
+        xlabel = kws.get('xlabel', 'index')
+        ylabel = kws.get('ylabel', 'IAD_area (arb. units)')
+        title = kws.get('title', 'IAD analysis')
         xmin = kws.get('xmin', None)
         xmax = kws.get('xmax', None)
         ymin = kws.get('ymin', None)
         ymax = kws.get('ymax', None)
-        
         # specific self.plotiads()
         show_labs =  kws.get('show_labs', True)
         labs_rot = kws.get('labs_rot', 45)
@@ -509,30 +521,60 @@ class GsListXes(GsList1D):
         labs_yoff = kws.get('labs_yoff', 0)
         labs_ha = kws.get('labs_ha', 'center')
         labs_va = kws.get('labs_va', 'center')
+        
+        if xlist is None:
+            xlist = self.iads.id
+
         if order:
-            if xlist:
-                _ids = xlist
-            else:
-                _ids = range(len(order))
+            _ids = []
             _iads = []
             _labs = []
             for _id in order:
+                _ids.append(xlist[_id])
                 _iads.append(self.iads.area[_id])
                 _labs.append(self.iads.lab[_id])
         else:
-            _ids = self.iads.id
+            _ids = xlist
             _iads = self.iads.area
             _labs = self.iads.lab
+
+        if self._inlarch:
+            # plot with Larch
+            _scatterplot(_ids, _iads, xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax,
+                         xlabel=xlabel, ylabel=ylabel,
+                         win=win, new=replace, _larch=self._larch)
+            if show_labs:
+                for _lab, _x, _y in zip(_labs, _ids, _iads):
+                    _plot_text(_lab, _x+labs_xoff, _y+labs_yoff, win=win, rotation=labs_rot,
+                               ha=labs_ha, va=labs_va, _larch=self._larch)
+        elif HAS_PYMCA:
+            # plot with PyMca
+            if not hasattr(self, 'pw'):
+                self.pw = ScanWindow.ScanWindow()
+                self.pw.setGraphTitle(title)
+                try:
+                    self.pw.setGraphXLabel(xlabel)
+                except:
+                    self.pw.setGraphXTitle(xlabel)
+                try:
+                    self.pw.setGraphYLabel(ylabel)
+                except:    
+                    self.pw.setGraphYTitle(ylabel)
+                if (xmin and xmax):
+                    self.pw.setGraphXLimits(xmin, xmax)
+                if (ymin and ymax):
+                    self.pw.setGraphYLimits(ymin, ymax)
+                # geometry good for >1280x800 resolution
+                self.pw.setGeometry(50, 50, 700, 700)
+                self.pw._plotPoints = True
+                self.pw.showGrid()
+                self.pw.show()
+            x = np.array(_ids)
+            y = np.array(_iads)
+            self.pw.addCurve(x, y, legend='IADs', replace=True)
+        else:
+            print('plotting with matplotlib not implemented yet. do it yourself!')
         
-        _scatterplot(_ids, _iads, xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax,
-                     xlabel=xlabel, ylabel=ylabel,
-                     win=win, new=replace, _larch=self._larch)                
-
-        if show_labs:
-            for _lab, _x, _y in zip(_labs, _ids, _iads):
-                _plot_text(_lab, _x+labs_xoff, _y+labs_yoff, win=win, rotation=labs_rot,
-                           ha=labs_ha, va=labs_va, _larch=self._larch)
-
 ### LARCH ###    
 def gslist_xan(kwsd=None, _larch=None):
     """ utility to perform common operations on a list of XANES data groups """

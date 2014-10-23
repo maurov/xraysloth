@@ -17,12 +17,13 @@ __credits__ = ""
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __owner__ = "Mauro Rovezzi"
 __organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2013"
+__year__ = "2013-2014"
 __version__ = "0.0.1"
 __status__ = "Alpha"
-__date__ = "Dec 2013"
+__date__ = "Oct 2014"
 
 from gsutils import GsList
+from rixsdata_plotter import RixsDataPlotter
 
 class GsList2D(GsList):
     """ 2D version of GsList """
@@ -63,3 +64,6 @@ class GsListRixs(GsList2D):
         p = RixsDataPlotter(self.gs[imap])
         p.plot()
         return
+
+if __name__ == '__main__':
+    pass
