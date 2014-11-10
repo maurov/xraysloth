@@ -83,7 +83,8 @@ def acenx(n, asx=25., agx=5.):
 class RowlandCircle(object):
     """ Rowland circle geometry """
 
-    def __init__(self, Rm=1000., theta0=0., alpha=0., aL=0., d=None, inCircle=False, showInfos=True):
+    def __init__(self, Rm=1000., theta0=0., alpha=0., aL=0., d=None,\
+                 inCircle=False, useCm=False, showInfos=True):
         """Rowland circle geometry
 
         Parameters
@@ -96,6 +97,8 @@ class RowlandCircle(object):
         d : crystal d-spacing in \AA (this is simply an utility to convert theta to energy - in eV)
         inCircle : sample inside the Rowland cicle (dispersive)
                    [False] otherwise give the y offset
+        useCm : boolean, False
+                use cm instead of mm (as in SHADOW)
         showInfos : boolean [True] print extra informations (sometimes useful)
         
         Returns
@@ -110,6 +113,10 @@ class RowlandCircle(object):
         self.showInfos
         
         """
+        if useCm:
+            self.uDist = 'cm'
+        else:
+            self.uDist = 'mm'
         self.Rm = Rm
         self.aL = aL
         self.Rs = 0.
@@ -159,12 +166,13 @@ class RowlandCircle(object):
             self.Rs = ( 2. * math.sin(self.rtheta0) * self.p * self.q ) / (self.p + self.q)
         if self.showInfos:
             print("INFO: theta0 = {0} deg".format(self.theta0))
-            print("INFO: ene0 = {0} eV".format(self.getEne()))
-            print("INFO: d = {0} \AA".format(self.d))
-            print("INFO: p = {0} mm".format(self.p))
-            print("INFO: q = {0} mm".format(self.q))
-            print("INFO: Rs = {0} mm".format(self.Rs))
-            print("INFO: aL = {0} mm".format(self.aL))
+            if self.d is not None:
+                print("INFO: ene0 = {0} eV".format(self.getEne()))
+                print("INFO: d = {0} \AA".format(self.d))
+            print("INFO: p = {0} {1}".format(self.p, self.uDist))
+            print("INFO: q = {0} {1}".format(self.q, self.uDist))
+            print("INFO: Rs = {0} {1}".format(self.Rs, self.uDist))
+            print("INFO: aL = {0} {1}".format(self.aL, self.uDist))
 
     def setEne0(self, ene0, d=None):
         """ set the central energy (eV) and relative Bragg angle """
