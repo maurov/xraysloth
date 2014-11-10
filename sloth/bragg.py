@@ -29,8 +29,8 @@ except:
 ### GLOBAL VARIABLES ###
 DEBUG = True
 HKL_MAX = 30 # maximum number of hkl index considered
-ALAT_SI = 5.431065 # Ang at 25C
-ALAT_GE = 5.6579060 # Ang at 25C
+SI_ALAT = 5.431065 # Ang at 25C
+GE_ALAT = 5.6579060 # Ang at 25C
 
 ### UTILS ###
 def ev2wlen(energy):
@@ -174,12 +174,12 @@ def findhkl(energy, thetamin=65., crystal='all'):
         _structure_factor(reversed(range(1, HKL_MAX, 2))) # all permutations of odd (h,k,l)
         _structure_factor(reversed(range(0, HKL_MAX, 2))) # all permutations of even (h,k,l)
     if crystal == 'Si':
-        _find_theta('Si', ALAT_SI)
+        _find_theta('Si', SI_ALAT)
     elif crystal == 'Ge':
-        _find_theta('Ge', ALAT_GE)
+        _find_theta('Ge', GE_ALAT)
     else:
-        _find_theta('Si', ALAT_SI)
-        _find_theta('Ge', ALAT_GE)
+        _find_theta('Si', SI_ALAT)
+        _find_theta('Ge', GE_ALAT)
 
 if __name__ == '__main__':
     pass
