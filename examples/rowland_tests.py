@@ -20,13 +20,16 @@ sys.path.append(_libDir)
 
 from rowland import cs_h, acenx, RcHoriz, RcVert
 
-ALAT_SI = 5.431065 # Ang at 25C
-ALAT_GE = 5.6579060 # Ang at 25C
-from bragg import d_cubic
-dSi111 = d_cubic(ALAT_SI, (1,1,1))
-dGe111 = d_cubic(ALAT_GE, (1,1,1))
-dSi220 = d_cubic(ALAT_SI, (2,2,0))
-dGe220 = d_cubic(ALAT_GE, (2,2,0))
+SI_ALAT = 5.431065 # Ang at 25C
+GE_ALAT = 5.6579060 # Ang at 25C
+SIO2_A = 4.913 # beta-quartz, hexagonal
+SIO2_C = 5.405
+from bragg import d_cubic, d_hexagonal
+dSi111 = d_cubic(SI_ALAT, (1,1,1))
+dGe111 = d_cubic(GE_ALAT, (1,1,1))
+dSi220 = d_cubic(SI_ALAT, (2,2,0))
+dGe220 = d_cubic(GE_ALAT, (2,2,0))
+dQz100 = d_hexagonal(SIO2_A, SIO2_C, (1,0,0))
 
 ### TESTS ###
 def testSagOff(Rm, theta0, aXoff, aL=100.):
