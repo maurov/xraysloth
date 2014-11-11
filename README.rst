@@ -73,37 +73,36 @@ How to install XOP and SHADOW3
 The following procedure has been successfully tested on Linux machines
 (Ubuntu 12.04 and Debian 6.0). Having superuser rights is not required
 ::
-
- export MYLOCAL=/path/to/your/local
- cd $MYLOCAL
- wget http://ftp.esrf.eu/pub/scisoft/xop2.3/xop2.3_Linux_20140616.tar.gz
- tar xzvf xop2.3_Linux_20140616.tar.gz
- export XOP_HOME=$MYLOCAL/xop2.3
- cd $MYLOCAL
- mkdir xop_extensions
- cd xop_extensions
- wget http://ftp.esrf.eu/pub/scisoft/xop2.3/shadowvui1.12_Linux_20140708.tar.gz
- tar xzvf shadowvui1.12_Linux_20140708.tar.gz
-  cd $MYLOCAL/xop2.3/extensions
- ln -s $MYLOCAL/xop_extensions/shadowvui shadowvui
- # IF YOU WANT TO UPDATE SHADOW3 TO THE LAST VERSION
- # cd shadow3
- # git pull
- # OR if this does not work:
- #    cd ..; rm -rf shadow3; 
- #    git clone git://git.epn-campus.eu/repositories/shadow3
- #    cd shadow3
- # make
- # make python
- export SHADOW3_HOME=$MYLOCAL/xop_extensions/shadowvui/shadow3
- export SHADOW3_BUILD=$SHADOW3_HOME/build/lib.linux-x86_64-2.7
- export LD_LIBRARY_PATH=$SHADOW3_HOME:$LD_LIBRARY_PATH
- export PYTHONPATH=$SHADOW3_BUILD:$PYTHONPATH
-
- # TIPS:
- # run shadow with 'xop shadowvui'
- # put all previous environment variables in .bashrc
- # sudo ln -s $MYLOCAL/xop2.3/xop /usr/local/bin/xop
+   export MYLOCAL=/path/to/your/local
+   cd $MYLOCAL
+   wget http://ftp.esrf.eu/pub/scisoft/xop2.3/xop2.3_Linux_20140616.tar.gz
+   tar xzvf xop2.3_Linux_20140616.tar.gz
+   export XOP_HOME=$MYLOCAL/xop2.3
+   cd $MYLOCAL
+   mkdir xop_extensions
+   cd xop_extensions
+   wget http://ftp.esrf.eu/pub/scisoft/xop2.3/shadowvui1.12_Linux_20140708.tar.gz
+   tar xzvf shadowvui1.12_Linux_20140708.tar.gz
+   cd $MYLOCAL/xop2.3/extensions
+   ln -s $MYLOCAL/xop_extensions/shadowvui shadowvui
+   # IF YOU WANT TO UPDATE SHADOW3 TO THE LAST VERSION
+   # cd shadow3
+   # git pull
+   # OR if this does not work:
+   #    cd ..; rm -rf shadow3; 
+   #    git clone git://git.epn-campus.eu/repositories/shadow3
+   #    cd shadow3
+   # make
+   # make python
+   export SHADOW3_HOME=$MYLOCAL/xop_extensions/shadowvui/shadow3
+   export SHADOW3_BUILD=$SHADOW3_HOME/build/lib.linux-x86_64-2.7
+   export LD_LIBRARY_PATH=$SHADOW3_HOME:$LD_LIBRARY_PATH
+   export PYTHONPATH=$SHADOW3_BUILD:$PYTHONPATH
+   
+   # TIPS:
+   # run shadow with 'xop shadowvui'
+   # put all previous environment variables in .bashrc
+   # sudo ln -s $MYLOCAL/xop2.3/xop /usr/local/bin/xop
 
 How to install OASYS1 and friends
 ---------------------------------
@@ -120,11 +119,8 @@ Ubuntu 12.04 machine. Root (superuser) access is required for having a
 working Python 3.2 plus Qt environment. Apart this, everything is
 installed in a virtual environment.
 
-**STATUS** this procedure is not working yet! A segmentation fault is
- obtained when running ``python3 -m Orange.canvas``. A solution is
- under investigation...
-
 ::
+   
    # Python3, Qt and tools as system-wide packages (very difficult to build as user!)
    sudo apt-get install git python-virtualenv python-pip
    sudo apt-get install python3-sphinx python3-jinja2
@@ -151,6 +147,11 @@ installed in a virtual environment.
    git clone http://github.com/srio/Orange-XOPPY
    git clone https://github.com/lucarebuffi/Orange-Shadow
 
+**STATUS** this procedure is not working yet! A segmentation fault is
+ obtained when running ``python3 -m Orange.canvas``. A solution is
+ under investigation...
+
+   
 License
 -------
 
