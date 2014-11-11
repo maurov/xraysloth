@@ -1,42 +1,48 @@
 Sloth: slowly evolving utilities for x-ray spectroscopists
 ==========================================================
 
-.. _XRT : http://pythonhosted.org/xrt
-.. _CRYSTAL : https://github.com/srio/CRYSTAL
-.. _XOP : http://ftp.esrf.eu/pub/scisoft/xop2.3/
-.. _SHADOW3 : https://forge.epn-campus.eu/projects/shadow3
+.. _Numpy : http://www.numpy.org
+.. _Matplotlib : http://matplotlib.org
 .. _PyMca : https://github.com/vasole/pymca
 .. _Larch : https://github.com/xraypy/xraylarch
 .. _XrayLib : https://github.com/tschoonj/xraylib/wiki
-.. _Numpy : http://www.numpy.org/
+.. _XOP : http://ftp.esrf.eu/pub/scisoft/xop2.3/
+.. _SHADOW3 : https://forge.epn-campus.eu/projects/shadow3
+.. _CRYSTAL : https://github.com/srio/CRYSTAL
+.. _OASYS1: https://github.com/lucarebuffi/OASYS1
+.. _Orange-Shadow: https://github.com/lucarebuffi/Orange-Shadow
+.. _Orange-XOPPY: https://github.com/srio/Orange-XOPPY
+.. _XRT : http://pythonhosted.org/xrt
 
 This repository contains (simple) utilities for x-ray spectroscopists,
-mainly oriented to instrumentation.
+oriented to x-ray optics and data reduction/analysis for XAS/XES/RIXS
+techniques.
 
-There is no build/install script (``setup.py``). To use these
+There is no build/install script (``setup.py``) because at the moment
+these utilities are rather independent from each other. To use these
 utilities in your scripts, simply clone the GIT repository to
 ``somewhere`` and then append it to your PYTHONPATH ::
 
   import sys
   sys.path.append('path_to_somewhere')
 
-**NOTE** These scripts are not part of a full-fledged package but
-rather perform as a partial random snapshot of daily research in x-ray
-instrumentation and still-to-implement ideas (mainly due to lack of
-time). Feel free to use/hack and drop me a line if you find them
-useful.
+**NOTE** These scripts perform as a partial random snapshot of daily
+research in x-ray instrumentation and still-to-implement ideas (mainly
+due to lack of time). Feel free to use/hack them and do not hesitate
+to drop me a line if you find them useful.
 
-Documentation will reside in the ``docs`` directory, but the best is
-to read directly the ``__doc__`` strings in the source code. The
-Python files sometimes have a test/example included in the
-``__main__`` block or referring to the ``examples`` directory where
-each script has its own examples/tests (TODO unit tests).
+Documentation will reside in the ``docs`` directory at a certain
+point. Meanwhile, the best is to read directly the ``__doc__`` strings
+in the source code. The Python files sometimes have a test/example
+included in the ``__main__`` block or referring to the ``examples``
+directory where each script has its own examples/tests (TODO unit
+tests).
 
-The functionality of the scripts can be easily converted to Larch
+The functionality of the scripts can be easily converted to Larch_
 plugins in order to have access via the Domain Specific Language (DSL)
 of Larch. If you need it, just drop me a line! Some functions are
-already exposed to Larch.  To load the plugins into Larch: `here
-<http://xraypy.github.io/xraylarch/devel/index.html#plugins>`_.
+already exposed to Larch.  To load the plugins into Larch is described
+`here <http://xraypy.github.io/xraylarch/devel/index.html#plugins>`_.
 
 To report bugs, enhancements or comments, please use the
 `Issues <https://github.com/maurov/xraysloth/issues>`_
@@ -47,6 +53,7 @@ Requirements
 The following Python modules are required to fully run the scripts:
 
 * Numpy_
+* Matplotlib_
 * PyMca_
 * Larch_
 * XOP_
@@ -54,8 +61,10 @@ The following Python modules are required to fully run the scripts:
 * XRT_
 * XrayLib_
 
-Apart from Numpy and PyMca that are used widely, other modules are
-used partially and are mainly recommended, not mandatory.
+**NOTE** Numpy, Matplotlib and PyMca are used widely and are
+mandatory. The other modules are recommended, not mandatory. They are
+used only partially in some scripts and may result not required
+depending on your specific application.
 
 How to install XOP and SHADOW3
 ------------------------------
@@ -99,7 +108,7 @@ The following procedure has been successfully tested on Linux machines
 License
 -------
 
-Copyright (c) 2014, Mauro Rovezzi
+Copyright (c) 2011-2014, Mauro Rovezzi
 
 All rights reserved.
 
