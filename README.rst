@@ -10,6 +10,7 @@ Sloth: slowly evolving utilities for x-ray spectroscopists
 .. _SHADOW3 : https://forge.epn-campus.eu/projects/shadow3
 .. _CRYSTAL : https://github.com/srio/CRYSTAL
 .. _OASYS1: https://github.com/lucarebuffi/OASYS1
+.. _Orange3 : https://github.com/biolab/orange3
 .. _Orange-Shadow: https://github.com/lucarebuffi/Orange-Shadow
 .. _Orange-XOPPY: https://github.com/srio/Orange-XOPPY
 .. _XRT : http://pythonhosted.org/xrt
@@ -104,6 +105,51 @@ The following procedure has been successfully tested on Linux machines
  # put all previous environment variables in .bashrc
  # sudo ln -s $MYLOCAL/xop2.3/xop /usr/local/bin/xop
 
+How to install OASYS1 and friends
+---------------------------------
+
+OASYS1_ is the Python-based graphical user interface (GUI) for XOP_
+and SHADOW3_. It is currently under active development and will
+replace the previous IDL-based GUI. This software is a fork of
+Orange3_, a component-based data mining software. Orange-Shadow_ and
+Orange-XOPPY_ are developed within this framework. The drawback is the
+dependence on Python3 and big list of required packages with the very
+last versions... here a tentative *clean* installation procedure of
+OASYS1 and friends is given. The procedure has been tested on a Linux
+Ubuntu 12.04 machine. Root (superuser) access is required for having a
+working Python 3.2 plus Qt environment. Apart this, everything is
+installed in a virtual environment.
+
+**STATUS** this procedure is not working yet! A segmentation fault is
+ obtained when running ``python3 -m Orange.canvas``. A solution is
+ under investigation...
+
+::
+   # Python3, Qt and tools as system-wide packages (very difficult to build as user!)
+   sudo apt-get install git python-virtualenv python-pip
+   sudo apt-get install python3-sphinx python3-jinja2
+   sudo apt-get install python3-numpy python3-scipy
+   sudo apt-get install python3-pyqt4 python-qt4-dev python3-sip-dev libqt4-dev
+   sudo apt-get install ipython3 ipython3-qtconsole
+
+   # work in an local directory and virtual Python3 environment
+   export MYLOCAL=/path/to/your/local
+   cd $MYLOCAL
+   virtualenv -p python3 --system-site-packages --distribute Orange3
+   cd Orange3
+   source bin/activate
+   git clone https://github.com/lucarebuffi/OASYS1
+   # manually install/upgrade requirements (as in OASYS1/requirements.txt)
+   pip install -U numpy scipy scikit-learn
+   pip install -U bottlechest
+   pip install -U nose mock
+   # OASYS1
+   cd OASYS1
+   python setup.py develop
+   # check successful install by ipython3 --gui=qt then import Orange without errors
+   cd $MYLOCAL/Orange3
+   git clone http://github.com/srio/Orange-XOPPY
+   git clone https://github.com/lucarebuffi/Orange-Shadow
 
 License
 -------
