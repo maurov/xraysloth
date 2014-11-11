@@ -121,7 +121,7 @@ installed in a virtual environment.
 
 ::
    
-   # Python3, Qt and tools as system-wide packages (very difficult to build as user!)
+   # Python3, Qt and tools as system-wide packages
    sudo apt-get install git python-virtualenv python-pip
    sudo apt-get install python3-sphinx python3-jinja2
    sudo apt-get install python3-numpy python3-scipy
@@ -131,18 +131,24 @@ installed in a virtual environment.
    # work in an local directory and virtual Python3 environment
    export MYLOCAL=/path/to/your/local
    cd $MYLOCAL
-   virtualenv -p python3 --system-site-packages --distribute Orange3
-   cd Orange3
+   virtualenv -p python3 --system-site-packages --distribute Oasys
+   cd Oasys
    source bin/activate
-   git clone https://github.com/lucarebuffi/OASYS1
-   # manually install/upgrade requirements (as in OASYS1/requirements.txt)
-   pip install -U numpy scipy scikit-learn
-   pip install -U bottlechest
-   pip install -U nose mock
+
+   # manually install/upgrade requirements
+   # (as in OASYS1/requirements.txt)
+   pip install -U numpy==1.9.1 scipy==0.14.0 scikit-learn==0.13
+   pip install -U bottlechest==0.7.0
+   pip install -U nose==1.2.1 mock==1.0.1
+   # (as in OASYS1/requirements-gui.txt)
+   pip install -U qt-graph-helpers==0.1.3 pyqtgraph==0.9.8
+
    # OASYS1
+   git clone https://github.com/lucarebuffi/OASYS1
    cd OASYS1
-   python setup.py develop
-   # check successful install by ipython3 --gui=qt then import Orange without errors
+   python setup.py build
+   python setup.py install
+
    cd $MYLOCAL/Orange3
    git clone http://github.com/srio/Orange-XOPPY
    git clone https://github.com/lucarebuffi/Orange-Shadow
