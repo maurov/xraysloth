@@ -117,7 +117,9 @@ class FluoSource(ShadowLib.Source):
         self.WZSOU = wzsou
         self.FSOURCE_DEPTH = fsource_depth
 
-    def set_angle_distr(self, fdistr=1, cone_min=0.0, cone_max=0.1, hdiv_pos=0.0, hdiv_neg=0.0, vdiv_pos=6E-5, vdiv_neg=6E-5):
+    def set_angle_distr(self, fdistr=1,\
+                        cone_min=0.0, cone_max=0.1,\
+                        hdiv_pos=0.0, hdiv_neg=0.0, vdiv_pos=6E-5, vdiv_neg=6E-5):
         """angle distribution
 
         Parameters
@@ -134,13 +136,13 @@ class FluoSource(ShadowLib.Source):
         cone_max : float, 0.1
                    for fdistr=5; maximum half divergence [rad]
         hdiv_pos : float, 0.0
-                   horizontal divergence in +X [radians]
+                   horizontal divergence in +X (right side mirror) [rad]
         hdiv_neg : float, 0.0
-                   horizontal divergence in -X [radians]
+                   horizontal divergence in -X (left side mirror) [rad]
         vdiv_pos : float, 6E-5
-                   vertical divergence in +Z [radians]
+                   vertical divergence in +Z (upstream mirror) [rad]
         vdiv_neg : float, 6E-5
-                   vertical divergence in -Z [radians]
+                   vertical divergence in -Z (downstream mirror) [rad]
 
         """
         self.FDISTR = fdistr
@@ -150,6 +152,15 @@ class FluoSource(ShadowLib.Source):
         self.HDIV2 = hdiv_neg
         self.VDIV1 = vdiv_pos
         self.VDIV2 = vdiv_neg
+
+    def get_div(self):
+        """return a tuple with current source divergence"""
+        if self.FDISTR == 1:
+            return (self.HDIV1, self.HDIV2, self.VDIV1, self.VDIV2)
+        elif self.FDISTR == 5:
+            return (self.CONE_MIN, self.CONE_MAX)
+        else:
+            return None
 
     def set_energy_distr(self, f_color=3, f_phot=0, phn=[5.0E3, 10.0E3], rln=[0.0]):
         """photon energy distribution
@@ -289,8 +300,13 @@ class ShadowSpectro1(object):
         """run SHADOW/source and SHADOW/trace"""
         if nrays is not None: self.src.set_rays(nrays)
         self.beam.genSource(self.src)
+        self.beam.write('begin.dat')
+        self.oe1.write('start.01')
         self.beam.traceOE(self.oe1, 1)
+        self.oe1.write('end.01')
+        self.det.write('start.02')
         self.beam.traceOE(self.det, 2)
+        self.det.write('end.02')
 
     def runHisto1EneAndPyMcaFit(self, **kws):
         """generate energy histogram and fit with PyMca"""
@@ -711,10 +727,11 @@ class ShadowSpectro1(object):
                 print(sys.exc_info()[1]) 
                 pass
 
-    def move_mirr(self, move=False,
-                  offXYZ=np.array([0., 0., 0.]),
-                  rotXYZ=np.array([0., 0., 0.])):
-        """ move mirror
+    def move_mirr(self, move=False,\
+                  offXYZ=np.array([0., 0., 0.]),\
+                  rotXYZ=np.array([0., 0., 0.]),\
+                  srcDiv=None):
+        """mirror movement
 
         Parameters
         ----------
@@ -724,7 +741,18 @@ class ShadowSpectro1(object):
                  offsets in mirr reference frame [cm]
         rotXYZ : array of floats, [0., 0., 0.]
                  rotations in mirr reference frame [deg, positive clockwise]
+        srcDiv : tuple of floats, None
+                 to update the source divergence; for flat source,
+                 FDISTR==1, srcDiv=(hdiv_pos, hdiv_neg, vdiv_pos,
+                 vdiv_neg)=(HDIV1, HDIV2, VDIV1, VDIV2)
+
         """
+        # update source divergence
+        if (srcDiv is not None) and (self.src.FDISTR == 1):
+            self.src.HDIV1 = srcDiv[0] 
+            self.src.HDIV2 = srcDiv[1] 
+            self.src.VDIV1 = srcDiv[2] 
+            self.src.VDIV2 = srcDiv[3] 
         if move:
             self.oe1.F_MOVE = 1
             self.oe1.OFFX = offXYZ[0]
@@ -732,28 +760,36 @@ class ShadowSpectro1(object):
             self.oe1.OFFZ = offXYZ[2]
             self.oe1.X_ROT = rotXYZ[0] 
             self.oe1.Y_ROT = rotXYZ[1] 
-            self.oe1.Z_ROT = rotXYZ[2] 
+            self.oe1.Z_ROT = rotXYZ[2]
         else:
             self.oe1.F_MOVE = 0
-            return
+        if self.rc.showInfos:
+            print(' --- mirror movement infos ---')
+            print('OE1: F_MOVE = {0}'.format(self.oe1.F_MOVE))
+            print('OE1: OFFX   = {0}'.format(self.oe1.OFFX))
+            print('OE1: OFFY   = {0}'.format(self.oe1.OFFY))
+            print('OE1: OFFZ   = {0}'.format(self.oe1.OFFZ))
+            print('OE1: X_ROT  = {0}'.format(self.oe1.X_ROT))
+            print('OE1: Y_ROT  = {0}'.format(self.oe1.Y_ROT))
+            print('OE1: Z_ROT  = {0}'.format(self.oe1.Z_ROT))
+            print('SRC: HDIV1  = {0}'.format(self.src.HDIV1)) 
+            print('SRC: HDIV2  = {0}'.format(self.src.HDIV2)) 
+            print('SRC: VDIV1  = {0}'.format(self.src.VDIV1)) 
+            print('SRC: VDIV2  = {0}'.format(self.src.VDIV2)) 
 
-    def move_analyser(self, aXoff):
-        """ move analyser by aXoff in cm """
+    def move_analyser(self, aXoff, **kws):
+        """move analyser center to another Rowland circle by aXoff in cm
+
+        Parameters
+        ----------
+        aXoff : float
+                analyser center offset in X [cm]
+        """
         _offXYZ = self.rc.getAnaPos(aXoff) - self.rc.getAnaPos(0.)
         _chi = self.rc.getChi(aXoff)
-        self.move_mirr(move=True, offXYZ=_offXYZ, rotXYZ=np.array([0., _chi, 0.]))
-
-        #_dv_pos
-        #_dv_neg
-        #_dh_pos
-        #_dh_neg
+        self.move_mirr(move=True, offXYZ=_offXYZ, rotXYZ=np.array([0., _chi, 0.]), **kws)
         
-        # self.src.VDIV1 += _dv_pos
-        # self.src.VDIV2 -= _dv_neg
-        # self.src.HDIV1 += _dh_pos
-        # self.src.HDIV2 -= _dh_neg
-        
-        self.run()
+        #self.run()
     
     def move_theta(self, theta0, dth=[0.1, 0.1], deltaE=[None, None]):
         """from a starting config, go to a given Bragg angle
@@ -793,20 +829,20 @@ class ShadowSpectro1(object):
             else:
                 self.src.PH2 = ene0 + abs(deltaE[1])
             # adjust source divergence to new theta0 (assumig flat)
-            # _hlp = abs(self.oe1.RLEN1)  # half-length pos
-            # _hln = abs(self.oe1.RLEN2)  # half-length neg
-            # _hwp = abs(self.oe1.RWIDX1) # half-width pos
-            # _hwn = abs(self.oe1.RWIDX2) # half-width neg
-            # _rth0 = self.rc.rtheta0
-            # _pcm = self.rc.p # cm
-            # _vdiv_pos = math.atan( (_hlp * math.sin(_rth0)) / (_pcm + _hlp * math.cos(_rth0) ) )
-            # _vdiv_neg = math.atan( (_hln * math.sin(_rth0)) / (_pcm - _hln * math.cos(_rth0) ) )
-            # _hdiv_pos = math.atan( (_hwp / _pcm) )
-            # _hdiv_neg = math.atan( (_hwn / _pcm) )
-            # self.src.VDIV1 = _vdiv_pos #* 2.5 # empirical!
-            # self.src.VDIV2 = _vdiv_neg #* 2.5 # empirical!
-            # self.src.HDIV1 = _hdiv_pos #* 2.5 # empirical!
-            # self.src.HDIV2 = _hdiv_neg #* 2.5 # empirical!
+            _hlp = abs(self.oe1.RLEN1)  # half-length pos
+            _hln = abs(self.oe1.RLEN2)  # half-length neg
+            _hwp = abs(self.oe1.RWIDX1) # half-width pos
+            _hwn = abs(self.oe1.RWIDX2) # half-width neg
+            _rth0 = self.rc.rtheta0
+            _pcm = self.rc.p # cm
+            _vdiv_pos = math.atan( (_hlp * math.sin(_rth0)) / (_pcm + _hlp * math.cos(_rth0) ) )
+            _vdiv_neg = math.atan( (_hln * math.sin(_rth0)) / (_pcm - _hln * math.cos(_rth0) ) )
+            _hdiv_pos = math.atan( (_hwp / _pcm) )
+            _hdiv_neg = math.atan( (_hwn / _pcm) )
+            self.src.VDIV1 = _vdiv_pos * 1.1 # empirical!
+            self.src.VDIV2 = _vdiv_neg * 1.1 # empirical!
+            self.src.HDIV1 = _hdiv_pos * 1.1 # empirical!
+            self.src.HDIV2 = _hdiv_neg * 1.1 # empirical!
 
             # adjust analyser to new theta0
             self.oe1.T_SOURCE = self.rc.p # cm
@@ -814,8 +850,22 @@ class ShadowSpectro1(object):
             self.oe1.T_INCIDENCE = 90.0 - theta0
             self.oe1.T_REFLECTION = 90.0 - theta0
             # adjust detector ...
-            
-            self.run()
+
+            if self.rc.showInfos:
+                print(' --- theta movement infos --- ')
+                print('OE1: PHOT_CENT    = {0}'.format(self.oe1.PHOT_CENT   )) 
+                print('SRC: PH1          = {0}'.format(self.src.PH1         )) 
+                print('SRC: PH2          = {0}'.format(self.src.PH2         )) 
+                print('SRC: VDIV1        = {0}'.format(self.src.VDIV1       )) 
+                print('SRC: VDIV2        = {0}'.format(self.src.VDIV2       )) 
+                print('SRC: HDIV1        = {0}'.format(self.src.HDIV1       )) 
+                print('SRC: HDIV2        = {0}'.format(self.src.HDIV2       )) 
+                print('OE1: T_SOURCE     = {0}'.format(self.oe1.T_SOURCE    )) 
+                print('OE1: T_IMAGE      = {0}'.format(self.oe1.T_IMAGE     )) 
+                print('OE1: T_INCIDENCE  = {0}'.format(self.oe1.T_INCIDENCE )) 
+                print('OE1: T_REFLECTION = {0}'.format(self.oe1.T_REFLECTION)) 
+                
+            #self.run()
 
 if __name__ == '__main__':
     pass
