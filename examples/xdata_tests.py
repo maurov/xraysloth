@@ -18,7 +18,8 @@ import sys
 from __init__ import _libDir
 sys.path.append(_libDir)
 
-from xdata import ene_res, fluo_width
+from xdata import ELEMENTS, SHELLS, LINES_DICT, LINES_K, LINES_L, LINES_M, LINES, TRANSITIONS
+from xdata import ene_res, fluo_width, find_line, mapLine2Trans
 
 ### TESTS/EXAMPLES
 def testEresLinesKLM(emin, emax):
@@ -49,7 +50,8 @@ def testFluoWidth(elem='Au', lines=['LB6', 'LB4', 'LB1', 'LB2', 'LB3', 'LB5']):
     """
     for line in lines:
         print("{0} {1} : {2:>.4f} eV".format(elem, line, fluo_width(elem, line)))
-    
+
 if __name__ == '__main__':
-    pass
+    #pass
     #dees = testEresLinesKLM(2000, 5000)
+    find_line(1500., 5500., lines=LINES_DICT['L2'], outDict=False)

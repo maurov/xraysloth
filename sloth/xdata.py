@@ -51,16 +51,16 @@ except:
     pass
     
 #GLOBAL VARIABLES
-ELEMENTS = ('H', 'He',
-            'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne',
-            'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar',
-            'K', 'Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn',
-            'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr',
-            'Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd',
-            'In', 'Sn', 'Sb', 'Te', 'I', 'Xe',
-            'Cs', 'Ba', 'La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy',
-            'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg',
-            'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn',
+ELEMENTS = ('H', 'He',\
+            'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne',\
+            'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar',\
+            'K', 'Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn',\
+            'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr',\
+            'Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd',\
+            'In', 'Sn', 'Sb', 'Te', 'I', 'Xe',\
+            'Cs', 'Ba', 'La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy',\
+            'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg',\
+            'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn',\
             'Fr', 'Ra', 'Ac', 'Th', 'Pa', 'U', 'Np', 'Pu', 'Am')
 
 # SHELLS
@@ -77,33 +77,38 @@ ELEMENTS = ('H', 'He',
 # 4, 5 = d (3/2, 5/2)
 # 6, 7 = f 
 
-SHELLS = ('K',
-          'L1', 'L2', 'L3',
-          'M1', 'M2', 'M3', 'M4', 'M5',
-          'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7',
-          'O1', 'O2', 'O3', 'O4', 'O5',
+SHELLS = ('K',\
+          'L1', 'L2', 'L3',\
+          'M1', 'M2', 'M3', 'M4', 'M5',\
+          'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7',\
+          'O1', 'O2', 'O3', 'O4', 'O5',\
           'P1', 'P2', 'P3')
 
-LINES = ('KA1', 'KA2', 'KA3',
-         'KB1', 'KB2', 'KB3', 'KB4', 'KB5',
-         'LA1', 'LA2',
-         'LB1', 'LB2', 'LB3', 'LB4', 'LB5', 'LB6',
-         'LG1', 'LG2', 'LG3', 'LG6',
-         'LL', 'LE',
-         'MA1', 'MA2',
-         'MB',
-         'MG')
+# dictionary of lines
 # Ln in Hepheastus is LE in Xraylib
 # Mz in Hepheastus not in Xraylib (the single transitions yes!)
+LINES_DICT = {'K' : ('KA1', 'KA2', 'KA3',\
+                     'KB1', 'KB2', 'KB3', 'KB4', 'KB5'),
+              'L1' : ('LB3', 'LB4', 'LG2', 'LG3'),
+              'L2' : ('LB1', 'LG1', 'LG6', 'LE'),
+              'L3' : ('LA1', 'LA2', 'LB2', 'LB5', 'LB6', 'LL'),
+              'M3' : ('MG'),
+              'M4' : ('MB'),
+              'M5' : ('MA1', 'MA2')}
 
-TRANSITIONS = ('KL3', 'KL2', 'KL1',
-               'KM3', 'KN3', 'KM2', 'KN5', 'KM5',
-               'L3M5', 'L3M4',
-               'L2M4', 'L3N5', 'L1M3', 'L1M2', 'L3O45', 'L3N1',
-               'L2N4', 'L1N2', 'L1N3', 'L2O4',
-               'L3M1', 'L2M1',
-               'M5N7', 'M5N6',
-               'M4N6',
+LINES_K = LINES_DICT['K']
+LINES_L = LINES_DICT['L1'] + LINES_DICT['L2'] + LINES_DICT['L3']
+LINES_M = LINES_DICT['M3'] + LINES_DICT['M4'] + LINES_DICT['M5']
+LINES = LINES_K + LINES_L + LINES_M
+
+TRANSITIONS = ('KL3', 'KL2', 'KL1',\
+               'KM3', 'KN3', 'KM2', 'KN5', 'KM5',\
+               'L3M5', 'L3M4',\
+               'L2M4', 'L3N5', 'L1M3', 'L1M2', 'L3O45', 'L3N1',\
+               'L2N4', 'L1N2', 'L1N3', 'L2O4',\
+               'L3M1', 'L2M1',\
+               'M5N7', 'M5N6',\
+               'M4N6',\
                'M3N5')
 
 # INDEX DICTIONARY: KEYS=LINES : VALUES=(LINES[IDX], SHELLS[IDX_XAS], SHELLS[IDX_XES])
@@ -157,8 +162,30 @@ def find_edge(emin, emax, shells=None):
             if ((edge >= emin) and (edge <= emax)):
                 print('{0} \t {1} \t {2:>.2f} eV'.format(el, sh, edge))
 
-def find_line(emin, emax, elements=None, lines=None):
-    """ return the line energy in a given energy range [emin,emax] (eV)"""
+def find_line(emin, emax, elements=None, lines=None, outDict=False):
+    """ return the line energy in a given energy range [emin,emax] (eV)
+
+    Parameters
+    ----------
+
+    emin, emax : float
+                 [minimum, maximum] energy range (eV)
+    elements : list of str
+               list of elements, [ELEMENTS (all)] 
+    lines : list of str
+            list of lines, [LINES (all)]
+    outDict : boolean, False
+              returns a dictionary instead of printing to screen with keywords:
+              _out['el'] : element symbol, list of strs
+              _out['eln] : element number, list of ints
+              _out['ln'] : line, list of strs
+              _out['en'] : energy eV, list of floats
+              _out['w']  : width eV, list of floats
+
+    Returns
+    -------
+    None, prints to screen the results (unless outDict given)
+    """
     if HAS_XRAYLIB is False:
         print('ERROR: xraylib required')
         return 0
@@ -166,12 +193,34 @@ def find_line(emin, emax, elements=None, lines=None):
         lines = LINES
     if elements is None:
         elements = ELEMENTS
+    _out = {}
+    _out['el'] = []
+    _out['eln'] = []
+    _out['ln'] = []
+    _out['en'] = []
+    _out['w'] = []
     for el in elements:
+        eln = xl.SymbolToAtomicNumber(el)
         for ln in lines:
-            line = xl.LineEnergy(xl.SymbolToAtomicNumber(el), getattr(xl, ln+'_LINE'))*1000
+            try:
+                line = xl.LineEnergy(eln, getattr(xl, ln+'_LINE'))*1000
+            except:
+                print('{0}.{1} none'.format(el, ln))
+                continue
             if ((line >= emin) and (line <= emax)):
-                print('{0} \t {1} \t {2:>.2f} \t eV'.format(el, ln, line))
-
+                w = fluo_width(elem=el, line=ln)
+                _out['el'].append(el)
+                _out['eln'].append(eln)
+                _out['ln'].append(ln) 
+                _out['en'].append(line)
+                _out['w'].append(w)
+    # returns
+    if outDict:
+        return _out
+    else:
+        for eln, el, ln, line, w in zip(_out['eln'], _out['el'], _out['ln'], _out['en'], _out['w']):
+            print('{0} \t {1} \t {2} \t {3:>.2f} \t {4:>.2f}'.format(eln, el, ln, line, w))
+                
 def ene_res(emin, emax, shells=['K']):
     """ used in spectro.py """
     if HAS_XRAYLIB is False:
@@ -206,9 +255,12 @@ def fluo_width(elem=None, line=None):
         return 0
     else:
         ln = mapLine2Trans(line)
-        lw_xas = xl.AtomicLevelWidth(xl.SymbolToAtomicNumber(elem), getattr(xl, ln[2]+'_SHELL'))*1000
-        lw_xes = xl.AtomicLevelWidth(xl.SymbolToAtomicNumber(elem), getattr(xl, ln[3]+'_SHELL'))*1000
-        return lw_xas + lw_xes
+        try:
+            lw_xas = xl.AtomicLevelWidth(xl.SymbolToAtomicNumber(elem), getattr(xl, ln[2]+'_SHELL'))*1000
+            lw_xes = xl.AtomicLevelWidth(xl.SymbolToAtomicNumber(elem), getattr(xl, ln[3]+'_SHELL'))*1000
+            return lw_xas + lw_xes
+        except:
+            return 0
 
 ### LARCH-BASED FUNCTIONS ###
 def _core_width(element=None, edge=None):
