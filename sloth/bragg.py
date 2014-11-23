@@ -27,10 +27,14 @@ except:
     HC = 1.2398418743309972e-06 # eV * m
 
 ### GLOBAL VARIABLES ###
-DEBUG = True
 HKL_MAX = 30 # maximum number of hkl index considered
 SI_ALAT = 5.431065 # Ang at 25C
 GE_ALAT = 5.6579060 # Ang at 25C
+INSB_ALAT = 6.48 # cubic
+SIO2_A = 4.913 # beta-quartz, hexagonal
+SIO2_C = 5.405
+
+DEBUG = True
 
 ### UTILS ###
 def ev2wlen(energy):

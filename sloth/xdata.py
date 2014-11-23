@@ -92,8 +92,8 @@ LINES_DICT = {'K' : ('KA1', 'KA2', 'KA3',\
               'L1' : ('LB3', 'LB4', 'LG2', 'LG3'),
               'L2' : ('LB1', 'LG1', 'LG6', 'LE'),
               'L3' : ('LA1', 'LA2', 'LB2', 'LB5', 'LB6', 'LL'),
-              'M3' : ('MG'),
-              'M4' : ('MB'),
+              'M3' : ('MG',),
+              'M4' : ('MB',),
               'M5' : ('MA1', 'MA2')}
 
 LINES_K = LINES_DICT['K']
