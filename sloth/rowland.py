@@ -57,7 +57,8 @@ from rotmatrix import rotate
 
 ### GLOBAL VARIABLES ###
 HC = 1.2398418743309972e-06 # eV * m
-ED0 = 1e-4 # minimum energy step (eV) considered =0 
+ED0 = 1e-4 # minimum energy step (eV) considered as 0 
+AZ0 = 1e-4 # minimum Z step (mm) considered as 0
 
 ### UTILITIES ###
 def cs_h(c, R):
@@ -165,14 +166,14 @@ class RowlandCircle(object):
             print('WARNING: sagittal focusing generic (CHECK FORMULA!)')
             self.Rs = ( 2. * math.sin(self.rtheta0) * self.p * self.q ) / (self.p + self.q)
         if self.showInfos:
-            print("INFO: theta0 = {0} deg".format(self.theta0))
+            print("INFO: theta0 = {0:.3f} deg".format(self.theta0))
             if self.d is not None:
-                print("INFO: ene0 = {0} eV".format(self.getEne()))
-                print("INFO: d = {0} \AA".format(self.d))
-            print("INFO: p = {0} {1}".format(self.p, self.uDist))
-            print("INFO: q = {0} {1}".format(self.q, self.uDist))
-            print("INFO: Rs = {0} {1}".format(self.Rs, self.uDist))
-            print("INFO: aL = {0} {1}".format(self.aL, self.uDist))
+                print("INFO: ene0 = {0:.2f} eV".format(self.getEne()))
+                print("INFO: d = {0:.3f} \AA".format(self.d))
+            print("INFO: p = {0:.3f} {1}".format(self.p, self.uDist))
+            print("INFO: q = {0:.3f} {1}".format(self.q, self.uDist))
+            print("INFO: Rs = {0:.3f} {1}".format(self.Rs, self.uDist))
+            print("INFO: aL = {0:.3f} {1}".format(self.aL, self.uDist))
 
     def setEne0(self, ene0, d=None):
         """ set the central energy (eV) and relative Bragg angle """
@@ -220,7 +221,7 @@ class RowlandCircle(object):
         if abs(eDelta) <= ED0:
             return 0
         ene = self.getEne(theta=self.rtheta0, isDeg=False)
-        return -1 * ( eDelta / ene ) / math.tan(self.rtheta0)
+        return -1 * ( eDelta / ene ) * math.tan(self.rtheta0)
             
     def getChi(self, aXoff, Rs=None, aL=None, inDeg=True):
         """ get \chi angle in sagittal focusing """
@@ -266,8 +267,33 @@ class RowlandCircle(object):
             raise NameError("give d-spacing")
         if Rm is None:
             Rm = self.Rm
-        dth = self.getDth(eDelta)
-        return 2 * Rm * math.sin(rtheta0) * math.tan(dth)
+        _dth = self.getDth(eDelta)
+        if self.showInfos:
+            print('INFO: dth = {0:.1f} urad ({1:.5f} deg)'.format(_dth*1e6, math.degrees(_dth)))
+            print('INFO: daz [tan(dth) ~ dth] = {0}'.format(_dth * 2 * Rm * math.sin(rtheta0) ))
+            print('INFO: daz [tan(dth) ~ dth and sin(th) ~ 1 = {0}'.format(_dth * 2 * Rm) )
+        return 2 * Rm * math.sin(rtheta0) * math.tan(_dth)
+
+    def getEneOff(self, aZoff, rtheta0=None, d=None, Rm=None):
+        """ get analyser delta E for a given Z offset """
+        if abs(aZoff) <= AZ0:
+            return 0.
+        if rtheta0 is None:
+            rtheta0 = self.rtheta0
+        if d is None:
+            d = self.d
+        if d is None:
+            raise NameError("give d-spacing")
+        if Rm is None:
+            Rm = self.Rm
+        #
+        _dth = math.atan( aZoff /  (2 * Rm * math.sin(rtheta0)) )
+        if self.showInfos:
+            print('INFO: dth = {0:.1f} urad ({1:.5f} deg)'.format(_dth*1e6, math.degrees(_dth)))
+        _ene = self.getEne(theta=rtheta0, d=d, isDeg=False)
+        _de = _ene * _dth / math.tan(rtheta0)
+        return _de
+
             
 class RcVert(RowlandCircle):
     """ Rowland circle vertical frame: sample-detector on XZ plane along Z axis """
