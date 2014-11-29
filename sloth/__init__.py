@@ -20,4 +20,11 @@ __version__ = "0.0.1"
 __status__ = "work in progress"
 __date__ = "Sept 2014"
 
+import os, sys
+_libDir = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(_libDir)
+
 #__all__ = ['a', 'b', 'c']
+
+if __name__ == '__main__':
+    pass
