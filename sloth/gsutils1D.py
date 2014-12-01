@@ -294,19 +294,22 @@ class GsList1D(GsList):
         if (HAS_PYMCA and ( not self._inlarch )):
             if not hasattr(self, 'pw'):
                 self.pw = ScanWindow.ScanWindow()
-                if title:
-                    self.pw.setGraphTitle(title)
-                if xlabel:
-                    self.pw.setGraphXTitle(xlabel)
-                if ylabel:
-                    self.pw.setGraphYTitle(ylabel)
-                if (xmin and xmax):
-                    self.pw.setGraphXLimits(xmin, xmax)
-                if (ymin and ymax):
-                    self.pw.setGraphYLimits(ymin, ymax)
                 # geometry good for >1280x800 resolution
                 self.pw.setGeometry(50, 50, 700, 700)
                 self.pw.show()
+            if title:
+                self.pw.setGraphTitle(title)
+            if xlabel:
+                self.pw.setGraphXTitle(xlabel)
+            if ylabel:
+                self.pw.setGraphYTitle(ylabel)
+            if (xmin and xmax):
+                self.pw.setGraphXLimits(xmin, xmax)
+            if (ymin and ymax):
+                print(ymin, ymax)
+                self.pw.setGraphYLimits(ymin, ymax)
+            # force replot
+            self.pw.replot()
         if sel == '*':
             print('Plotting all...')
             self.show()
