@@ -21,6 +21,31 @@ __version__ = "0.0.1"
 __status__ = "in progress"
 __date__ = "Aug 2014"
 
+### Files ###
+def cp_replace(grepfns, grepstr, rplstr, splitstr='_'):
+    """given a filenames search string, copy the files with replaced string
+
+    Parameters
+    ----------
+    grepfns : string
+              search string passed to glob to generate files list to
+              copy
+    grepstr : string
+              string to replace
+    rplstr : string
+             new string
+    splitstr : string, '_'
+               string used as separator
+    """
+    import glob
+    import subprocess
+    fns = glob.glob(grepfns)
+    for fn in fns:
+        _fn2 = [w.replace(grepstr, rplstr) for w in fn.split(splitstr)]
+        fn2 = splitstr.join(_fn2)
+        subprocess.call('cp {0} {1}'.format(fn, fn2), shell=True)
+        print(fn2)
+
 ### Numpy ###
 def imin(arr, check=False):
     """ index of minimum value """
