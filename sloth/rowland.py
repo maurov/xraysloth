@@ -242,7 +242,7 @@ class RowlandCircle(object):
         aXoff0 = aXoff - aL*math.sin(rchi)
         rchi0 = self.getChi(aXoff0, Rs=Rs, aL=0, inDeg=False) # this is equal to rchi!
         SagOff0 = cs_h(aXoff0*2, Rs)
-        SagOff = SagOff0 - aL*math.cos(rchi)
+        SagOff = SagOff0 - aL*math.cos(rchi) + aL
         if self.showInfos:
             _tmpl_ihead = "INFO: {0:=^10} {1:=^12} {2:=^13}"
             _tmpl_idata = "INFO: {0:^ 10.5f} {1:^ 12.5f} {2:^ 13.5f}"
@@ -274,6 +274,23 @@ class RowlandCircle(object):
             print('INFO: daz [tan(dth) ~ dth and sin(th) ~ 1 = {0}'.format(_dth * 2 * Rm) )
         return 2 * Rm * math.sin(rtheta0) * math.tan(_dth)
 
+    def getAyOff(self, eDelta, rtheta0=None, d=None, Rm=None):
+        """ get analyser Y offset for a given energy delta (eV) """
+        if abs(eDelta) <= ED0:
+            return 0.
+        if rtheta0 is None:
+            rtheta0 = self.rtheta0
+        if d is None:
+            d = self.d
+        if d is None:
+            raise NameError("give d-spacing")
+        if Rm is None:
+            Rm = self.Rm
+        _dth = self.getDth(eDelta)
+        if self.showInfos:
+            print('INFO: dth = {0:.1f} urad ({1:.5f} deg)'.format(_dth*1e6, math.degrees(_dth)))
+        return 2 * Rm * math.tan(rtheta0) * math.tan(_dth)
+        
     def getEneOff(self, aZoff, rtheta0=None, d=None, Rm=None):
         """ get analyser delta E for a given Z offset """
         if abs(aZoff) <= AZ0:

@@ -21,15 +21,16 @@ __date__ = "Dec 2014"
 # GLOBAL VARIABLES
 SLOTH_IPY_WELCOME = "Welcome to Sloth IPython console, version {0}\n".format(__version__)
 
-# Set the QT API to PyQt4
 import os, sys
+import numpy as np
+import math
 
 ### SLOTH ###
 from __init__ import _libDir
 sys.path.append(_libDir)
 from genericutils import ipythonAutoreload
 
-
+# Set the QT API to PyQt4
 HAS_PYSIDE = False
 if "PySide" in sys.modules:
     HAS_PYSIDE = True
