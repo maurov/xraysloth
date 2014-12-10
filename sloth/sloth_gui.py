@@ -25,21 +25,24 @@ from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from qt_widget_mpl import MplCanvas, MplWidget
 from qt_widget_ipy import IPyConsoleWidget
 
+### SLOTH ###
+from __init__ import _libDir
+sys.path.append(_libDir)
 
-uifile = "sloth.ui"
+uifile = os.path.join(_libDir, "sloth.ui")
 UiClass, BaseClass = uic.loadUiType(uifile)
 
-class XplotAppli(BaseClass, UiClass):
+class SlothMain(BaseClass, UiClass):
 
     def __init__(self, parent=None):
-        super(XplotAppli, self).__init__(parent)
+        super(SlothMain, self).__init__(parent)
         self.setupUi(self)
         self.actionExit.triggered.connect(self.close)
 
         layout_ipy = qt.QVBoxLayout(self.ipy_widget)
         layout_ipy.addWidget(IPyConsoleWidget())
-        layout_mpl = qt.QVBoxLayout(self.mpl_widget)
-        layout_mpl.addWidget(MplWidget())
+        #layout_mpl = qt.QVBoxLayout(self.mpl_widget)
+        #layout_mpl.addWidget(MplWidget())
 
         self._fname = None
         
@@ -50,6 +53,6 @@ class XplotAppli(BaseClass, UiClass):
         
 if __name__ == '__main__':
     app = qt.QApplication(sys.argv)
-    appli = XplotAppli()
+    appli = SlothMain()
     appli.show()
     sys.exit(app.exec_())

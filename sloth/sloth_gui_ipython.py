@@ -36,16 +36,14 @@ if "PySide" in sys.modules:
     HAS_PYSIDE = True
 if HAS_PYSIDE:
     os.environ['QT_API'] = 'pyside'
-    from PySide.QtGui import QWidget, QVBoxLayout, QPushButton, QApplication
+    from PySide import QtGui as qt
 else:
     os.environ['QT_API'] = 'pyqt'
-    if 1:
-        #is this really needed?
-        #If I get rid of it IPython complains
-        import sip
-        sip.setapi("QString", 2)
-        sip.setapi("QVariant", 2)
-    from PyQt4.QtGui import QWidget, QVBoxLayout, QPushButton, QApplication
+    # force API 2
+    import sip
+    sip.setapi("QString", 2)
+    sip.setapi("QVariant", 2)
+    from PyQt4 import QtGui as qt
 
 # another option is to load Qt via PyMca (seems slower)
 # HAS_PYMCA = False
@@ -64,6 +62,12 @@ else:
 from IPython.qt.console.rich_ipython_widget import RichIPythonWidget
 from IPython.qt.inprocess import QtInProcessKernelManager
 from IPython.lib import guisupport
+
+#Import Matplotlib stuff
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure 
+
 
 class QIPythonWidget(RichIPythonWidget):
     """convenience class for a live IPython console widget.
@@ -113,20 +117,24 @@ class QIPythonWidget(RichIPythonWidget):
         """ Execute a command in the frame of the console widget """
         self._execute(command, False)
 
-class SlothWidget(QWidget):
-    """main GUI widget: exit button and IPython console widget
+class IPyConsoleWidget(qt.QWidget):
+    """IPython console widget
+
+    NOTE: this layer is not required, unless one wants to make a
+    layout on top of QIPythonWidget
+
     """
     def __init__(self, parent=None):
-        super(SlothWidget, self).__init__(parent)
+        super(IPyConsoleWidget, self).__init__(parent)
 
         ipy = QIPythonWidget(customBanner=SLOTH_IPY_WELCOME)
         
-        self.btnClose = QPushButton('Exit')
-        self.btnClose.clicked.connect(self.close)
+        #self.btnClose = qt.QPushButton('Exit')
+        #self.btnClose.clicked.connect(self.close)
         
         # layout
-        layout = QVBoxLayout(self)
-        layout.addWidget(self.btnClose)
+        layout = qt.QVBoxLayout(self)
+        #layout.addWidget(self.btnClose)
         layout.addWidget(ipy)
         
         # This allows the variable foo and method print_process_id to be accessed from the ipython console
@@ -136,12 +144,56 @@ class SlothWidget(QWidget):
 def print_process_id():
     print('Process ID is:', os.getpid())
 
-def main():
-    app  = QApplication([])
-    widget = SlothWidget()
-    widget.show()
-    app.exec_()
+class MplCanvas(FigureCanvas):
+    """ mpl canvas """
+    def __init__(self, parent=None, figW=5, figH=4, figDpi=100):
+        fig = Figure(figsize=(figW, figH), dpi=figDpi)
+        self.axes = fig.add_subplot(111)
+        # clear axes at every plot()
+        self.axes.hold(False)
+        super(MplWidget, self).__init__(self, fig)
+        self.setParent(parent)
+    
+    
+class MplWidget(qt.QWidget):
+    def __init__(self, parent=None, **kws):
+        super(MplWidget, self).__init__(parent)
 
+        mpl = MplCanvas(parent)
+        
+        # layout
+        layout = qt.QVBoxLayout(self)
+        layout.addWidget(mpl)
+    
+class SlothMainWindow(qt.QMainWindow):
+    """ main window """
+    
+    def __init__(self, parent=None):
+        super(SlothMainWindow, self).__init__(parent)
+
+        #Menu bar
+        # quit_act = qt.QAction('Exit', self)
+        # quit_act.triggered.connect(self.close)
+        # menu = self.menuBar().addMenu('File')
+        # menu.addAction(quit_act)
+
+        #Toolbar
+        tbar = qt.QToolBar('Toolbar')
+        self.addToolBar(tbar)
+        tbar.addAction('Exit')
+        tbar.actionTriggered.connect(self.close)
+
+        #Dock bar (not working yet!)
+        #dock = qt.QDockWidget()
+        #dock.setWidget(IPyConsoleWidget)
+        #self.addDockWidget(dock)
+        
+        #Central Widget
+        self.setCentralWidget(IPyConsoleWidget(self))
+        #self.setCentralWidget(MplWidget(self))
+    
 if __name__ == '__main__':
-    main()
-
+    app = qt.QApplication(sys.argv)
+    main = SlothMainWindow()
+    main.show()
+    sys.exit(app.exec_())
