@@ -24,10 +24,6 @@ __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2014"
-__version__ = "0.0.4"
-__status__ = "alpha"
-__date__ = "Aug 2014"
 
 import sys, os
 import time
@@ -74,7 +70,11 @@ class SpecfileDataWriter(object):
                     pass
         self.scan = self.scanStart + 1
 
-    def wHeader(self, epoch=None, date=None, title=None, motnames=None, comms=None):
+    def wHeader(self, **kws):
+        print("DEPRECATED: use 'write_header' method")
+        return self.write_header(**kws)
+        
+    def write_header(self, epoch=None, date=None, title=None, motnames=None, comms=None):
         """write the header to file by over-writing
 
         Parameters
@@ -122,8 +122,12 @@ class SpecfileDataWriter(object):
         
         with open(self.fn, 'wb') as f:
             f.write('\n'.join(_hl))
-        
-    def wScan(self, cols, dats, title=None, motpos=None, comms=None):
+
+    def wScan(self, cols, dats, **kws):
+        print("DEPRECATED: use 'write_scan' method")
+        return self.write_scan(cols, dats, **kws)
+
+    def write_scan(self, cols, dats, title=None, motpos=None, comms=None):
         """write a scan to file by appending
 
         Parameters
