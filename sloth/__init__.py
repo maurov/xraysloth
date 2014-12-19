@@ -16,9 +16,11 @@ __email__ = "mauro.rovezzi@gmail.com"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
 __year__ = "2011-2014"
+__owner__ = "Mauro Rovezzi"
+__maintainer__ = "Mauro Rovezzi"
 __version__ = "0.0.1"
 __status__ = "work in progress"
-__date__ = "Sept 2014"
+__date__ = "Dec 2014"
 
 import os, sys
 _libDir = os.path.dirname(os.path.realpath(__file__))

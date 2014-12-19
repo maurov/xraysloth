@@ -28,15 +28,11 @@ TODO
   or Orange-Shadow
 
 """
-
 __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
 __year__ = "2014"
-__version__ = "0.0.5"
-__status__ = "in progress"
-__date__ = "Nov 2014"
 
 import sys, os
 import math

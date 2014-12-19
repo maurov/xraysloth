@@ -1,15 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-IPython Qt widget
+"""IPython Qt widget
+=================
 
-The starting code is taken from PyMca5/PyMcaGui/misc/QIPythonWidget.py
+This code is based on:
+
+1. PyMca5/PyMcaGui/misc/QIPythonWidget.py (taken from
+http://stackoverflow.com/questions/11513132/embedding-ipython-qt-console-in-a-pyqt-application)
+2. https://github.com/sir-wiggles/PyInterp
+3. https://github.com/klusta-team/klustaviewa/blob/master/klustaviewa/views/ipythonview.py
+4. https://github.com/gpoulin/python-test/blob/master/embedded_qtconsole.py
+
 """
 
 __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
-__credits__ = "V. Armando Solé (PyMca)"
+__credits__ = ""
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
 __owner__ = "Mauro Rovezzi"
@@ -25,43 +32,50 @@ import os, sys
 import numpy as np
 import math
 
-### SLOTH ###
-from __init__ import _libDir
-sys.path.append(_libDir)
-from genericutils import ipythonAutoreload
-
-# Set the QT API to PyQt4
+# control deps
+HAS_QT = False
 HAS_PYSIDE = False
+HAS_IPYTHON = False
+
+# Qt import PySide or PyQt4
 if "PySide" in sys.modules:
     HAS_PYSIDE = True
 if HAS_PYSIDE:
     os.environ['QT_API'] = 'pyside'
-    from PySide import QtGui as qt
+    from PySide import QtGui
+    HAS_QT = True
 else:
     os.environ['QT_API'] = 'pyqt'
     # force API 2
     import sip
-    sip.setapi("QString", 2)
-    sip.setapi("QVariant", 2)
-    from PyQt4 import QtGui as qt
+    try:
+        sip.setapi('QDate', 2)
+        sip.setapi('QDateTime', 2)
+        sip.setapi('QString', 2)
+        sip.setapi('QtextStream', 2)
+        sip.setapi('Qtime', 2)
+        sip.setapi('QUrl', 2)
+        sip.setapi('QVariant', 2)
+    except:
+        print(sys.exc_info()[1])
+        pass
+    from PyQt4 import QtGui
+    HAS_QT = True
 
-# another option is to load Qt via PyMca (seems slower)
-# HAS_PYMCA = False
-# try:
-#     from PyMca5.PyMca import PyMcaQt as Qt
-#     HAS_PYMCA = True
-# except ImportError:
-#     try:
-#         from PyMca import PyMcaQt as Qt
-#         HAS_PYMCA = True
-#     except ImportError:
-#         print(sys.exc_info()[1])
-#         pass
+# IPy machinery
+try:
+    from IPython.qt.console.rich_ipython_widget import RichIPythonWidget
+    from IPython.qt.inprocess import QtInProcessKernelManager
+    from IPython.lib import guisupport
+except:
+    print(sys.exc_info()[1])
+    HAS_IPYTHON = True
+    pass
 
-# Import the console machinery from ipython
-from IPython.qt.console.rich_ipython_widget import RichIPythonWidget
-from IPython.qt.inprocess import QtInProcessKernelManager
-from IPython.lib import guisupport
+### SLOTH ###
+from __init__ import _libDir
+sys.path.append(_libDir)
+from genericutils import ipythonAutoreload
 
 class QIPythonWidget(RichIPythonWidget):
     """convenience class for a live IPython console widget.
@@ -80,6 +94,8 @@ class QIPythonWidget(RichIPythonWidget):
         self.kernel_manager = kernel_manager = QtInProcessKernelManager()
         kernel_manager.start_kernel()
         kernel_manager.kernel.gui = 'qt4'
+        kernel_manager.kernel.pylab_import_all = False
+        
         self.kernel_client = kernel_client = self._kernel_manager.client()
         kernel_client.start_channels()
 
@@ -89,29 +105,29 @@ class QIPythonWidget(RichIPythonWidget):
         guisupport.get_app_qt4().exit()
         self.exit_requested.connect(stop)
 
-    def pushVariables(self, variableDict):
+    def push_variables(self, varsDict):
         """push a dictionary of variables to the IPthon console
 
         Parameters
         ----------
-        variableDict : dict
-                       name / value pairs
+        varsDict : dict
+                   name / value pairs
         """
-        self.kernel_manager.kernel.shell.push(variableDict)
+        self.kernel_manager.kernel.shell.push(varsDict)
         
-    def clearTerminal(self):
+    def clear_terminal(self):
         """clear the terminal """
         self._control.clear()
 
-    def printText(self, text):
+    def print_text(self, text):
         """ Prints some plain text to the console """
         self._append_plain_text(text)
         
-    def exeCmd(self, command):
+    def exec_cmd(self, command):
         """ Execute a command in the frame of the console widget """
         self._execute(command, False)
 
-class IPyConsoleWidget(qt.QWidget):
+class IPyConsoleWidget(QtGui.QWidget):
     """IPython console widget
 
     NOTE: this layer is not required, unless one wants to make a
@@ -120,26 +136,19 @@ class IPyConsoleWidget(qt.QWidget):
     """
     def __init__(self, parent=None):
         super(IPyConsoleWidget, self).__init__(parent)
-
         ipy = QIPythonWidget(customBanner=SLOTH_IPY_WELCOME)
         
-        #self.btnClose = qt.QPushButton('Exit')
-        #self.btnClose.clicked.connect(self.close)
-        
         # layout
-        layout = qt.QVBoxLayout(self)
-        #layout.addWidget(self.btnClose)
+        layout = QtGui.QVBoxLayout(self)
         layout.addWidget(ipy)
         
-        # This allows the variable foo and method print_process_id to be accessed from the ipython console
-        #ipyConsole.pushVariables({"foo":43,"print_process_id":print_process_id})
-        #ipyConsole.printText("The variable 'foo' and the method 'print_process_id()' are available. Use the 'whos' command for information.")
-
-def print_process_id():
-    print('Process ID is:', os.getpid())
-
+        ipy.print_text('Process ID is {0}'.format(os.getpid()))
+        
 if __name__ == '__main__':
-    app = qt.QApplication(sys.argv)
-    ipy = IPyConsoleWidget()
-    ipy.show()
-    sys.exit(app.exec_())
+    if (HAS_QT and HAS_IPYTHON):
+        app = QtGui.QApplication(sys.argv)
+        ipy = IPyConsoleWidget()
+        ipy.show()
+        sys.exit(app.exec_())
+    else:
+        pass

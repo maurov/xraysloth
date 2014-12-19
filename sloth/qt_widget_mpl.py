@@ -19,27 +19,31 @@ __date__ = "Dec 2014"
 import os, sys
 import numpy as np
 
-### SLOTH ###
-from __init__ import _libDir
-sys.path.append(_libDir)
-from genericutils import ipythonAutoreload
-
-# Set the QT API to PyQt4
+# Qt import PySide or PyQt4
 HAS_PYSIDE = False
 if "PySide" in sys.modules:
     HAS_PYSIDE = True
 if HAS_PYSIDE:
     os.environ['QT_API'] = 'pyside'
-    from PySide import QtGui as qt
+    from PySide import QtGui
 else:
     os.environ['QT_API'] = 'pyqt'
     # force API 2
     import sip
-    sip.setapi("QString", 2)
-    sip.setapi("QVariant", 2)
-    from PyQt4 import QtGui as qt
+    try:
+        sip.setapi('QDate', 2)
+        sip.setapi('QDateTime', 2)
+        sip.setapi('QString', 2)
+        sip.setapi('QtextStream', 2)
+        sip.setapi('Qtime', 2)
+        sip.setapi('QUrl', 2)
+        sip.setapi('QVariant', 2)
+    except:
+        print(sys.exc_info()[1])
+        pass
+    from PyQt4 import QtGui
 
-#Import Matplotlib stuff
+# Matplotlib stuff
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 
@@ -53,7 +57,7 @@ class MplCanvas(FigureCanvas):
         super(MplCanvas, self).__init__(fig)
         #self.setParent(parent)
     
-class MplWidget(qt.QWidget):
+class MplWidget(QtGui.QWidget):
     """ mpl widget = canvas plus layout """
     def __init__(self, parent=None, **kws):
         super(MplWidget, self).__init__(parent)
@@ -61,11 +65,11 @@ class MplWidget(qt.QWidget):
         mpl = MplCanvas(parent, **kws)
         
         # layout
-        layout = qt.QVBoxLayout(self)
+        layout = QtGui.QVBoxLayout(self)
         layout.addWidget(mpl)
     
 if __name__ == '__main__':
-    app = qt.QApplication(sys.argv)
+    app = QtGui.QApplication(sys.argv)
     mpl = MplWidget()
     mpl.show()
     sys.exit(app.exec_())
