@@ -55,6 +55,8 @@ import numpy as np
 
 from rotmatrix import rotate
 
+DEBUG = 1
+
 ### GLOBAL VARIABLES ###
 HC = 1.2398418743309972e-06 # eV * m
 ED0 = 1e-4 # minimum energy step (eV) considered as 0 
@@ -80,6 +82,32 @@ def acenx(n, asx=25., agx=5.):
     """
     return (asx + agx) * n
 
+def det_pos_rotated(dxyz, drot=35.):
+    """return the detector positions in a rotated reference system
+    with the origin at the sample
+
+    Parameters
+    ----------
+
+    dxyz : numpy array of floats
+           [X, Y, Z] detector position in the global coordinate system
+           (detector assumed on the YZ plane)
+
+    drot : float [35.]
+           angle of rotation, counter-clock-wise, around Y axis
+
+    """
+    dx, dz = dxyz[1], dxyz[2]
+    dr = math.sqrt(dx**2 + dz**2)
+    if dx == 0.:
+        alpha = math.pi/2. - math.radians(drot)
+    else:
+        alpha = math.atan(dz/dx) - math.radians(drot)
+    if DEBUG: print('alpha is {0} deg'.format(math.degrees(alpha)))
+    dpar = dr * math.cos(alpha)
+    dper = dr * math.sin(alpha)
+    return dpar, dper
+    
 ### CLASS ###
 class RowlandCircle(object):
     """ Rowland circle geometry """

@@ -18,7 +18,8 @@ import sys
 from __init__ import _libDir
 sys.path.append(_libDir)
 
-from rowland import cs_h, acenx, RcHoriz, RcVert
+import numpy as np
+from rowland import cs_h, acenx, det_pos_rotated, RcHoriz, RcVert
 
 SI_ALAT = 5.431065 # Ang at 25C
 GE_ALAT = 5.6579060 # Ang at 25C
@@ -75,10 +76,32 @@ def testChiOpt():
 def testAzOff(eDelta, Rm=500., theta0=35, d=dSi111):
     t = RcHoriz(Rm=Rm, theta0=theta0, d=d)
     return t.getAzOff(eDelta)
+
+
+def testDetMove(Rm=510):
+    """test detector position in two ref frames"""
+    ths = np.linspace(35., 85., 51)
+    dres = {'th' : [],
+            'dx' : [],
+            'dz' : [],
+            'dpar' : [],
+            'dper' : []}
+    for th in ths:
+        r = RcHoriz(Rm, theta0=th, showInfos=False)
+        d0 = r.getDetPos()
+        d1 = det_pos_rotated(d0, drot=35.)
+        dres['th'].append(th)
+        dres['dx'].append(d0[1])
+        dres['dz'].append(d0[2])
+        dres['dpar'].append(d1[0])
+        dres['dper'].append(d1[1])
+    return dres
+    
     
 if __name__ == "__main__":
     #pass
     #testSagOff(250., 35., 150., aL=12.)
     #dres = testChiOpt()
-    testAzOff(0.5)
+    #testAzOff(0.5)
+    dres = testDetMove()
     
