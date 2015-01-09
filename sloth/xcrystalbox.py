@@ -124,6 +124,7 @@ class XCrystalBox(object):
     
     """
     def __init__(self, opts=None):
+        self.pars = {} #initi dictionary to store parameters
         if opts is None:
             self.opts = dict(creator = 'XCrystalBox',
                              today = date.today(),
@@ -150,12 +151,12 @@ class XCrystalBox(object):
             self.opts = opts
 
         # check all options
-        self.checkopts()
+        self.check_opts()
 
-    def showhelp(self):
+    def show_help(self):
         print(self.__doc__)
 
-    def checkopts(self):
+    def check_opts(self):
         """ performs a global check on setted options """
         # bragg file
         if (self.opts['bragg_file'] is None):
@@ -209,12 +210,12 @@ class XCrystalBox(object):
             if (self.opts['elast_info'] == 0) and (self.opts['poisson_ratio'] is None):
                 raise NameError('Poisson ratio not given')
 
-    def setopt(self, opt, value):
+    def set_opt(self, opt, value):
         """ set option and run global check """
         self.opts[opt] = value
-        self.checkopts()
+        self.check_opts()
 
-    def writeInpFile(self, fname='xcrystal.inp'):
+    def write_inp_file(self, fname='xcrystal.inp'):
         """ write xcrystal.inp """
         outlst = ['{bragg_file}']
         outlst.append('{crys_type}')
@@ -245,16 +246,16 @@ class XCrystalBox(object):
         
     def run(self):
         """ runs diff_pat """
-        self.writeInpFile() # write xcrystal.inp
+        self.write_inp_file() # write xcrystal.inp
         cmdstr = '{} < xcrystal.inp'.format(DIFFPAT_EXEC)
-        print(cmdstr)
         try:
-            subprocess.call(cmdstr, shell=True) 
+            subprocess.call(cmdstr, shell=True)
+            #print("RUN: {0}".format(cmdstr))
         except OSError:
-            print("check 'diff_pat' executable exists!")
+            print("ERROR: check $DIFFPAT_EXEC")
 
 
-    def loadRefl(self, fname='diff_pat.dat', pol='s', kind='cubic', fill_value=0.):
+    def load_refl(self, fname='diff_pat.dat', pol='s', kind='cubic', fill_value=0.):
         """ load reflectivity curve and interpolate
 
         Parameters
@@ -278,10 +279,22 @@ class XCrystalBox(object):
                      requested points outside of the data range
         
         """
+        # PyMca5 branch
         try:
-            from PyMca import specfilewrapper as specfile
-        except:
-            from PyMca import specfile
+            from PyMca5.PyMcaIO import specfilewrapper as specfile
+            HAS_SPECFILE = True
+        except ImportError:
+            # PyMca 4.7 branch
+            try:
+                from PyMca import specfilewrapper as specfile
+                HAS_SPECFILE = True
+            except ImportError:
+                try:
+                    from PyMca import specfile
+                    HAS_SPECFILE = True
+                except ImportError:
+                    HAS_SPECFILE = False
+                    pass
         if pol == 's':
             scol = 7
         elif pol == 'p':
@@ -289,7 +302,7 @@ class XCrystalBox(object):
         elif pol == 'circ':
             scol = 5
         else:
-            raise NameError("XCrystalBox.loadRefl: wrong polarization keyword")
+            raise NameError("XCrystalBox.load_refl: wrong polarization keyword")
         try:
             sf = specfile.Specfile(fname)
             sd = sf.select('1')
@@ -297,13 +310,50 @@ class XCrystalBox(object):
             self.y = sd.datacol(int(scol))
             sf = 0 # close file
         except:
-            raise NameError("XCrystalBox.loadRefl: wrong file format")
+            print("ERROR(XCrystalBox.load_refl): cannot read {0}".format(fname))
+            return
         self.refl = interp1d(self.x, self.y, kind=kind, bounds_error=False, fill_value=fill_value)
                     
-    def fitRefl(self, fname='diff_pat.dat', pol='s'):
+    def fit_refl(self, fname='diff_pat.dat', pol='s'):
         """ evaluate diff_pat.dat """
-        self.loadRefl(fname=fname, pol=pol)
+        self.load_refl(fname=fname, pol=pol)
         self.fit, self.pw = fit_splitpvoigt(self.x, self.y, plot=True)
+
+    def load_pars(self, fname='diff_pat.par'):
+        """load DIFF_PAT output (.par file) into self.pars (dictionary)
+
+        Parsed keys (in self.pars[])
+        ----------------------------
+
+        'ext_len_amp_s' : Extinction length (amplitude) sigma [microns]
+        'ext_len_amp_p' : Extinction length (amplitude) pi [microns]
+        'ext_dep_amp_s' : Extinction depth (amplitude) sigma [microns]
+        'ext_dep_amp_p' : Extinction depth (amplitude) pi [microns]
+
+        Notes
+        -----
+        
+        Extinction lengths and depths given amplitude
+        (for intensities, consider half value).
+        
+        DEPTH -> perpendicular to the crystal surface
+        LENGTH -> along the incident beam path
+        
+        Pendellosung period (amplitude) pi = Extinction depth pi times 2 pi
+
+        """
+        #self.pars_lines = [line.rstrip() for line in open(fname)]
+        with open(fname, "r") as f:
+            #self.pars = f.readlines().splitlines()
+            for line in f:
+                if 'Extinction length (amplitude) sigma' in line:
+                    self.pars['ext_len_amp_s'] = line.split('=')[1].rsplit()[0]
+                if 'Extinction length (amplitude) pi' in line:
+                    self.pars['ext_len_amp_p'] = line.split('=')[1].rsplit()[0]
+                if 'Extinction depth (amplitude) sigma' in line:
+                    self.pars['ext_dep_amp_s'] = line.split('=')[1].rsplit()[0]
+                if 'Extinction depth (amplitude) pi' in line:
+                    self.pars['ext_dep_amp_p'] = line.split('=')[1].rsplit()[0]
 
         
 if __name__ == '__main__':
