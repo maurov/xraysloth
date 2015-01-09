@@ -18,10 +18,6 @@ __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2014"
-__version__ = "0.0.2"
-__status__ = "in progress"
-__date__ = "Apr 2014"
 
 import sys, os
 import subprocess
@@ -33,25 +29,25 @@ from scipy.interpolate import interp1d
 
 # check XOP is correctly installed and define DIFFPAT_EXEC
 HAS_XOP = False
-DIFFPAT_EXEC = False
+DIFFPAT_EXEC = None
 try:
-    HAS_XOP = os.environ["XOP_HOME"]
-    _platform = sys.platform.lower()
-    if 'linux' in _platform:
-        DIFFPAT_EXEC = os.path.join(HAS_XOP, 'bin.linux', 'diff_pat')
-    elif 'win' in _platform:
-        DIFFPAT_EXEC = os.path.join(HAS_XOP, 'bin.x86', 'diff_pat.exe')
-    elif 'darwin' in _platform:
-        DIFFPAT_EXEC = os.path.join(HAS_XOP, 'bin.darwin', 'diff_pat')
-    else:
-        try:
-            DIFFPAT_EXEC = os.environ["DIFFPAT_EXEC"]
-        except KeyError:
-            print("Please set the environment variable DIFFPAT_EXEC")
+    DIFFPAT_EXEC = os.environ["DIFFPAT_EXEC"]
+except KeyError:
+    try:
+        HAS_XOP = os.environ["XOP_HOME"]
+        _platform = sys.platform.lower()
+        if 'linux' in _platform:
+            DIFFPAT_EXEC = os.path.join(HAS_XOP, 'bin.linux', 'diff_pat')
+        elif 'win' in _platform:
+            DIFFPAT_EXEC = os.path.join(HAS_XOP, 'bin.x86', 'diff_pat.exe')
+        elif 'darwin' in _platform:
+            DIFFPAT_EXEC = os.path.join(HAS_XOP, 'bin.darwin', 'diff_pat')
+        else:
+            print("ERROR: cannot set DIFFPAT_EXEC")
             sys.exit(1)
-except KeyError: 
-   print("Please set the environment variable XOP_HOME")
-   sys.exit(1)
+    except KeyError:
+        print("ERROR: $DIFFPAT_EXEC or $XOP_HOME environmental variables not set!")
+        sys.exit(1)
 
 # ../xop/data
 _pardir = os.path.realpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.pardir))
