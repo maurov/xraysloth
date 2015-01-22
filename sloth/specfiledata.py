@@ -172,12 +172,12 @@ def _checkScans(scans):
     """ simple checker for scans input """
     if scans is None:
         raise NameError("Provide a string or list of scans to load")
-    if type(scans) == str:
+    if type(scans) is str:
         try:
             nscans = _str2rng(scans)
         except:
             raise NameError("scans string '{0}' not understood by str2rng".format(scans))
-    elif type(scans) == list:
+    elif type(scans) is list:
         nscans = scans
     else:
         raise NameError("Provide a string or list of scans to load")
@@ -382,6 +382,9 @@ class SpecfileData(object):
             raise NameError('Give the counter for signal [string]')
 
         #select the given scan number
+        #NOTE: here impossible to catch an exception, if the next
+        #fails, specfile will directly call sys.exit! the try: except
+        #did not work!
         self.sd = self.sf.select(str(scan)) #sd = specfile data
 
         #the case cntx is not given, the first counter is taken by default
@@ -548,6 +551,7 @@ class SpecfileData(object):
         zdats = []
         mdats = []
         idats = []
+        print("Loading {0} scans from SPEC ...".format(len(nscans)))
         for scan in nscans:
             _x, _z, _m, _i = self.get_scan(scan=scan, cntx=cntx, cnty=None, csig=csig,
                                            cmon=cmon, csec=csec, scnt=None, norm=norm)
@@ -556,7 +560,6 @@ class SpecfileData(object):
             if motinfo:
                 mdats.append(_m)
                 idats.append(_i)
-            print("Loading scan {0}...".format(scan))
             _ct += 1
         if motinfo:
             return xdats, zdats, mdats, idats
@@ -649,15 +652,58 @@ class SpecfileData(object):
             zmrgs.append(_zmrg)
         return xmrgs, zmrgs
 
-    def get_mrgs_rep(self, scans='all', nrep=1, **kws):
+    def get_mrgs_rep(self, scns, nrep=3, **kws):
         """ get merge by groups of repetitions
 
         Parameters
         ----------
+
+        scns : string
+               string representing ALL the good scans (parsed by str2rng)
        
         """
         print("Not yet implemented!")
-        
+
+    def get_det_dt(self, zcts, tau, secs=None):
+        """ get detecor signal corrected by dead time
+
+        Parameters
+        ----------
+        zcts : array of floats
+               detector [counts], if ysecs=None [counts/s]
+
+        tau : float
+              tau [s]
+
+        secs : array of floats, None
+               normalization time [s]
+
+        Returns
+        -------
+        zcts_corr : array of floats
+                    zcps = zcts/secs
+                    zcps_corr = zcps / (1 - zcps * tau)
+                    zcts_corr = zcps_corr * secs
+        """
+        if secs is not None:
+            try:
+                zcts = zcts / secs
+            except:
+                print('det_dtc ERROR')
+                return zcts
+        try:
+            #import pdb
+            #pdb.set_trace()
+            #print(zcps)
+            zcts_corr = zcts / (1 - zcts * tau)
+        except:
+            print('det_dtc ERROR step 2')
+            return zcts
+        if secs is not None:
+            return zcts_corr * secs
+        else:
+            return zcts_corr
+    
     def get_filter(self, ydats, method='scipySG', **kws):
         """ get filtered data using a list of ydats and given method
 
