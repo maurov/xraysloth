@@ -34,7 +34,7 @@ class SpecfileDataWriter(object):
     """Specfile data format is defined here:
     http://www.certif.com/spec_manual/user_1_4_1.html"""
 
-    def __init__(self, fname, **kws):
+    def __init__(self, fname, owrt=False, **kws):
         """init the file name and scan number only (no write at init)"""
         self.fn = os.path.abspath(fname)
         self.scanStart = 0
@@ -68,7 +68,11 @@ class SpecfileDataWriter(object):
                     if DEBUG: print('scanStart = {0}'.format(self.scanStart))
                 except:
                     pass
-        self.scan = self.scanStart + 1
+        if owrt:
+            self.scanOnly = False
+            self.scan = 0
+        else:
+            self.scan = self.scanStart + 1
 
     def wHeader(self, **kws):
         print("DEPRECATED: use 'write_header' method")
