@@ -283,6 +283,17 @@ class RowlandCircle(object):
         else:
             return SagOff
 
+    def getSagOffMots(self, aXoff, degRot=0., pivotSide=10., Rs=None, aL=None):
+        """motors positions for sagittal offset"""
+        sagoffs = self.getSagOff(aXoff, Rs=Rs, aL=aL, retAll=True)
+        tS = sagoffs[2] / math.cos(math.radians(degRot))
+        rS = sagoffs[0] - degRot
+        tPS = pivotSide * math.sin(math.radians(rS))
+        if self.showInfos:
+            print('Pivot center : {0}'.format(tS))
+            print('Pivot side ({0}): +/- {1}'.format(pivotSide, tPS))
+        return tS + tPS, tS - tPS
+
     def getAzOff(self, eDelta, rtheta0=None, d=None, Rm=None):
         """ get analyser Z offset for a given energy delta (eV) """
         if abs(eDelta) <= ED0:
