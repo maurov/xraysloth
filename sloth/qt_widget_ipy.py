@@ -67,15 +67,17 @@ try:
     from IPython.qt.console.rich_ipython_widget import RichIPythonWidget
     from IPython.qt.inprocess import QtInProcessKernelManager
     from IPython.lib import guisupport
-except:
-    print(sys.exc_info()[1])
     HAS_IPYTHON = True
+except:
+    
+    print(sys.exc_info()[1])
     pass
 
 ### SLOTH ###
 from __init__ import _libDir
 sys.path.append(_libDir)
-from genericutils import ipythonAutoreload
+
+#from genericutils import ipythonAutoreload
 
 class QIPythonWidget(RichIPythonWidget):
     """convenience class for a live IPython console widget.
