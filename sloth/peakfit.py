@@ -272,7 +272,7 @@ def fit_results(fitobj, output='print', pk_info=True):
     
     # OUTPUT
     if ('print' in output.lower()):
-        print '\n'.join(out)
+        print('\n'.join(out))
     elif ('list' in output.lower()):
         return out
     elif ('dict' in output.lower()):
