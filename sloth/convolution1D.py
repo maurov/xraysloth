@@ -41,24 +41,30 @@ __date__ = "Jan 2014"
 MODNAME = '_math'
 DEBUG = 0
 
-import os, sys
+import os, sys, math
 import subprocess
 from optparse import OptionParser
 from datetime import date
 from string import Template
 import numpy as np
 
+# No deps on Larch: used only if you want to access this as Larch plugin
 HAS_LARCH = False
 try:
     from larch import use_plugin_path
     use_plugin_path('math')
-    #from mathutils import index_of, index_nearest #not used, get_ene_index() instead
-    from lineshapes import gaussian, lorentzian
     HAS_LARCH = True
 except:
     pass
 
-from xdata import _core_width
+def gaussian(x, cen=0, sigma=1):
+    """1 dimensional gaussian: gaussian(x, cen, sigma)"""
+    s2pi = math.sqrt(2*math.pi)
+    return ( 1. / (s2pi*sigma) ) * math.exp( -(1.0*x-cen)**2 / (2 * sig**2) )
+
+def lorentzian(x, cen=0, sigma=1):
+    """1 dimensional lorentzian: lorentzian(x, cen, sigma)"""
+    return (1. / (1 + ( (1.0*x-cen) / sigma)**2 ) ) / (math.pi*sigma)
     
 def get_ene_index(ene, cen, hwhm):
     """ returns the min/max indexes for array ene at (cen-hwhm) and (cen+hwhm)
@@ -347,31 +353,7 @@ def registerLarchPlugin():
     return (MODNAME, {'glinbroad': glinbroad})
 
 if __name__ == '__main__':
-    #pass
-    import os
-    import numpy as np
-    import matplotlib.pyplot as plt
-    fdat = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                        'tests', 'conv_test.dat')
-    dat = np.loadtxt(fdat)
-    fdat_ck = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                           'tests', 'conv_test_check.dat')
-    dat_ck = np.loadtxt(fdat_ck)
-
-    # e, f have the same index [n]
-    e = dat[:,0]
-    f = dat[:,1]
-   
-    plt.plot(e, f)
-    plt.plot(dat_ck[:,0], dat_ck[:,1])
-
-    ch_mnk = _core_width(element='Mn', edge='K')
-    fwhm_lin = lin_gamma(e, fwhm=ch_mnk, linbroad=[5, -6, 60])
-    fwhm_atan = atan_gamma(e, ch_mnk, gamma_max=5, e0=0, eslope=1.)
-    
-    c = conv(e, f, kernel='lorentzian', fwhm_e=fwhm_lin, efermi=-5)
-    plt.plot(e, c)
-    
-    plt.show()
+    #tests/examples in xraysloth/examples/convolution1D_tests.py
+    pass
 
     
