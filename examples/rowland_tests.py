@@ -35,7 +35,7 @@ dQz100 = d_hexagonal(SIO2_A, SIO2_C, (1,0,0))
 ### TESTS ###
 def testSagOff(Rm, theta0, aXoff, aL=100.):
     rc = RcHoriz(Rm, theta0, aL=aL, showInfos=True)
-    rc.getSagOff(aXoff)
+    rc.get_sag_off(aXoff)
 
 def testChiOpt():
     #from specfiledatawriter import SpecfileDataWrite
@@ -59,9 +59,9 @@ def testChiOpt():
             rc = RcHoriz(rm, aL=al, showInfos=False)
             axoff = acenx(5, asx=25., agx=5.)
             for th in ths:
-                rc.setTheta0(th)
+                rc.set_theta0(th)
                 #[math.degrees(rchi), aXoff, SagOff, math.degrees(rchi0), aXoff0, SagOff0]
-                lso = rc.getSagOff(axoff, retAll=True)
+                lso = rc.get_sag_off(axoff, retAll=True)
                 dres['rm'].append(rm)
                 dres['th'].append(th)
                 dres['al'].append(al)
@@ -75,7 +75,7 @@ def testChiOpt():
 
 def testAzOff(eDelta, Rm=500., theta0=35, d=dSi111):
     t = RcHoriz(Rm=Rm, theta0=theta0, d=d)
-    return t.getAzOff(eDelta)
+    return t.get_az_off(eDelta)
 
 
 def testDetMove(Rm=510):
@@ -88,7 +88,7 @@ def testDetMove(Rm=510):
             'dper' : []}
     for th in ths:
         r = RcHoriz(Rm, theta0=th, showInfos=False)
-        d0 = r.getDetPos()
+        d0 = r.get_det_pos()
         d1 = det_pos_rotated(d0, drot=35.)
         dres['th'].append(th)
         dres['dx'].append(d0[1])

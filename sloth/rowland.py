@@ -160,13 +160,13 @@ class RowlandCircle(object):
             raise NameError('Sample inside the Rowland circle: y offset is required')
         self.alpha = alpha
         self.ralpha = np.deg2rad(self.alpha)
-        if (theta0 != 0) : self.setTheta0(theta0)
+        if (theta0 != 0) : self.set_theta0(theta0)
 
-    def setDspacing(self, d):
+    def set_dspacing(self, d):
         """ sets crystal d-spacing (\AA) """
         self.d = d
         
-    def setTheta0(self, theta0):
+    def set_theta0(self, theta0):
         """ sets attributes for a given theta0 (Bragg angle = center theta)
         self.theta0 : in degrees
         self.rtheta0 : in radians
@@ -203,22 +203,22 @@ class RowlandCircle(object):
             print("INFO: Rs = {0:.3f} {1}".format(self.Rs, self.uDist))
             print("INFO: aL = {0:.3f} {1}".format(self.aL, self.uDist))
 
-    def setEne0(self, ene0, d=None):
+    def set_ene0(self, ene0, d=None):
         """ set the central energy (eV) and relative Bragg angle """
         if d is None:
             d = self.d
         try:
             theta0 = self.getTheta(ene0, d=d, isDeg=True)
-            self.setTheta0(theta0)
+            self.set_theta0(theta0)
         except:
             print("ERROR: energy not setted!")
 
-    def getTheta(self, ene=None, d=None, isDeg=True):
+    def get_theta(self, ene=None, d=None, isDeg=True):
         """ get theta angle (deg or rad, controlled by isDeg var) for a given energy (eV) and d-spacing """
         if d is None:
             d = self.d
         if ene is None:
-            ene = self.getEne(theta=None, d=d, isDeg=isDeg)
+            ene = self.get_ene(theta=None, d=d, isDeg=isDeg)
         if (d is not None) and not (self.d == 0) and not (ene == 0):
             wlen = ( HC / ene ) * 1e10
             theta = math.asin( wlen / (2*d) )
@@ -227,7 +227,7 @@ class RowlandCircle(object):
         else:
             raise NameError("wrong d-spacing or energy")
             
-    def getEne(self, theta=None, d=None, isDeg=True):
+    def get_ene(self, theta=None, d=None, isDeg=True):
         """ get energy (eV) for a given angle (deg) and d-spacing """
         if theta is None:
             theta = self.rtheta0
@@ -244,14 +244,14 @@ class RowlandCircle(object):
         else:
             raise NameError("give d-spacing (\AA)")
 
-    def getDth(self, eDelta):
+    def get_dth(self, eDelta):
         """ Delta\theta using differential Bragg law """
         if abs(eDelta) <= ED0:
             return 0
-        ene = self.getEne(theta=self.rtheta0, isDeg=False)
+        ene = self.get_ene(theta=self.rtheta0, isDeg=False)
         return -1 * ( eDelta / ene ) * math.tan(self.rtheta0)
             
-    def getChi(self, aXoff, Rs=None, aL=None, inDeg=True):
+    def get_chi(self, aXoff, Rs=None, aL=None, inDeg=True):
         """ get \chi angle in sagittal focusing """
         if Rs is None: Rs = self.Rs
         if aL is None: aL = self.aL
@@ -262,13 +262,13 @@ class RowlandCircle(object):
         else:
             return rchi
 
-    def getSagOff(self, aXoff, Rs=None, aL=None, retAll=False):
+    def get_sag_off(self, aXoff, Rs=None, aL=None, retAll=False):
         """ analyser sagittal offset from the center one """
         if Rs is None: Rs = self.Rs
         if aL is None: aL = self.aL
-        rchi = self.getChi(aXoff, Rs=Rs, aL=aL, inDeg=False)
+        rchi = self.get_chi(aXoff, Rs=Rs, aL=aL, inDeg=False)
         aXoff0 = aXoff - aL*math.sin(rchi)
-        rchi0 = self.getChi(aXoff0, Rs=Rs, aL=0, inDeg=False) # this is equal to rchi!
+        rchi0 = self.get_chi(aXoff0, Rs=Rs, aL=0, inDeg=False) # this is equal to rchi!
         SagOff0 = cs_h(aXoff0*2, Rs)
         SagOff = SagOff0 - aL*math.cos(rchi) + aL
         if self.showInfos:
@@ -283,9 +283,9 @@ class RowlandCircle(object):
         else:
             return SagOff
 
-    def getSagOffMots(self, aXoff, degRot=0., pivotSide=10., Rs=None, aL=None):
+    def get_sag_off_mots(self, aXoff, degRot=0., pivotSide=10., Rs=None, aL=None):
         """motors positions for sagittal offset"""
-        sagoffs = self.getSagOff(aXoff, Rs=Rs, aL=aL, retAll=True)
+        sagoffs = self.get_sag_off(aXoff, Rs=Rs, aL=aL, retAll=True)
         tS = sagoffs[2] / math.cos(math.radians(degRot))
         rS = sagoffs[0] - degRot
         tPS = pivotSide * math.sin(math.radians(rS))
@@ -294,7 +294,7 @@ class RowlandCircle(object):
             print('Pivot side ({0}): +/- {1}'.format(pivotSide, tPS))
         return tS + tPS, tS - tPS
 
-    def getAzOff(self, eDelta, rtheta0=None, d=None, Rm=None):
+    def get_az_off(self, eDelta, rtheta0=None, d=None, Rm=None):
         """ get analyser Z offset for a given energy delta (eV) """
         if abs(eDelta) <= ED0:
             return 0.
@@ -306,14 +306,14 @@ class RowlandCircle(object):
             raise NameError("give d-spacing")
         if Rm is None:
             Rm = self.Rm
-        _dth = self.getDth(eDelta)
+        _dth = self.get_dth(eDelta)
         if self.showInfos:
             print('INFO: dth = {0:.1f} urad ({1:.5f} deg)'.format(_dth*1e6, math.degrees(_dth)))
             print('INFO: daz [tan(dth) ~ dth] = {0}'.format(_dth * 2 * Rm * math.sin(rtheta0) ))
             print('INFO: daz [tan(dth) ~ dth and sin(th) ~ 1 = {0}'.format(_dth * 2 * Rm) )
         return 2 * Rm * math.sin(rtheta0) * math.tan(_dth)
 
-    def getAyOff(self, eDelta, rtheta0=None, d=None, Rm=None):
+    def get_ay_off(self, eDelta, rtheta0=None, d=None, Rm=None):
         """ get analyser Y offset for a given energy delta (eV) """
         if abs(eDelta) <= ED0:
             return 0.
@@ -325,12 +325,12 @@ class RowlandCircle(object):
             raise NameError("give d-spacing")
         if Rm is None:
             Rm = self.Rm
-        _dth = self.getDth(eDelta)
+        _dth = self.get_dth(eDelta)
         if self.showInfos:
             print('INFO: dth = {0:.1f} urad ({1:.5f} deg)'.format(_dth*1e6, math.degrees(_dth)))
         return 2 * Rm * math.tan(rtheta0) * math.tan(_dth)
         
-    def getEneOff(self, aZoff, rtheta0=None, d=None, Rm=None):
+    def get_ene_off(self, aZoff, rtheta0=None, d=None, Rm=None):
         """ get analyser delta E for a given Z offset """
         if abs(aZoff) <= AZ0:
             return 0.
@@ -346,7 +346,7 @@ class RowlandCircle(object):
         _dth = math.atan( aZoff /  (2 * Rm * math.sin(rtheta0)) )
         if self.showInfos:
             print('INFO: dth = {0:.1f} urad ({1:.5f} deg)'.format(_dth*1e6, math.degrees(_dth)))
-        _ene = self.getEne(theta=rtheta0, d=d, isDeg=False)
+        _ene = self.get_ene(theta=rtheta0, d=d, isDeg=False)
         _de = _ene * _dth / math.tan(rtheta0)
         return _de
 
@@ -368,20 +368,20 @@ class RcVert(RowlandCircle):
             self.rotHor = False
         RowlandCircle.__init__(self, *args, **kws)
 
-    def getPos(self, vect):
+    def get_pos(self, vect):
         """ utility method: return 'vect' or its rotated form if self.rotHor """
         if self.rotHor:
             return rotate(vect, np.array([1,0,0]), (math.pi/2.-self.rtheta0))
         else:
             return vect
 
-    def getDetPos(self):
+    def get_det_pos(self):
         """ returns detector center position [X,Y,Z] """
         zDet = 4 * self.Rm * math.sin(self.rtheta0) * math.cos(self.rtheta0)
         vDet = np.array([0, 0, zDet])
-        return self.getPos(vDet)
+        return self.get_pos(vDet)
 
-    def getAnaPos(self, aXoff=0.):
+    def get_ana_pos(self, aXoff=0.):
         """ returns analyser XYZ center position for a given X offset
 
         Parameters
@@ -392,11 +392,11 @@ class RcVert(RowlandCircle):
         zAcen = 2 * self.Rm * math.sin(self.rtheta0) * math.cos(self.rtheta0)
         Acen = np.array([0, yAcen, zAcen])
         if (aXoff == 0.):
-            return self.getPos(Acen)
+            return self.get_pos(Acen)
         else:
-            Chi = self.getChi(aXoff, inDeg=False)
+            Chi = self.get_chi(aXoff, inDeg=False)
             Aside = rotate(Acen, np.array([0,0,1]), Chi)
-            return self.getPos(Aside)
+            return self.get_pos(Aside)
 
 class RcHoriz(RowlandCircle):
     """ Rowland circle horizontal frame: sample-analyzer on XY plane along Y axis """
@@ -405,13 +405,13 @@ class RcHoriz(RowlandCircle):
         """RowlandCircle init """
         RowlandCircle.__init__(self, *args, **kws)
 
-    def getDetPos(self):
+    def get_det_pos(self):
         """ returns detector position [X,Y,Z] """
         yDet = self.p + self.q * math.cos(2 * self.rtheta0)
         zDet = self.q * math.sin(2 * self.rtheta0)
         return np.array([0, yDet, zDet])
 
-    def getAnaPos(self, aXoff=0.):
+    def get_ana_pos(self, aXoff=0.):
         """ analyzer analyser XYZ center position for a given X offset
 
         Parameters
@@ -422,8 +422,8 @@ class RcHoriz(RowlandCircle):
         if (aXoff == 0.):
             return Acen
         else:
-            SDax = self.getDetPos()
-            Chi = self.getChi(aXoff, inDeg=False)
+            SDax = self.get_det_pos()
+            Chi = self.get_chi(aXoff, inDeg=False)
             Aside = rotate(Acen, SDax, Chi)
             return Aside
 
