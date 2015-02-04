@@ -97,11 +97,23 @@ def testDetMove(Rm=510):
         dres['dper'].append(d1[1])
     return dres
     
+def testSagFocus(d=dSi111):
+    """not finished yet!"""
+    t0 = RcHoriz(Rm=250., theta0=35., d=d, aW=25., aWext=31.0266, aL=45.)
+    c0 = t0.get_chi2(5.)
+    d0 = t0.get_ana_dist(c0, 5.)
+    s0 = t0.get_axoff(c0)
+    sag0 = t0.get_sag_off(s0, retAll=True)
+    #horizontal case
+    t1 = RcHoriz(Rm=500., theta0=85., d=d, aW=25., aL=45.)
+    sag1 = t1.get_sag_off(sag0[1], retAll=True)
+    return t0, t1
     
 if __name__ == "__main__":
     #pass
     #testSagOff(250., 35., 150., aL=12.)
     #dres = testChiOpt()
     #testAzOff(0.5)
-    dres = testDetMove()
+    #dres = testDetMove()
+    t0, t1 = testSagFocus()
     

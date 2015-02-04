@@ -49,8 +49,7 @@ __version__ = "0.0.4"
 __status__ = "in progress"
 __date__ = "Oct 2014"
 
-import sys, os
-import math
+import sys, os, math
 import numpy as np
 
 from rotmatrix import rotate
@@ -73,7 +72,7 @@ def cs_h(c, R):
         print('WARNING: returning maximum height, the radius')
         return R
     else:
-        return R - np.sqrt( R**2 - (c**2/4) )
+        return R - math.sqrt( R**2 - (c**2/4) )
 
 def acenx(n, asx=25., agx=5.):
     """n-th analyser center (starting from 0!) in x, given its size
@@ -112,23 +111,57 @@ def det_pos_rotated(dxyz, drot=35.):
 class RowlandCircle(object):
     """ Rowland circle geometry """
 
-    def __init__(self, Rm=1000., theta0=0., alpha=0., aL=0., d=None,\
-                 inCircle=False, useCm=False, showInfos=True):
+    def __init__(self, Rm=500., theta0=0., alpha=0., aW=0., aWext=0., aL=0.,\
+                 d=None, inCircle=False, useCm=False, showInfos=True):
         """Rowland circle geometry
 
         Parameters
         ----------
-        theta0 : Bragg angle for the center in deg
-        Rm : [1000] radius of the Rowland circle (meridional radius) in mm
-        alpha : miscut angle in deg (TODO) the angle between the surface
-                of the crystal and the normal of the Bragg planes (0 <= alpha <= \pi/2)
-        aL : float, distance of analyser center from the chi rotation  (affects => Chi, SagOff)
-        d : crystal d-spacing in \AA (this is simply an utility to convert theta to energy - in eV)
-        inCircle : sample inside the Rowland cicle (dispersive)
-                   [False] otherwise give the y offset
+        Rm : float, 500.
+        
+             radius of the Rowland circle (meridional radius) in [mm]
+             
+        theta0 : float, 0.
+                 Bragg angle for the center [deg]
+        
+        alpha : float, 0.
+
+                miscut angle in deg (TODO) the angle between the
+                surface of the crystal and the normal of the Bragg
+                planes (0 <= alpha <= \pi/2)
+
+        aW : float, 0.
+
+             crystal analyser optical width
+                
+        aWext : float, 0.
+
+                crystal analyser extended width (NOTE: this width is
+                used in self.get_chi2, that is, the width to get two
+                adjacent analysers touching)
+    
+        aL : float, 0.
+
+             distance of analyser center from the chi rotation
+             (affects => Chi, SagOff)
+
+        d : float, None
+
+            crystal d-spacing in \AA (this is simply an utility to
+            convert theta to energy - in eV)
+
+        inCircle : boolean, False
+
+                   sample on the Rowland cicle otherwise give the y
+                   offset if inside (dispersive)
+
         useCm : boolean, False
-                use cm instead of mm (as in SHADOW)
-        showInfos : boolean [True] print extra informations (sometimes useful)
+        
+                use cm instead of mm (as default in SHADOW)
+
+        showInfos : boolean, True
+
+                    print extra informations (sometimes useful)
         
         Returns
         -------
@@ -139,6 +172,9 @@ class RowlandCircle(object):
         self.sampPos : sample position center, always at (0,0,0)
         self.alpha
         self.ralpha
+        self.aL
+        self.aW
+        self.aWext
         self.showInfos
         
         """
@@ -147,6 +183,8 @@ class RowlandCircle(object):
         else:
             self.uDist = 'mm'
         self.Rm = Rm
+        self.aW = aW
+        self.aWext = aWext
         self.aL = aL
         self.Rs = 0.
         self.d = d
@@ -196,11 +234,13 @@ class RowlandCircle(object):
         if self.showInfos:
             print("INFO: theta0 = {0:.3f} deg".format(self.theta0))
             if self.d is not None:
-                print("INFO: ene0 = {0:.2f} eV".format(self.getEne()))
+                print("INFO: ene0 = {0:.2f} eV".format(self.get_ene()))
                 print("INFO: d = {0:.3f} \AA".format(self.d))
             print("INFO: p = {0:.3f} {1}".format(self.p, self.uDist))
             print("INFO: q = {0:.3f} {1}".format(self.q, self.uDist))
             print("INFO: Rs = {0:.3f} {1}".format(self.Rs, self.uDist))
+            print("INFO: aW = {0:.3f} {1}".format(self.aW, self.uDist))
+            print("INFO: aWext = {0:.3f} {1}".format(self.aWext, self.uDist))
             print("INFO: aL = {0:.3f} {1}".format(self.aL, self.uDist))
 
     def set_ene0(self, ene0, d=None):
@@ -262,15 +302,52 @@ class RowlandCircle(object):
         else:
             return rchi
 
+    def get_chi2(self, aN=1., aWext=None, Rs=None, inDeg=True):
+        """get \chi angle in sagittal focusing using Thales's theorem
+
+        Parameters
+        ----------
+        aN : float, 1.
+             n-th analyser (0 is the central one)
+        """
+        if Rs is None: Rs = self.Rs
+        if aWext is None: aWext = self.aWext
+        rchi = ( 2 * math.atan( aWext / (2 * Rs) ) ) * aN
+        if (inDeg is True):
+            return math.degrees(rchi)
+        else:
+            return rchi
+
+    def get_ana_dist(self, chi, aN=1., aW=None, Rs=None, inDeg=True):
+        """get analyzer-analyzer distance"""
+        if aW is None: aW = self.aW
+        if Rs is None: Rs = self.Rs
+        if not (aN == 0): chi = chi/aN
+        if inDeg:
+            chihalf = math.radians(chi/2.)
+        else:
+            chihalf = chi/2.
+        aDist = 2 * Rs * math.sin(chihalf) - aW * math.cos(chihalf)
+        if self.showInfos:
+            print('INFO: analyser #{0:.0f}-#{1:.0f} (edge-to-edge) = {2:.4f} {3}'.format(aN, aN-1, aDist, self.uDist))
+            print('INFO: delta chi = {0:.4f} deg'.format(chi))
+        return aDist
+
+    def get_axoff(self, chi, Rs=None, aL=None):
+        """get aXoff for the pivot point"""
+        if Rs is None: Rs = self.Rs
+        if aL is None: aL = self.aL
+        return (Rs + aL) * math.sin(math.radians(chi))
+
     def get_sag_off(self, aXoff, Rs=None, aL=None, retAll=False):
-        """ analyser sagittal offset from the center one """
+        """analyser sagittal offset from the center one (Y-like direction)"""
         if Rs is None: Rs = self.Rs
         if aL is None: aL = self.aL
         rchi = self.get_chi(aXoff, Rs=Rs, aL=aL, inDeg=False)
         aXoff0 = aXoff - aL*math.sin(rchi)
         rchi0 = self.get_chi(aXoff0, Rs=Rs, aL=0, inDeg=False) # this is equal to rchi!
         SagOff0 = cs_h(aXoff0*2, Rs)
-        SagOff = SagOff0 - aL*math.cos(rchi) + aL
+        SagOff = SagOff0 - aL*math.cos(rchi)
         if self.showInfos:
             _tmpl_ihead = "INFO: {0:=^10} {1:=^12} {2:=^13}"
             _tmpl_idata = "INFO: {0:^ 10.5f} {1:^ 12.5f} {2:^ 13.5f}"
@@ -284,7 +361,9 @@ class RowlandCircle(object):
             return SagOff
 
     def get_sag_off_mots(self, aXoff, degRot=0., pivotSide=10., Rs=None, aL=None):
-        """motors positions for sagittal offset"""
+        """motors positions for sagittal offset
+        TODO: not working yet, sagoff also negative
+        """
         sagoffs = self.get_sag_off(aXoff, Rs=Rs, aL=aL, retAll=True)
         tS = sagoffs[2] / math.cos(math.radians(degRot))
         rS = sagoffs[0] - degRot
