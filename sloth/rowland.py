@@ -334,10 +334,83 @@ class RowlandCircle(object):
         return aDist
 
     def get_axoff(self, chi, Rs=None, aL=None):
-        """get aXoff for the pivot point"""
+        """get aXoff for the pivot point when chi is known (simple case)"""
         if Rs is None: Rs = self.Rs
         if aL is None: aL = self.aL
         return (Rs + aL) * math.sin(math.radians(chi))
+
+    def get_axoff_line(self, aXoffMin, SagOffMin, degRot=0., Rs=None, aL=None):
+        """get aXoff for the pivot point when only a linear trajectory is known
+
+        Description
+        -----------
+        
+        The local sagittal cartesian coordinate system is assumed: the
+        origin is at the pivot point of the centre analyser, the
+        abscissa is pointing toward the center of the sagittal circle
+        and the ordinate is pointing on the right side when looking in
+        the abscissa direction. In the following is given the solution
+        of the linear equations system consisting in the interception
+        of the sagittal circle with the linear trajectory of the pivot
+        point, that is:
+
+        (x-Rs-aL)^2 + y^2 - (Rs+aL)^2 = 0
+        x = x0 - d*cos(phi)
+        y = y0 + d*sin(phi)
+        
+        where:
+
+        x is SagOff
+        y is aXoff
+        x0, y0 is SagOffMin, aXoffMin at minimum Rs
+        phi is degRot
+
+        d is the distance of x, y from x0, y0 on the local polar
+        coordinate system of the pivot point
+
+        Parameters
+        ----------
+
+        aXoffMin, SagOffMin : float
+
+                              coordinates of the minimum position of
+                              the pivot point on the linear trajectory
+                              on the sagittal plane.                              
+
+        """
+        if Rs is None: Rs = self.Rs
+        if aL is None: aL = self.aL
+        y0 = aXoffMin
+        x0 = SagOffMin
+        phi = math.radians(degRot)
+        if (phi == 0):
+            if self.showInfos:
+                print('INFO: simple case where aXoff is constant at aXoffMin')
+                print('INFO: aXoffMin = {0:.5f}'.format(aXoffMin))
+            return aXoffMin
+        sinphi = math.sin(phi)
+        cosphi = math.cos(phi)
+        a = 1 #sinphi**2 + cosphi**2
+        b = -2*x0*cosphi + 2*Rs*cosphi + 2*y0*sinphi + 2*aL*cosphi
+        c = x0**2 + y0**2 - 2*Rs*x0 - 2*aL*x0
+        #solutions to: a*y**2 + b*y + c = 0
+        # 
+        y1 = (-b + math.sqrt(b**2 - 4*a*c)) / (2*a) #good solution!
+        y2 = (-b - math.sqrt(b**2 - 4*a*c)) / (2*a)
+        if self.showInfos:
+            #just to check one is always zero
+            print('INFO: two solutions for polar distance d:')
+            print('INFO: 1 = {0:.5f} (good)'.format(y1))
+            print('INFO: 2 = {0:.5f} (bad)'.format(y2))
+        aXoff1 = y1*sinphi + aXoffMin
+        SagOff1 = SagOffMin - y1*cosphi
+        aXoff2 = y2*sinphi + aXoffMin
+        SagOff2 = SagOffMin - y2*cosphi
+        if self.showInfos:
+            print('INFO: aXoffMin = {0:.5f}, SagOffMin = {1:.5f}, degRot = {2:.3f}'.format(aXoffMin, SagOffMin, degRot))
+            print('INFO: aXoff1 = {0:.5f}, SagOff1 = {1:.5f}'.format(aXoff1, SagOff1))
+            print('INFO: aXoff2 = {0:.5f}, SagOff2 = {1:.5f}'.format(aXoff2, SagOff2))
+        return aXoff1
 
     def get_sag_off(self, aXoff, Rs=None, aL=None, retAll=False):
         """analyser sagittal offset from the center one (Y-like direction)"""
@@ -345,10 +418,11 @@ class RowlandCircle(object):
         if aL is None: aL = self.aL
         rchi = self.get_chi(aXoff, Rs=Rs, aL=aL, inDeg=False)
         aXoff0 = aXoff - aL*math.sin(rchi)
-        rchi0 = self.get_chi(aXoff0, Rs=Rs, aL=0, inDeg=False) # this is equal to rchi!
+        rchi0 = self.get_chi(aXoff0, Rs=Rs, aL=0, inDeg=False) #to check this is equal to rchi!
         SagOff0 = cs_h(aXoff0*2, Rs)
-        SagOff = SagOff0 - aL*math.cos(rchi)
+        SagOff = SagOff0 - aL*math.cos(rchi) + aL
         if self.showInfos:
+            print("INFO: === surface (0) vs pivot (aL={0:.0f}) ===".format(aL))
             _tmpl_ihead = "INFO: {0:=^10} {1:=^12} {2:=^13}"
             _tmpl_idata = "INFO: {0:^ 10.5f} {1:^ 12.5f} {2:^ 13.5f}"
             print(_tmpl_ihead.format('Chi', 'aXoff', 'SagOff'))

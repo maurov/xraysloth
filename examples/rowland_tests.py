@@ -9,10 +9,7 @@ __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2014"
-__version__ = "0.0.4"
-__status__ = "in progress"
-__date__ = "Oct 2014"
+__year__ = "2014--2015"
 
 import sys
 from __init__ import _libDir
@@ -99,15 +96,19 @@ def testDetMove(Rm=510):
     
 def testSagFocus(d=dSi111):
     """not finished yet!"""
+    #first get the minimum position
     t0 = RcHoriz(Rm=250., theta0=35., d=d, aW=25., aWext=31.0266, aL=45.)
     c0 = t0.get_chi2(5.)
     d0 = t0.get_ana_dist(c0, 5.)
     s0 = t0.get_axoff(c0)
     sag0 = t0.get_sag_off(s0, retAll=True)
-    #horizontal case
-    t1 = RcHoriz(Rm=500., theta0=85., d=d, aW=25., aL=45.)
-    sag1 = t1.get_sag_off(sag0[1], retAll=True)
-    return t0, t1
+    t0.aXoffMin = sag0[1]
+    t0.SagOffMin = sag0[2]
+    #move theta and get new pivot point position
+    t0.Rm = 510.
+    t0.set_theta0(85.)
+    s1 = t0.get_axoff_line(t0.aXoffMin, t0.SagOffMin, degRot=35.)
+    return t0
     
 if __name__ == "__main__":
     #pass
@@ -115,5 +116,6 @@ if __name__ == "__main__":
     #dres = testChiOpt()
     #testAzOff(0.5)
     #dres = testDetMove()
-    t0, t1 = testSagFocus()
+    import math
+    t0 = testSagFocus()
     
