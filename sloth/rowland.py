@@ -394,11 +394,9 @@ class RowlandCircle(object):
         b = -2*x0*cosphi + 2*Rs*cosphi + 2*y0*sinphi + 2*aL*cosphi
         c = x0**2 + y0**2 - 2*Rs*x0 - 2*aL*x0
         #solutions to: a*y**2 + b*y + c = 0
-        # 
         y1 = (-b + math.sqrt(b**2 - 4*a*c)) / (2*a) #good solution!
         y2 = (-b - math.sqrt(b**2 - 4*a*c)) / (2*a)
         if self.showInfos:
-            #just to check one is always zero
             print('INFO: two solutions for polar distance d:')
             print('INFO: 1 = {0:.5f} (good)'.format(y1))
             print('INFO: 2 = {0:.5f} (bad)'.format(y2))
