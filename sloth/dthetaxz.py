@@ -7,12 +7,10 @@ Analytical expression of $\Delta \theta (x, z)$ from Wittry
 
 __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
+__credits__ = ""
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2013-2014"
-__version__ = "0.1.3"
-__status__ = "in progress"
-__date__ = "Aug 2014"
+__year__ = "2011-2015"
 
 import sys, os
 import math

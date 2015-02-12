@@ -17,10 +17,7 @@ __email__ = "mauro.rovezzi@gmail.com"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __owner__ = "Mauro Rovezzi"
 __organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2011-2014"
-__version__ = "0.0.1"
-__status__ = "Alpha"
-__date__ = "Oct 2014"
+__year__ = "2011-2015"
 
 import os, sys
 import numpy as np

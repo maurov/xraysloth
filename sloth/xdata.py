@@ -4,18 +4,12 @@
 """
 Simple utility to retrieve x-ray data from external libraries/databases
 
-
 Available x-ray libraries/dbs
 ==============================
 
 * `xraylib <https://github.com/tschoonj/xraylib>`_
 * ``xraydb_plugin.py`` in `Larch <https://github.com/xraypy/xraylarch>`_
 * ``Elements`` in `PyMca <https://github.com/vasole/pymca>`_
-
-TODO
-====
-
-- move here '_core_width()' from convolution1D.py
 
 """
 __author__ = "Mauro Rovezzi"
@@ -24,10 +18,7 @@ __credits__ = ""
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
 __owner__ = "Mauro Rovezzi"
-__year__ = "2013-2014"
-__version__ = "0.0.2"
-__status__ = "in progress"
-__date__ = "Sept 2014"
+__year__ = "2011--2015"
 
 import os, sys
 import numpy as np

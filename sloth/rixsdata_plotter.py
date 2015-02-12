@@ -19,10 +19,7 @@ __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2011-2014"
-__version__ = "0.0.2"
-__status__ = "Alpha"
-__date__ = "Oct 2014"
+__year__ = "2011-2015"
 
 import sys, os, copy
 import matplotlib.pyplot as plt

@@ -19,6 +19,7 @@ __credits__ = ""
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
 __owner__ = "Mauro Rovezzi"
+__year__ = "2014-2015"
 
 import os, sys
 

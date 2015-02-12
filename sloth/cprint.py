@@ -8,9 +8,7 @@ __email__ = "mauro.rovezzi@gmail.com"
 __credits__ = 'ESRF beamline control unit'
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
-__version__ = "0.0.1"
-__status__ = "Alpha"
-__date__ = "November 2013"
+__year__ = "2011-2015"
 
 # settings
 CPRINT_PAR = {}

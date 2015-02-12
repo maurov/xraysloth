@@ -18,10 +18,8 @@ __credits__ = ""
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __owner__ = "Mauro Rovezzi"
 __organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2013-2014"
-__version__ = "0.0.1"
-__status__ = "Alpha"
-__date__ = "Oct 2014"
+__year__ = "2011-2015"
+
 
 ### IMPORTS ###
 import os, sys

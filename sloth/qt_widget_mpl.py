@@ -11,10 +11,7 @@ __credits__ = ""
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
 __owner__ = "Mauro Rovezzi"
-__year__ = "2014"
-__version__ = "0.0.1"
-__status__ = "in progress"
-__date__ = "Dec 2014"
+__year__ = "2011-2015"
 
 import os, sys
 import numpy as np
