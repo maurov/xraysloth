@@ -12,10 +12,7 @@ __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2013-2014"
-__version__ = "0.1.3"
-__status__ = "in progress"
-__date__ = "Aug 2014"
+__year__ = "2013-2015"
 
 import sys
 from __init__ import _libDir
@@ -23,7 +20,6 @@ sys.path.append(_libDir)
 
 from dthetaxz import dThetaXZ, mapCase2Num, mapNum2Case, getMeshMasked, getDthetaDats, writeScanDats
 from dthetaxz_plot import plotEffScatt, plotScanThetaFile
-
 # plot011
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
@@ -36,7 +32,7 @@ def test009():
     cases = ['Jn', 'Js', 'SphJn', 'TorJs']
     casesLabs = ['1. Johann', '2. Johansson', '3. Spherical Jn', '4. Toroidal Js']
     angles = [35,55,75]
-    plotEffScatt(mxx1, mzz1, wrc=wrc, cases=cases, angles=angles, nlevels=30, plotMask=True, absWrc=False, casesLabels=casesLabs, xFigSize=8*150, yFigSize=4.3*150, figName='test009')
+    plotEffScatt(mxx1, mzz1, wrc=wrc, cases=cases, angles=angles, nlevels=30, plotMask=True, absWrc=False, casesLabels=casesLabs, xyFigSize=(8*150, 4.3*150), figName='test009')
 
 def test009b():
     """ effective scattering figure (updt: 2014-08-21) """
@@ -45,7 +41,7 @@ def test009b():
     cases = ['Jn', 'Js', 'SphJn', 'TorJs', 'JsFocus']
     casesLabs = ['1. Johann', '2. Johansson', '3. Spherical Jn', '4. Toroidal Js', '5. Gen. Js focus']
     angles = [35,55,75]
-    plotEffScatt(mxx1, mzz1, wrc=wrc, cases=cases, casesLabels=casesLabs, angles=angles, nlevels=30, plotMask=True, absWrc=False, xFigSize=8.3*150, yFigSize=3.7*150, figName='test009b', fontSize=9, colSpan=2, xyTicks=0.1)
+    plotEffScatt(mxx1, mzz1, wrc=wrc, cases=cases, casesLabels=casesLabs, angles=angles, nlevels=30, plotMask=True, absWrc=False, xyFigSize=(8.3*150, 3.7*150), figName='test009b', fontSize=9, colSpan=2, xyTicks=0.1)
 
 def test009c(retDats=False, showPlot=True):
     """ effective scattering figure (updt: 2014-09-03) """
@@ -55,16 +51,49 @@ def test009c(retDats=False, showPlot=True):
     casesLabs = ['1. Johann', '2. Johansson', '3. Spherical Jn', '4. Toroidal Js', '5. Gen. Js focus']
     angles = [15,45,75]
     if showPlot:
-        plotEffScatt(mxx1, mzz1, wrc=wrc, cases=cases, casesLabels=casesLabs, angles=angles, nlevels=30, plotMask=True, absWrc=False, xFigSize=8.3*150, yFigSize=3.7*150, figName='test009c', fontSize=9, colSpan=2, xyTicks=0.1)
+        plotEffScatt(mxx1, mzz1, wrc=wrc, cases=cases, casesLabels=casesLabs, angles=angles, nlevels=30, plotMask=True, absWrc=False, xyFigSize=(8.3*150, 3.7*150), figName='test009c', fontSize=9, colSpan=2, xyTicks=0.1)
     if retDats:
         return getDthetaDats(mxx1, mzz1, wrc=wrc, cases=cases, angles=angles)
-        
+
+def test009d():
+    """effective scattering figure (updt: 2015-02-12) """
+    wrc = 1.25E-4
+    cases = ['SphJn', 'Js', 'TorJs']
+    casesLabs = ['1. Spherical', '2. Johansson', '3. Toroidal Js']
+    angles = [35,55,75]
+    rd = 500. #bending radius
+    msks = ['circular', 'rectangular']
+    mxx1, mzz1 = getMeshMasked(mask=msks[0], r1p=rd, cryst_x=50., cryst_z=50., csteps=500j)
+    mxx2, mzz2 = getMeshMasked(mask=msks[1], r1p=rd, cryst_x=50., cryst_z=12.5, csteps=500j)
+    mzz3, mxx3 = getMeshMasked(mask=msks[1], r1p=rd, cryst_x=50., cryst_z=17.5, csteps=500j)
+    mxx4, mzz4 = getMeshMasked(mask=msks[1], r1p=rd, cryst_x=50., cryst_z=25., csteps=500j)
+
+    #all circular
+    plotEffScatt(mxx1, mzz1, wrc=wrc, cases=cases, casesLabels=casesLabs, angles=angles,\
+                 xlabel=r'x, sag. (R$_{1}^{\prime}$)', ylabel=r'z, mer. (R$_{1}^{\prime}$)',
+                 nlevels=30, xyFigHalfRange=0.1,\
+                 plotMask=True, plotVert=True, absWrc=False,\
+                 xyFigSize=(6.0*150, 4.0*150), xylab=(0.04, 0.96),\
+                 figName='{0}mm.{1}'.format(int(rd), msks[0]), fontSize=9, colSpan=2, xyTicks=0.1)
+
+    #js rect
+    lmxx = [mxx3, mxx2, mxx4]
+    lmzz = [mzz3, mzz2, mzz4]
+    plotEffScatt(lmxx, lmzz, wrc=wrc, cases=cases, casesLabels=casesLabs, angles=angles,\
+                 xlabel=r'x, sag. (R$_{1}^{\prime}$)', ylabel=r'z, mer. (R$_{1}^{\prime}$)',
+                 nlevels=30, xyFigHalfRange=0.1,\
+                 plotMask=True, plotVert=True, absWrc=False,\
+                 xyFigSize=(6.0*150, 4.0*150), xylab=(0.04, 0.96),\
+                 figName='{0}mm.{1}'.format(int(rd), msks[1]), fontSize=9, colSpan=2, xyTicks=0.1)
+    
+    raw_input('Press ENTER to close figures')
+     
 def test010():
     """ multiple effective scattering figures (updt: 2014-06-29) """
     for rd in [1000., 500.]:
         for msk, cx, cz in zip(['circular', 'rectangular'], [50., 40.], [50., 12.5]):
             mxx1, mzz1 = getMeshMasked(mask=msk, r1p=rd, cryst_x=cx, cryst_z=cz, csteps=500j)
-            plotEffScatt(mxx1, mzz1, wrc=1E-4, cases=['Johansson', 'Spherical Jn', 'Spherical Js', 'Toroidal Js'], angles=[35,55,75], nlevels=30, plotMask=True, absWrc=False, figName='{0}mm.{1}'.format(int(rd), msk), xyFigHalfRange=0.1, xFigSize=8*150, yFigSize=4.3*150)
+            plotEffScatt(mxx1, mzz1, wrc=1E-4, cases=['Johansson', 'Spherical Jn', 'Spherical Js', 'Toroidal Js'], angles=[35,55,75], nlevels=30, plotMask=True, absWrc=False, figName='{0}mm.{1}'.format(int(rd), msk), xyFigHalfRange=0.1, xyFigSize=(8*150, 4.3*150))
 
 def plotDats011(_d):
     """ buggy """
@@ -215,7 +244,7 @@ def test013(retDats=True):
         return d
 
 if __name__ == '__main__':
-    pass
+    #pass
     ### TESTS ###
     # uncomment at your convenience
 
@@ -236,3 +265,5 @@ if __name__ == '__main__':
 
     #
     #mxx1, mzz1 = test009c(retDats=True, showPlot=False)
+    test009d()
+

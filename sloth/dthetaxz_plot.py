@@ -9,10 +9,7 @@ __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2013-2014"
-__version__ = "0.1.3"
-__status__ = "in progress"
-__date__ = "Aug 2014"
+__year__ = "2013-2015"
 
 import sys, os
 import numpy as np
@@ -26,61 +23,121 @@ from matplotlib.ticker import MaxNLocator, AutoLocator, MultipleLocator
 from dthetaxz import dThetaXZ, mapCase2Num, mapNum2Case, getMeshMasked, getDthetaDats, writeScanDats
 from specfiledata import SpecfileData
 
-def plotEffScatt(xx, zz, wrc=1.25E-4,
-                 cases=['Johann', 'Johansson', 'Spherical plate', 'Wittry'], casesLabels=None,
-                 angles=[15, 45, 75], xyFigHalfRange=None, xyTicks=0.1, figName='fig1',
-                 xFigSize=10*150, yFigSize=6*150, figDpi=150, fontSize=8, nlevels=15, colSpan=2,
-                 plotMask=True, absWrc=False, cbarShow=True, cbarTicks=2.5E-5):
+def plotEffScatt(xx, zz, wrc=1.25E-4,\
+                 cases=['Johann', 'Johansson', 'Spherical plate', 'Wittry'], casesLabels=None,\
+                 angles=[15, 45, 75], xyFigHalfRange=None, xyTicks=0.1,\
+                 xlabel=r'x, mer. (R$_{m}^{\prime}$)', ylabel=r'z, sag. (R$_{m}^{\prime}$)',\
+                 figName='fig1', xyFigSize=(10*150, 6*150), figDpi=150, fontSize=8,\
+                 nlevels=15, colSpan=2, xylab=(0.025, 0.97), ylabshift=-0.3,\
+                 plotMask=True, plotVert=False, absWrc=False, cbarShow=True, cbarTicks=2.5E-5):
     """plots the effective scattering angle given a masked array
     
     Parameters
     ----------
-    xx, zz : 2D masked arrays of floats - dThetaXZ() is calculated
-             over them
-    w : float, maximum accepted angular range [1.25E-4]
-    cases : list of str, accepted cases by dThetaXZ (the figure nicely
-            shows for 4 items)
-    casesLabels : list of str,
-                  labels for the cases [None] (if none, it takes cases strings)
-    angles : list of floats, theta angles (the figure nicely shows for
-             3 items)
-    figName : str, name of the figure ['fig1']
+    xx, zz : 2D masked arrays of floats
+             dThetaXZ() is calculated over them
+             
+    w : float, 1.25E-4
+        maximum accepted angular range
+        
+    cases : list of str, ['Johann', 'Johansson', 'Spherical plate', 'Wittry']
+            accepted cases by dThetaXZ (tip: nicely shows for 4 items)
+            
+    casesLabels : list of str, None
+                  labels for the cases (if none, it takes cases
+                  strings)
 
-    xyFigHalfRange : None or float, if given, set figure dimensions in
-                     units of r1p (crystal bending radius) and shows a
-                     reference circle with this radius [None]
+    angles : list of floats, [15, 45, 75]
+             theta angles (tip: nicely shows for 3 items)
 
-    xyTicks : float, spacing between major ticks (labels) in x and y - units of r1p [0.05]
+    figName : str, 'fig1'
+              name of the figure
 
-    xFigSize, yFigSize : int or float, x, y size of the figure
-                         [10*dpi, 6*dpi]
-    figDpi : int, figure resolution [150]
-    nlevels : int, number of color levels [15]
-    colSpan : int, number of columns to span for each subplot [2]
-    plotMasks : boolean, to show the mask [True]
-    absWrc : boolean, to show absolute $\Delta \theta$ [False]
-    cbarShow : boolean, to show the color bar [True]
-    cbarTicks : float, spacing between color bar ticks [2.5E-5]
+    xyFigHalfRange : float, None
+                     set figure dimensions in units of r1p (crystal
+                     bending radius) and shows a reference circle with
+                     this radius
+
+    xyTicks : float, 0.1
+              spacing between major ticks (labels) in x and y - units
+              of r1p
+
+    xlabel : str, r'x, mer. (R$_{m}^{\prime}$)'
+             label x axis
+
+    ylabel : str, r'z, sag. (R$_{m}^{\prime}$)'
+             label y axis
+
+    xyFigSize : list of int or floats, [10*dpi, 6*dpi]
+                x, y size of the figure
+    
+    figDpi : int, 150
+             figure resolution
+
+    fontSize : int, 8
+               
+             
+    nlevels : int, 15
+              number of color levels
+    
+    colSpan : int, 2
+              number of columns to span for each subplot
+
+    xylab : tuple of floats, (0.025, 0.97)
+            position of the angles label (showing theta) in 'figure
+            fraction' units
+
+    xylabshift : float, -0.3
+                 shift ('figure fraction' units) xylab[1] each subplot
+    
+    plotMask : boolean, True
+               to show the mask
+
+    plotVert: boolean, False
+              plot vertical scattering
+    
+    absWrc : boolean, False
+             to show absolute $\Delta \theta$
+    
+    cbarShow : boolean, True
+               to show the color bar
+    
+    cbarTicks : float, 2.5E-5
+                spacing between color bar ticks
 
     Returns
     -------
     None
 
     """
+    plt.ion()
     plt.rcParams['font.size'] = fontSize
     plt.rcParams['text.usetex'] = True
+    #check if there is a common or separated grid for each case
+    if (type(xx) is list) and (type(zz) is list):
+        if (len(xx) == len(cases)) and (len(zz) == len(cases)):
+            hasMasks = True
+            _xx = xx[0]
+            _zz = zz[0]
+    else:
+        hasMasks = False
+        _xx = xx
+        _zz = zz
+    extent = (_xx.min(), _xx.max(), _zz.min(), _zz.max())
     norm = cm.colors.Normalize(vmin=-2*wrc, vmax=2*wrc)
-    extent = (xx.min(), xx.max(), zz.min(), zz.max())
     levels = np.linspace(-wrc, wrc, nlevels)
-    fig = plt.figure(num=figName, figsize=(xFigSize/figDpi, yFigSize/figDpi), dpi=figDpi)
+    fig = plt.figure(num=figName, figsize=(xyFigSize[0]/figDpi, xyFigSize[1]/figDpi), dpi=figDpi)
     gs = gridspec.GridSpec(len(angles), colSpan*len(cases)+1) #3x3+1 grid +1 is for the colorbar
-    ylab = 0.97
-    ylabshift = -0.3
+    xlab = xylab[0]
+    ylab = xylab[1]
     if casesLabels is None:
         casesLabels = cases
     for th, gsx in zip(angles, range(len(angles))):
-        for cs, cl, gsy in zip(cases, casesLabels, range(colSpan*len(cases))[::colSpan]):
-            dth = dThetaXZ(xx, zz, th, case=cs)
+        for ic, (cs, cl, gsy) in enumerate(zip(cases, casesLabels, range(colSpan*len(cases))[::colSpan])):
+            if hasMasks:
+                _xx = xx[ic]
+                _zz = zz[ic]
+            dth = dThetaXZ(_xx, _zz, th, case=cs)
             if absWrc:
                 mdth = ma.masked_where(np.abs(dth) > wrc, dth)
             else:
@@ -91,8 +148,14 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,
                 gsplt.set_ylim(-xyFigHalfRange, xyFigHalfRange)
                 refCircle = plt.Circle((0.,0.), xyFigHalfRange, color='w', ec='k', zorder=0)
                 gsplt.add_artist(refCircle)
-            cntf = gsplt.contourf(xx, zz, mdth, levels, cmap=cm.get_cmap(cm.RdYlGn, len(levels)-1), norm=norm)
-            #gsplt.imshow(zz, origin='lower', extent=extent, cmap=cm.RdBu, norm=norm)
+            if plotVert:
+                _xxplot = _zz
+                _zzplot = _xx
+            else:
+                _xxplot = _xx
+                _zzplot = _zz
+            cntf = gsplt.contourf(_xxplot, _zzplot, mdth, levels, cmap=cm.get_cmap(cm.RdYlGn, len(levels)-1), norm=norm)
+            #gsplt.imshow(_zzplot, origin='lower', extent=extent, cmap=cm.RdBu, norm=norm)
             # gsplt.xaxis.set_major_locator(MaxNLocator(4))
             # gsplt.xaxis.set_minor_locator(MaxNLocator(5))
             # gsplt.yaxis.set_major_locator(MaxNLocator(4))
@@ -100,16 +163,19 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,
             gsplt.xaxis.set_major_locator(MultipleLocator(xyTicks))
             gsplt.yaxis.set_major_locator(MultipleLocator(xyTicks))
             if plotMask:
-                mm = ma.ones(zz.shape)
-                mm.mask = np.logical_not(zz.mask)
-                gsplt.contourf(xx, zz, mm, 1, cmap=cm.Greys)
+                mm = ma.ones(_zzplot.shape)
+                mm.mask = np.logical_not(_zzplot.mask)
+                gsplt.contourf(_xxplot, _zzplot, mm, 1, cmap=cm.Greys)
             if gsx == 0:
                 gsplt.set_title(cl)
             if gsx == 2:
-                gsplt.set_xlabel(r'x, mer. (R$_{m}^{\prime}$)')
+                gsplt.set_xlabel(xlabel)
             if gsy == 0:
-                gsplt.set_ylabel(r'z, sag. (R$_{m}^{\prime}$)')
-                gsplt.annotate(r'{0}$^\circ$'.format(th), horizontalalignment='center', verticalalignment='center', fontsize=plt.rcParams['font.size'], bbox=dict(boxstyle="round4", fc="w"), xy=(0.025, ylab), xycoords='figure fraction')
+                gsplt.set_ylabel(ylabel)
+                gsplt.annotate(r'{0}$^\circ$'.format(th),\
+                               horizontalalignment='center', verticalalignment='center',
+                               fontsize=fontSize+2, bbox=dict(boxstyle="round4", fc="w"),
+                               xy=(xlab, ylab), xycoords='figure fraction')
                 ylab += ylabshift
     # colorbar
     if cbarShow:
@@ -120,7 +186,6 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,
         cb.set_label(r'$|\Delta \theta|$ below given threshold of {:.3E}'.format(wrc))
     plt.tight_layout()
     plt.show()
-
 
 def plotScanThetaFile(fname, scans, signal='eres', xlims=None, ylims=None, ylog=True,
                       yscale=1, caseScale='Js', plotDeeShells=True, showLegend=True,
@@ -207,6 +272,6 @@ def plotScanThetaFile(fname, scans, signal='eres', xlims=None, ylims=None, ylog=
     plt.show()
 
 if __name__ == '__main__':
-    # TESTS in xrayspina/examples/dthetaxz_tests.py
+    # TESTS in xraysloth/examples/dthetaxz_tests.py
     pass
 
