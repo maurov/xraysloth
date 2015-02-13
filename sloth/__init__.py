@@ -13,14 +13,15 @@ Naming
 __module__ = "sloth"
 __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
+__credits__ = ""
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2011-2014"
+__year__ = "2011-2015"
 __owner__ = "Mauro Rovezzi"
 __maintainer__ = "Mauro Rovezzi"
 __version__ = "0.0.1"
 __status__ = "work in progress"
-__date__ = "Dec 2014"
+__date__ = ""
 
 import os, sys
 _libDir = os.path.dirname(os.path.realpath(__file__))

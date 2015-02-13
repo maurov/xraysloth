@@ -48,13 +48,14 @@ class SwSource(object):
     def get_instance(self):
         return self.sw_src
 
-class FluoSource(SwSource):
+class GeoSource(SwSource):
     
     def __init__(self):
-        """mimic a divergent fluorescence source
-        default: point source w conical angular divergence w uniform energy distribution
+        """geometric source: mimic a divergent fluorescence source
+        default: point source w conical angular divergence w uniform
+        energy distribution
         """
-        super(FluoSource, self).__init__()
+        super(GeoSource, self).__init__()
         
         self.set_sampling()
         self.set_spatial_type()
