@@ -54,7 +54,7 @@ class SwScreen(object):
         """
         self.sw_scr = self.create_instance()
 
-        self.set_output_files(fwrite=3, f_angle=0)
+        self.set_output_files(fwrite=0, f_angle=0)
 
         n_screen = 1
         i_screen = np.array([1, 0, 0, 0, 0, 0, 0, 0, 0, 0])

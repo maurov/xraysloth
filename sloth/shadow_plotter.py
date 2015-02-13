@@ -345,7 +345,7 @@ class SwPlot(object):
 
         #2D plot
         self.plot_2d = MaskImageWidget(colormap=False, selection=False, imageicons=False, aspect=False)
-        self.plot_2d.setDefaultColormap(1, False)
+        self.plot_2d.setDefaultColormap(6, False)
         self.plot_2d.setMinimumHeight(350)
         self.plot_2d.setMaximumHeight(350)
         self.plot_2d.setMaximumWidth(550)
@@ -412,7 +412,7 @@ class SwPlot(object):
 
     def plot_histo(self, beam, col, xrange=None, yrange=None, nbins=100, nolost=0, ref=0, fwrite=0,\
                    title='HISTO1', xtitle=None, ytitle=None, calfwhm=1, noplot=1,\
-                   orientation='vertical', plotxy=0, plotWin=None):
+                   orientation='vertical', plotxy=0, replace=True, plotWin=None):
         """histogram plotter
 
         Parameters
@@ -474,7 +474,7 @@ class SwPlot(object):
         plotWin.setGraphYLabel(ytitle)
         plotWin.setDrawModeEnabled(True, 'rectangle')
         plotWin.setZoomModeEnabled(True)
-        plotWin.addCurve(bins[1:], histogram, title, symbol=',', color='blue', replace=True) #'+', '^', ','
+        plotWin.addCurve(bins[1:], histogram, title, symbol=',', color='blue', replace=replace) #'+', '^', ','
         return fwhm
 
     def plotxy(self, beam, cols1, cols2, nbins=101, nbins_h=100, level=5,\

@@ -49,7 +49,7 @@ class SwOE(object):
     def get_instance(self):
         return self.sw_oe
 
-    def set_output_files(self, fwrite=3, f_angle=0):
+    def set_output_files(self, fwrite=0, f_angle=0):
         """ optional file output
 
         Parameters
@@ -61,6 +61,7 @@ class SwOE(object):
                  1 -> mirror file  only -- mirr
                  2 -> image file only -- star
                  3 -> none
+                 
         f_angle : int [0]
                   write out incident/reflected angles [angle.xx]
                   0 -> no
@@ -119,7 +120,7 @@ class PlaneCrystal(SwOE):
     def __init__(self):
         super(PlaneCrystal, self).__init__()
         self.create_instance()
-        self.set_output_files(fwrite=3, f_angle=0)
+        self.set_output_files(fwrite=0, f_angle=0)
         self.sw_oe.oe.unsetReflectivity()
 
     def create_instance(self):
@@ -244,7 +245,7 @@ class SphericalCrystal(PlaneCrystal):
         """
         super(SphericalCrystal, self).__init__()
         self.create_instance()
-        self.set_output_files(fwrite=3, f_angle=0)
+        self.set_output_files(fwrite=0, f_angle=0)
         self.sw_oe.oe.unsetReflectivity()
         # convex/concave
         if convex:

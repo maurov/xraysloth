@@ -281,7 +281,7 @@ class ShadowSpectro1(object):
         
         """
         self.rc = RcHoriz(**kws)
-        print 'init beam, src and oe1'
+        print('init beam, src and oe1')
         self.beam = ShadowLib.Beam()
         self.src = FluoSource() # ShadowLib.Source()
         #self.src.load('start.00')   
@@ -645,7 +645,7 @@ class ShadowSpectro1(object):
         try:
             sf = specfile.Specfile(fname)
         except:
-            print '{0} not found'.format(fname)
+            print('{0} not found'.format(fname))
             return
 
         scanno = kws.get('scanno', 1)
@@ -805,10 +805,10 @@ class ShadowSpectro1(object):
         None: set attributes to src and oe1
         """
         if not self.rc.d:
-            print 'Aborted: set the crystal d-spacing first'
+            print('Aborted: set the crystal d-spacing first')
             return
         elif not self.rc.Rm:
-            print 'Aborted: set the Rowland circle radius first'
+            print('Aborted: set the Rowland circle radius first')
             return
         else:
             self.rc.setTheta0(theta0)
