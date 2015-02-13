@@ -13,10 +13,7 @@ __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2013-2014"
-__version__ = "0.9.6"
-__status__ = "Beta"
-__date__ = "Aug 2014"
+__year__ = "2011-2015"
 
 import sys
 from __init__ import _libDir
@@ -27,7 +24,7 @@ from specfiledata import SpecfileData
 ### TESTS ###
 def test01():
     """ test get_scan method """
-    fname = os.path.join(_curDir, 'specfiledata_test.dat')
+    fname = os.path.join(_curDir, 'specfiledata_tests.dat')
     signal = 'zap_det_dtc'
     monitor = 'arr_I02sum'
     seconds = 'arr_seconds'
@@ -53,7 +50,7 @@ def test02(nlevels):
     """ test get_map method """
     import matplotlib.pyplot as plt
     import matplotlib.cm as cm
-    fname = os.path.join(_curDir, 'specfiledata_test.dat')
+    fname = os.path.join(_curDir, 'specfiledata_tests.dat')
     rngstr = '5:70'
     counter = 'arr_hdh_ene'
     motor = 'Spec.Energy'
@@ -82,7 +79,7 @@ def test02(nlevels):
 
 def test03():
     """ test get_mrg method """
-    fname = os.path.join(_curDir, 'specfiledata_test.dat')
+    fname = os.path.join(_curDir, 'specfiledata_tests.dat')
     signal = 'zap_det_dtc'
     monitor = 'arr_I02sum'
     seconds = 'arr_seconds'

@@ -5,7 +5,7 @@
 #      C:\Users\ME\larch\plugins or C:\Program Files\larch\plugins on Windows
 
 add_plugin('specfile')
-fname = "specfile_test.dat"
+fname = "specfile_tests.dat"
 counter = "arr_hdh_ene"
 signal = "zap_det_dtc"
 monitor = "arr_I02sum"

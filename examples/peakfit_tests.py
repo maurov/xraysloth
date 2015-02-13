@@ -7,10 +7,7 @@ __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2014"
-__version__ = "0.0.2"
-__status__ = "in progress"
-__date__ = "Sept 2014"
+__year__ = "2014-2015"
 
 import sys
 from __init__ import _libDir
@@ -45,7 +42,7 @@ def test_mock():
 def test_diffpat(fname=None):
     # tests on 'diff_pat.dat'
     if fname is None:
-        fname = os.path.join(_curDir, 'peakfit_test_diffpat.dat')
+        fname = os.path.join(_curDir, 'peakfit_tests_diffpat.dat')
     try:
         sf = specfile.Specfile(fname)
     except:
@@ -61,7 +58,7 @@ def test_diffpat(fname=None):
 def test_real(scanno, fname=None, noreturn=False):
     # tests on real data
     if fname is None:
-        fname = os.path.join(_curDir, 'peakfit_test_real.dat')
+        fname = os.path.join(_curDir, 'peakfit_tests_real.dat')
     try:
         sf = specfile.Specfile(fname)
     except:

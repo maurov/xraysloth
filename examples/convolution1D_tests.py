@@ -24,9 +24,9 @@ from convolution1D import lin_gamma, atan_gamma, conv
 
 if __name__ == '__main__':
 
-    fdat = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'convolution1D_test.dat')
+    fdat = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'convolution1D_tests.dat')
     dat = np.loadtxt(fdat)
-    fdat_ck = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'convolution1D_test_check.dat')
+    fdat_ck = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'convolution1D_tests_check.dat')
     dat_ck = np.loadtxt(fdat_ck)
 
     # e, f have the same index [n]
