@@ -49,7 +49,14 @@ except:
 from PyMca5.PyMcaGui.plotting.PlotWindow import PlotWindow
 from PyMca5.PyMcaGui.plotting.MaskImageWidget import MaskImageWidget
 
-    
+from PyQt4 import QtGui, uic
+### SLOTH ###
+from __init__ import _libDir
+sys.path.append(_libDir)
+uifile = os.path.join(_libDir, "shadow_plotter.ui")
+UiClass, BaseClass = uic.loadUiType(uifile)
+
+
 class ShadowPlotter(object):
     """ShadowPlotter: plotxy and histo1"""
     def __init__(self):
@@ -594,15 +601,54 @@ class SwPlot(object):
     #                                        _col1, _col2, _xrange, _yrange, _nolost,\
     #                                        _title, _xtitle, _ytitle)
     
+class SwPlotterMain(BaseClass, UiClass):
+
+    def __init__(self, parent=None):
+        super(SwPlotterMain, self).__init__(parent)
+        self.setupUi(self)
+        self.actionExit.triggered.connect(self.close)
+
+        #2D plot
+        self.plot_2d = MaskImageWidget(colormap=True, selection=False, imageicons=False, aspect=False)
+        self.plot_2d.setDefaultColormap(6, False)
+
+        #projection 2D plot
+        self.histo_x = PlotWindow(roi=False, control=False, position=True, plugins=False)
+        self.histo_x.setDefaultPlotLines(True)
+        self.histo_x.setUpdatesEnabled(True)
+        self.histo_x.setActiveCurveColor(color='black')
+
+        #projection 2D plot
+        self.histo_y = PlotWindow(roi=False, control=False, position=True, plugins=False)
+        self.histo_y.setDefaultPlotLines(True)
+        self.histo_y.setUpdatesEnabled(True)
+        self.histo_y.setActiveCurveColor(color='black')
+
+        #generic histogram (e.g. energy)
+        self.histo_z = PlotWindow(roi=False, control=False, position=True, plugins=False)
+        self.histo_z.setDefaultPlotLines(True)
+        self.histo_z.setUpdatesEnabled(True)
+        self.histo_z.setActiveCurveColor(color='black')
         
+        layout_img = QtGui.QVBoxLayout(self.image_plot)
+        layout_img.addWidget(self.plot_2d)
+        layout_hx = QtGui.QVBoxLayout(self.up_plot)
+        layout_hx.addWidget(self.histo_x)
+        layout_hy = QtGui.QVBoxLayout(self.right_plot)
+        layout_hy.addWidget(self.histo_y)
+        layout_hz = QtGui.QVBoxLayout(self.dia_plot)
+        layout_hz.addWidget(self.histo_z)
+
 if __name__ == '__main__':
     app = QCoreApplication.instance()
     if app is None:
         print('standart app instance')
         app = QApplication(sys.argv)
     
-    p = SwPlot()
-    p.box.show()
+    #p = SwPlot()
+    #p.box.show()
+    p = SwPlotterMain()
+    p.show()
 
     try:
         from IPython.lib.guisupport import start_event_loop_qt4
