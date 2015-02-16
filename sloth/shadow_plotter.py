@@ -225,7 +225,6 @@ class ShadowPlotter(object):
                            calfwhm=_calfwhm, noplot=_noplot,\
                            contour=_contour, level=_level)
 
-
     def histo1(self, *args, **kws):
         """wrapper to ShadowTools.histo1
         
@@ -328,16 +327,16 @@ class ShadowPlotter(object):
         -------
         None: sets self.h1e
         """
-        beam = args[0]
-        col = 11
-        nbins = kws.get('nbins', 500)
-        nolost = kws.get('nolost', 1)
-        ref = kws.get('ref', 1)
-        calfwhm = kws.get('calfwhm', 1)
-        noplot = kws.get('noplot', 1)
-        write = kws.get('write', 0)
-        return self.histo1(beam, col, nbins=nbins, nolost=nolost, ref=ref,\
-                           calfwhm=calfwhm, noplot=noplot, write=write)
+        _beam = args[0]
+        _col = 11
+        _nbins = kws.get('nbins', 500)
+        _nolost = kws.get('nolost', 1)
+        _ref = kws.get('ref', 1)
+        _calfwhm = kws.get('calfwhm', 1)
+        _noplot = kws.get('noplot', 1)
+        _write = kws.get('write', 0)
+        return self.histo1(_beam, _col, nbins=_nbins, nolost=_nolost, ref=_ref,\
+                           calfwhm=_calfwhm, noplot=_noplot, write=_write)
 
     def close_all_plots(self):
         """close all Matplotlib plots"""
