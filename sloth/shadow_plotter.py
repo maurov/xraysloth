@@ -358,7 +358,7 @@ class SwPlot(object):
         self.plot_2d.setMaximumWidth(550)
 
         #projection 2D plot
-        self.histo_x = PlotWindow(roi=False, control=False, position=False, plugins=False)
+        self.histo_x = PlotWindow(roi=False, control=False, position=True, plugins=False)
         self.histo_x.setDefaultPlotLines(True)
         self.histo_x.setUpdatesEnabled(True)
         self.histo_x.setActiveCurveColor(color='black')
@@ -366,7 +366,7 @@ class SwPlot(object):
         self.histo_x.setMaximumWidth(550)
 
         #projection 2D plot
-        self.histo_y = PlotWindow(roi=False, control=False, position=False, plugins=False)
+        self.histo_y = PlotWindow(roi=False, control=False, position=True, plugins=False)
         self.histo_y.setDefaultPlotLines(True)
         self.histo_y.setUpdatesEnabled(True)
         self.histo_y.setActiveCurveColor(color='black')
@@ -374,7 +374,7 @@ class SwPlot(object):
         self.histo_y.setFixedWidth(330)
 
         #generic histogram (e.g. energy)
-        self.histo_z = PlotWindow(roi=False, control=False, position=False, plugins=False)
+        self.histo_z = PlotWindow(roi=False, control=False, position=True, plugins=False)
         self.histo_z.setDefaultPlotLines(True)
         self.histo_z.setUpdatesEnabled(True)
         self.histo_z.setActiveCurveColor(color='black')

@@ -287,8 +287,8 @@ class SphericalCrystal(PlaneCrystal):
         
         cyl_ang : float, None
                   cylinder orientation [deg] CCW from X axis]
-                  0 -> meridional
-                  90. -> sagittal
+                  0 -> meridional curvature
+                  90. -> sagittal curvature
         """
         self.sw_oe.oe.setCylindric(cyl_ang=cyl_ang)
 
