@@ -39,12 +39,16 @@ __year__ = "2014-2015"
 import sys, os, copy, math
 import numpy as np
 
-_curDir = os.path.dirname(os.path.realpath(__file__))
-
-from orangecontrib.shadow.util.shadow_objects import ShadowOpticalElement, ShadowBeam
+from orangecontrib.shadow.util.shadow_objects import ShadowBeam
 
 #sloth
-sys.path.append('/home/mauro/utils/xraysloth/sloth')
+from __init__ import _libDir
+sys.path.append(_libDir)
+
+# ../xop/data
+_pardir = os.path.realpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.pardir))
+DATA_DIR = os.path.join(_pardir, 'xop', 'data')
+
 from rowland import RcHoriz
 from shadow_sources import GeoSource
 from shadow_oes import PlaneCrystal, SphericalCrystal
@@ -52,7 +56,7 @@ from shadow_screens import SwScreen
 from shadow_plotter import ShadowPlotter as sp
 from shadow_plotter import SwPlot
 
-class ShadowSpectro1(object):
+class SwSpectro1(object):
     """ Example of usage for shadow_objects in Orange-shadow"""
 
     def __init__(self, nrays=10000, seed=0, **kws):
@@ -84,7 +88,7 @@ class ShadowSpectro1(object):
         #self.src.set_angle_distr(fdistr=1, hdiv=(0.03, 0.03), vdiv=(0.045, 0.045)) #35 deg
         ene0 = self.rc.get_ene()
         
-        self.oe1.set_crystal(os.path.join(_curDir, "Si111.dat"), tune_auto=0)
+        self.oe1.set_crystal(os.path.join(DATA_DIR, "Si_111-E_1000_10000_50.shadow"), tune_auto=0)
         self.oe1.set_cylindrical(0)
         self.oe1.set_dimensions(fshape=1, params=np.array([4.,4.,1.25,1.25]))
         self.oe1.set_johansson(self.rc.Rm*2.) #crystal planes radius
@@ -113,7 +117,42 @@ class ShadowSpectro1(object):
         #self.plt.plot_histo(self.plt.get_instance(), 11, ref=23)
         #self.plt.infos = self.plt.plotxy(self.plt.get_instance(), 1, 3)
         self.plt.box.show()
-      
+
+    def update_divergence(self, fdistr=1, expand=1.2):
+        """adjust source divergence to new analyzer position (theta0 and p)
+
+        Parameters
+        ==========
+
+        fdistr : int, 1
+
+                 flag for angular distribution type
+                 1 flat
+                 (others not implemented yet!!!)
+
+        expand : float, 1.2
+
+                 empirical factor to apply a common expansion to the
+                 new calculated divergence
+        """
+        if fdistr == 1:
+            _hlp = abs(self.oe1.get_instance().oe.RLEN1)  # half-length pos
+            _hln = abs(self.oe1.get_instance().oe.RLEN2)  # half-length neg
+            _hwp = abs(self.oe1.get_instance().oe.RWIDX1) # half-width pos
+            _hwn = abs(self.oe1.get_instance().oe.RWIDX2) # half-width neg
+            _rth0 = self.rc.rtheta0
+            _pcm = self.rc.p # cm
+            _vdiv_pos = math.atan( (_hlp * math.sin(_rth0)) / (_pcm + _hlp * math.cos(_rth0) ) )
+            _vdiv_neg = math.atan( (_hln * math.sin(_rth0)) / (_pcm - _hln * math.cos(_rth0) ) )
+            _hdiv_pos = math.atan( (_hwp / _pcm) )
+            _hdiv_neg = math.atan( (_hwn / _pcm) )
+            _f = expand
+            self.src.set_angle_distr(fdistr=1, hdiv=(_hdiv_pos*_f, _hdiv_neg*_f), vdiv=(_vdiv_pos*_f, _vdiv_neg*_f))
+            return
+        else:
+            print('Not implemented yet!')
+            return
+    
 if __name__ == "__main__":
     from PyQt4.QtGui import QApplication
     from PyQt4.QtCore import QCoreApplication
@@ -124,7 +163,8 @@ if __name__ == "__main__":
         app = QApplication(sys.argv)
 
     #Si(111) at 55 deg
-    s = ShadowSpectro1(Rm=50., useCm=True, showInfos=True, d=3.1356268397363549, theta0=75.)
+    s = SwSpectro1(Rm=50., useCm=True, showInfos=True, d=3.1356268397363549, theta0=35.)
+    s.update_divergence(fdistr=1, expand=1.1)
     #s.src.sw_src.src.load('spectro-1411_start.src')
     #s.oe1.sw_oe.oe.load('spectro-1411_start.oe1')
     #s.det.sw_scr.oe.load('spectro-1411_start.det')
@@ -152,9 +192,9 @@ if __name__ == "__main__":
     pp.fp = pp.plotxy_footprint('rmir.01')
 
     print('===RESULTS===')
-    print('Source energy FWHM {0:.3f} eV'.format(fwhm_src))
-    print('OE1 energy FWHM {0:.3f} eV'.format(fwhm_oe1))
-    print('Bragg angle {0:.5f} deg'.format(s.rc.theta0))
+    print('Source energy FWHM {0:.3f} eV (50% intensity)'.format(fwhm_src))
+    print('OE1 energy FWHM {0:.3f} eV (50% intensity)'.format(fwhm_oe1))
+    print('Bragg angle {0:.2f} deg'.format(s.rc.theta0))
     print('Central energy {0:.5f} eV'.format(s.rc.get_ene()))
     print('Energy resolution {0:.3f}E-4'.format((fwhm_oe1/s.rc.get_ene())*1E4))
 

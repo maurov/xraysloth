@@ -54,6 +54,10 @@ sys.path.append(_libDir)
 uifile = os.path.join(_libDir, "shadow_plotter.ui")
 UiClass, BaseClass = uic.loadUiType(uifile)
 
+def _calcFWHM(h, binSize, factor=0.5):
+    """histogram custom FWHM (possibility to change the intensity 'factor')"""
+    t = np.where(h>max(h)*factor)
+    return binSize*(t[0][-1]-t[0][0]+1), t[0][-1], t[0][0]
 
 class ShadowPlotter(object):
     """ShadowPlotter: plotxy and histo1"""
@@ -462,7 +466,7 @@ class SwPlot(object):
             if not ytitle is None:  ytitle = ytitle + ' % ' + (stp.getLabel(ref-1))[0]
             histogram, bins = np.histogram(x[t], bins=nbins, range=xrange, weights=weight[t])
 
-        fwhm, tf, ti = stp.calcFWHM(histogram, bins[1]-bins[0])
+        fwhm, tf, ti = _calcFWHM(histogram, bins[1]-bins[0])
 
         bins = bins - ((np.max(x)/nbins)*0.5)
 
