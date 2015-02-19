@@ -37,8 +37,10 @@ except:
     pass
 
 # new plotter with ShadowPlot and PyMca
-from PyQt4.QtGui import QApplication, QWidget, QGridLayout, QGraphicsScene, QGraphicsView, QFrame
-from PyQt4.QtCore import Qt, QCoreApplication
+from PyQt4 import QtCore, QtGui, uic
+
+from PyMca5.PyMcaGui.plotting.PlotWindow import PlotWindow
+from PyMca5.PyMcaGui.plotting.MaskImageWidget import MaskImageWidget
 
 try:
     from orangecontrib.shadow.util.shadow_util import ShadowPlot
@@ -46,10 +48,6 @@ try:
 except:
     pass
 
-from PyMca5.PyMcaGui.plotting.PlotWindow import PlotWindow
-from PyMca5.PyMcaGui.plotting.MaskImageWidget import MaskImageWidget
-
-from PyQt4 import QtGui, uic
 ### SLOTH ###
 from __init__ import _libDir
 sys.path.append(_libDir)
@@ -381,29 +379,29 @@ class SwPlot(object):
         self.histo_z.setFixedHeight(350)
         self.histo_z.setFixedWidth(350)
         
-        scene = QGraphicsScene()
+        scene = QtGui.QGraphicsScene()
         item = scene.addWidget(self.histo_y)
         item.rotate(90)
         
-        view = QGraphicsView()
+        view = QtGui.QGraphicsView()
         view.setScene(scene)
         view.setFixedWidth(180)
         view.setFixedHeight(350)
-        view.setFrameStyle(QFrame.NoFrame)
-        view.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        view.setFrameStyle(QtGui.QFrame.NoFrame)
+        view.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
         
-        layout = QGridLayout()
+        layout = QtGui.QGridLayout()
         
         layout.addWidget(self.histo_x, 0, 0, 1, 1)
         layout.addWidget(self.histo_z, 0, 1, 1, 1)
-        #layout.addWidget(QWidget(), 0, 1, 1, 1) # box per la statistica
+        #layout.addWidget(QtGui.QWidget(), 0, 1, 1, 1) # box per la statistica
         layout.addWidget(self.plot_2d, 1, 0, 1, 1)
-        layout.addWidget(view, 1, 1, 1, 1, Qt.AlignBottom | Qt.AlignLeft)
+        layout.addWidget(view, 1, 1, 1, 1, QtCore.Qt.AlignBottom | QtCore.Qt.AlignLeft)
         
         layout.setColumnMinimumWidth(0, 550)
         layout.setColumnMinimumWidth(1, 350)
         
-        self.box = QWidget()
+        self.box = QtGui.QWidget()
         self.box.setLayout(layout)
         
         #self.box.show()
@@ -639,10 +637,10 @@ class SwPlotterMain(BaseClass, UiClass):
         layout_hz.addWidget(self.histo_z)
 
 if __name__ == '__main__':
-    app = QCoreApplication.instance()
+    app = QtCore.QCoreApplication.instance()
     if app is None:
         print('standart app instance')
-        app = QApplication(sys.argv)
+        app = QtGui.QApplication(sys.argv)
     
     #p = SwPlot()
     #p.box.show()
