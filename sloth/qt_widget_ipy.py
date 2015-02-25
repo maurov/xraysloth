@@ -22,9 +22,6 @@ __organization__ = "European Synchrotron Radiation Facility"
 __owner__ = "Mauro Rovezzi"
 __year__ = "2011-2015"
 
-# GLOBAL VARIABLES
-SLOTH_IPY_WELCOME = "Welcome to Sloth IPython console, version {0}\n".format(__version__)
-
 import os, sys
 import numpy as np
 import math
@@ -71,8 +68,10 @@ except:
     pass
 
 ### SLOTH ###
-from __init__ import _libDir
+from __init__ import _libDir, __version__
 sys.path.append(_libDir)
+
+SLOTH_IPY_WELCOME = "Welcome to Sloth IPython console, version {0}\n".format(__version__)
 
 #from genericutils import ipythonAutoreload
 
