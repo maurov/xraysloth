@@ -39,7 +39,7 @@ except:
 from PyQt4 import QtGui, uic
 
 ### SLOTH ###
-from __init__ import _libDir
+from __init__ import _libDir, __version__
 sys.path.append(_libDir)
 
 uifile = os.path.join(_libDir, "sloth.ui")

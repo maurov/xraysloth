@@ -142,6 +142,7 @@ class GeoSource(SwSource):
         Parameters
         ----------
         fdistr : int, 1
+                 flag for angular distribution type
                  1 flat
                  2 uniform *TODO*
                  3 gaussian *TODO*

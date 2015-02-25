@@ -77,8 +77,8 @@ def test009d():
                  figName='{0}mm.{1}'.format(int(rd), msks[0]), fontSize=9, colSpan=2, xyTicks=0.1)
 
     #js rect
-    lmxx = [mxx3, mxx2, mxx4]
-    lmzz = [mzz3, mzz2, mzz4]
+    lmxx = [mxx1, mxx2, mxx1]
+    lmzz = [mzz1, mzz2, mzz1]
     plotEffScatt(lmxx, lmzz, wrc=wrc, cases=cases, casesLabels=casesLabs, angles=angles,\
                  xlabel=r'x, sag. (R$_{1}^{\prime}$)', ylabel=r'z, mer. (R$_{1}^{\prime}$)',
                  nlevels=30, xyFigHalfRange=0.1,\
