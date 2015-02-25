@@ -56,7 +56,7 @@ except:
 def gaussian(x, cen=0, sigma=1):
     """1 dimensional gaussian: gaussian(x, cen, sigma)"""
     s2pi = math.sqrt(2*math.pi)
-    return ( 1. / (s2pi*sigma) ) * math.exp( -(1.0*x-cen)**2 / (2 * sigma**2) )
+    return ( 1. / (s2pi*sigma) ) * np.exp( -(1.0*x-cen)**2 / (2 * sigma**2) )
 
 def lorentzian(x, cen=0, sigma=1):
     """1 dimensional lorentzian: lorentzian(x, cen, sigma)"""
