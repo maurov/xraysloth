@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QWidget" name="mpl_widget" native="true"/>
+     <widget class="QWidget" name="plt_widget" native="true"/>
     </item>
     <item>
      <widget class="QWidget" name="ipy_widget" native="true"/>

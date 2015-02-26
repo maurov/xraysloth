@@ -38,11 +38,23 @@ except:
 
 from PyQt4 import QtGui, uic
 
+# PyMca
+HAS_PYMCA = False
+try:
+    from PyMca5.PyMcaGui import ScanWindow
+    HAS_PYMCA = True
+except ImportError:
+    try:
+        from PyMca import ScanWindow
+        HAS_PYMCA = True
+    except ImportError:
+        pass
+
 ### SLOTH ###
 from __init__ import _libDir
 sys.path.append(_libDir)
 
-uifile = os.path.join(_libDir, "sloth.ui")
+uifile = os.path.join(_libDir, "sloth_gui.ui")
 UiClass, BaseClass = uic.loadUiType(uifile)
 
 from qt_widget_mpl import MplCanvas, MplWidget
@@ -55,10 +67,21 @@ class SlothMain(BaseClass, UiClass):
         self.setupUi(self)
         self.actionExit.triggered.connect(self.close)
 
+        ipy_cons = IPyConsoleWidget()
         layout_ipy = QtGui.QVBoxLayout(self.ipy_widget)
-        layout_ipy.addWidget(IPyConsoleWidget())
-        #layout_mpl = QtGui.QVBoxLayout(self.mpl_widget)
+        layout_ipy.addWidget(ipy_cons)
+        #layout_mpl = QtGui.QVBoxLayout(self.plt_widget)
         #layout_mpl.addWidget(MplWidget())
+
+        if HAS_PYMCA:
+            scan_win = ScanWindow.ScanWindow()
+            scan_win.setDefaultPlotLines(True)
+            scan_win.setUpdatesEnabled(True)
+            scan_win.setActiveCurveColor(color='red')
+            layout_sw = QtGui.QVBoxLayout(self.plt_widget)
+            layout_sw.addWidget(scan_win)
+            # push it to the console
+            ipy_cons.ipy.push_variables({'pw':scan_win})
 
         self._fname = None
         

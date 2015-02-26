@@ -75,6 +75,24 @@ SLOTH_IPY_WELCOME = "Welcome to Sloth IPython console, version {0}\n".format(__v
 
 #from genericutils import ipythonAutoreload
 
+def _get_ipy_mods():
+    """push modules to ipy"""
+    _mods = {'os' : os,
+             'sys' : sys,
+             'np' : np,
+             'math' : math}
+
+    return _mods
+
+def _get_ipy_mods_text():
+    """show info text of loaded modules"""
+
+    _imods = 'Imported modules in this console:\n'+\
+             'os, sys : System utilities\n'+\
+             'math, np : Math and Numpy\n'
+
+    return _imods
+
 class QIPythonWidget(RichIPythonWidget):
     """convenience class for a live IPython console widget.
 
@@ -134,13 +152,17 @@ class IPyConsoleWidget(QtGui.QWidget):
     """
     def __init__(self, parent=None):
         super(IPyConsoleWidget, self).__init__(parent)
-        ipy = QIPythonWidget(customBanner=SLOTH_IPY_WELCOME)
+        self.ipy = ipy = QIPythonWidget(customBanner=SLOTH_IPY_WELCOME)
+
+        ipy.push_variables(_get_ipy_mods())
         
         # layout
         layout = QtGui.QVBoxLayout(self)
         layout.addWidget(ipy)
         
-        ipy.print_text('Process ID is {0}'.format(os.getpid()))
+        ipy.print_text('Process ID is {0}\n'.format(os.getpid()))
+
+        ipy.print_text(_get_ipy_mods_text())
         
 if __name__ == '__main__':
     if (HAS_QT and HAS_IPYTHON):
