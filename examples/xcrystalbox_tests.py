@@ -138,6 +138,33 @@ def test_Si111_loop():
         
     return t
 
+def test_Si333():
+    """reflectivity of 0.4 mm thick Si(333) bent to 100 cm meridional and sagittal,
+    theta - theta_Bragg scan mode
+    """
+    odict = dict(creator = 'XCrystalBox/test',
+                 today = date.today(),
+                 bragg_file = 'Si_333-E_2000_20000_50-A_3-T_1.bragg',
+                 crys_mat = 'Si',
+                 crys_refl = (3,3,3),
+                 crys_type = 2,
+                 geom = 0,
+                 mos_spread = None,
+                 thickness = 0.04,
+                 asym = 0.0,
+                 scan_mode = 3,
+                 scan_pos = 8000,
+                 scan_ang_unit = 3,
+                 scan_min = -50.,
+                 scan_max = 50.,
+                 scan_npts = 400,
+                 r_sag = 100.,
+                 r_mer = 100.,
+                 elast_prompt = 0,
+                 elast_info = 0,
+                 poisson_ratio = 0.22)
+    t = XCrystalBox(opts=odict)
+    return t
     
 if __name__ == '__main__':
     #pass
@@ -148,4 +175,5 @@ if __name__ == '__main__':
     #t.fit_refl()
     #t.pw.close() #close last window
     #t.load_pars()
-    t = test_Si111_loop()
+    #t = test_Si111_loop()
+    t = test_Si333()
