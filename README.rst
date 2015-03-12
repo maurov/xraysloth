@@ -187,7 +187,6 @@ License
 -------
 
 `BSD 3-Clause License <http://opensource.org/licenses/BSD-3-Clause>`_
-
 ::
    <OWNER> = Mauro Rovezzi
    <ORGANIZATION> = European Synchrotron Radiation Facility, Grenoble
