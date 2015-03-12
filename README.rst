@@ -67,6 +67,34 @@ mandatory. The other modules are recommended, not mandatory. They are
 used only partially in some scripts and may result not required
 depending on your specific application.
 
+PyMca5 user install
+-------------------
+
+::
+   # USER-LOCAL INSTALL: recommended (in .local/lib/pythonX.Y/site-packages/)
+   cd /path/to/your/local/
+   sudo aptitude install python-qt4 python-qt4-dev
+   # fisx
+   git clone https://github.com/vasole/fisx.git
+   cd fisx
+   python setup.py install --user
+   #pymca
+   git clone https://github.com/vasole/pymca.git
+   cd pymca
+   SPECFILE_USE_GNU_SOURCE=1 python setup.py install --user
+   # USER INSTALL: alternative (within a virtual environment)
+   # (in_your_virt_env) SPECFILE_USE_GNU_SOURCE=1 python setup.py build
+   # (in_your_virt_env) python setup.py install
+   # SYSTEM-WIDE INSTALL: not recommended
+   #sudo SPECFILE_USE_GNU_SOURCE=1 python setup.py install
+   # make CLEAN:
+   #(sudo) rm -rf /usr/local/lib/python2.7/dist-packages/PyMca*
+   #(sudo) rm -rf ~/local/pymca/build/
+   #
+   # documentation
+   python setup.py build_doc
+
+
 How to install XOP and SHADOW3
 ------------------------------
 
@@ -107,16 +135,15 @@ The following procedure has been successfully tested on Linux machines
 How to install OASYS1 and friends
 ---------------------------------
 
-OASYS1_ is the Python-based graphical user interface (GUI) for XOP_
-and SHADOW3_. It is currently under active development and will
-replace the previous IDL-based GUI. This software is a fork of
-Orange3_, a component-based data mining software. Orange-Shadow_ and
-Orange-XOPPY_ are developed within this framework. The drawback is the
-dependence on Python3 and big list of required packages with the very
-last versions... here a tentative *clean* installation procedure of
-OASYS1 and friends is given. The procedure has been tested on a Linux
-Ubuntu 12.04 machine. Root (superuser) access is required for having a
-working Python 3.2 plus Qt environment. Apart this, everything is
+OASYS1_ is the Python-based graphical user interface (GUI) for XOP_ and
+SHADOW3_. It is currently under active development and will replace the previous
+IDL-based GUI. This software is a fork of Orange3_, a component-based data
+mining software. Orange-Shadow_ and Orange-XOPPY_ are developed within this
+framework. The drawback is the dependence on Python3.4 and a big list of
+required packages with the very last versions... here a tentative *clean*
+installation procedure of OASYS1 and friends is given. The procedure has been
+tested on a Linux Debian 8 machine. Root (superuser) access is required for
+having a working Python 3.4 plus Qt environment. Apart this, everything is
 installed in a virtual environment.
 
 ::
@@ -131,37 +158,23 @@ installed in a virtual environment.
    # work in an local directory and virtual Python3 environment
    export MYLOCAL=/path/to/your/local
    cd $MYLOCAL
-   virtualenv -p python3 --system-site-packages --distribute Oasys
-   cd Oasys
-   source bin/activate
-
-   # manually install/upgrade requirements
-   # (as in OASYS1/requirements.txt)
-   pip install -U numpy==1.9.1 scipy==0.14.0 scikit-learn==0.13
-   pip install -U bottlechest==0.7.0
-   pip install -U nose==1.2.1 mock==1.0.1
-   # (as in OASYS1/requirements-gui.txt)
-   pip install -U qt-graph-helpers==0.1.3 pyqtgraph==0.9.8
+   python3.4 -m venv py34env --clear --without-pip --system-site-packages
+   source py34env/bin/activate
+   cd py34env; wget https://bootstrap.pypa.io/get-pip.py
+   python get-pip.py
 
    # OASYS1
    git clone https://github.com/lucarebuffi/OASYS1
    cd OASYS1
-   python setup.py build
-   python setup.py install
-
-   cd $MYLOCAL/Orange3
-   git clone http://github.com/srio/Orange-XOPPY
-   git clone https://github.com/lucarebuffi/Orange-Shadow
-
-**STATUS** this procedure is not working yet! A segmentation fault is
- obtained when running ``python3 -m Orange.canvas``. A solution is
- under investigation...
+   pip install -r requirements.txt
+   python setup.py develop
+   #to test: cd; python -m Orange.canvas
 
    
 License
 -------
 
-Copyright (c) 2011-2014, Mauro Rovezzi
+Copyright (c) 2011-2015, Mauro Rovezzi
 
 All rights reserved.
 
