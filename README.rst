@@ -94,6 +94,16 @@ PyMca5 user install
    # documentation
    python setup.py build_doc
 
+Larch user install
+------------------
+
+::
+   cd /path/to/your/local
+   git clone http://github.com/xraypy/xraylarch.git
+   cd xraylarch
+   pip install --user -U wxmplot wxutils termcolor
+   python setup.py build
+   python setup.py install --user
 
 How to install XOP and SHADOW3
 ------------------------------
