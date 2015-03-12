@@ -70,6 +70,7 @@ depending on your specific application.
 PyMca5 user install
 -------------------
 
+Procedure to install PyMca_ as user
 ::
    # USER-LOCAL INSTALL: recommended (in .local/lib/pythonX.Y/site-packages/)
    cd /path/to/your/local/
@@ -97,6 +98,7 @@ PyMca5 user install
 Larch user install
 ------------------
 
+Procedure to install Larch_ as user
 ::
    cd /path/to/your/local
    git clone http://github.com/xraypy/xraylarch.git
