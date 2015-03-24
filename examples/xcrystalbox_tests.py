@@ -138,15 +138,15 @@ def test_Si111_loop():
         
     return t
 
-def test_Si333():
+def test_Si440(ene=None, edelta=2):
     """reflectivity of 0.4 mm thick Si(333) bent to 100 cm meridional and sagittal,
     theta - theta_Bragg scan mode
     """
     odict = dict(creator = 'XCrystalBox/test',
                  today = date.today(),
-                 bragg_file = 'Si_333-E_2000_20000_50-A_3-T_1.bragg',
+                 bragg_file = 'Si_440-E_2000_20000_50-A_3-T_1.bragg',
                  crys_mat = 'Si',
-                 crys_refl = (3,3,3),
+                 crys_refl = (4,4,0),
                  crys_type = 2,
                  geom = 0,
                  mos_spread = None,
@@ -164,6 +164,14 @@ def test_Si333():
                  elast_info = 0,
                  poisson_ratio = 0.22)
     t = XCrystalBox(opts=odict)
+    if ene is not None:
+        t.set_opt('scan_mode', 4)
+        si_d440 = 0.96008572264122927
+        from bragg import bragg_th
+        t.set_opt('scan_pos', bragg_th(si_d440, ene))
+        t.set_opt('scan_min', ene-edelta)
+        t.set_opt('scan_max', ene+edelta)
+ 
     return t
     
 if __name__ == '__main__':
@@ -176,4 +184,4 @@ if __name__ == '__main__':
     #t.pw.close() #close last window
     #t.load_pars()
     #t = test_Si111_loop()
-    t = test_Si333()
+    t = test_Si440(ene=6685)
