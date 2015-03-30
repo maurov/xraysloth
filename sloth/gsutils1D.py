@@ -20,7 +20,6 @@ __owner__ = "Mauro Rovezzi"
 __organization__ = "European Synchrotron Radiation Facility"
 __year__ = "2011-2015"
 
-
 ### IMPORTS ###
 import os, sys
 import numpy as np
@@ -70,18 +69,18 @@ else:
     DEBUG = False
 
 class GsList1D(GsList):
-    """ 1D version of GsList """
+    """1D version of GsList"""
     def __init__(self, kwsd=None, _larch=None):
         GsList.__init__(self, kwsd=kwsd, _larch=_larch)
 
     def read_ascii(self, fname, labels=None, sort=False, sort_column=0):
-        """ see 'read_ascii' in Larch """
+        """see 'read_ascii' in Larch"""
         return _read_ascii(fname, labels=labels,
                            sort=sort, sort_column=sort_column,
                            _larch=self._larch)
 
     def getxy(self, fname, xattr='x', yattr='y', scanlab=None, **kws):
-        """ load two colums ascii data """
+        """load two colums ascii data """
         g = _read_ascii(fname, labels='{0} {1}'.format(xattr, yattr),
                         _larch=self._larch)
         g.norint = self.norint(getattr(g, yattr))#, x=getattr(g, xattr))
@@ -90,7 +89,7 @@ class GsList1D(GsList):
         return g
 
     def getspecscan(self, fname, scans, scanlab=None, **kws):
-        """ load two colums data from SPEC file """
+        """load two colums data from SPEC file"""
         cntx = kws.get('cntx', self.kwsd['spec']['cntx'])
         cnty = kws.get('cnty', self.kwsd['spec']['cnty'])
         csig = kws.get('csig', self.kwsd['spec']['csig'])
@@ -111,20 +110,19 @@ class GsList1D(GsList):
         return g
 
     def getcom(self, g, xattr='x', yattr='y'):
-        """ center of mass (com) for the given group and x,w
-        attributes"""
+        """center of mass (com) for the given group and x,w attributes"""
         return np.average(getattr(self.gs[g], xattr), weights=getattr(self.gs[g], yattr))
 
     def norint(self, y, x=None):
-        """ simple normalization by area """
+        """simple normalization by area"""
         return (y-np.min(y))/np.trapz(y, x=x)
         
     def normax(self, y):
-        """ simple normalization by maximum minus offset """
+        """simple normalization by maximum minus offset"""
         return (y-np.min(y))/(np.max(y)-np.min(y))
 
     def norxafs(self, g, xattr='x', yattr='y', outattr=None, **kws):
-        """ XAFS normalization on a given group (g)
+        """XAFS normalization on a given group (g)
 
         Keyword arguments
         -----------------
@@ -220,7 +218,7 @@ class GsList1D(GsList):
                 pass
 
     def mksum(self, sel, **kws):
-        """ make a new group as sum of selected groups
+        """make a new group as sum of selected groups
         
         Keyword arguments
         -----------------
@@ -234,7 +232,6 @@ class GsList1D(GsList):
         -------
         None -- output written to given attributes: 'xattr', 'yattr'
                 of a new group in gslist
-             
         """
         iref = sel[0]
         xattr = kws.get('xattr', 'x')
@@ -255,8 +252,8 @@ class GsList1D(GsList):
         setattr(gsum, str(yattr), ysum)
 
     def plotxy(self, **kws):
-        """ wrap to plot() in Larch (if available)
-        otherwise PyMca is used (if available)
+        """wrap to plot() in Larch (if available) otherwise PyMca is
+        used (if available)
         
         Keyword arguments
         -----------------
@@ -387,7 +384,7 @@ class GsListExafs(GsList1D):
                     print("group {0} ({1}): attr {3} does not exist".format(_n, _g.label, _attr))
 
     def mkftf(self, **kws):
-        """ forward Fourier transform
+        """forward Fourier transform
 
         Returns
         -------
@@ -414,12 +411,12 @@ class GsListExafs(GsList1D):
                  window=window, kweight=kweight, _larch=self._larch)
 
     def scale_kwin(self, gchikw):
-        """ returns a scale parameter to amplify the FT transform
+        """returns a scale parameter to amplify the FT transform
         window"""
         return int(10.2*max(abs(gchikw)))/10.0
 
     def plotexa(self, space='E, K, R, Q', **kws):
-        """ EXAFS default plots """
+        """EXAFS default plots"""
         sel = kws.get('sel', self.sel)
         replace = kws.get('replace', self.kwsd['plot']['replace'])
         xshift = kws.get('xshift', self.kwsd['plot']['xshift'])
@@ -451,12 +448,12 @@ class GsListExafs(GsList1D):
             print('Not implemented yet.')
 
 class GsListXes(GsList1D):
-    """ GsList for XES scans """
+    """GsList for XES scans"""
     def __init__(self, kwsd=None, _larch=None):
         GsList1D.__init__(self, kwsd=kwsd, _larch=_larch)
 
     def mkiads(self, ref=0, plot=False, **kws):
-        """ IAD analysis for XES
+        """IAD analysis for XES
 
         Keyword arguments
         -----------------
@@ -502,7 +499,7 @@ class GsListXes(GsList1D):
             self.plotiads()
 
     def plotiads(self, order=None, xlist=None, **kws):
-        """ custom plot for IAD analysis """
+        """custom plot for IAD analysis"""
         # as in self.plotxy()
         replace = kws.get('replace', True)
         win = kws.get('win', 2)
@@ -578,15 +575,18 @@ class GsListXes(GsList1D):
         
 ### LARCH ###    
 def gslist_xan(kwsd=None, _larch=None):
-    """ utility to perform common operations on a list of XANES data groups """
+    """utility to perform wrapped operations on a list of XANES data
+    groups"""
     return GsListXanes(kwsd=kwsd, _larch=_larch)
 
 def gslist_exa(kwsd=None, _larch=None):
-    """ utility to perform common operations on a list of EXAFS data groups """
+    """utility to perform wrapped operations on a list of EXAFS data
+    groups"""
     return GsListExafs(kwsd=kwsd, _larch=_larch)
 
 def gslist_xes(kwsd=None, _larch=None):
-    """ utility to perform common operations on a list of XES data groups """
+    """utility to perform wrapped operations on a list of XES data
+    groups"""
     return GsListXes(kwsd=kwsd, _larch=_larch)
 
 def registerLarchPlugin():

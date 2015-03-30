@@ -67,7 +67,7 @@ MODNAME = '_contrib'
 DEBUG = 0
 
 def _getfnames(grepstr, rpath=os.getcwd(), substr1=None):
-    """ get a list of filenames
+    """get a list of filenames
 
     Arguments
     ---------
@@ -86,8 +86,7 @@ def _getfnames(grepstr, rpath=os.getcwd(), substr1=None):
 
 ### CLASS ###
 class GsList(object):
-    """ a list of groups with some wrapped methods from Larch &
-    friends"""
+    """a list of groups with some wrapped methods from Larch & friends"""
     def __init__(self, kwsd=None, _larch=None):
         if _larch is None:
             if HAS_LARCH:
@@ -108,7 +107,8 @@ class GsList(object):
             self.kwsd = self.getkwsd()
 
     def getigfromlabel(self, grepstr):
-        """ return a list of indexes where 'grepstr' is in self.gs.label """
+        """return a list of indexes where 'grepstr' is in
+        self.gs.label"""
         igs = []
         for ig, g in enumerate(self.gs):
             if grepstr in g.label:
@@ -120,7 +120,7 @@ class GsList(object):
         return _getfnames(grepstr, rpath=rpath, substr1=substr1)
 
     def selector(self, sel):
-        """ initialize a selected list of objects, self.gs_sel """
+        """initialize a selected list of objects, self.gs_sel"""
         if sel == '*':
             self.sel = range(len(self.gs))
         elif type(sel) is str:
@@ -132,9 +132,9 @@ class GsList(object):
         self.gs_sel = deque(self.gs[_s] for _s in self.sel)
 
     def show(self, attr='label', sel=None, none_value=None):
-        """show a given attribute ['label'] """
+        """show a given attribute ['label']"""
         if sel is not None: self.selector(sel)
-        print "(sel) gs[#] : {0}".format(attr)
+        print("(sel) gs[#] : {0}".format(attr))
         for ig, g in enumerate(self.gs):
             # get the attribute
             try:
@@ -147,16 +147,16 @@ class GsList(object):
             else:
                 flag_sel = ' '
             # then show
-            print "({0}) {1} : {2}".format(flag_sel, ig, _attr)
+            print("({0}) {1} : {2}".format(flag_sel, ig, _attr))
 
     def kick(self, selrng):
-        """ delete a given element in self.gs list """
+        """delete a given element in self.gs list"""
         def _dlist(slist):
             for ig in slist:
                 try:
                     del self.gs[ig]
                 except:
-                    print 'Error deleting gs[{}] ({})'.format(ig, self.gs[ig].label)
+                    print('Error deleting gs[{}] ({})'.format(ig, self.gs[ig].label))
         if type(selrng) is list:
             if (selrng[0] < selrng[1]): selrng.reverse()
             _dlist(selrng)
@@ -197,16 +197,16 @@ class GsList(object):
             try:
                 setattr(g, str(attr), value)
             except:
-                print 'Error setting {0} in {1}'.format(attr, g.label)
+                print('Error setting {0} in {1}'.format(attr, g.label))
         map(_safe_setattr, self.gs_sel)
         
     def copyattr(self, attr1, attr2):
-        """ copy attr1 to attr2 """ 
+        """copy attr1 to attr2""" 
         for _n, _g in enumerate(self.gs):
             try:
                 setattr(_g, str(attr2), getattr(_g, attr1))
             except AttributeError:
-                print "Attribute {0} does not exist in group {1}".format(attr1, _g.label)
+                print("Attribute {0} does not exist in group {1}".format(attr1, _g.label))
         
     def getkwsd(self):
         """return a dictionary with default keyword arguments"""
@@ -268,7 +268,7 @@ class GsList(object):
 
     ### DEPRECATED METHODS ###
     def _deprecated_msg(self):
-        print "Deprecated: moved to GsList1D (update your script!)"
+        print("Deprecated: moved to GsList1D (update your script!)")
     def mkftf(self, *args, **kwargs):
         return self._deprecated_msg()
     def mkchikw(self, *args, **kwargs):
