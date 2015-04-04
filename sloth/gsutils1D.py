@@ -48,7 +48,7 @@ except ImportError:
 from specfiledata import _str2rng as str2rng
 from specfiledata import spec_getmap2group, spec_getmrg2group
 from rixsdata_plotter import RixsDataPlotter
-from gsutils import GsList
+from gsutils import GsList, _norm
 
 # PyMca
 HAS_PYMCA = False
@@ -115,11 +115,11 @@ class GsList1D(GsList):
 
     def norint(self, y, x=None):
         """simple normalization by area"""
-        return (y-np.min(y))/np.trapz(y, x=x)
+        return _norm(y, norm="area", x=x)
         
     def normax(self, y):
         """simple normalization by maximum minus offset"""
-        return (y-np.min(y))/(np.max(y)-np.min(y))
+        return _norm(y, norm="max-min")
 
     def norxafs(self, g, xattr='x', yattr='y', outattr=None, **kws):
         """XAFS normalization on a given group (g)
