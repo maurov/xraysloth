@@ -158,6 +158,23 @@ def _mot2array(motor, acopy):
     a = np.ones_like(acopy)
     return np.multiply(a, motor)
 
+def _make_dlist(dall, rep=1):
+    """make a list of strings representing the scans to average
+
+    Parameters
+    ----------
+    dall : list of all good scans
+    rep : int, repetition
+
+    Returns
+    -------
+    dlist : list of lists of int
+    """
+    dlist = [[] for d in xrange(rep)]
+    for idx in range(rep):
+        dlist[idx] = dall[idx::rep]
+    return dlist
+
 def _checkZeroDiv(num, dnum):
     """simple division check to avoid ZeroDivisionError"""
     try:
