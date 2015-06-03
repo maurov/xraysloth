@@ -73,15 +73,15 @@ class SlothMain(BaseClass, UiClass):
         #layout_mpl = QtGui.QVBoxLayout(self.plt_widget)
         #layout_mpl.addWidget(MplWidget())
 
-        if HAS_PYMCA:
-            scan_win = ScanWindow.ScanWindow()
-            scan_win.setDefaultPlotLines(True)
-            scan_win.setUpdatesEnabled(True)
-            scan_win.setActiveCurveColor(color='red')
-            layout_sw = QtGui.QVBoxLayout(self.plt_widget)
-            layout_sw.addWidget(scan_win)
-            # push it to the console
-            ipy_cons.ipy.push_variables({'pw':scan_win})
+        # if HAS_PYMCA:
+        #     scan_win = ScanWindow.ScanWindow()
+        #     scan_win.setDefaultPlotLines(True)
+        #     scan_win.setUpdatesEnabled(True)
+        #     scan_win.setActiveCurveColor(color='red')
+        #     layout_sw = QtGui.QVBoxLayout(self.plt_widget)
+        #     layout_sw.addWidget(scan_win)
+        #     # push it to the console
+        #     ipy_cons.ipy.push_variables({'pw':scan_win})
 
         self._fname = None
         
