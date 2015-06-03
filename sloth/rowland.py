@@ -124,9 +124,11 @@ class RowlandCircle(object):
         
         alpha : float, 0.
 
-                miscut angle in deg (TODO) the angle between the
-                surface of the crystal and the normal of the Bragg
-                planes (0 <= alpha <= \pi/2)
+                miscut angle in deg: the angle between the surface of
+                the crystal and the crystal planes at the centre
+                point; for positive alpha, q > p, that is, the center
+                analyzer moves downward (or clockwise) the vertical
+                Rowland circle
 
         d : float, None
 
@@ -238,9 +240,9 @@ class RowlandCircle(object):
         self.theta0 = theta0
         self.rtheta0 = math.radians(self.theta0)       
         self.sd = 2. * self.Rm * math.sin(2. * self.rtheta0)
-        self.p0 = 2. * self.Rm * math.sin(self.rtheta0 + self.ralpha)
+        self.p0 = 2. * self.Rm * math.sin(self.rtheta0 - self.ralpha/2.) # TODO: check alpha/2
         self.p = self.p0 - self.sampPos[1]
-        self.q0 = 2. * self.Rm * math.sin(self.rtheta0 - self.ralpha)
+        self.q0 = 2. * self.Rm * math.sin(self.rtheta0 + self.ralpha/2.)
         self.q = self.q0 # TODO: generic case!
         if self.p == self.p0:
             if self.alpha == 0:
@@ -248,7 +250,7 @@ class RowlandCircle(object):
                 self.Rs = 2 * self.Rm * (math.sin(self.rtheta0))**2 # no miscut
             else :
                 print('WARNING: sagittal focusing with miscut (CHECK FORMULA!)')
-                self.Rs = self.Rm * (math.cos(2*self.alpha) - math.cos(2*self.theta0)) # TODO: check this
+                self.Rs = self.Rm * (math.cos(2*self.ralpha) - math.cos(2*self.theta0)) # TODO: check this
         else :
             # generic sagittal focusing # TODO: check this!!!
             print('WARNING: sagittal focusing generic (CHECK FORMULA!)')
@@ -271,7 +273,7 @@ class RowlandCircle(object):
         if d is None:
             d = self.d
         try:
-            theta0 = self.getTheta(ene0, d=d, isDeg=True)
+            theta0 = self.get_theta(ene0, d=d, isDeg=True)
             self.set_theta0(theta0)
         except:
             print("ERROR: energy not setted!")
@@ -669,6 +671,15 @@ class RcVert(RowlandCircle):
             Aside = rotate(Acen, np.array([0,0,1]), Chi)
             return self.get_pos(Aside)
 
+    def get_miscut_off(self, alpha=None, Rm=None):
+        """returns horizontal and vertical offsets for a given miscut angle
+        TODO: NOT CORRECT, CHECK THIS!
+        """
+        if (alpha is None) or (Rm is None):
+            ralpha = self.ralpha
+            Rm = self.Rm
+        return - Rm * (1-math.cos(ralpha)), - Rm * math.sin(ralpha)
+
 class RcHoriz(RowlandCircle):
     """ Rowland circle horizontal frame: sample-analyzer on XY plane along Y axis """
 
@@ -697,6 +708,15 @@ class RcHoriz(RowlandCircle):
             Chi = self.get_chi(aXoff, inDeg=False)
             Aside = rotate(Acen, SDax, Chi)
             return Aside
+        
+    def get_miscut_off(self, alpha=None, p=None):
+        """returns horizontal and vertical offsets for a given miscut angle
+        TODO: NOT CORRECT CHECK THIS!
+        """
+        if (alpha is None) or (p is None):
+            ralpha = self.ralpha
+            p = self.p
+        return - p * math.cos(ralpha/2.), - p * math.sin(ralpha/2.)
 
 
 if __name__ == "__main__":

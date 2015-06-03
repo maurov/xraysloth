@@ -170,6 +170,15 @@ def testFrictionPrototypeInMethod(Rm, theta0, d=dSi111):
     t0 = testFrictionPrototype(Rm, theta0)
     return t
 
+def testMiscutOff1Ana(Rm, theta, alpha, d=dSi111):
+    """test miscut offsets"""
+    tv = RcVert(Rm=Rm, theta0=theta, alpha=alpha, d=d)
+    tv_mo = tv.get_miscut_off()
+    th = RcHoriz(Rm=Rm, theta0=theta, alpha=alpha, d=d)
+    th_mo = th.get_miscut_off()
+    print('RcVert: {0}'.format(tv_mo))
+    print('RcHor: {0}'.format(th_mo))
+
 if __name__ == "__main__":
     #pass
     #testSagOff(250., 35., 150., aL=12.)
@@ -179,5 +188,6 @@ if __name__ == "__main__":
     import math
     #t0 = testSagFocus()
     #t = testFrictionPrototype(240., 65.)
-    t = testFrictionPrototypeInMethod(240., 65.)
+    #t = testFrictionPrototypeInMethod(240., 65.)
+    testMiscutOff1Ana(500., 65., 36.)
     
