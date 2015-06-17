@@ -160,7 +160,7 @@ def testFrictionPrototype(Rm, theta0, d=dSi111):
     return t
 
 def testFrictionPrototypeInMethod(Rm, theta0, d=dSi111):
-    """as before with the implemented method"""
+    """as previous test but with the method implemented in the class"""
     t = RcHoriz(Rm=Rm, theta0=theta0, d=d,\
                 aW=25., aWext=32, rSext=10., aL=97.,\
                 bender=(40., 60., 100.), actuator=(269., 135.),\
@@ -187,7 +187,7 @@ if __name__ == "__main__":
     #dres = testDetMove()
     import math
     #t0 = testSagFocus()
-    #t = testFrictionPrototype(240., 65.)
-    #t = testFrictionPrototypeInMethod(240., 65.)
-    testMiscutOff1Ana(500., 65., 36.)
+    #t1 = testFrictionPrototype(240., 65.)
+    t = testFrictionPrototypeInMethod(240., 65.)
+    #testMiscutOff1Ana(500., 65., 36.)
     

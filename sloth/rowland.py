@@ -216,7 +216,8 @@ class RowlandCircle(object):
         self.alpha = alpha
         self.ralpha = np.deg2rad(self.alpha)
         if (theta0 != 0) : self.set_theta0(theta0)
-        return self
+        #no need to return self; this method will not be called in sequence
+        #return self
 
     def set_dspacing(self, d):
         """set crystal d-spacing (\AA)"""
