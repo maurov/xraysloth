@@ -223,7 +223,7 @@ class RowlandCircle(object):
         """set crystal d-spacing (\AA)"""
         self.d = d
         
-    def set_theta0(self, theta0):
+    def set_theta0(self, theta0, showInfos=None):
         """set correct attributes for a given theta0 (Bragg angle =
         center theta)
 
@@ -238,6 +238,7 @@ class RowlandCircle(object):
         self.q       : analyzer-detector distance
         self.Rs      : sagittal radius (analyser center, self.aL == 0.)
         """
+        if showInfos is None: showInfos = self.showInfos
         self.theta0 = theta0
         self.rtheta0 = math.radians(self.theta0)       
         self.sd = 2. * self.Rm * math.sin(2. * self.rtheta0)
@@ -256,7 +257,7 @@ class RowlandCircle(object):
             # generic sagittal focusing # TODO: check this!!!
             print('WARNING: sagittal focusing generic (CHECK FORMULA!)')
             self.Rs = ( 2. * math.sin(self.rtheta0) * self.p * self.q ) / (self.p + self.q)
-        if self.showInfos:
+        if showInfos:
             print("INFO: theta0 = {0:.3f} deg".format(self.theta0))
             if self.d is not None:
                 print("INFO: ene0 = {0:.2f} eV".format(self.get_ene()))
@@ -521,7 +522,7 @@ class RowlandCircle(object):
         _c2 = [self.get_chi2(_n, Rs=_Rc2) for _n in xrange( int(aN-2), int(aN+1) )]
         dchi = _c2[2]-_c2[0]
         if self.showInfos:
-            print('\Delta \chi {0}-{1} = {2:.5f} deg'.format(aN+1, aN-2, dchi))
+            print('INFO: \Delta \chi {0}-{1} = {2:.5f} deg'.format(aN+1, aN-2, dchi))
         _p = [self.get_sag_off(self.get_axoff(_cn), retAll=True) for _cn in _c2]
 
         #find the angle between the last pivot point _p[-1] and the bender point (B)
@@ -538,12 +539,12 @@ class RowlandCircle(object):
             rb = math.acos( (_p[2][1]-pc[1]) / bender[1])
             rc = math.pi - math.radians(bender[2]) - rb
             if self.showInfos:
-                print('Angle last pivot point and bender = {0:.6f} deg'.format(math.degrees(rc)))
+                print('INFO: Angle last pivot point and bender = {0:.6f} deg'.format(math.degrees(rc)))
             pb_axoff = _p[2][1] + bender[0] * math.cos(rc)
             pb_sagoff = _p[2][2] - bender[0] * math.sin(rc)
             return (pb_axoff, pb_sagoff)
         except:
-            print('ERROR with bender arm position!')
+            print('ERROR with bender arm position')
             return (0., 0.)
 
     def get_bender_mot(self, bender_pos, actuator=None):

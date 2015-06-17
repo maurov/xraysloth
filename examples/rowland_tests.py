@@ -18,6 +18,9 @@ sys.path.append(_libDir)
 import numpy as np
 from rowland import cs_h, acenx, det_pos_rotated, RcHoriz, RcVert
 
+RS_MIN = 157.915
+RS_MAX = 1012.252
+
 SI_ALAT = 5.431065 # Ang at 25C
 GE_ALAT = 5.6579060 # Ang at 25C
 SIO2_A = 4.913 # beta-quartz, hexagonal
@@ -170,8 +173,54 @@ def testFrictionPrototypeInMethod(Rm, theta0, d=dSi111):
     t0 = testFrictionPrototype(Rm, theta0)
     return t
 
+class TestProtoBender(object):
+    """test class for the friction design prototype"""
+
+    def __init__(self, Rm=500, theta0=35, d=dSi111,\
+                 aW=25, aWext=32., rSext=10., aL=97.,\
+                 bender=(40., 60., 100.), actuator=(269., 135.),\
+                 showInfos=False):
+        self.rc = RcHoriz(Rm=Rm, theta0=theta0, d=d,\
+                          aW=aW, aWext=aWext, rSext=rSext, aL=aL,\
+                          bender=bender, actuator=actuator,\
+                          showInfos=showInfos)
+        self.rs0 = self.rc.Rs #store Rs for a given Rm/theta0
+
+    def set_rm(self, Rm, theta0=None, showInfos=None):
+        """refresh all positions with new Rm and theta0 (optional)"""
+        if theta0 is None: theta0 = self.rc.theta0
+        self.rc.Rm = Rm
+        self.rc.set_theta0(theta0, showInfos=showInfos) #to refresh positions
+        self.rs0 = self.rc.Rs #store Rs for updated Rm/theta0
+        self.sb = self.get_sb() #self.rc.Rs is updated in set_theta0
+        print('INFO: bender motor at {0:.3f}'.format(self.sb))
+
+    def get_sb(self, Rs=None):
+        """get sagittal bender motor position, manual Rs may be given"""
+        return self.rc.get_bender_mot(self.rc.get_bender_pos(Rs=Rs))
+
+    def get_ana_xyz(self, xyz0=(0.,0.,0.)):
+        """show xyz positions for 6 analyzers: 0 (cen) +5 (side)
+
+        Parameters
+        ----------
+        xyz0 : tuple of floats, (0,0,0)
+               output positions are shifted by this point
+        """
+        xyz0 = np.array(xyz0)
+        _headstr = '{0: >2s}: {1: >7s} {2: >7s} {3: >7s}'
+        _outstr = '{0: >2.0f}: {1: >7.3f} {2: >7.3f} {3: >7.3f}'
+        print(_headstr.format('#', 'X', 'Y', 'Z'))
+        for aN in xrange(6):
+            chi = self.rc.get_chi2(aN=aN)
+            axoff = self.rc.get_axoff(chi)
+            axyz = self.rc.get_ana_pos(aXoff=axoff)
+            if aN == 0: xyz0 -= axyz #output relative to the cen ana
+            pxyz = [i+j for i,j in zip(axyz, xyz0)]
+            print(_outstr.format(aN, *pxyz))
+    
 def testMiscutOff1Ana(Rm, theta, alpha, d=dSi111):
-    """test miscut offsets"""
+    """test miscut offsets NOT WORKING YET!!!"""
     tv = RcVert(Rm=Rm, theta0=theta, alpha=alpha, d=d)
     tv_mo = tv.get_miscut_off()
     th = RcHoriz(Rm=Rm, theta0=theta, alpha=alpha, d=d)
@@ -188,6 +237,7 @@ if __name__ == "__main__":
     import math
     #t0 = testSagFocus()
     #t1 = testFrictionPrototype(240., 65.)
-    t = testFrictionPrototypeInMethod(240., 65.)
+    #t = testFrictionPrototypeInMethod(240., 65.)
+    t = TestProtoBender()
     #testMiscutOff1Ana(500., 65., 36.)
     
