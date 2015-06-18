@@ -218,7 +218,22 @@ class TestProtoBender(object):
             if aN == 0: xyz0 -= axyz #output relative to the cen ana
             pxyz = [i+j for i,j in zip(axyz, xyz0)]
             print(_outstr.format(aN, *pxyz))
-    
+
+    def get_circle_3p(self, A, B, C):
+        """center and radius of a circle given 3 points in space
+        http://stackoverflow.com/questions/20314306/find-arc-circle-equation-given-three-points-in-space-3d"""
+        a = np.linalg.norm(C - B)
+        b = np.linalg.norm(C - A)
+        c = np.linalg.norm(B - A)
+        s = (a + b + c) / 2
+        R = a*b*c / 4 / np.sqrt(s * (s - a) * (s - b) * (s - c))
+        b1 = a*a * (b*b + c*c - a*a)
+        b2 = b*b * (a*a + c*c - b*b)
+        b3 = c*c * (a*a + b*b - c*c)
+        P = np.column_stack((A, B, C)).dot(np.hstack((b1, b2, b3)))
+        P /= b1 + b2 + b3
+        return R, P
+        
 def testMiscutOff1Ana(Rm, theta, alpha, d=dSi111):
     """test miscut offsets NOT WORKING YET!!!"""
     tv = RcVert(Rm=Rm, theta0=theta, alpha=alpha, d=d)
