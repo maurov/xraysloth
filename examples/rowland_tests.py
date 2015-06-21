@@ -338,10 +338,30 @@ class TestProtoBender(object):
                 _headx = False
             print(_outstr.format(ang, run, _pos, th0))
             
-    def get_meas_rs(self, dats=None):
+    def get_meas_rs(self, ang, run, dats=None):
         """get the measured sagittal radius"""
         if dats is None: dats = self.dats
-        pass
+        _headstr = '{0: >3s} {1: >3s} {2: >10s} {3: >10s} {4: >10s}'
+        _outstr = '{0: >3.0f} {1: >3.0f} {2: >10s} {3: >10.3f} {4: >10.3f}'
+        _headx = True
+        try:
+            d = dats[ang][run]
+        except:
+            print('ERROR: dats[ang][run] not found!')
+            return 0
+        sp = d.items()
+        sp.sort()
+        for _pos, _pts in sp:
+            a, b, c = _pts[0:3]
+            rs0, cen0 = self.get_circle_3p(a,b,c)
+            a, b, c = _pts[3:6]
+            rs0ck, cen0ck = self.get_circle_3p(a,b,c)
+            if _headx:
+                print(_headstr.format('ang', 'run', 'pos', 'rs0', 'rs0ck'))
+                print(_headstr.format('#', '#', 'spec', 'mm', 'mm'))
+                _headx = False
+            print(_outstr.format(ang, run, _pos, rs0, rs0ck))
+         
         
 def testMiscutOff1Ana(Rm, theta, alpha, d=dSi111):
     """test miscut offsets NOT WORKING YET!!!"""
