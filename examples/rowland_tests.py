@@ -271,6 +271,7 @@ class TestProtoBender(object):
                         _apos = {}
                     if ang != _angx:
                         #flush runs
+                        _runs[_rnx] = copy.deepcopy(_apos)
                         angs[_angx] = copy.deepcopy(_runs)
                         _angx = copy.deepcopy(ang)
                         _rnx = 0
