@@ -233,6 +233,57 @@ class TestProtoBender(object):
         P = np.column_stack((A, B, C)).dot(np.hstack((b1, b2, b3)))
         P /= b1 + b2 + b3
         return R, P
+
+    def read_data(self, fname):
+        """read data (custom format) using flushing technique"""
+        import csv
+        import copy
+        angs = {}
+        with open(fname, 'rb') as f:
+            fr = csv.reader(f, skipinitialspace=True)
+            _pts = np.zeros((12, 3))
+            _apos = {}
+            _runs = {}
+            _bpos = 0
+            _ptx = False
+            _rnx = 0
+            _angx = 0
+            for irow, row in enumerate(fr):
+                if row[0][0] == '#': continue
+                try:
+                    ang = int(row[1])
+                    run = int(row[2])
+                    pos = float(row[3])
+                    pt = int(row[4])
+                    if _ptx:
+                        #flush points
+                        _apos[str(_bpos)] = _pts
+                        _ptx = False
+                        _pts = np.zeros((12, 3))
+                    _pts[pt] = map(float, row[-3:])
+                    if pt == 11:
+                        _bpos = copy.deepcopy(pos)
+                        _ptx = True
+                    if run != _rnx:
+                        #flush positions
+                        _runs[_rnx] = copy.deepcopy(_apos)
+                        _rnx = copy.deepcopy(run)
+                        _apos = {}
+                    if ang != _angx:
+                        #flush runs
+                        angs[_angx] = copy.deepcopy(_runs)
+                        _angx = copy.deepcopy(ang)
+                        _rnx = 0
+                        _runs = {}
+                except:
+                    print('ERROR reading line {0}: {1}'.format(irow+1, row))
+                    break
+            #final flush all
+            _apos[str(_bpos)] = _pts
+            _runs[_rnx] = copy.deepcopy(_apos)
+            angs[_angx] = copy.deepcopy(_runs)
+        return angs
+
         
 def testMiscutOff1Ana(Rm, theta, alpha, d=dSi111):
     """test miscut offsets NOT WORKING YET!!!"""
@@ -253,6 +304,8 @@ if __name__ == "__main__":
     #t0 = testSagFocus()
     #t1 = testFrictionPrototype(240., 65.)
     #t = testFrictionPrototypeInMethod(240., 65.)
+    fname = '2015-06-18-all_points.dat'
     t = TestProtoBender()
+    t.d = t.read_data(fname)
     #testMiscutOff1Ana(500., 65., 36.)
     
