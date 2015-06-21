@@ -174,12 +174,26 @@ def testFrictionPrototypeInMethod(Rm, theta0, d=dSi111):
     return t
 
 class TestProtoBender(object):
-    """test class for the friction design prototype"""
+    """test class for the friction design prototype
+
+    Description
+    ===========
+
+    This is a very specific example class, but still generic and
+    useful. Here an overview of what this class is for: 6 analyzers (0
+    at cen + 5 at side) sliding on the sagittal plane via a
+    bender-like system. 12 points (two per analyzer) are measured as a
+    function of the bragg angle (angle between the sagittal plane and
+    the horizontal plane) and the position of the actuator motor of
+    the bender. The goal is to check if the exact rowland tracking is
+    satified for each analyzer.
+    """
 
     def __init__(self, Rm=500, theta0=35, d=dSi111,\
                  aW=25, aWext=32., rSext=10., aL=97.,\
                  bender=(40., 60., 100.), actuator=(269., 135.),\
                  showInfos=False):
+        """init the Rowland circle geometry plus design of the system"""
         self.rc = RcHoriz(Rm=Rm, theta0=theta0, d=d,\
                           aW=aW, aWext=aWext, rSext=rSext, aL=aL,\
                           bender=bender, actuator=actuator,\
@@ -234,7 +248,7 @@ class TestProtoBender(object):
         P /= b1 + b2 + b3
         return R, P
 
-    def read_data(self, fname):
+    def read_data(self, fname, retAll=False):
         """read data (custom format) using flushing technique"""
         import csv
         import copy
@@ -248,9 +262,11 @@ class TestProtoBender(object):
             _ptx = False
             _rnx = 0
             _angx = 0
+            _frun = True
             for irow, row in enumerate(fr):
                 if row[0][0] == '#': continue
                 try:
+                    _frun = True
                     ang = int(row[1])
                     run = int(row[2])
                     pos = float(row[3])
@@ -269,9 +285,12 @@ class TestProtoBender(object):
                         _runs[_rnx] = copy.deepcopy(_apos)
                         _rnx = copy.deepcopy(run)
                         _apos = {}
+                        _frun = False
                     if ang != _angx:
                         #flush runs
-                        _runs[_rnx] = copy.deepcopy(_apos)
+                        if _frun:
+                            _runs[_rnx] = copy.deepcopy(_apos)
+                            _apos = {}
                         angs[_angx] = copy.deepcopy(_runs)
                         _angx = copy.deepcopy(ang)
                         _rnx = 0
@@ -283,8 +302,46 @@ class TestProtoBender(object):
             _apos[str(_bpos)] = _pts
             _runs[_rnx] = copy.deepcopy(_apos)
             angs[_angx] = copy.deepcopy(_runs)
-        return angs
+        if retAll:
+            return angs
+        else:
+            self.dats = angs
 
+    def get_meas_theta0(self, ang, run, dats=None):
+        """get the measured theta0"""
+        if dats is None: dats = self.dats
+        _headstr = '{0: >3s} {1: >3s} {2: >10s} {3: >7s}'
+        _outstr = '{0: >3.0f} {1: >3.0f} {2: >10s} {3: >7.3f}'
+        _headx = True
+        try:
+            d = dats[ang][run]
+        except:
+            print('ERROR: dats[ang][run] not found!')
+            return 0
+        sp = d.items()
+        sp.sort()
+        for _pos, _pts in sp:
+            y0, z0 = _pts[0][1:3]
+            y1, z1 = _pts[6][1:3]
+            try:
+                beta = math.atan((z0-z1)/(y1-y0))
+            except:
+                print('ERROR getting measured theta0')
+                print('z0 = {0}; z1 = {1}; z0-z1 = {2}'.format(z0, z1, z0-z1))
+                print('y0 = {0}; y1 = {1}; y1-y0 = {2}'.format(y0, y1, y1-y0))
+                print('(z0-z1)/(y1-y0) = {0}'.format((z0-z1)/(y1-y0)))
+                return 0
+            th0 = math.degrees(math.pi/2.-beta)
+            if _headx:
+                print(_headstr.format('ang', 'run', 'pos', 'th0'))
+                print(_headstr.format('#', '#', 'spec', 'deg'))
+                _headx = False
+            print(_outstr.format(ang, run, _pos, th0))
+            
+    def get_meas_rs(self, dats=None):
+        """get the measured sagittal radius"""
+        if dats is None: dats = self.dats
+        pass
         
 def testMiscutOff1Ana(Rm, theta, alpha, d=dSi111):
     """test miscut offsets NOT WORKING YET!!!"""
