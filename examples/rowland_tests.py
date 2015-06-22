@@ -199,6 +199,7 @@ class TestProtoBender(object):
                           bender=bender, actuator=actuator,\
                           showInfos=showInfos)
         self.rs0 = self.rc.Rs #store Rs for a given Rm/theta0
+        self.sp = None
 
     def set_rm(self, Rm, theta0=None, showInfos=None):
         """refresh all positions with new Rm and theta0 (optional)"""
@@ -233,6 +234,28 @@ class TestProtoBender(object):
             pxyz = [i+j for i,j in zip(axyz, xyz0)]
             print(_outstr.format(aN, *pxyz))
 
+    def set_sag_plane(self, P0, th0):
+        """set sagittal plane Ax+By+Cz+D=0 at point P0(x,y,z) rotated
+        by th0 (deg)
+
+        """
+        from rotmatrix import rotate
+        norm = rotate(np.array([0,0,1]), np.array([0,1,0]), math.radians(th0))
+        d = -P0.dot(norm)
+        self.sp = np.array([norm[0], norm[1], norm[2], d])
+        
+    def get_dist_sag_plane(self, P):
+        """get the distance of point P(x,y,z) from the sagittal
+        plane
+
+        """
+        if self.sp is None:
+            print('ERROR: generate first the sagittal plane using get_sag_plane')
+            return 0
+        else:
+            sp = self.sp
+        return abs(P[0]*sp[0] + P[1]*sp[1] + P[2]*sp[2] + sp[3]) / math.sqrt(sp[0]**2 + sp[1]**2 + sp[2]**2)
+            
     def get_circle_3p(self, A, B, C):
         """center and radius of a circle given 3 points in space
         http://stackoverflow.com/questions/20314306/find-arc-circle-equation-given-three-points-in-space-3d"""
@@ -307,8 +330,28 @@ class TestProtoBender(object):
         else:
             self.dats = angs
 
-    def get_meas_theta0(self, ang, run, dats=None):
-        """get the measured theta0"""
+    def get_meas_theta0(self, ang, run, dats=None, retAll=False, setSp=True):
+        """get the measured theta0
+
+        Parameters
+        ----------
+
+        ang, run : int
+                   select angle/run data sets in dats dictionary
+
+        dats : dictionary, None
+               as parsed by read_data method (if None: self.dats)
+
+        retAll : boolean, False
+                 returns a Numpy array with the calculated theta0
+                 positions
+
+        setSp : boolean, True
+
+                sets the sagittal plane (self.sp) for the average
+                theta0, using position of point 0
+
+        """
         if dats is None: dats = self.dats
         _headstr = '{0: >3s} {1: >3s} {2: >10s} {3: >7s}'
         _outstr = '{0: >3.0f} {1: >3.0f} {2: >10s} {3: >7.3f}'
@@ -320,9 +363,14 @@ class TestProtoBender(object):
             return 0
         sp = d.items()
         sp.sort()
+        th0s = []
+        x0s, y0s, z0s = [], [], []
         for _pos, _pts in sp:
-            y0, z0 = _pts[0][1:3]
-            y1, z1 = _pts[6][1:3]
+            x0, y0, z0 = _pts[0][0:3]
+            x1, y1, z1 = _pts[6][0:3]
+            x0s.append(x0)
+            y0s.append(y0)
+            z0s.append(z0)
             try:
                 beta = math.atan((z0-z1)/(y1-y0))
             except:
@@ -332,11 +380,22 @@ class TestProtoBender(object):
                 print('(z0-z1)/(y1-y0) = {0}'.format((z0-z1)/(y1-y0)))
                 return 0
             th0 = math.degrees(math.pi/2.-beta)
+            th0s.append(th0)
             if _headx:
                 print(_headstr.format('ang', 'run', 'pos', 'th0'))
                 print(_headstr.format('#', '#', 'spec', 'deg'))
                 _headx = False
             print(_outstr.format(ang, run, _pos, th0))
+        ath0s = np.array(th0s)
+        ax0s = np.array(x0s)
+        ay0s = np.array(y0s)
+        az0s = np.array(z0s)
+        if setSp:
+            avgP0 = np.array([np.average(ax0s), np.average(ay0s), np.average(z0s)])
+            avgth0 = np.average(ath0s)
+            self.set_sag_plane(avgP0, avgth0)
+            print('INFO: sagittal plane at P0({0:.3f},{1:.3f},{2:.3f}), th0={3:.3f} deg'.format(avgP0[0], avgP0[1], avgP0[2], avgth0))
+        if retAll: return ath0s
             
     def get_meas_rs(self, ang, run, dats=None):
         """get the measured sagittal radius"""
@@ -353,14 +412,14 @@ class TestProtoBender(object):
         sp.sort()
         for _pos, _pts in sp:
             a, b, c = _pts[0:3]
-            rs0, cen0 = self.get_circle_3p(a,b,c)
+            rs012, cen012 = self.get_circle_3p(a,b,c)
             a, b, c = _pts[3:6]
-            rs0ck, cen0ck = self.get_circle_3p(a,b,c)
+            rs345, cen345 = self.get_circle_3p(a,b,c)
             if _headx:
-                print(_headstr.format('ang', 'run', 'pos', 'rs0', 'rs0ck'))
+                print(_headstr.format('ang', 'run', 'pos', 'rs012', 'rs345'))
                 print(_headstr.format('#', '#', 'spec', 'mm', 'mm'))
                 _headx = False
-            print(_outstr.format(ang, run, _pos, rs0, rs0ck))
+            print(_outstr.format(ang, run, _pos, rs012, rs345))
          
         
 def testMiscutOff1Ana(Rm, theta, alpha, d=dSi111):
