@@ -240,7 +240,7 @@ class TestProtoBender(object):
 
         """
         from rotmatrix import rotate
-        norm = rotate(np.array([0,0,1]), np.array([0,1,0]), math.radians(th0))
+        norm = rotate(np.array([0,0,1]), np.array([1,0,0]), math.radians(th0))
         d = -P0.dot(norm)
         self.sp = np.array([norm[0], norm[1], norm[2], d])
         
