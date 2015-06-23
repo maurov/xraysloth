@@ -237,14 +237,15 @@ class TestProtoBender(object):
             print(_outstr.format(aN, *pxyz))
 
     def set_sag_plane(self, P0, th0, showPlot=False):
-        """set sagittal plane Ax+By+Cz+D=0 at point P0(x,y,z) rotated
-        by th0 (deg)
+        """set sagittal plane Ax+By+Cz+D=0 at point P0(x,y,z) for a given th0
+(deg)
 
         """
         from rotmatrix import rotate
-        norm = rotate(np.array([0,0,1]), np.array([1,0,0]), math.radians(th0))
+        norm = rotate(np.array([0,0,1]), np.array([1,0,0]), math.radians(90.-th0))
         d = -P0.dot(norm)
         self.sp = np.array([norm[0], norm[1], norm[2], d])
+        self.th0 = th0
         if showPlot:
             import matplotlib.pyplot as plt
             from mpl_toolkits.mplot3d import Axes3D
@@ -263,12 +264,11 @@ class TestProtoBender(object):
             ax.set_xlabel('X')
             ax.set_ylabel('Y')
             ax.set_zlabel('Z')
-            
+            ax.set_zlim(P0[2]-xypts, P0[2]+xypts)
             plt.show()
         
-    def get_dist_sag_plane(self, P):
-        """get the distance of point P(x,y,z) from the sagittal
-        plane
+    def get_sag_plane_dist(self, P):
+        """get the distance of point P(x,y,z) from the sagittal plane
 
         """
         if self.sp is None:
@@ -352,9 +352,14 @@ class TestProtoBender(object):
         else:
             self.dats = angs
 
-    def get_meas_theta0(self, ang, run, dats=None, retAll=False,\
-                        setSp=True, showPlot=False):
-        """get the measured theta0
+    def eval_data(self, ang, run, **kws):
+        """data evaluation: main method"""
+        self.eval_data_th0s(ang, run, showPlot=False)
+        self.eval_data_dists(ang, run, showPlot=True)
+            
+    def eval_data_th0s(self, ang, run, dats=None, retAll=False,\
+                       setSp=True, showPlot=False):
+        """data evaluation
 
         Parameters
         ----------
@@ -378,36 +383,40 @@ class TestProtoBender(object):
 
                 plot the sagittal plane
         """
+        #TODO: move this common check to a method
         if dats is None: dats = self.dats
-        _headstr = '{0: >3s} {1: >3s} {2: >10s} {3: >7s}'
-        _outstr = '{0: >3.0f} {1: >3.0f} {2: >10s} {3: >7.3f}'
-        _headx = True
         try:
             d = dats[ang][run]
         except:
             print('ERROR: dats[ang][run] not found!')
             return 0
+        #header/output format strings
+        _headstr = '{0: >3s} {1: >3s} {2: >10s} {3: >7s}'
+        _outstr = '{0: >3.0f} {1: >3.0f} {2: >10s} {3: >7.3f}'
+        _headx = True
         sp = d.items()
         sp.sort()
         th0s = []
         x0s, y0s, z0s = [], [], []
         for _pos, _pts in sp:
             x0, y0, z0 = _pts[0][0:3]
-            x1, y1, z1 = _pts[6][0:3]
+            x6, y6, z6 = _pts[6][0:3]
             x0s.append(x0)
             y0s.append(y0)
             z0s.append(z0)
             try:
-                beta = math.atan((z0-z1)/(y1-y0))
+                #inclination angle given by the centre analyzer
+                beta = math.atan((z0-z6)/(y6-y0))
             except:
                 print('ERROR getting measured theta0')
-                print('z0 = {0}; z1 = {1}; z0-z1 = {2}'.format(z0, z1, z0-z1))
-                print('y0 = {0}; y1 = {1}; y1-y0 = {2}'.format(y0, y1, y1-y0))
-                print('(z0-z1)/(y1-y0) = {0}'.format((z0-z1)/(y1-y0)))
+                print('z0 = {0}; z6 = {1}; z0-z6 = {2}'.format(z0, z1, z0-z1))
+                print('y0 = {0}; y6 = {1}; y6-y0 = {2}'.format(y0, y1, y1-y0))
+                print('(z0-z6)/(y6-y0) = {0}'.format((z0-z1)/(y1-y0)))
                 return 0
             th0 = math.degrees(math.pi/2.-beta)
             th0s.append(th0)
             if _headx:
+                print('INFO: angle given by the centre analyzer (P0-P6)')
                 print(_headstr.format('ang', 'run', 'pos', 'th0'))
                 print(_headstr.format('#', '#', 'spec', 'deg'))
                 _headx = False
@@ -417,12 +426,100 @@ class TestProtoBender(object):
         ay0s = np.array(y0s)
         az0s = np.array(z0s)
         if setSp:
-            avgP0 = np.array([np.average(ax0s), np.average(ay0s), np.average(z0s)])
-            avgth0 = np.average(ath0s)
+            #set sagittal plane at mean P0 and th0
+            avgP0 = np.array([np.mean(ax0s), np.mean(ay0s), np.mean(z0s)])
+            stdP0 = np.array([np.std(ax0s), np.std(ay0s), np.std(z0s)])
+            avgth0 = np.mean(ath0s)
+            stdth0 = np.std(ath0s)
             self.set_sag_plane(avgP0, avgth0, showPlot=showPlot)
-            print('INFO: sagittal plane at P0({0:.3f},{1:.3f},{2:.3f}), th0={3:.3f} deg'.format(avgP0[0], avgP0[1], avgP0[2], avgth0))
+            print('INFO: sagittal plane at centre analyzer')
+            print('P0_mean ( {0:.4f}, {1:.4f}, {2:.4f} ) mm'.format(avgP0[0], avgP0[1], avgP0[2]))
+            print('P0_std ({0:.4f}, {1:.4f}, {2:.4f}) mm'.format(stdP0[0], stdP0[1], stdP0[2]))
+            print('th0_mean = {0:.4f} +/- {1:.4f} deg'.format(avgth0, stdth0))
         if retAll: return ath0s
-            
+
+    def eval_data_dists(self, ang, run, dats=None, retAll=False,\
+                        setSp=True, showPlot=False):
+        """data evaluation: points distances from sagittal plane
+
+        Parameters
+        ----------
+
+        ang, run : int
+                   select angle/run data sets in dats dictionary
+
+        dats : dictionary, None
+               as parsed by read_data method (if None: self.dats)
+
+        retAll : boolean, False
+                 returns a Numpy array with the calculated theta0
+                 positions
+
+        setSp : boolean, True
+
+                sets the sagittal plane (self.sp) for the average
+                theta0, using position of point 0
+
+        showPlot : boolean, False
+
+                plot the sagittal plane
+        """
+        #TODO: move this common check to a method
+        if dats is None: dats = self.dats
+        try:
+            d = dats[ang][run]
+        except:
+            print('ERROR: dats[ang][run] not found!')
+            return 0
+
+        sp = d.items()
+        sp.sort()
+
+        self.poss = []
+        self.dists = {}
+        for ipt in xrange(12):
+            self.dists[ipt] = []
+        for _pos, _pts in sp:
+            self.poss.append(_pos)
+            for ipt in xrange(12):
+                self.dists[ipt].append(self.get_sag_plane_dist(_pts[ipt][0:3]))
+        self.aposs = np.array(map(float, self.poss[:]))
+        if showPlot:
+            try:
+                #https://jiffyclub.github.io/palettable/
+                import palettable
+                colors = palettable.colorbrewer.qualitative.Dark2_6.mpl_colors
+            except:
+                colors = [(0.10588235294117647, 0.6196078431372549, 0.4666666666666667),
+                          (0.8509803921568627, 0.37254901960784315, 0.00784313725490196),
+                          (0.4588235294117647, 0.4392156862745098, 0.7019607843137254),
+                          (0.9058823529411765, 0.1607843137254902, 0.5411764705882353),
+                          (0.4, 0.6509803921568628, 0.11764705882352941),
+                          (0.9019607843137255, 0.6705882352941176, 0.00784313725490196)]
+                pass
+            from matplotlib import rcParams
+            from matplotlib import gridspec
+            from matplotlib.ticker import MaxNLocator, AutoLocator, MultipleLocator
+            rcParams['axes.color_cycle'] = colors
+            fig = plt.figure()
+            ax = fig.add_subplot(111)
+            for ipt in xrange(12):
+                ax.plot(self.aposs, self.dists[ipt], label=str(ipt), linewidth=2)
+            ax.set_xlabel('bender motor position (spec values, mm)')
+            ax.set_ylabel('distance from mean sagittal plane (mm)')
+            ax.set_xlim(-0.1, 120.1)
+            ax.set_ylim(-0.005, 0.7)
+            ax.xaxis.set_major_locator(MultipleLocator(10))
+            ax.xaxis.set_minor_locator(MultipleLocator(2))
+            ax.yaxis.set_major_locator(MultipleLocator(0.05))
+            ax.yaxis.set_minor_locator(MultipleLocator(0.01))
+            ax.set_title('Proto pos {0}, run {1}: th0 = {2:.3f} deg'.format(ang, run, self.th0))
+            ax.grid(alpha=0.5)
+            ax.legend(loc='upper left', ncol=6, numpoints=1, frameon=True)
+            #ax.legend(bbox_to_anchor=(1.05, 1.), loc=2, ncol=1, mode="expand", borderaxespad=0.)
+            plt.tight_layout()
+            plt.show()
+        
     def get_meas_rs(self, ang, run, dats=None):
         """get the measured sagittal radius"""
         if dats is None: dats = self.dats
@@ -471,6 +568,6 @@ if __name__ == "__main__":
     t = TestProtoBender()
     t.read_data(fname)
     plt.close('all')
-    t.get_meas_theta0(5,0, showPlot=True)
+    t.eval_data(5,0)
     #testMiscutOff1Ana(500., 65., 36.)
     
