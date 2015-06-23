@@ -16,6 +16,8 @@ from __init__ import _libDir
 sys.path.append(_libDir)
 
 import numpy as np
+import matplotlib.pyplot as plt
+
 from rowland import cs_h, acenx, det_pos_rotated, RcHoriz, RcVert
 
 RS_MIN = 157.915
@@ -234,7 +236,7 @@ class TestProtoBender(object):
             pxyz = [i+j for i,j in zip(axyz, xyz0)]
             print(_outstr.format(aN, *pxyz))
 
-    def set_sag_plane(self, P0, th0):
+    def set_sag_plane(self, P0, th0, showPlot=False):
         """set sagittal plane Ax+By+Cz+D=0 at point P0(x,y,z) rotated
         by th0 (deg)
 
@@ -243,6 +245,26 @@ class TestProtoBender(object):
         norm = rotate(np.array([0,0,1]), np.array([1,0,0]), math.radians(th0))
         d = -P0.dot(norm)
         self.sp = np.array([norm[0], norm[1], norm[2], d])
+        if showPlot:
+            import matplotlib.pyplot as plt
+            from mpl_toolkits.mplot3d import Axes3D
+            # create x,y
+            xypts = 10
+            xrng_mesh = np.linspace(P0[0], P0[0]+xypts, xypts)
+            yrng_mesh = np.linspace(P0[1], P0[1]-xypts, xypts)
+            xx, yy = np.meshgrid(xrng_mesh, yrng_mesh)
+            # calculate corresponding z
+            zz = -1 * (norm[0] * xx + norm[1] * yy + d) / norm[2]
+            # plot the surface
+            fig = plt.figure()
+            ax = fig.add_subplot(111, projection='3d')
+            ax.plot_wireframe(xx, yy, zz)
+            #ax.quiver(P0[0], P0[1], norm[0], norm[1])
+            ax.set_xlabel('X')
+            ax.set_ylabel('Y')
+            ax.set_zlabel('Z')
+            
+            plt.show()
         
     def get_dist_sag_plane(self, P):
         """get the distance of point P(x,y,z) from the sagittal
@@ -330,7 +352,8 @@ class TestProtoBender(object):
         else:
             self.dats = angs
 
-    def get_meas_theta0(self, ang, run, dats=None, retAll=False, setSp=True):
+    def get_meas_theta0(self, ang, run, dats=None, retAll=False,\
+                        setSp=True, showPlot=False):
         """get the measured theta0
 
         Parameters
@@ -351,6 +374,9 @@ class TestProtoBender(object):
                 sets the sagittal plane (self.sp) for the average
                 theta0, using position of point 0
 
+        showPlot : boolean, False
+
+                plot the sagittal plane
         """
         if dats is None: dats = self.dats
         _headstr = '{0: >3s} {1: >3s} {2: >10s} {3: >7s}'
@@ -393,7 +419,7 @@ class TestProtoBender(object):
         if setSp:
             avgP0 = np.array([np.average(ax0s), np.average(ay0s), np.average(z0s)])
             avgth0 = np.average(ath0s)
-            self.set_sag_plane(avgP0, avgth0)
+            self.set_sag_plane(avgP0, avgth0, showPlot=showPlot)
             print('INFO: sagittal plane at P0({0:.3f},{1:.3f},{2:.3f}), th0={3:.3f} deg'.format(avgP0[0], avgP0[1], avgP0[2], avgth0))
         if retAll: return ath0s
             
@@ -443,6 +469,8 @@ if __name__ == "__main__":
     #t = testFrictionPrototypeInMethod(240., 65.)
     fname = '2015-06-18-all_points.dat'
     t = TestProtoBender()
-    t.d = t.read_data(fname)
+    t.read_data(fname)
+    plt.close('all')
+    t.get_meas_theta0(5,0, showPlot=True)
     #testMiscutOff1Ana(500., 65., 36.)
     
