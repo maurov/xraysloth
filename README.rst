@@ -15,38 +15,36 @@ Sloth: slowly evolving utilities for x-ray spectroscopists
 .. _Orange-XOPPY: https://github.com/srio/Orange-XOPPY
 .. _XRT : http://pythonhosted.org/xrt
 
-This repository contains (simple) utilities for x-ray spectroscopists,
-oriented to x-ray optics and data reduction/analysis for XAS/XES/RIXS
-techniques.
+This repository contains (simple) utilities for x-ray spectroscopists, oriented
+to x-ray optics and data reduction/analysis for XAS/XES/RIXS techniques.
 
-There is no build/install script (``setup.py``) because at the moment
-these utilities are rather independent from each other. To use these
-utilities in your scripts, simply clone the GIT repository to
-``somewhere`` and then append it to your PYTHONPATH ::
+There is no build/install script (``setup.py``) because at the moment these
+utilities are rather independent from each other. To use these utilities in your
+scripts, simply clone the GIT repository to ``somewhere`` and then append it to
+your PYTHONPATH ::
 
   import sys
   sys.path.append('path_to_somewhere')
 
-**NOTE** These scripts perform as a partial random snapshot of daily
-research in x-ray instrumentation and still-to-implement ideas (mainly
-due to lack of time). Feel free to use/hack them and do not hesitate
-to drop me a line if you find them useful.
+**NOTE** These scripts perform as a partial random snapshot of daily research in
+x-ray instrumentation and still-to-implement ideas (mainly due to lack of
+time). Feel free to use/hack them and do not hesitate to drop me a line if you
+find them useful.
 
-Documentation will reside in the ``docs`` directory at a certain
-point. Meanwhile, the best is to read directly the ``__doc__`` strings
-in the source code. The Python files sometimes have a test/example
-included in the ``__main__`` block or referring to the ``examples``
-directory where each script has its own examples/tests (TODO unit
-tests).
+Documentation will reside in the ``doc`` directory at a certain
+point. Meanwhile, the best is to read directly the ``__doc__`` strings in the
+source code. The Python files sometimes have a test/example included in the
+``__main__`` block or referring to the ``examples`` directory where each script
+has its own examples/tests (TODO unit tests).
 
-The functionality of the scripts can be easily converted to Larch_
-plugins in order to have access via the Domain Specific Language (DSL)
-of Larch. If you need it, just drop me a line! Some functions are
-already exposed to Larch.  To load the plugins into Larch is described
-`here <http://xraypy.github.io/xraylarch/devel/index.html#plugins>`_.
+The functionality of the scripts can be easily converted to Larch_ plugins in
+order to have access via the Domain Specific Language (DSL) of Larch. If you
+need it, just drop me a line! Some functions are already exposed to Larch.  To
+load the plugins into Larch is described `here
+<http://xraypy.github.io/xraylarch/devel/index.html#plugins>`_.
 
-To report bugs, enhancements or comments, please use the
-`Issues <https://github.com/maurov/xraysloth/issues>`_
+To report bugs, enhancements or comments, please use the `Issues
+<https://github.com/maurov/xraysloth/issues>`_
 
 Requirements
 ------------
@@ -62,27 +60,41 @@ The following Python modules are required to fully run the scripts:
 * XRT_
 * XrayLib_
 
-**NOTE** Numpy, Matplotlib and PyMca are used widely and are
-mandatory. The other modules are recommended, not mandatory. They are
-used only partially in some scripts and may result not required
-depending on your specific application.
+**NOTE** Numpy, Matplotlib and PyMca are used widely and are mandatory. The
+other modules are recommended, not mandatory. They are used only partially in
+some scripts and may result not required depending on your specific application.
+
+Notes
+-----
 
 PyMca5 user install
--------------------
+^^^^^^^^^^^^^^^^^^^
 
+System packages depends on your Python/Qt configuration. Here some for
+Debian-based Linux
+::
+   # Python2/PyQt4
+   sudo aptitude install python-numpy python-matplotlib python-qt4 python-qt4-dev
+   # Python3/PyQt4
+   sudo aptitude install python3-numpy python3-matplotlib python3-pyqt4 
+   # Python3/PyQt5
+   # WARNING: PyQt5 is for testing purposes
+   sudo aptitude install python3-numpy python3-matplotlib pyqt5-dev pyqt5-dev-tools python3-pyqt5
+   
 Procedure to install PyMca_ as user
 ::
    # USER-LOCAL INSTALL: recommended (in .local/lib/pythonX.Y/site-packages/)
    cd /path/to/your/local/
-   sudo aptitude install python-qt4 python-qt4-dev
    # fisx
    git clone https://github.com/vasole/fisx.git
    cd fisx
    python setup.py install --user
+   python3 setup.py install --user
    #pymca
    git clone https://github.com/vasole/pymca.git
    cd pymca
    SPECFILE_USE_GNU_SOURCE=1 python setup.py install --user
+   SPECFILE_USE_GNU_SOURCE=1 python3 setup.py install --user
    # USER INSTALL: alternative (within a virtual environment)
    # (in_your_virt_env) SPECFILE_USE_GNU_SOURCE=1 python setup.py build
    # (in_your_virt_env) python setup.py install
@@ -96,7 +108,7 @@ Procedure to install PyMca_ as user
    python setup.py build_doc
 
 Larch user install
-------------------
+^^^^^^^^^^^^^^^^^^
 
 Procedure to install Larch_ as user
 ::
@@ -107,8 +119,8 @@ Procedure to install Larch_ as user
    python setup.py build
    python setup.py install --user
 
-How to install XOP and SHADOW3
-------------------------------
+XOP and SHADOW3
+^^^^^^^^^^^^^^^
 
 The following procedure has been successfully tested on Linux machines
 (Ubuntu 12.04 and Debian 6.0). Having superuser rights is not required
@@ -144,8 +156,8 @@ The following procedure has been successfully tested on Linux machines
    # put all previous environment variables in .bashrc
    # sudo ln -s $MYLOCAL/xop2.3/xop /usr/local/bin/xop
 
-How to install OASYS1 and friends
----------------------------------
+OASYS1 and friends
+^^^^^^^^^^^^^^^^^^
 
 OASYS1_ is the Python-based graphical user interface (GUI) for XOP_ and
 SHADOW3_. It is currently under active development and will replace the previous

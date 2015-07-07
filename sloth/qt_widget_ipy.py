@@ -63,7 +63,6 @@ try:
     from IPython.lib import guisupport
     HAS_IPYTHON = True
 except:
-    
     print(sys.exc_info()[1])
     pass
 
@@ -109,7 +108,7 @@ class QIPythonWidget(RichIPythonWidget):
         super(QIPythonWidget, self).__init__(*args, **kwargs)
         self.kernel_manager = kernel_manager = QtInProcessKernelManager()
         kernel_manager.start_kernel()
-        kernel_manager.kernel.gui = 'qt4'
+        kernel_manager.kernel.gui = 'qt'
         kernel_manager.kernel.pylab_import_all = False
         
         self.kernel_client = kernel_client = self._kernel_manager.client()
@@ -155,14 +154,13 @@ class IPyConsoleWidget(QtGui.QWidget):
         self.ipy = ipy = QIPythonWidget(customBanner=SLOTH_IPY_WELCOME)
 
         ipy.push_variables(_get_ipy_mods())
-        
+        ipy.print_text('Process ID is {0}\n'.format(os.getpid()))
+        ipy.print_text(_get_ipy_mods_text())
+      
         # layout
         layout = QtGui.QVBoxLayout(self)
         layout.addWidget(ipy)
         
-        ipy.print_text('Process ID is {0}\n'.format(os.getpid()))
-
-        ipy.print_text(_get_ipy_mods_text())
         
 if __name__ == '__main__':
     if (HAS_QT and HAS_IPYTHON):
