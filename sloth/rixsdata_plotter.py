@@ -33,7 +33,7 @@ class RixsDataPlotter(object):
     def __init__(self, rd):
         "initialize with keyword arguments dictionaries"
         if not 'RixsData' in str(type(rd)):
-            print 'I can only plot "RixsData" objects!'
+            print('I can only plot "RixsData" objects!')
             return
         self.kwsd = copy.deepcopy(rd.kwsd)
         self.rd = rd
