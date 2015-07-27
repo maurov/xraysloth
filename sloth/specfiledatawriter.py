@@ -127,7 +127,8 @@ class SpecfileDataWriter(object):
         _hl.append('\n')
         
         with open(self.fn, 'wb') as f:
-            f.write('\n'.join(_hl))
+            outstr = '\n'.join(_hl)
+            f.write(outstr)
 
     def wScan(self, cols, dats, **kws):
         print("DEPRECATED: use 'write_scan' method")
