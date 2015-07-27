@@ -79,6 +79,19 @@ class GsList1D(GsList):
                            sort=sort, sort_column=sort_column,
                            _larch=self._larch)
 
+    def write_ascii_xy(self, fname, g, xattr='x', yattr='y', label=None):
+        """write a two-columns ascii file to fname using xattr and yattr of a given group"""
+        from larch_plugins.io import write_ascii
+        _x = getattr(self.gs[g], xattr)
+        _y = getattr(self.gs[g], yattr)
+        if label is None:
+            try:
+                _lab = self.gs[g].label
+            except:
+                _lab = 'Unknown'
+        return write_ascii(fname, _x, _y, label=_lab, _larch=self._larch)
+        
+
     def getxy(self, fname, xattr='x', yattr='y', scanlab=None, **kws):
         """load two colums ascii data """
         g = _read_ascii(fname, labels='{0} {1}'.format(xattr, yattr),
@@ -169,6 +182,11 @@ class GsList1D(GsList):
                 self.gs[g].xcalib = cmdiff
         else:
             pass
+
+    def xshift(self, g, xshift, xattr='x'):
+        """simply apply the shift to group g"""
+        _x = getattr(self.gs[g], xattr)
+        setattr(self.gs[g], xattr, _x + xshift)
 
     def mkinterpxy(self, ref=0, sel='*', **kws):
         """ interpolate (xattr, yattr) to (xnew, ynew) on a selected
