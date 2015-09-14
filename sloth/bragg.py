@@ -171,7 +171,7 @@ def findhkl(energy, thetamin=65., crystal='all'):
                 else:
                     theta = theta_b(ev2wlen(energy), d_cubic(alat, x))
                     if (theta >= thetamin):
-                        print('{0}({1}{2}{3}), {4} {5:2.2f}'.format(crystal, x[0], x[1], x[2], 'Bragg', theta))
+                        print('{0}({1} {2} {3}), {4} {5:2.2f}'.format(crystal, x[0], x[1], x[2], 'Bragg', theta))
         ###
         _structure_factor(reversed(range(1, HKL_MAX, 2))) # all permutations of odd (h,k,l)
         _structure_factor(reversed(range(0, HKL_MAX, 2))) # all permutations of even (h,k,l)
