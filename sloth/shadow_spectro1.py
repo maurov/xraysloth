@@ -174,7 +174,7 @@ if __name__ == "__main__":
     #s.oe1.sw_oe.oe.load('spectro-1411_start.oe1')
     #s.det.sw_scr.oe.load('spectro-1411_start.det')
 
-    s.run(10000)
+    #s.run(10000)
     
     p = SwPlot(s.beam_src.beam)
     p.box.show()
