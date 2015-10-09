@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """shadow_oes: custom wrapper classes of *ShadowOpticalElement* from
-Orange-Shadow_ (SHADOW3_ project)
+ShadowOui_ (was Orange-Shadow_) from SHADOW3_ project
 
 .. note:: ShadowOpticalElement is designed as a final class, this is
 why the first class, *SwOE* is a wrapper class and does not inherit
@@ -13,6 +13,7 @@ compatibility with the whole (SHADOW3_ project).
 
 .. _SHADOW3: http://forge.epn-campus.eu/projects/shadow3
 .. _Orange-Shadow: https://github.com/lucarebuffi/Orange-Shadow
+.. _ShadowOui: https://github.com/lucarebuffi/ShadowOui
 
 """
 __author__ = "Mauro Rovezzi"
@@ -39,7 +40,7 @@ class SwOE(object):
     """wrapper to ShadowOpticalElement"""
 
     def __init__(self):
-        if not (HAS_PY3 and HAS_OSHADOW): raise ImportError("Orange-Shadow not found")
+        if not (HAS_PY3 and HAS_OSHADOW): raise ImportError("ShadowOui not found")
         self.sw_oe = self.create_instance()
 
     def create_instance(self):

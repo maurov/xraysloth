@@ -5,9 +5,14 @@
 
 .. _SHADOW3: http://forge.epn-campus.eu/projects/shadow3
 .. _Orange-Shadow: https://github.com/lucarebuffi/Orange-Shadow
+.. _ShadowOui: https://github.com/lucarebuffi/ShadowOui
 
 TODO
 ----
+
+- check compatibility iwht ShadowOui_ and last ShadowTools
+  changes... may be the full thing is broken
+
 - move to PyMca5 plotting objects
 
 """

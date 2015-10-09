@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""shadow3_spectro1: an utility toolbox to raytrace a
-wavelength-dispersive spectrometer with SHADOW3_ from Python
+"""shadow_spectro1: an utility toolbox to raytrace a
+wavelength-dispersive spectrometer with SHADOW3_ from Python, via
+ShadowOui_ layer
 
 .. note:: requires python3.x
 
@@ -15,16 +16,20 @@ wavelength-dispersive spectrometer with SHADOW3_ from Python
           but the correct way to extend SHADOW3_ functionality is to
           inherit from ShadowLibExtensions!!! Please, do not inherit
           from this object. It will be soon deprecated. See also the
-          current develpment of OASYS1_, Orange-Shadow_ or
-          Orange-XOPPY_.
+          current develpment of ShadowOui_ (OASYS1_ and Orange-Shadow_
+          no more under development) or Orange-XOPPY_.
 
 .. _SHADOW3: http://forge.epn-campus.eu/projects/shadow3
 .. _OASYS1: https://github.com/lucarebuffi/OASYS1
 .. _Orange-Shadow: https://github.com/lucarebuffi/Orange-Shadow
 .. _Orange-XOPPY: https://github.com/srio/Orange-XOPPY
+.. _ShadowOui: https://github.com/lucarebuffi/ShadowOui
 
 TODO
 ----
+
+- update to ShadowOui_
+
 - re-structure the whole thing by inheriting from ShadowLibExtensions
   or Orange-Shadow
 
