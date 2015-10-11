@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """IPython Qt widget
-=================
+====================
 
 This code is based on:
 
@@ -11,6 +11,20 @@ http://stackoverflow.com/questions/11513132/embedding-ipython-qt-console-in-a-py
 2. https://github.com/sir-wiggles/PyInterp
 3. https://github.com/klusta-team/klustaviewa/blob/master/klustaviewa/views/ipythonview.py
 4. https://github.com/gpoulin/python-test/blob/master/embedded_qtconsole.py
+
+
+TODO
+====
+
+- Move to Jupyter/qtconsole!
+
+http://jupyter.org/qtconsole/stable/#qt-and-the-qtconsole
+
+https://github.com/ipython/ipykernel/blob/master/examples/embedding/inprocess_qtconsole.py
+
+https://github.com/ipython/ipykernel/blob/master/examples/embedding/ipkernel_qtapp.py
+
+none working like this one!!!
 
 """
 
