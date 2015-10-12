@@ -67,18 +67,26 @@ else:
     except:
         print(sys.exc_info()[1])
         pass
-    from PyQt4 import QtGui
+    from PyQt4 import QtGui, Qt
     HAS_QT = True
 
 # IPy machinery
 try:
-    from IPython.qt.console.rich_ipython_widget import RichIPythonWidget
-    from IPython.qt.inprocess import QtInProcessKernelManager
+    from qtconsole.rich_jupyter_widget import RichJupyterWidget as RichIPythonWidget
+    from qtconsole.inprocess import QtInProcessKernelManager
     from IPython.lib import guisupport
+    from IPython.lib.kernel import connect_qtconsole
+    from ipykernel.kernelapp import IPKernelApp
     HAS_IPYTHON = True
 except:
-    print(sys.exc_info()[1])
-    pass
+    try:
+        from IPython.qt.console.rich_ipython_widget import RichIPythonWidget
+        from IPython.qt.inprocess import QtInProcessKernelManager
+        from IPython.lib import guisupport
+        HAS_IPYTHON = True
+    except:
+        print(sys.exc_info()[1])
+        pass
 
 ### SLOTH ###
 from __init__ import _libDir, __version__
@@ -88,6 +96,97 @@ SLOTH_IPY_WELCOME = "Welcome to Sloth IPython console, version {0}\n".format(__v
 
 #from genericutils import ipythonAutoreload
 
+#-----------------------------------------------------------------------------
+# from: internal_ipkernel.py
+# https://github.com/ipython/ipykernel/blob/master/examples/embedding/internal_ipkernel.py
+#-----------------------------------------------------------------------------
+def mpl_kernel(gui):
+    """Launch and return an IPython kernel with matplotlib support for the desired gui
+    """
+    kernel = IPKernelApp.instance()
+    kernel.initialize(['python', '--matplotlib=%s' % gui,
+                       #'--log-level=10'
+                       ])
+    return kernel
+
+
+class InternalIPKernel(object):
+
+    def init_ipkernel(self, backend):
+        # Start IPython kernel with GUI event loop and mpl support
+        self.ipkernel = mpl_kernel(backend)
+        # To create and track active qt consoles
+        self.consoles = []
+        
+        # This application will also act on the shell user namespace
+        self.namespace = self.ipkernel.shell.user_ns
+
+        # Example: a variable that will be seen by the user in the shell, and
+        # that the GUI modifies (the 'Counter++' button increments it):
+        self.namespace['app_counter'] = 0
+        #self.namespace['ipkernel'] = self.ipkernel  # dbg
+
+    def print_namespace(self, evt=None):
+        print("\n***Variables in User namespace***")
+        for k, v in self.namespace.items():
+            if not k.startswith('_'):
+                print('%s -> %r' % (k, v))
+        sys.stdout.flush()
+
+    def new_qt_console(self, evt=None):
+        """start a new qtconsole connected to our kernel"""
+        return connect_qtconsole(self.ipkernel.abs_connection_file, profile=self.ipkernel.profile)
+
+    def count(self, evt=None):
+        self.namespace['app_counter'] += 1
+
+    def cleanup_consoles(self, evt=None):
+        for c in self.consoles:
+            c.kill()
+
+#-----------------------------------------------------------------------------
+# from: ipkernel_qtapp.py
+# https://github.com/ipython/ipykernel/blob/master/examples/embedding/ipkernel_qtapp.py
+#-----------------------------------------------------------------------------
+class SimpleWindow(Qt.QWidget, InternalIPKernel):
+
+    def __init__(self, app):
+        Qt.QWidget.__init__(self)
+        self.app = app
+        self.add_widgets()
+        self.init_ipkernel('qt')
+        self.new_qt_console()
+
+    def add_widgets(self):
+        self.setGeometry(300, 300, 400, 70)
+        self.setWindowTitle('IPython in your app')
+
+        # Add simple buttons:
+        console = Qt.QPushButton('Qt Console', self)
+        console.setGeometry(10, 10, 100, 35)
+        self.connect(console, Qt.SIGNAL('clicked()'), self.new_qt_console)
+
+        namespace = Qt.QPushButton('Namespace', self)
+        namespace.setGeometry(120, 10, 100, 35)
+        self.connect(namespace, Qt.SIGNAL('clicked()'), self.print_namespace)
+
+        count = Qt.QPushButton('Count++', self)
+        count.setGeometry(230, 10, 80, 35)
+        self.connect(count, Qt.SIGNAL('clicked()'), self.count)
+
+        # Quit and cleanup
+        quit = Qt.QPushButton('Quit', self)
+        quit.setGeometry(320, 10, 60, 35)
+        self.connect(quit, Qt.SIGNAL('clicked()'), Qt.qApp, Qt.SLOT('quit()'))
+
+        self.app.connect(self.app, Qt.SIGNAL("lastWindowClosed()"),
+                         self.app, Qt.SLOT("quit()"))
+
+        self.app.aboutToQuit.connect(self.cleanup_consoles)
+
+#-----------------------------------------------------------------------------
+# previous approach
+#-----------------------------------------------------------------------------
 def _get_ipy_mods():
     """push modules to ipy"""
     _mods = {'os' : os,
@@ -117,9 +216,10 @@ class QIPythonWidget(RichIPythonWidget):
 
     """
     def __init__(self, customBanner=None, *args, **kwargs):
+        super(QIPythonWidget, self).__init__(*args, **kwargs)
+        #RichIPythonWidget.__init__(self, *args, **kwargs)
         if customBanner != None:
             self.banner = customBanner
-        super(QIPythonWidget, self).__init__(*args, **kwargs)
         self.kernel_manager = kernel_manager = QtInProcessKernelManager()
         kernel_manager.start_kernel()
         kernel_manager.kernel.gui = 'qt'
@@ -165,6 +265,7 @@ class IPyConsoleWidget(QtGui.QWidget):
     """
     def __init__(self, parent=None):
         super(IPyConsoleWidget, self).__init__(parent)
+        #QtGui.QWidget.__init__(self, parent)
         self.ipy = ipy = QIPythonWidget(customBanner=SLOTH_IPY_WELCOME)
 
         ipy.push_variables(_get_ipy_mods())
@@ -178,9 +279,18 @@ class IPyConsoleWidget(QtGui.QWidget):
         
 if __name__ == '__main__':
     if (HAS_QT and HAS_IPYTHON):
-        app = QtGui.QApplication(sys.argv)
-        ipy = IPyConsoleWidget()
-        ipy.show()
-        sys.exit(app.exec_())
+        # CURRENT
+        app = Qt.QApplication([]) 
+        win = SimpleWindow(app)
+        win.show()
+        # Very important, IPython-specific step: this gets GUI event loop
+        # integration going, and it replaces calling app.exec_()
+        win.ipkernel.start()
+        #
+        # PREVIOUS
+        #app = QtGui.QApplication(sys.argv)
+        #ipy = IPyConsoleWidget()
+        #ipy.show()
+        #sys.exit(app.exec_())
     else:
         pass
