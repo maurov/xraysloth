@@ -36,9 +36,10 @@ try:
 except:
     pass
 
+from shadow_oes import SwOE
 
-class SwScreen(object):
-    """wrapper to ShadowOpticalElement"""
+class SwScreen(SwOE):
+    """screen"""
 
     def __init__(self, slit_width_xaxis, slit_height_zaxis):
         """create a screen (=empty optical element) with a given slit size XZ
@@ -53,9 +54,10 @@ class SwScreen(object):
                             slit aperture Z axis [cm]
 
         """
-        self.sw_scr = self.create_instance()
+        super(SwScreen, self).__init__()
+        self.sw = self.create_instance()
 
-        self.set_output_files(fwrite=0, f_angle=0)
+        self.set_output_files(fwrite=0, f_angle=0) #write all, TODO: remove
 
         n_screen = 1
         i_screen = np.array([1, 0, 0, 0, 0, 0, 0, 0, 0, 0])
@@ -82,53 +84,36 @@ class SwScreen(object):
         cx_slit[0] = 0.0
         cz_slit[0] = 0.0
 
-        self.sw_scr.oe.setScreens(n_screen,
-                                  i_screen,
-                                  i_abs,
-                                  sl_dis,
-                                  i_slit,
-                                  i_stop,
-                                  k_slit,
-                                  thick,
-                                  file_abs,
-                                  rx_slit,
-                                  rz_slit,
-                                  cx_slit,
-                                  cz_slit,
-                                  file_src_ext)
+        self.sw._oe.set_screens(n_screen,
+                                i_screen,
+                                i_abs,
+                                sl_dis,
+                                i_slit,
+                                i_stop,
+                                k_slit,
+                                thick,
+                                file_abs,
+                                rx_slit,
+                                rz_slit,
+                                cx_slit,
+                                cz_slit,
+                                file_src_ext)
 
     def create_instance(self):
         """template method pattern"""
-        if HAS_PY3 and HAS_OSHADOW:
-            return ShadowOpticalElement.create_empty_oe()
-        else:
-            raise ImportError("Orange-Shadow not found")
+        #self.sw._oe.FMIRR=5
+        #self.sw._oe.F_CRYSTAL = 0
+        #self.sw._oe.F_REFRAC=2
+        #self.sw._oe.F_SCREEN=1
+        #self.sw._oe.N_SCREEN=1
+        return ShadowOpticalElement.create_screen_slit()
+
 
     def get_instance(self):
-        return self.sw_scr
-
-    def set_output_files(self, fwrite=3, f_angle=0):
-        """ optional file output
-
-        Parameters
-        ----------
-
-        fwrite : int [3]
-                 files to write out
-                 0 -> all files
-                 1 -> mirror file  only -- mirr
-                 2 -> image file only -- star
-                 3 -> none
-        f_angle : int [0]
-                  write out incident/reflected angles [angle.xx]
-                  0 -> no
-                  1 -> yes
-        """
-        self.sw_scr.oe.FWRITE = fwrite
-        self.sw_scr.oe.F_ANGLE = f_angle 
+        return self.sw
 
     def set_frame_of_reference(self, p, q):
-        """set frame of reference
+        """set screen frame of reference
 
         Parameters
         ----------
@@ -136,7 +121,8 @@ class SwScreen(object):
                source, image plane distances [cm]
 
         """
-        self.sw_scr.oe.setFrameOfReference(p, q, 0, 180, 0)
+        self.sw.set_frame_of_reference(p, q, 0.0, 180.0, 0.0)
         
 if __name__ == '__main__':
+    #t = SwScreen(10., 10.) #OK
     pass
