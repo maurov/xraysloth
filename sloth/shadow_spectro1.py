@@ -94,7 +94,7 @@ class SwSpectro1(object):
         ene0 = self.rc.get_ene()
         
         self.oe1.set_crystal(os.path.join(DATA_DIR, "Si_111-E_1000_10000_50.shadow"), tune_auto=0)
-        self.oe1.set_cylindrical(0)
+        #self.oe1.set_cylindrical(0) #cylindrical meridional curvature
         self.oe1.set_dimensions(fshape=1, params=np.array([4.,4.,1.25,1.25]))
         self.oe1.set_johansson(self.rc.Rm*2.) #crystal planes radius
         #self.oe1.set_infinite()
@@ -141,10 +141,10 @@ class SwSpectro1(object):
                  new calculated divergence
         """
         if fdistr == 1:
-            _hlp = abs(self.oe1.get_instance().oe.RLEN1)  # half-length pos
-            _hln = abs(self.oe1.get_instance().oe.RLEN2)  # half-length neg
-            _hwp = abs(self.oe1.get_instance().oe.RWIDX1) # half-width pos
-            _hwn = abs(self.oe1.get_instance().oe.RWIDX2) # half-width neg
+            _hlp = abs(self.oe1.get_instance()._oe.RLEN1)  # half-length pos
+            _hln = abs(self.oe1.get_instance()._oe.RLEN2)  # half-length neg
+            _hwp = abs(self.oe1.get_instance()._oe.RWIDX1) # half-width pos
+            _hwn = abs(self.oe1.get_instance()._oe.RWIDX2) # half-width neg
             _rth0 = self.rc.rtheta0
             _pcm = self.rc.p # cm
             _vdiv_pos = math.atan( (_hlp * math.sin(_rth0)) / (_pcm + _hlp * math.cos(_rth0) ) )
@@ -168,33 +168,33 @@ if __name__ == "__main__":
         app = QApplication(sys.argv)
 
     #Si(111) at 55 deg
-    s = SwSpectro1(Rm=50., useCm=True, showInfos=True, d=3.1356268397363549, theta0=35.)
+    s = SwSpectro1(Rm=50., useCm=True, showInfos=True, d=3.1356268397363549, theta0=85.)
     s.update_divergence(fdistr=1, expand=1.1)
     #s.src.sw_src.src.load('spectro-1411_start.src')
-    #s.oe1.sw_oe.oe.load('spectro-1411_start.oe1')
-    #s.det.sw_scr.oe.load('spectro-1411_start.det')
+    #s.oe1.sw_oe._oe.load('spectro-1411_start.oe1')
+    #s.det.sw_scr._oe.load('spectro-1411_start.det')
 
-    #s.run(10000)
+    s.run(10000)
     
-    p = SwPlot(s.beam_src.beam)
+    p = SwPlot(s.beam_src._beam)
     p.box.show()
     
-    #p.plotxy(s.beam_src.beam, 4, 6, nolost=1)
-    #p.plotxy(s.beam_oe1.beam, 1, 2, nolost=1)
-    #p.plotxy(s.beam_oe1.beam, 4, 6, nolost=2)
-    infos = p.plotxy(s.beam_oe1.beam, 1, 3, nolost=1)
+    #p.plotxy(s.beam_src._beam, 4, 6, nolost=1)
+    #p.plotxy(s.beam_oe1._beam, 1, 2, nolost=1)
+    #p.plotxy(s.beam_oe1._beam, 4, 6, nolost=2)
+    infos = p.plotxy(s.beam_oe1._beam, 1, 3, nolost=1)
     
     ene0 = s.rc.get_ene()
-    fwhm_src = p.plot_histo(s.beam_src.beam, 11, ref=23, xrange=[ene0-5., ene0+5], title='src_ene')
-    fwhm_oe1 = p.plot_histo(s.beam_oe1.beam, 11, ref=23, xrange=[ene0-5., ene0+5], title='oe1_ene', replace=False)
+    fwhm_src = p.plot_histo(s.beam_src._beam, 11, ref=23, xrange=[ene0-5., ene0+5], title='src_ene')
+    fwhm_oe1 = p.plot_histo(s.beam_oe1._beam, 11, ref=23, xrange=[ene0-5., ene0+5], title='oe1_ene', replace=False)
 
 
-    #poe1 = SwPlot(s.beam_oe1.beam)
+    #poe1 = SwPlot(s.beam_oe1._beam)
     #poe1.box.show()
     
     pp = sp()
-    #p.h1 = p.histo1_energy(s.beam_oe1.beam)
-    pp.fp = pp.plotxy_footprint('rmir.01')
+    #p.h1 = p.histo1_energy(s.beam_oe1._beam)
+    #pp.fp = pp.plotxy_footprint('rmir.01')
 
     print('===RESULTS===')
     print('Source energy FWHM {0:.3f} eV (50% intensity)'.format(fwhm_src))
