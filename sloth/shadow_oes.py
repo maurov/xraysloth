@@ -42,17 +42,22 @@ class SwOE(object):
     def __init__(self):
         if not (HAS_PY3 and HAS_OSHADOW):
             raise ImportError("ShadowOui not found")
-        self.sw_oe = self.create_instance()
+        self.sw = self.create_instance()
 
     def create_instance(self):
         """template method pattern"""
+        #self.sw._oe.FMIRR=5
+        #self.sw._oe.F_CRYSTAL = 0
+        #self.sw._oe.F_REFRAC=2
+        #self.sw._oe.F_SCREEN=0
+        #self.sw._oe.N_SCREEN=0
         return ShadowOpticalElement.create_empty_oe()
 
     def get_instance(self):
-        return self.sw_oe
+        return self.sw
 
     def set_output_files(self, fwrite=0, f_angle=0):
-        """ optional file output
+        """optional file output
 
         Parameters
         ----------
@@ -69,14 +74,14 @@ class SwOE(object):
                   0 -> no
                   1 -> yes
         """
-        self.sw_oe._oe.FWRITE = fwrite
-        self.sw_oe._oe.F_ANGLE = f_angle 
+        self.sw._oe.FWRITE = fwrite
+        self.sw._oe.F_ANGLE = f_angle 
 
     def set_parameters(self, f_ext=0):
         """set internal/calculated (0) parameters vs. external/user
         defined parameters (1)
         """
-        self.sw_oe._oe.F_EXT = f_ext
+        self.sw._oe.F_EXT = f_ext
     
     def set_frame_of_reference(self, p, q, deg_inc, deg_refl=None,
                                deg_mirr=0.):
@@ -99,15 +104,15 @@ class SwOE(object):
         
         """
         if deg_refl is None: deg_refl = deg_inc
-        self.sw_oe._oe.T_SOURCE     = p
-        self.sw_oe._oe.T_IMAGE      = q
-        self.sw_oe._oe.T_INCIDENCE  = deg_inc
-        self.sw_oe._oe.T_REFLECTION = deg_refl
-        self.sw_oe._oe.ALPHA        = deg_mirr
+        self.sw._oe.T_SOURCE     = p
+        self.sw._oe.T_IMAGE      = q
+        self.sw._oe.T_INCIDENCE  = deg_inc
+        self.sw._oe.T_REFLECTION = deg_refl
+        self.sw._oe.ALPHA        = deg_mirr
  
     def set_infinite(self):
         """set infinite dimensions (fhit_c = 0)"""
-        self.sw_oe._oe.FHIT_C = 0
+        self.sw._oe.FHIT_C = 0
 
     def set_dimensions(self, fshape=1, params=np.array([0., 0., 0., 0.])):
         """set finite mirror dimensions (fhit_c = 1)
@@ -127,20 +132,20 @@ class SwOE(object):
                  params[3] : dimension x minus [cm] 
                  
         """
-        self.sw_oe._oe.FHIT_C = 1
-        self.sw_oe._oe.FSHAPE = fshape
-        self.sw_oe._oe.RLEN1  = params[0]
-        self.sw_oe._oe.RLEN2  = params[1]
-        self.sw_oe._oe.RWIDX1 = params[2]
-        self.sw_oe._oe.RWIDX2 = params[3]
+        self.sw._oe.FHIT_C = 1
+        self.sw._oe.FSHAPE = fshape
+        self.sw._oe.RLEN1  = params[0]
+        self.sw._oe.RLEN2  = params[1]
+        self.sw._oe.RWIDX1 = params[2]
+        self.sw._oe.RWIDX2 = params[3]
 
 class PlaneCrystal(SwOE):
     """plane crystal"""
     
     def __init__(self):
         super(PlaneCrystal, self).__init__()
-        self.create_instance()
-        self.set_output_files(fwrite=0, f_angle=0)
+        self.sw = self.create_instance()
+        self.set_output_files(fwrite=0, f_angle=0) #write all, TODO: remove
         self.set_reflectivity()
 
     def create_instance(self):
@@ -165,8 +170,8 @@ class PlaneCrystal(SwOE):
                  (2).
 
         """
-        self.sw_oe._oe.F_REFLEC = f_reflec
-        self.sw_oe._oe.F_REFL = f_refl
+        self.sw._oe.F_REFLEC = f_reflec
+        self.sw._oe.F_REFL = f_refl
 
     def set_crystal(self, file_refl, a_bragg=0.0, thickness=0.1,\
                     tune_auto=0, tune_units=0, tune_ev=0.0, tune_ang=0.0):
@@ -204,13 +209,13 @@ class PlaneCrystal(SwOE):
                    wavelength to autotune
 
         """
-        self.sw_oe._oe.F_CRYSTAL = 1
-        self.sw_oe._oe.FILE_REFL = bytes(file_refl, 'utf-8')
+        self.sw._oe.F_CRYSTAL = 1
+        self.sw._oe.FILE_REFL = bytes(file_refl, 'utf-8')
 
         if a_bragg != 0.0: self.set_asymmetric_cut(a_bragg, thickness)
 
         if tune_auto == 0:
-            self.sw_oe._oe.F_CENTRAL = 0
+            self.sw._oe.F_CENTRAL = 0
         else:
             self.set_auto_tuning(f_phot_cent=tune_units,
                                  phot_cent=tune_ev,
@@ -229,10 +234,10 @@ class PlaneCrystal(SwOE):
         r_lambda : [0.0] Angstroms to autotune grating/crystal to.
 
         """
-        self.sw_oe._oe.F_CENTRAL = 1
-        self.sw_oe._oe.F_PHOT_CENT = f_phot_cent
-        self.sw_oe._oe.PHOT_CENT = phot_cent
-        self.sw_oe._oe.R_LAMBDA = r_lambda
+        self.sw._oe.F_CENTRAL = 1
+        self.sw._oe.F_PHOT_CENT = f_phot_cent
+        self.sw._oe.PHOT_CENT = phot_cent
+        self.sw._oe.R_LAMBDA = r_lambda
 
     def set_mosaic(self, mosaic_seed=4732093, spread_mos=0.0, thickness=0.1):
         """set mosaic crystal (f_mosaic = 1)
@@ -256,14 +261,14 @@ class PlaneCrystal(SwOE):
         -----
         mutually exclusive with asymmetric cut and Johansson
         """
-        self.sw_oe._oe.F_MOSAIC = 1
-        self.sw_oe._oe.MOSAIC_SEED = mosaic_seed
-        self.sw_oe._oe.SPREAD_MOS = spread_mos
-        self.sw_oe._oe.THICKNESS = thickness
+        self.sw._oe.F_MOSAIC = 1
+        self.sw._oe.MOSAIC_SEED = mosaic_seed
+        self.sw._oe.SPREAD_MOS = spread_mos
+        self.sw._oe.THICKNESS = thickness
 
         #MUTUALLY EXCLUSIVE!
-        self.sw_oe._oe.F_BRAGG_A = 0
-        self.sw_oe._oe.F_JOHANSSON = 0
+        self.sw._oe.F_BRAGG_A = 0
+        self.sw._oe.F_JOHANSSON = 0
 
     def set_asymmetric_cut(self, a_bragg, thickness, order=-1.):
         """set asymmetric cut (f_bragg_a = 1)
@@ -286,12 +291,12 @@ class PlaneCrystal(SwOE):
         mutually exclusive with mosaic
         
         """
-        self.sw_oe._oe.F_BRAGG_A = 1
-        self.sw_oe._oe.F_MOSAIC = 0
+        self.sw._oe.F_BRAGG_A = 1
+        self.sw._oe.F_MOSAIC = 0
 
-        self.sw_oe._oe.A_BRAGG = a_bragg
-        self.sw_oe._oe.THICKNESS = thickness
-        self.sw_oe._oe.ORDER = order
+        self.sw._oe.A_BRAGG = a_bragg
+        self.sw._oe.THICKNESS = thickness
+        self.sw._oe.ORDER = order
         
     def set_johansson(self, r_johansson):
         """set Johansson geometry (f_johansson = 1)
@@ -306,12 +311,12 @@ class PlaneCrystal(SwOE):
         -----
         mutually exclusive with mosaic
         """
-        self.sw_oe._oe.F_JOHANSSON = 1
-        self.sw_oe._oe.F_EXT = 1
-        self.sw_oe._oe.R_JOHANSSON = r_johansson
+        self.sw._oe.F_JOHANSSON = 1
+        self.sw._oe.F_EXT = 1
+        self.sw._oe.R_JOHANSSON = r_johansson
         
         #MUTUALLY EXCLUSIVE!
-        self.sw_oe._oe.F_MOSAIC = 0
+        self.sw._oe.F_MOSAIC = 0
 
 class SphericalCrystal(PlaneCrystal):
     """spherical (Johann) crystal"""
@@ -333,7 +338,8 @@ class SphericalCrystal(PlaneCrystal):
 
         """
         super(SphericalCrystal, self).__init__()
-        self.create_instance()
+        self.sw = self.create_instance()
+        self.set_output_files(fwrite=0, f_angle=0) #write all, TODO: remove
 
         # convex/concave
         if convex:
@@ -365,12 +371,12 @@ class SphericalCrystal(PlaneCrystal):
                 radius of curvature (cm)
 
         """
-        self.sw_oe._oe.F_EXT = 1
-        self.sw_oe._oe.RMIRR = rmirr
+        self.sw._oe.F_EXT = 1
+        self.sw._oe.RMIRR = rmirr
 
     def set_curvature(self, f_convex=0):
         """set curvature (concave is default)"""
-        self.sw_oe._oe.F_CONVEX = f_convex
+        self.sw._oe.F_CONVEX = f_convex
 
     def set_cylindrical(self, cyl_ang):
         """set cylindrical (fcyl = 1)
@@ -380,8 +386,8 @@ class SphericalCrystal(PlaneCrystal):
                   0 -> meridional curvature
                   90. -> sagittal curvature
         """
-        self.sw_oe._oe.FCYL = 1
-        self.sw_oe._oe.CIL_ANG = cyl_ang
+        self.sw._oe.FCYL = 1
+        self.sw._oe.CIL_ANG = cyl_ang
 
     def set_auto_focus(self, f_default=0, ssour=0.0, simag=0.0, theta=0.0):
         """set auto focus
@@ -407,26 +413,26 @@ class SphericalCrystal(PlaneCrystal):
         """
         self.set_parameters(f_ext=0)
         if f_default == 0:
-            self.sw_oe._oe.SSOUR = ssour
-            self.sw_oe._oe.SIMAG = simag
-            self.sw_oe._oe.THETA = theta
+            self.sw._oe.SSOUR = ssour
+            self.sw._oe.SIMAG = simag
+            self.sw._oe.THETA = theta
 
     def set_calculated_shape_params(self, coincident=True, p_cm=0.,
                                     q_cm=0., inc_deg=0.):
         """internally calculated shape parameters"""
-        if self.sw_oe._oe.FCYL and self.sw_oe._oe.CYL_ANG == 90.0:
+        if self.sw._oe.FCYL and self.sw._oe.CYL_ANG == 90.0:
             # sagittal curvature
-            self.sw_oe._oe.F_EXT=1
+            self.sw._oe.F_EXT=1
 
             # RADIUS = (2 F1 F2 sin (theta)) / (F1+F2)
             if coincident:
-                p_cm = self.sw_oe._oe.T_SOURCE
-                q_cm = self.sw_oe._oe.T_IMAGE
-                inc_deg =  self.sw_oe._oe.T_REFLECTION
+                p_cm = self.sw._oe.T_SOURCE
+                q_cm = self.sw._oe.T_IMAGE
+                inc_deg =  self.sw._oe.T_REFLECTION
 
-            self.sw_oe._oe.RMIRR = ( (2 * p_cm * q_cm) / (p_cm + q_cm) ) * math.sin(math.radians(90-inc_deg))
+            self.sw._oe.RMIRR = ( (2 * p_cm * q_cm) / (p_cm + q_cm) ) * math.sin(math.radians(90-inc_deg))
         else:
-            self.sw_oe._oe.F_EXT=0
+            self.sw._oe.F_EXT=0
             if coincident:
                 self.set_auto_focus(f_default=1)
             else:
