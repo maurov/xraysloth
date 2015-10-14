@@ -40,7 +40,8 @@ class SwOE(object):
     """wrapper to ShadowOpticalElement"""
 
     def __init__(self):
-        if not (HAS_PY3 and HAS_OSHADOW): raise ImportError("ShadowOui not found")
+        if not (HAS_PY3 and HAS_OSHADOW):
+            raise ImportError("ShadowOui not found")
         self.sw_oe = self.create_instance()
 
     def create_instance(self):
@@ -77,8 +78,8 @@ class SwOE(object):
         """
         self.sw_oe._oe.F_EXT = f_ext
     
-    def set_frame_of_reference(self, p, q, deg_inc, deg_refl=None, deg_mirr=0.):
-
+    def set_frame_of_reference(self, p, q, deg_inc, deg_refl=None,
+                               deg_mirr=0.):
         """set frame of reference
 
         Parameters
@@ -333,17 +334,18 @@ class SphericalCrystal(PlaneCrystal):
         """
         super(SphericalCrystal, self).__init__()
         self.create_instance()
-        self.set_output_files(fwrite=0, f_angle=0)
-        self.sw_oe._oe.unsetReflectivity()
+
         # convex/concave
         if convex:
             f_convex = 1
         else:
             f_convex = 0
         self.set_curvature(f_convex)
-        # cylindrical?
+        
+        # cylindrical
         if cyl_ang is not None:
             self.set_cylindrical(cyl_ang)
+            
         # radius of curvature (internal or external)
         if rmirr is None:
             self.set_calculated_shape_params(self, **kws)
@@ -354,13 +356,13 @@ class SphericalCrystal(PlaneCrystal):
         return ShadowOpticalElement.create_spherical_crystal()
 
     def set_radius(self, rmirr):
-        """set radius of curvature (RMIRR)
+        """set radius of curvature (rmirr)
 
         Parameters
         ----------
 
         rmirr : float
-                radius of curvature
+                radius of curvature (cm)
 
         """
         self.sw_oe._oe.F_EXT = 1
@@ -371,21 +373,52 @@ class SphericalCrystal(PlaneCrystal):
         self.sw_oe._oe.F_CONVEX = f_convex
 
     def set_cylindrical(self, cyl_ang):
-        """set cylindrical
+        """set cylindrical (fcyl = 1)
         
-        cyl_ang : float, None
-                  cylinder orientation [deg] CCW from X axis]
+        cyl_ang : float
+                  cylinder orientation [deg] CCW from X axis
                   0 -> meridional curvature
                   90. -> sagittal curvature
         """
-        self.sw_oe._oe.setCylindric(cyl_ang=cyl_ang)
+        self.sw_oe._oe.FCYL = 1
+        self.sw_oe._oe.CIL_ANG = cyl_ang
 
-    def set_calculated_shape_params(self, coincident=True, p_cm=0., q_cm=0., inc_deg=0.):
+    def set_auto_focus(self, f_default=0, ssour=0.0, simag=0.0, theta=0.0):
+        """set auto focus
+
+        Parameters
+        ----------
+
+        f_default : int, 0
+                    focii coincident with continuation plane - yes
+                    (1), no (0)
+
+         ssour : float, 0.0
+                 for f_default=0: distance from object focus to the
+                 mirror pole
+        
+         simag : float, 0.0
+                 for f_default=0: distance from mirror pole to image
+                 focus
+        
+        theta : float, 0.0
+                for f_default=0: incidence angle (degrees)
+
+        """
+        self.set_parameters(f_ext=0)
+        if f_default == 0:
+            self.sw_oe._oe.SSOUR = ssour
+            self.sw_oe._oe.SIMAG = simag
+            self.sw_oe._oe.THETA = theta
+
+    def set_calculated_shape_params(self, coincident=True, p_cm=0.,
+                                    q_cm=0., inc_deg=0.):
         """internally calculated shape parameters"""
-        if self.sw_oe._oe.FCYL and self.sw_oe._oe.CYL_ANG == 90.0: # sagittal curvature
+        if self.sw_oe._oe.FCYL and self.sw_oe._oe.CYL_ANG == 90.0:
+            # sagittal curvature
             self.sw_oe._oe.F_EXT=1
 
-            # RADIUS = (2 F1 F2 sin (theta)) /( F1+F2)
+            # RADIUS = (2 F1 F2 sin (theta)) / (F1+F2)
             if coincident:
                 p_cm = self.sw_oe._oe.T_SOURCE
                 q_cm = self.sw_oe._oe.T_IMAGE
@@ -395,78 +428,15 @@ class SphericalCrystal(PlaneCrystal):
         else:
             self.sw_oe._oe.F_EXT=0
             if coincident:
-                self.sw_oe._oe.setAutoFocus(f_default=1)
+                self.set_auto_focus(f_default=1)
             else:
-                self.sw_oe._oe.setAutoFocus(f_default=0, ssour=p_cm, simag=q_cm, theta=inc_deg)
+                self.set_auto_focus(f_default=0, ssour=p_cm,
+                                    simag=q_cm, theta=inc_deg)
 
-
-"""
---------------------------------------------------
-CYLINDRIC MIRROR (OE2)
---------------------------------------------------
-"""
-
-class CylindricMirror(SwOE):
-    cylinder_orientation = 0
-
-    def __init__(self, cylinder_orientation=0): # 0 longitudinal, 1 sagittal
-        super().__init__()
-
-        self.turnOffFileOut()
-
-        self.sw_oe._oe.unsetReflectivity()
-
-        self.cylinder_orientation=cylinder_orientation
-        self.sw_oe._oe.setCylindric(cyl_ang=90*cylinder_orientation)
-
-    def createInstance(self):
-        return ShadowOpticalElement.create_spherical_mirror()
-
-    # RIFLETTIVITA
-
-    def set_Reflectivity(self, file_prerefl):
-        self.sw_oe._oe.setReflectivityFull(f_refl=0, file_refl=bytes(file_prerefl, 'utf-8'))
-
-    # CURVATURE TYPE
-
-    def set_SurfaceCurvature(self, surface_curvature): # 0 concave, 1 convex
-        if surface_curvature == 0:
-           self.sw_oe._oe.setConcave()
-        else:
-           self.sw_oe._oe.setConvex()
-
-    # RADIUS OF CURVATURE
-
-    def set_InternallyCalculatedShapeParameters(self, focii_and_continuation_plane, object_side_focal_distance=0, image_side_focal_distance=0, incidence_angle_respect_to_normal=0):
-        if self.cylinder_orientation==1: # sagittal curvature
-            self.sw_oe._oe.F_EXT=1
-
-            # RADIUS = (2 F1 F2 sin (theta)) /( F1+F2)
-
-            if focii_and_continuation_plane == 0:
-                object_side_focal_distance = self.sw_oe._oe.T_SOURCE
-                image_side_focal_distance = self.sw_oe._oe.T_IMAGE
-                incidence_angle_respect_to_normal =  self.sw_oe._oe.T_REFLECTION
-
-            self.sw_oe._oe.RMIRR = ((2*object_side_focal_distance*image_side_focal_distance)/(object_side_focal_distance+image_side_focal_distance))*math.sin(math.radians(90-incidence_angle_respect_to_normal))
-
-        else:
-            self.sw_oe._oe.F_EXT=0
-
-            if focii_and_continuation_plane == 0:
-                self.sw_oe._oe.setAutoFocus(f_default=1)
-            else:
-                self.sw_oe._oe.setAutoFocus(f_default=0,
-                                                ssour=object_side_focal_distance,
-                                                simag=image_side_focal_distance,
-                                                theta=incidence_angle_respect_to_normal)
-
-    def set_ExternalUserDefinedParameters(self, spherical_radius):
-        self.sw_oe._oe.F_EXT=1
-        self.sw_oe._oe.RMIRR = spherical_radius
 
 if __name__ == '__main__':
     #temp tests
     #t = SwOE() #OK
-    t = PlaneCrystal()
+    #t = PlaneCrystal() #OK
+    t = SphericalCrystal() #OK
     pass
