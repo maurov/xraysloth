@@ -207,6 +207,7 @@ class RowlandCircle(object):
         self.d = d
         self.inCircle = inCircle
         self.showInfos = showInfos
+        self.infos_dict = {}
         if inCircle is False:
             self.sampPos = np.array([0,0,0])
         elif (('int' in str(type(inCircle))) or ('float' in str(type(inCircle)))):
@@ -269,6 +270,21 @@ class RowlandCircle(object):
             print("INFO: aWext = {0:.3f} {1}".format(self.aWext, self.uDist))
             print("INFO: aL = {0:.3f} {1}".format(self.aL, self.uDist))
         return self
+
+    def get_infos(self):
+        """show useful information on distances/parameters"""
+        self.infos_dict.update({'theta0' : [self.theta0, 'deg'],
+                                'p' : [self.p, self.uDist],
+                                'q' : [self.q, self.uDist],
+                                'Rs' : [self.Rs, self.uDist],
+                                'aW' : [self.aW, self.uDist],
+                                'aWext' : [self.aWext, self.uDist],
+                                'aL' : [self.aL, self.uDist]})
+
+        if self.d is not None:
+            self.infos_update({'d' : [self.d, '\AA'],
+                               'ene0' : [self.get_ene(), 'eV']})
+        return self.infos_dict
 
     def set_ene0(self, ene0, d=None):
         """set the central energy (eV) and relative Bragg angle"""
