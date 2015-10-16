@@ -44,7 +44,11 @@ __year__ = "2014-2015"
 import sys, os, copy, math
 import numpy as np
 
-from orangecontrib.shadow.util.shadow_objects import ShadowBeam
+try:
+    from orangecontrib.shadow.util.shadow_objects import ShadowBeam
+except:
+    raise ImportError('ShadowOui not found!')
+    sys.exit(1)
 
 #sloth
 from __init__ import _libDir
@@ -62,9 +66,9 @@ from shadow_plotter import ShadowPlotter as sp
 from shadow_plotter import SwPlot
 
 class SwSpectro1(object):
-    """ Example of usage for shadow_objects in Orange-shadow"""
+    """ Example of usage for shadow_objects in ShadowOui"""
 
-    def __init__(self, nrays=10000, seed=0, **kws):
+    def __init__(self, nrays=10000, seed=0, file_refl=None, **kws):
         """mimic spectrometer with 1 crystal analyzer:
         geometric source -> crystal -> detector
 
@@ -75,16 +79,23 @@ class SwSpectro1(object):
         seed : int, 0 (default was 6775431)
                seed for random number generator
 
+        file_refl : string, None
+                    file containing the crystal parameter              
+        
         **kws : see RcHoriz
         
         """
+        if (file_refl is None) or (not os.path.isfile(file_refl)):
+            raise NameError('file_refl not given or not existing')
+
+        #init rowland circle
         self.rc = RcHoriz(**kws)
         
         # init the src, oe1, det
         self.src = GeoSource()
         #self.oe1 = PlaneCrystal()
         self.oe1 = SphericalCrystal(rmirr=self.rc.Rm) #surface radius!!!
-        self.det = SwScreen(3, 3)
+        self.det = SwScreen(10, 10)
 
         #configure
         self.src.set_rays(nrays, seed)
@@ -93,7 +104,7 @@ class SwSpectro1(object):
         #self.src.set_angle_distr(fdistr=1, hdiv=(0.03, 0.03), vdiv=(0.045, 0.045)) #35 deg
         ene0 = self.rc.get_ene()
         
-        self.oe1.set_crystal(os.path.join(DATA_DIR, "Si_111-E_1000_10000_50.shadow"), tune_auto=0)
+        self.oe1.set_crystal(file_refl, tune_auto=0)
         #self.oe1.set_cylindrical(0) #cylindrical meridional curvature
         self.oe1.set_dimensions(fshape=1, params=np.array([4.,4.,1.25,1.25]))
         self.oe1.set_johansson(self.rc.Rm*2.) #crystal planes radius
@@ -167,8 +178,10 @@ if __name__ == "__main__":
         print('standart app instance')
         app = QApplication(sys.argv)
 
-    #Si(111) at 55 deg
-    s = SwSpectro1(Rm=50., useCm=True, showInfos=True, d=3.1356268397363549, theta0=85.)
+    d_si111 = 3.1356268397363549
+    file_refl = os.path.join(DATA_DIR, 'Si_444-E_2000_20000_50-A_3-T_1.bragg')
+    s = SwSpectro1(file_refl=file_refl, Rm=50., useCm=True,
+                   showInfos=True, d=d_si111/4., theta0=85.)
     s.update_divergence(fdistr=1, expand=1.1)
     #s.src.sw_src.src.load('spectro-1411_start.src')
     #s.oe1.sw_oe._oe.load('spectro-1411_start.oe1')
