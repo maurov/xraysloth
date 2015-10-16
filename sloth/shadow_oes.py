@@ -145,10 +145,17 @@ class PlaneCrystal(SwOE):
     def __init__(self):
         super(PlaneCrystal, self).__init__()
         self.sw = self.create_instance()
+        self.set_reflectivity(f_reflec=0, f_refl=0)
         self.set_output_files(fwrite=0, f_angle=0) #write all, TODO: remove
-        self.set_reflectivity()
 
     def create_instance(self):
+        """template method pattern"""
+        #self.sw._oe.FMIRR=5
+        #self.sw._oe.F_CRYSTAL = 1
+        #self.sw._oe.FILE_REFL = bytes("", 'utf-8')
+        #self.sw._oe.F_REFLECT = 0
+        #self.sw._oe.F_BRAGG_A = 0
+        #self.sw._oe.A_BRAGG = 0.0
         return ShadowOpticalElement.create_plane_crystal()
 
     def set_reflectivity(self, f_reflec=0, f_refl=0):
@@ -211,6 +218,7 @@ class PlaneCrystal(SwOE):
         """
         self.sw._oe.F_CRYSTAL = 1
         self.sw._oe.FILE_REFL = bytes(file_refl, 'utf-8')
+
 
         if a_bragg != 0.0: self.set_asymmetric_cut(a_bragg, thickness)
 
