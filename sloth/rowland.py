@@ -265,6 +265,7 @@ class RowlandCircle(object):
                 print("INFO: d = {0:.3f} \AA".format(self.d))
             print("INFO: p = {0:.3f} {1}".format(self.p, self.uDist))
             print("INFO: q = {0:.3f} {1}".format(self.q, self.uDist))
+            print("INFO: Rm = {0:.3f} {1}".format(self.Rm, self.uDist))
             print("INFO: Rs = {0:.3f} {1}".format(self.Rs, self.uDist))
             print("INFO: aW = {0:.3f} {1}".format(self.aW, self.uDist))
             print("INFO: aWext = {0:.3f} {1}".format(self.aWext, self.uDist))
@@ -276,6 +277,7 @@ class RowlandCircle(object):
         self.infos_dict.update({'theta0' : [self.theta0, 'deg'],
                                 'p' : [self.p, self.uDist],
                                 'q' : [self.q, self.uDist],
+                                'Rm' : [self.Rm, self.uDist],
                                 'Rs' : [self.Rs, self.uDist],
                                 'aW' : [self.aW, self.uDist],
                                 'aWext' : [self.aWext, self.uDist],

@@ -182,7 +182,6 @@ class PlaneCrystal(SwOE):
 
     def set_crystal(self, file_refl, a_bragg=0.0, thickness=0.1,\
                     tune_auto=0, tune_units=0, tune_ev=0.0, tune_ang=0.0):
-
         """set crystal (f_crystal = 1)
 
         Parameters
@@ -367,6 +366,13 @@ class SphericalCrystal(PlaneCrystal):
             self.set_radius(rmirr)
 
     def create_instance(self):
+        #self.sw._oe.FMIRR=1
+        #self.sw._oe.F_CRYSTAL = 1
+        #self.sw._oe.FILE_REFL = bytes("", 'utf-8')
+        #self.sw._oe.F_REFLECT = 0
+        #self.sw._oe.F_BRAGG_A = 0
+        #self.sw._oe.A_BRAGG = 0.0
+        #self.sw._oe.F_REFRAC = 0
         return ShadowOpticalElement.create_spherical_crystal()
 
     def set_radius(self, rmirr):

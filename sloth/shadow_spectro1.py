@@ -44,11 +44,22 @@ __year__ = "2014-2015"
 import sys, os, copy, math
 import numpy as np
 
+HAS_SHADOW = False
+HAS_SWOUI = False
+
 try:
     from orangecontrib.shadow.util.shadow_objects import ShadowBeam
+    HAS_SWOUI = True
 except:
-    raise ImportError('ShadowOui not found!')
-    sys.exit(1)
+    #raise ImportError('ShadowOui not found!')
+    #sys.exit(1)
+    pass
+
+try:
+    from Shadow import ShadowLibExtensions as sle
+    HAS_SHADOW = True
+except:
+    pass
 
 #sloth
 from __init__ import _libDir
@@ -65,6 +76,9 @@ from shadow_screens import SwScreen
 from shadow_plotter import ShadowPlotter as sp
 from shadow_plotter import SwPlot
 
+# ---------------------------------------------------------------#
+# SwSpectro1 (see also ShadowSpectro1 below)
+# ---------------------------------------------------------------#
 class SwSpectro1(object):
     """ Example of usage for shadow_objects in ShadowOui"""
 
@@ -85,6 +99,9 @@ class SwSpectro1(object):
         **kws : see RcHoriz
         
         """
+        if (not HAS_SWOUI):
+            raise ImportError('SwSpectro1 requires ShadowOui, not found!')
+            
         if (file_refl is None) or (not os.path.isfile(file_refl)):
             raise NameError('file_refl not given or not existing')
 
@@ -163,11 +180,115 @@ class SwSpectro1(object):
             _hdiv_pos = math.atan( (_hwp / _pcm) )
             _hdiv_neg = math.atan( (_hwn / _pcm) )
             _f = expand
-            self.src.set_angle_distr(fdistr=1, hdiv=(_hdiv_pos*_f, _hdiv_neg*_f), vdiv=(_vdiv_pos*_f, _vdiv_neg*_f))
+            self.src.set_angle_distr(fdistr=1,\
+                                     hdiv=(_hdiv_pos*_f, _hdiv_neg*_f),\
+                                     vdiv=(_vdiv_pos*_f, _vdiv_neg*_f))
             return
         else:
             print('Not implemented yet!')
             return
+
+# ---------------------------------------------------------------#
+# ShadowSpectro1
+# ---------------------------------------------------------------#
+class ShadowSpectro1(object):
+    """Spectrometer w 1 crystal analyser based on SHADOW3 only
+
+    .. note:: as was in shadow_spectro1_old.py but updated to
+              ShadowLibExtensions refactoring
+
+    """
+    
+    def __init__(self, file_refl, dimensions=np.array([0., 0., 0., 0.]),
+                 nrays=10000, seed=6775431, **kws):
+        """mimic spectrometer with 1 crystal analyzer
+
+        Parameters
+        ----------
+
+        file_refl : str
+                    reflectivity file
+
+        dimensions : array of floats, np.array([0., 0., 0., 0.])
+                     dimensions[0] : dimension y plus  [cm] 
+                     dimensions[1] : dimension y minus [cm] 
+                     dimensions[2] : dimension x plus  [cm] 
+                     dimensions[3] : dimension x minus [cm] 
+
+        
+        nrays : int, 10000
+                number of rays
+        seed : int, 6775431
+               seed for random number generator
+
+        **kws : see RcHoriz
+        
+        """
+        self.rc = RcHoriz(**kws)
+
+        self.src = sle.Source()
+        self.src.NPOINT = nrays
+        if (seed % 2 == 0): seed += 1
+        self.src.ISTAR1 = seed
+        ene0 = self.rc.get_ene()
+        ene_src_hwidth_ev = 2  
+        emin = ene0 - ene_src_hwidth_ev
+        emax = ene0 + ene_src_hwidth_ev
+        self.src.set_energy_box(emin, emax)
+        self.src.write("start.00")
+        
+        self.beam = sle.Beam()
+        self.beam.genSource(self.src)
+        self.beam.write("begin.dat")
+        self.src.write("end.00")
+
+        self.spe1 = sle.CompoundOE(name='spectro1')
+
+        #spherical crystal, TODO: make separate class
+        self.oe1 = sle.OE()
+        self.oe1.FMIRR = 1 #spherical
+        self.oe1.F_CRYSTAL = 1
+        self.oe1.FILE_REFL = file_refl.encode('utf-8')
+        self.oe1.F_REFLECT = 0
+        self.oe1.F_REFRAC = 0
+        self.oe1.F_BRAGG_A = 0
+        self.oe1.A_BRAGG = 0.0
+        self.oe1.ALPHA = 0.0
+        self.oe1.T_INCIDENCE = 90.0 - self.rc.theta0
+        self.oe1.T_REFLECTION = 90.0 - self.rc.theta0
+        self.oe1.T_SOURCE = self.rc.p
+        self.oe1.T_IMAGE = self.rc.q
+        self.oe1.F_CONVEX = 0
+        self.oe1.F_CYL = 0 # YES (1) NO (0)
+        self.oe1.CIL_ANG = 0. # meridional (0.0), sagittal (90.0)
+        self.oe1.F_EXT = 1
+        self.oe1.RMIRR = 2 * self.rc.Rm # surface radius
+        self.oe1.FHIT_C = 1 # finite dimensions yes (1), no (0)
+        self.oe1.FSHAPE = 2 # rect (1), ellipse (2), ellipse w hole (3)
+        self.oe1.RLEN1  = dimensions[0]
+        self.oe1.RLEN2  = dimensions[1]
+        self.oe1.RWIDX1 = dimensions[2]
+        self.oe1.RWIDX2 = dimensions[3]
+        self.oe1.F_CENTRAL = 0 # energy auto tuning: yes (1), no (0)
+        self.oe1.F_PHOT_CENT = 0 # eV
+        self.oe1.F_JOHANSSON = 0 # Johansson: yes (1), no (0)
+        self.oe1.R_JOHANSSON = 0.0 # radius_johansson
+        self.oe1.FWRITE = 3 # write no output files
+
+        self.spe1.append(self.oe1)
+        
+        #TODO detector
+        #self.det = sle.OE()
+
+        print('init rc, beam, src, spe1')
+        # self.run() # better not to run at init!
+
+        #trace
+        self.spe1.dump_systemfile()
+        self.beam.traceCompoundOE(self.spe1,
+                                  write_start_files=1,
+                                  write_end_files=1,
+                                  write_star_files=1)
     
 if __name__ == "__main__":
     from PyQt4.QtGui import QApplication
@@ -180,42 +301,62 @@ if __name__ == "__main__":
 
     d_si111 = 3.1356268397363549
     file_refl = os.path.join(DATA_DIR, 'Si_444-E_2000_20000_50-A_3-T_1.bragg')
-    s = SwSpectro1(file_refl=file_refl, Rm=50., useCm=True,
-                   showInfos=True, d=d_si111/4., theta0=85.)
-    s.update_divergence(fdistr=1, expand=1.1)
-    #s.src.sw_src.src.load('spectro-1411_start.src')
-    #s.oe1.sw_oe._oe.load('spectro-1411_start.oe1')
-    #s.det.sw_scr._oe.load('spectro-1411_start.det')
+    dimensions_cm=np.array([5., 5., 5., 5.])
 
-    s.run(10000)
+    # ---------------------------------------------------------------#
+    # SwSpectro1 tests
+    # ---------------------------------------------------------------#
+    if HAS_SWOUI:
+        s = SwSpectro1(file_refl=file_refl, Rm=50., useCm=True,
+                       showInfos=True, d=d_si111/4., theta0=75.)
+        s.update_divergence(fdistr=1, expand=1.1)
+        #s.src.sw_src.src.load('spectro-1411_start.src')
+        #s.oe1.sw_oe._oe.load('spectro-1411_start.oe1')
+        #s.det.sw_scr._oe.load('spectro-1411_start.det')
+
+    if 0:
+        s.run(10000)
     
-    p = SwPlot(s.beam_src._beam)
-    p.box.show()
+        p = SwPlot(s.beam_src._beam)
+        p.box.show()
     
-    #p.plotxy(s.beam_src._beam, 4, 6, nolost=1)
-    #p.plotxy(s.beam_oe1._beam, 1, 2, nolost=1)
-    #p.plotxy(s.beam_oe1._beam, 4, 6, nolost=2)
-    infos = p.plotxy(s.beam_oe1._beam, 1, 3, nolost=1)
+        #p.plotxy(s.beam_src._beam, 4, 6, nolost=1)
+        #p.plotxy(s.beam_oe1._beam, 1, 2, nolost=1)
+        #p.plotxy(s.beam_oe1._beam, 4, 6, nolost=2)
+        infos = p.plotxy(s.beam_oe1._beam, 1, 3, nolost=1)
     
-    ene0 = s.rc.get_ene()
-    fwhm_src = p.plot_histo(s.beam_src._beam, 11, ref=23, xrange=[ene0-5., ene0+5], title='src_ene')
-    fwhm_oe1 = p.plot_histo(s.beam_oe1._beam, 11, ref=23, xrange=[ene0-5., ene0+5], title='oe1_ene', replace=False)
+        ene0 = s.rc.get_ene()
+        fwhm_src = p.plot_histo(s.beam_src._beam, 11, ref=23, xrange=[ene0-5., ene0+5], title='src_ene')
+        fwhm_oe1 = p.plot_histo(s.beam_oe1._beam, 11, ref=23, xrange=[ene0-5., ene0+5], title='oe1_ene', replace=False)
+
+        
+        #poe1 = SwPlot(s.beam_oe1._beam)
+        #poe1.box.show()
+        
+        pp = sp()
+        #p.h1 = p.histo1_energy(s.beam_oe1._beam)
+        #pp.fp = pp.plotxy_footprint('rmir.01')
+        
+        print('===RESULTS===')
+        print('Source energy FWHM {0:.3f} eV (50% intensity)'.format(fwhm_src))
+        print('OE1 energy FWHM {0:.3f} eV (50% intensity)'.format(fwhm_oe1))
+        print('Bragg angle {0:.2f} deg'.format(s.rc.theta0))
+        print('Central energy {0:.5f} eV'.format(s.rc.get_ene()))
+        print('Energy resolution {0:.3f}E-4'.format((fwhm_oe1/s.rc.get_ene())*1E4))
+
+    else:
+        print('--- TESTING MODE ---')
+        print('SwSpectro1 instance is s, not run yet')
+        print('plotters are ShadowPlotter (old) and SwPlotter (current)')
 
 
-    #poe1 = SwPlot(s.beam_oe1._beam)
-    #poe1.box.show()
-    
-    pp = sp()
-    #p.h1 = p.histo1_energy(s.beam_oe1._beam)
-    #pp.fp = pp.plotxy_footprint('rmir.01')
-
-    print('===RESULTS===')
-    print('Source energy FWHM {0:.3f} eV (50% intensity)'.format(fwhm_src))
-    print('OE1 energy FWHM {0:.3f} eV (50% intensity)'.format(fwhm_oe1))
-    print('Bragg angle {0:.2f} deg'.format(s.rc.theta0))
-    print('Central energy {0:.5f} eV'.format(s.rc.get_ene()))
-    print('Energy resolution {0:.3f}E-4'.format((fwhm_oe1/s.rc.get_ene())*1E4))
-
+    # ---------------------------------------------------------------#
+    # ShadowSpectro1 tests
+    # ---------------------------------------------------------------#
+    if HAS_SHADOW:
+        s = ShadowSpectro1(file_refl=file_refl, dimensions=dimensions_cm,
+                           Rm=50., useCm=True,
+                           showInfos=True, d=d_si111/4., theta0=75.)
 
     try:
         from IPython.lib.guisupport import start_event_loop_qt4

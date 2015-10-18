@@ -3,14 +3,14 @@
 
 """shadow_plotter: custom plotting utility for SHADOW3_
 
-.. _SHADOW3: http://forge.epn-campus.eu/projects/shadow3
+.. _SHADOW3: https://github.com/srio/shadow3
 .. _Orange-Shadow: https://github.com/lucarebuffi/Orange-Shadow
 .. _ShadowOui: https://github.com/lucarebuffi/ShadowOui
 
 TODO
 ----
 
-- check compatibility iwht ShadowOui_ and last ShadowTools
+- check compatibility with ShadowOui_ and last ShadowTools
   changes... may be the full thing is broken
 
 - move to PyMca5 plotting objects
@@ -34,6 +34,7 @@ if sys.version_info >= (3,2,0): HAS_PY3 = True
 
 # see README.rst how to install XOP and SHADOW3
 try:
+    from Shadow import ShadowLibExtensions as sd
     from Shadow import ShadowTools as st
     from Shadow import ShadowToolsPrivate as stp
     HAS_SHADOW = True
