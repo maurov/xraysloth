@@ -43,8 +43,8 @@ from matplotlib import cm, animation
 from matplotlib import gridspec
 
 ### PyMca5 imports
-from PyMca5.PyMca import EdfFile
-from PyMca5.PyMca import MaskImageWidget
+from PyMca5.PyMcaIO import EdfFile
+from PyMca5.PyMcaGui.plotting import ImageView #better than MaskImageWidget
 
 ### local imports
 from specfiledata import SpecfileData
@@ -80,7 +80,8 @@ class SpecWithEdfStack(SpecfileData):
         super(SpecWithEdfStack, self).__init__(spec_fname, **kws)
 
         # init image plot window
-        self.miw = MaskImageWidget.MaskImageWidget()
+        #self.miw = MaskImageWidget.MaskImageWidget()
+        self.miw = ImageView.ImageViewMainWindow()
 
         # animation figure layout
         self.anim_fig = plt.figure(num='SpecWithEdfStack', figsize=(5,5), dpi=150)
