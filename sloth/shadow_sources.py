@@ -41,13 +41,13 @@ class SwSource(object):
     
     def __init__(self):
         if not (HAS_PY3 and HAS_OSHADOW): raise ImportError("ShadowOui not found")
-        self.sw_src = self.create_instance()
+        self.sw = self.create_instance()
 
     def create_instance(self):
         return ShadowSource.create_src()
 
     def get_instance(self):
-        return self.sw_src
+        return self.sw
 
 class GeoSource(SwSource):
     
@@ -64,13 +64,13 @@ class GeoSource(SwSource):
         self.set_energy_distr()
         self.set_polarization()
 
-        self.sw_src.src.F_OPD = 1 #store optical paths, now deprecated: fixed value
+        self.sw.src.F_OPD = 1 #store optical paths, now deprecated: fixed value
 
     def set_rays(self, nrays=10000, seed=0):
         """set the number of rays of the source and the seed (0=random)"""
-        self.sw_src.src.NPOINT = nrays
+        self.sw.src.NPOINT = nrays
         if (seed % 2 == 0): seed += 1
-        self.sw_src.src.ISTAR1 = seed
+        self.sw.src.ISTAR1 = seed
 
     def set_sampling(self, fgrid=0, **kws):
         """source modelling type -- spatial/momentum
@@ -87,17 +87,17 @@ class GeoSource(SwSource):
         if not fgrid == 0:
             print('Only RANDOM/RANDOM works, revert back to it!')
             fgrid = 0
-        self.sw_src.src.FGRID = fgrid
+        self.sw.src.FGRID = fgrid
 
         #N.B. if not RANDOM/RANDOM
         #if fgrid>0:
-        #    self.sw_src.src.IDO_VX = <grid points in x'>
-        #    self.sw_src.src.IDO_VZ = <grid points in z'>
-        #    self.sw_src.src.IDO_X_S = <grid points in x>
-        #    self.sw_src.src.IDO_Y_S = <grid points in y>
-        #    self.sw_src.src.IDO_Z_S = <grid points in z>
-        #    self.sw_src.src.N_CIRCLE = <radial grid points>
-        #    self.sw_src.src.N_CONE = <concentrical grid points >
+        #    self.sw.src.IDO_VX = <grid points in x'>
+        #    self.sw.src.IDO_VZ = <grid points in z'>
+        #    self.sw.src.IDO_X_S = <grid points in x>
+        #    self.sw.src.IDO_Y_S = <grid points in y>
+        #    self.sw.src.IDO_Z_S = <grid points in z>
+        #    self.sw.src.N_CIRCLE = <radial grid points>
+        #    self.sw.src.N_CONE = <concentrical grid points >
 
     def set_spatial_type(self, fsour=0, wxsou=0.05, wzsou=0.05, fsource_depth=1, wysou=0.):
         """spatial source type/shape in X-Z plane
@@ -120,21 +120,21 @@ class GeoSource(SwSource):
         wysou : float, 0.
                 for fsource_depth=2; source depth (Y)
         """
-        self.FSOUR = fsour
+        self.sw.src.FSOUR = fsour
 
         if fsour == 1 or fsour == 2:
-            self.sw_src.src.WXSOU = wxsou
-            self.sw_src.src.WZSOU = wzsou
+            self.sw.src.WXSOU = wxsou
+            self.sw.src.WZSOU = wzsou
         elif fsour == 3: #gaussian
-            self.sw_src.src.SIGMAX = wxsou
-            self.sw_src.src.SIGMAZ = wzsou
+            self.sw.src.SIGMAX = wxsou
+            self.sw.src.SIGMAZ = wzsou
 
-        self.sw_src.src.FSOURCE_DEPTH = fsource_depth
+        self.sw.src.FSOURCE_DEPTH = fsource_depth
 
         if fsource_depth == 1:
-            self.sw_src.src.WYSOU = wysou
+            self.sw.src.WYSOU = wysou
         elif fsource_depth == 2:
-            self.sw_src.src.SIGMAY = wysou
+            self.sw.src.SIGMAY = wysou
 
     def set_angle_distr(self, fdistr=5, cone=(0.0, 0.1),\
                         hdiv=(0.0, 0.0), vdiv=(6E-5, 6E-5), sigd=(0.0, 0.0)):
@@ -159,33 +159,33 @@ class GeoSource(SwSource):
         sigd : tuple of floats, (0.0, 0.0)
                for fdistr=3; sigma (horizontal, vertical) (X, Z) [rad]
         """
-        self.sw_src.src.FDISTR = fdistr
+        self.sw.src.FDISTR = fdistr
         if fdistr == 1 or fdistr == 2:
-            self.sw_src.src.HDIV1 = hdiv[0]
-            self.sw_src.src.HDIV2 = hdiv[1]
-            self.sw_src.src.VDIV1 = vdiv[0]
-            self.sw_src.src.VDIV2 = vdiv[1]
+            self.sw.src.HDIV1 = hdiv[0]
+            self.sw.src.HDIV2 = hdiv[1]
+            self.sw.src.VDIV1 = vdiv[0]
+            self.sw.src.VDIV2 = vdiv[1]
         elif fdistr == 3:
-            self.sw_src.src.HDIV1 = hdiv[0]
-            self.sw_src.src.HDIV2 = hdiv[1]
-            self.sw_src.src.VDIV1 = vdiv[0]
-            self.sw_src.src.VDIV2 = vdiv[0]
-            self.sw_src.src.SIGDIX = sigd[0]
-            self.sw_src.src.SIGDIZ = sigd[1]
+            self.sw.src.HDIV1 = hdiv[0]
+            self.sw.src.HDIV2 = hdiv[1]
+            self.sw.src.VDIV1 = vdiv[0]
+            self.sw.src.VDIV2 = vdiv[0]
+            self.sw.src.SIGDIX = sigd[0]
+            self.sw.src.SIGDIZ = sigd[1]
         elif fdistr == 5:
-            self.sw_src.src.CONE_MIN = cone[0]
-            self.sw_src.src.CONE_MAX = cone[1]
+            self.sw.src.CONE_MIN = cone[0]
+            self.sw.src.CONE_MAX = cone[1]
         else:
             raise Exception("Deprecated")
 
     def get_divergence(self):
         """return a tuple with current source divergence"""
-        if self.sw_src.src.FDISTR == 1 or self.sw_src.src.FDISTR==2:
-            return (self.sw_src.src.HDIV1, self.sw_src.src.HDIV2, self.sw_src.src.VDIV1, self.sw_src.src.VDIV2)
-        elif self.sw_src.src.FDISTR == 3:
-            return (self.sw_src.src.HDIV1, self.sw_src.src.HDIV2, self.sw_src.src.VDIV1, self.sw_src.src.VDIV2, self.sw_src.src.SIGDIX, self.sw_src.src.SIGDIZ)
-        elif self.sw_src.src.FDISTR == 5:
-            return (self.sw_src.src.CONE_MIN, self.sw_src.src.CONE_MAX)
+        if self.sw.src.FDISTR == 1 or self.sw.src.FDISTR==2:
+            return (self.sw.src.HDIV1, self.sw.src.HDIV2, self.sw.src.VDIV1, self.sw.src.VDIV2)
+        elif self.sw.src.FDISTR == 3:
+            return (self.sw.src.HDIV1, self.sw.src.HDIV2, self.sw.src.VDIV1, self.sw.src.VDIV2, self.sw.src.SIGDIX, self.sw.src.SIGDIZ)
+        elif self.sw.src.FDISTR == 5:
+            return (self.sw.src.CONE_MIN, self.sw.src.CONE_MAX)
         else:
             return None
 
@@ -206,49 +206,49 @@ class GeoSource(SwSource):
         rln : list of floats, [0.0]
               relative intensities up to 10
         """
-        self.sw_src.src.F_COLOR = f_color
-        self.sw_src.src.F_PHOT = f_phot
+        self.sw.src.F_COLOR = f_color
+        self.sw.src.F_PHOT = f_phot
 
         if f_color == 1:
-            self.sw_src.src.PH1  = phn[0]
+            self.sw.src.PH1  = phn[0]
         elif f_color == 2:
             phn.extend([0.0 for x in range(10)])
-            self.sw_src.src.PH1  = phn[0]
-            self.sw_src.src.PH2  = phn[1]
-            self.sw_src.src.PH3  = phn[2]
-            self.sw_src.src.PH4  = phn[3]
-            self.sw_src.src.PH5  = phn[4]
-            self.sw_src.src.PH6  = phn[5]
-            self.sw_src.src.PH7  = phn[6]
-            self.sw_src.src.PH8  = phn[7]
-            self.sw_src.src.PH9  = phn[8]
-            self.sw_src.src.PH10 = phn[9]
+            self.sw.src.PH1  = phn[0]
+            self.sw.src.PH2  = phn[1]
+            self.sw.src.PH3  = phn[2]
+            self.sw.src.PH4  = phn[3]
+            self.sw.src.PH5  = phn[4]
+            self.sw.src.PH6  = phn[5]
+            self.sw.src.PH7  = phn[6]
+            self.sw.src.PH8  = phn[7]
+            self.sw.src.PH9  = phn[8]
+            self.sw.src.PH10 = phn[9]
         elif f_color == 3:
-            self.sw_src.src.PH1  = phn[0]
-            self.sw_src.src.PH2  = phn[1]
+            self.sw.src.PH1  = phn[0]
+            self.sw.src.PH2  = phn[1]
         elif f_color == 4:
             phn.extend([0.0 for x in range(10)])
-            self.sw_src.src.PH1  = phn[0]
-            self.sw_src.src.PH2  = phn[1]
-            self.sw_src.src.PH3  = phn[2]
-            self.sw_src.src.PH4  = phn[3]
-            self.sw_src.src.PH5  = phn[4]
-            self.sw_src.src.PH6  = phn[5]
-            self.sw_src.src.PH7  = phn[6]
-            self.sw_src.src.PH8  = phn[7]
-            self.sw_src.src.PH9  = phn[8]
-            self.sw_src.src.PH10 = phn[9]
+            self.sw.src.PH1  = phn[0]
+            self.sw.src.PH2  = phn[1]
+            self.sw.src.PH3  = phn[2]
+            self.sw.src.PH4  = phn[3]
+            self.sw.src.PH5  = phn[4]
+            self.sw.src.PH6  = phn[5]
+            self.sw.src.PH7  = phn[6]
+            self.sw.src.PH8  = phn[7]
+            self.sw.src.PH9  = phn[8]
+            self.sw.src.PH10 = phn[9]
             rln.extend([0.0 for x in range(10)])
-            self.sw_src.src.RL1  = rln[0]
-            self.sw_src.src.RL2  = rln[1]
-            self.sw_src.src.RL3  = rln[2]
-            self.sw_src.src.RL4  = rln[3]
-            self.sw_src.src.RL5  = rln[4]
-            self.sw_src.src.RL6  = rln[5]
-            self.sw_src.src.RL7  = rln[6]
-            self.sw_src.src.RL8  = rln[7]
-            self.sw_src.src.RL9  = rln[8]
-            self.sw_src.src.RL10 = rln[9]
+            self.sw.src.RL1  = rln[0]
+            self.sw.src.RL2  = rln[1]
+            self.sw.src.RL3  = rln[2]
+            self.sw.src.RL4  = rln[3]
+            self.sw.src.RL5  = rln[4]
+            self.sw.src.RL6  = rln[5]
+            self.sw.src.RL7  = rln[6]
+            self.sw.src.RL8  = rln[7]
+            self.sw.src.RL9  = rln[8]
+            self.sw.src.RL10 = rln[9]
         else:
             raise Exception("wrong F_COLOR")
 
@@ -270,11 +270,11 @@ class GeoSource(SwSource):
                   1 : linear horizontal
                   0.5 : linear 45 deg
         """
-        self.sw_src.src.F_POLAR = f_polar
+        self.sw.src.F_POLAR = f_polar
         if f_polar==1:
-            self.sw_src.src.F_COHER = f_coher
-            self.sw_src.src.POL_ANGLE = pol_angle
-            self.sw_src.src.POL_DEG = pol_deg
+            self.sw.src.F_COHER = f_coher
+            self.sw.src.POL_ANGLE = pol_angle
+            self.sw.src.POL_DEG = pol_deg
 
 
 if __name__ == "__main__":
