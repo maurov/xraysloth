@@ -111,7 +111,7 @@ class SwSpectro1(object):
         # init the src, oe1, det
         self.src = GeoSource()
         #self.oe1 = PlaneCrystal()
-        self.oe1 = SphericalCrystal(rmirr=self.rc.Rm) #surface radius!!!
+        self.oe1 = SphericalCrystal()
         self.det = SwScreen(10, 10)
 
         #configure
@@ -120,17 +120,19 @@ class SwSpectro1(object):
         self.src.set_angle_distr(fdistr=1, hdiv=(0.015, 0.015), vdiv=(0.045, 0.045)) #75 deg
         #self.src.set_angle_distr(fdistr=1, hdiv=(0.03, 0.03), vdiv=(0.045, 0.045)) #35 deg
         ene0 = self.rc.get_ene()
-        
-        self.oe1.set_crystal(file_refl, tune_auto=0)
-        #self.oe1.set_cylindrical(0) #cylindrical meridional curvature
-        self.oe1.set_dimensions(fshape=1, params=np.array([4.,4.,1.25,1.25]))
-        self.oe1.set_johansson(self.rc.Rm*2.) #crystal planes radius
-        #self.oe1.set_infinite()
-
-        self.src.set_energy_distr(phn=(ene0-1.5, ene0+3.5))
+        #self.src.set_energy_distr(phn=(ene0-1.5, ene0+3.5))
+        self.src.set_energy_distr(phn=(ene0-15, ene0+10))
         #self.src.set_angle_distr(cone=(0., 1))
 
         self.oe1.set_frame_of_reference(self.rc.p, self.rc.q, deg_inc=90-self.rc.theta0)
+        self.oe1.set_crystal(file_refl, tune_auto=0)
+        #self.oe1.set_cylindrical(0) #cylindrical meridional curvature
+        #self.oe1.set_dimensions(fshape=1, params=np.array([4.,4.,1.25,1.25])) #rectangular
+        self.oe1.set_dimensions(fshape=2, params=np.array([5.,5.,5.,5.])) #circular
+        #self.oe1.set_infinite()
+        self.oe1.set_radius(self.rc.Rm*2)  #surface radius!!!
+        #self.oe1.set_johansson(self.rc.Rm*2.) #crystal planes radius
+
         
     def run(self, nrays=None):
         """run SHADOW/source and SHADOW/trace"""
@@ -300,7 +302,8 @@ if __name__ == "__main__":
         app = QApplication(sys.argv)
 
     d_si111 = 3.1356268397363549
-    file_refl = os.path.join(DATA_DIR, 'Si_444-E_2000_20000_50-A_3-T_1.bragg')
+    #file_refl = os.path.join(DATA_DIR, 'Si_444-E_2000_20000_50-A_3-T_1.bragg')
+    file_refl = os.path.join(os.getcwd(), 'Si444_xoppy.dat')
     dimensions_cm=np.array([5., 5., 5., 5.])
 
     # ---------------------------------------------------------------#
@@ -313,6 +316,9 @@ if __name__ == "__main__":
         #s.src.sw_src.src.load('spectro-1411_start.src')
         #s.oe1.sw_oe._oe.load('spectro-1411_start.oe1')
         #s.det.sw_scr._oe.load('spectro-1411_start.det')
+        print('--- TESTING MODE ---')
+        print('SwSpectro1 instance is s, not run yet')
+        print('plotters are ShadowPlotter (old) and SwPlotter (current)')
 
     if 0:
         s.run(10000)
@@ -337,27 +343,26 @@ if __name__ == "__main__":
         #p.h1 = p.histo1_energy(s.beam_oe1._beam)
         #pp.fp = pp.plotxy_footprint('rmir.01')
         
-        print('===RESULTS===')
+        print('=== RESULTS ===')
         print('Source energy FWHM {0:.3f} eV (50% intensity)'.format(fwhm_src))
         print('OE1 energy FWHM {0:.3f} eV (50% intensity)'.format(fwhm_oe1))
         print('Bragg angle {0:.2f} deg'.format(s.rc.theta0))
         print('Central energy {0:.5f} eV'.format(s.rc.get_ene()))
         print('Energy resolution {0:.3f}E-4'.format((fwhm_oe1/s.rc.get_ene())*1E4))
 
-    else:
-        print('--- TESTING MODE ---')
-        print('SwSpectro1 instance is s, not run yet')
-        print('plotters are ShadowPlotter (old) and SwPlotter (current)')
-
-
     # ---------------------------------------------------------------#
     # ShadowSpectro1 tests
     # ---------------------------------------------------------------#
-    if HAS_SHADOW:
+    if 0 and HAS_SHADOW:
         s = ShadowSpectro1(file_refl=file_refl, dimensions=dimensions_cm,
                            Rm=50., useCm=True,
                            showInfos=True, d=d_si111/4., theta0=75.)
 
+
+        
+    # ---------------------------------------------------------------#
+    # iPy machinery
+    # ---------------------------------------------------------------#
     try:
         from IPython.lib.guisupport import start_event_loop_qt4
         start_event_loop_qt4(app)
