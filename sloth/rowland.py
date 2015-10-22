@@ -284,8 +284,8 @@ class RowlandCircle(object):
                                 'aL' : [self.aL, self.uDist]})
 
         if self.d is not None:
-            self.infos_update({'d' : [self.d, '\AA'],
-                               'ene0' : [self.get_ene(), 'eV']})
+            self.infos_dict.update({'d' : [self.d, '\AA'],
+                                    'ene0' : [self.get_ene(), 'eV']})
         return self.infos_dict
 
     def set_ene0(self, ene0, d=None):
