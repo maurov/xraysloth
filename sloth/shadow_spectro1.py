@@ -233,7 +233,7 @@ class ShadowSpectro1(object):
         if (seed % 2 == 0): seed += 1
         self.src.ISTAR1 = seed
         ene0 = self.rc.get_ene()
-        ene_src_hwidth_ev = 2  
+        ene_src_hwidth_ev = 10  
         emin = ene0 - ene_src_hwidth_ev
         emax = ene0 + ene_src_hwidth_ev
         self.src.set_energy_box(emin, emax)
@@ -271,8 +271,8 @@ class ShadowSpectro1(object):
         self.oe1.RLEN2  = dimensions[1]
         self.oe1.RWIDX1 = dimensions[2]
         self.oe1.RWIDX2 = dimensions[3]
-        self.oe1.F_CENTRAL = 0 # energy auto tuning: yes (1), no (0)
-        self.oe1.F_PHOT_CENT = 0 # eV
+        self.oe1.F_CENTRAL = 1 # energy auto tuning: yes (1), no (0)
+        self.oe1.F_PHOT_CENT = ene0 # eV
         self.oe1.F_JOHANSSON = 0 # Johansson: yes (1), no (0)
         self.oe1.R_JOHANSSON = 0.0 # radius_johansson
         self.oe1.FWRITE = 3 # write no output files
@@ -285,10 +285,10 @@ class ShadowSpectro1(object):
         print('init rc, beam, src, spe1')
         # self.run() # better not to run at init!
 
+    def run(self):
         #trace
         self.spe1.dump_systemfile()
-        self.beam.traceCompoundOE(self.spe1,
-                                  write_start_files=1,
+        self.beam.traceCompoundOE(self.spe1, write_start_files=1,
                                   write_end_files=1,
                                   write_star_files=1)
     
@@ -303,13 +303,14 @@ if __name__ == "__main__":
 
     d_si111 = 3.1356268397363549
     #file_refl = os.path.join(DATA_DIR, 'Si_444-E_2000_20000_50-A_3-T_1.bragg')
-    file_refl = os.path.join(os.getcwd(), 'Si444_xoppy.dat')
+    #file_refl = os.path.join(os.getcwd(), 'Si444_xoppy.dat')
+    file_refl = os.path.join(os.getcwd(), 'Si444_OW.dat')
     dimensions_cm=np.array([5., 5., 5., 5.])
 
     # ---------------------------------------------------------------#
     # SwSpectro1 tests
     # ---------------------------------------------------------------#
-    if HAS_SWOUI:
+    if 0 and HAS_SWOUI:
         s = SwSpectro1(file_refl=file_refl, Rm=50., useCm=True,
                        showInfos=True, d=d_si111/4., theta0=75.)
         s.update_divergence(fdistr=1, expand=1.1)
@@ -353,7 +354,7 @@ if __name__ == "__main__":
     # ---------------------------------------------------------------#
     # ShadowSpectro1 tests
     # ---------------------------------------------------------------#
-    if 0 and HAS_SHADOW:
+    if 1 and HAS_SHADOW:
         s = ShadowSpectro1(file_refl=file_refl, dimensions=dimensions_cm,
                            Rm=50., useCm=True,
                            showInfos=True, d=d_si111/4., theta0=75.)
