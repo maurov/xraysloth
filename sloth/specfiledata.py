@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-SpecfileData object to work with SPEC files from Certified Scientific
-Software (http://www.certif.com/)
+"""SpecfileData object to work with SPEC files from Certified
+Scientific Software (http://www.certif.com/)
 
 Requirements
 ============
@@ -11,7 +10,7 @@ Requirements
 
 Related
 =======
-- specfiledatawriter plugin (https://github.com/maurov/spectrox)
+- specfiledatawriter (https://github.com/maurov/xraysloth)
 
 TODO
 ====
@@ -19,6 +18,7 @@ TODO
 - implement a 2D normalization in get_map
 - implement the case of dichroic measurements (two consecutive scans
   with flipped helicity)
+
 """
 
 __author__ = "Mauro Rovezzi"
@@ -97,10 +97,13 @@ try:
 except ImportError:
     pass
 
+### ==================================================================
 ### UTILITIES (the class is below!)
+### ==================================================================
+
 def _str2rng(rngstr, keeporder=True, rebin=None):
-    """ simple utility to convert a generic string representing a
-    compact list of scans to a sorted list of integers
+    """simple utility to convert a generic string representing a compact
+    list of scans to a sorted list of integers
 
     Parameters
     ----------
@@ -131,7 +134,7 @@ def _str2rng(rngstr, keeporder=True, rebin=None):
                 raise NameError("Wrong range '{0}' in string '{1}'".format(_r, rngstr))
             _rng.extend(range(int(_rsplit2[0]), int(_rsplit2[1])+1, int(_rsplit2[2])))
         else:
-            raise NameError('Too many colon in {0}'.format(_r))
+            raise NameError("Too many colon in {0}".format(_r))
 
     #create the list and return it (removing the duplicates)
     _rngout = [int(x) for x in _rng]
@@ -153,8 +156,10 @@ def _str2rng(rngstr, keeporder=True, rebin=None):
         return list(set(_rngout))
 
 def _mot2array(motor, acopy):
-    """ simple utility to generate a copy of an array containing a
-    constant value (e.g. motor position) """
+    """simple utility to generate a copy of an array containing a
+    constant value (e.g. motor position)
+
+    """
     a = np.ones_like(acopy)
     return np.multiply(a, motor)
 
@@ -169,6 +174,7 @@ def _make_dlist(dall, rep=1):
     Returns
     -------
     dlist : list of lists of int
+
     """
     dlist = [[] for d in xrange(rep)]
     for idx in range(rep):
@@ -183,7 +189,7 @@ def _checkZeroDiv(num, dnum):
         print("ERROR: found a division by zero")
 
 def _checkScans(scans):
-    """ simple checker for scans input """
+    """simple checker for scans input"""
     if scans is None:
         raise NameError("Provide a string or list of scans to load")
     if type(scans) is str:
@@ -198,7 +204,7 @@ def _checkScans(scans):
     return nscans
 
 def _pymca_average(xdats, zdats):
-    """ call to SimpleMath.average() method from PyMca/SimpleMath.py
+    """call to SimpleMath.average() method from PyMca/SimpleMath.py
 
     Parameters
     ----------
@@ -207,6 +213,7 @@ def _pymca_average(xdats, zdats):
     Returns
     -------
     - xmrg, zmrg : 1D arrays containing the merged data
+
     """
     if HAS_SIMPLEMATH:
         sm = SimpleMath.SimpleMath()
@@ -233,6 +240,7 @@ def _pymca_SG(ydat, npoints=3, degree=1, order=0):
     Returns
     -------
     ys : smoothed array
+
     """
     if HAS_SGMODULE:
         return SGModule.getSavitzkyGolay(ydat, npoints=npoints, degree=degree, order=order)
@@ -318,11 +326,41 @@ def savitzky_golay(y, window_size, order, deriv=0):
     y = np.concatenate((firstvals, y, lastvals))
     return np.convolve(m, y, mode='valid')
 
+### ==================================================================
 ### MAIN CLASS
+### ==================================================================
 class SpecfileData(object):
     """SpecfileData object"""
-    def __init__(self, fname=None, cntx=1, cnty=None, csig=None, cmon=None, csec=None, norm=None):
-        """reads the given specfile"""
+    
+    def __init__(self, fname=None, cntx=1, cnty=None, csig=None,
+                 cmon=None, csec=None, norm=None):
+        """reads the given specfile
+
+        Parameters
+        ----------
+        fname : SPEC file name [string, None]
+                if 'DUMMY!': return (used to get docstrings)
+        cntx : counter for x axis, motor 1 scanned [string, 1]
+        cnty : counter for y axis, motor 2 steps [string, None]
+               used by get_map()
+        csig : counter for signal [string, None]
+        cmon : counter for monitor/normalization [string, None]
+        csec : counter for time in seconds [string, None]
+        scnt : scan type [string, None]
+        norm : normalization [string, None]
+               'max' -> z/max(z)
+               'max-min' -> (z-min(z))/(max(z)-min(z))
+               'area' -> (z-min(z))/trapz(z, x)
+               'sum' -> (z-min(z)/sum(z)
+
+        Returns
+        -------
+        None, sets attributes.
+        self.fname -> spec file name
+        self.sf -> spec file object
+        self.cntx/cnty/csig/cmon/csec/norm
+
+        """
         if (fname == 'DUMMY!'):
             return
         if (HAS_SPECFILE is False):
@@ -350,7 +388,7 @@ class SpecfileData(object):
         self.norm = norm
 
     def get_scan(self, scan=None, scnt=None, **kws):
-        """ get a single scan from a SPEC file
+        """get a single scan from a SPEC file
 
         Parameters
         ----------
@@ -374,6 +412,7 @@ class SpecfileData(object):
         scan_mots : dictionary with all motors positions for the given scan
                     NOTE: if cnty is given, it will return only scan_mots[cnty]
         scan_info : dictionary with information on the scan
+
         """
         if HAS_SPECFILE is False:
             raise NameError("Specfile not available!")
@@ -387,13 +426,13 @@ class SpecfileData(object):
         norm = kws.get('norm', self.norm)
         #input checks
         if scan is None:
-            raise NameError('Give a scan number [integer]: between 1 and {0}'.format(self.sf.scanno()))
+            raise NameError("Give a scan number [integer]: between 1 and {0}".format(self.sf.scanno()))
         if cntx is None:
-            raise NameError('Give the counter for x, the abscissa [string]')
+            raise NameError("Give the counter for x, the abscissa [string]")
         if cnty is not None and not (cnty in self.sf.allmotors()):
             raise NameError("'{0}' is not in the list of motors".format(cnty))
         if csig is None:
-            raise NameError('Give the counter for signal [string]')
+            raise NameError("Give the counter for signal [string]")
 
         #select the given scan number
         #NOTE: here impossible to catch an exception, if the next
@@ -415,7 +454,7 @@ class SpecfileData(object):
             # try to guess the scan type if it is not given
             # this condition should work in case of an energy scan
             if ('ene' in _cntx.lower()):
-                # this condition should detect if the energy scale is KeV
+                # this condition should detect if the energy scale is keV
                 if (scan_datx.max() - scan_datx.min()) < 3.0:
                     scan_datx = scan_datx*1000
                     _xscale = 1000.0
@@ -487,8 +526,8 @@ class SpecfileData(object):
             return scan_datx, scan_datz, scan_mots, scan_info
 
     def get_map(self, scans=None, **kws):
-        """ get a map composed of many scans repeated at different
-        position of a given motor
+        """get a map composed of many scans repeated at different position of
+        a given motor
 
         Parameters
         ----------
@@ -499,6 +538,7 @@ class SpecfileData(object):
         Returns
         -------
         xcol, ycol, zcol : 1D arrays representing the map
+
         """
         #get keywords arguments
         cntx = kws.get('cntx', self.cntx)
@@ -514,8 +554,10 @@ class SpecfileData(object):
         #
         _counter = 0
         for scan in nscans:
-            x, z, moty = self.get_scan(scan=scan, cntx=cntx, cnty=cnty, csig=csig,
-                                       cmon=cmon, csec=csec, scnt=None, norm=norm)
+            x, z, moty = self.get_scan(scan=scan, cntx=cntx,\
+                                       cnty=cnty, csig=csig,\
+                                       cmon=cmon, csec=csec,\
+                                       scnt=None, norm=norm)
             y = _mot2array(moty, x)
             print("Loading scan {0} into the map...".format(scan))
             if _counter == 0:
@@ -537,19 +579,21 @@ class SpecfileData(object):
             return
 
     def get_scans(self, scans=None, motinfo=True, **kws):
-        """ get a list of scans
+        """get a list of scans
 
         Parameters
         ----------
         scans : string or list of scans to load [None]; the format of the
                 string is intended to be parsed by '_str2rng()'
+        
         motinfo : boolean [True] returns also motors and scaninfo
                   dictionaries (see self.get_scan())
 
         Returns
         -------
         xdats, zdats : list of arrays
-        if motinfo: return mdats, idats dictionaries also
+        if motinfo: return also mdats, idats dictionaries
+
         """
         #get keywords arguments
         cntx = kws.get('cntx', self.cntx)
@@ -567,8 +611,10 @@ class SpecfileData(object):
         idats = []
         print("Loading {0} scans from SPEC ...".format(len(nscans)))
         for scan in nscans:
-            _x, _z, _m, _i = self.get_scan(scan=scan, cntx=cntx, cnty=None, csig=csig,
-                                           cmon=cmon, csec=csec, scnt=None, norm=norm)
+            _x, _z, _m, _i = self.get_scan(scan=scan, cntx=cntx,\
+                                           cnty=None, csig=csig,\
+                                           cmon=cmon, csec=csec,\
+                                           scnt=None, norm=norm)
             xdats.append(_x)
             zdats.append(_z)
             if motinfo:
@@ -582,7 +628,7 @@ class SpecfileData(object):
 
 
     def get_mrg(self, scans=None, action='average', **kws):
-        """ get a merged scan from a list of scans
+        """get a merged scan from a list of scans
 
         Parameters
         ----------
@@ -597,6 +643,7 @@ class SpecfileData(object):
         Returns
         -------
         xmrg, zmrg : 1D arrays
+
         """
         #check inputs - some already checked in get_scan()/get_scans()
         nscans = _checkScans(scans)
@@ -654,32 +701,35 @@ class SpecfileData(object):
         for iAvg, Avg in enumerate(nAvg):
             iStart = iAvg*nbin
             if Avg == nAvg[-1] and not nScansLast == 0:
-                print('WARNING: avg {0} is of {1} scans only'.format(iAvg, nScansLast))
+                print("WARNING: avg {0} is of {1} scans only".format(iAvg, nScansLast))
                 nAdd = nScansLast
             else:
                 nAdd = nbin
             mscans = nScans[iStart:iStart+nAdd]
             #print("avg {0}: scans='{1}'".format(iAvg, str(mscans)))
-            _xmrg, _zmrg = self.get_mrg(scans=mscans, action=action, cntx=cntx, cnty=None,
-                                        csig=csig, cmon=cmon, csec=csec, scnt=None, norm=norm)
+            _xmrg, _zmrg = self.get_mrg(scans=mscans, action=action,\
+                                        cntx=cntx, cnty=None,\
+                                        csig=csig, cmon=cmon,\
+                                        csec=csec, scnt=None,\
+                                        norm=norm)
             xmrgs.append(_xmrg)
             zmrgs.append(_zmrg)
         return xmrgs, zmrgs
 
     def get_mrgs_rep(self, scns, nrep=3, **kws):
-        """ get merge by groups of repetitions
+        """get merge by groups of repetitions
 
         Parameters
         ----------
 
         scns : string
                string representing ALL the good scans (parsed by str2rng)
-       
+
         """
-        print("Not yet implemented!")
+        print("Not implemented yet!")
 
     def get_det_dt(self, zcts, tau, secs=None):
-        """ get detecor signal corrected by dead time
+        """get detector signal corrected by dead time
 
         Parameters
         ----------
@@ -698,12 +748,13 @@ class SpecfileData(object):
                     zcps = zcts/secs
                     zcps_corr = zcps / (1 - zcps * tau)
                     zcts_corr = zcps_corr * secs
+
         """
         if secs is not None:
             try:
                 zcts = zcts / secs
             except:
-                print('det_dtc ERROR')
+                print("det_dtc ERROR")
                 return zcts
         try:
             #import pdb
@@ -711,7 +762,7 @@ class SpecfileData(object):
             #print(zcps)
             zcts_corr = zcts / (1 - zcts * tau)
         except:
-            print('det_dtc ERROR step 2')
+            print("det_dtc ERROR step 2")
             return zcts
         if secs is not None:
             return zcts_corr * secs
@@ -719,17 +770,21 @@ class SpecfileData(object):
             return zcts_corr
     
     def get_filter(self, ydats, method='scipySG', **kws):
-        """ get filtered data using a list of ydats and given method
+        """get filtered data using a list of ydats and given method
 
         Parameters
         ----------
         ydats : list of 1D arrays
-        method : 'scipySG' -> Savitsky Golay filter from Scipy (see savitzky_golay())
-                 'pymcaSG' -> Savitsky Golay filter from PyMca (see _pymca_SG())
+        
+        method : 'scipySG' -> Savitsky Golay filter from Scipy
+                              (see savitzky_golay())
+                 'pymcaSG' -> Savitsky Golay filter from PyMca
+                              (see _pymca_SG())
         
         Returns
         -------
         ysdats : list of 1D smoothed arrays
+
         """
         if method == 'pymcaSG':
             npoints = kws.get('npoints', 9)
@@ -738,7 +793,8 @@ class SpecfileData(object):
             ysdats = []
             print("Smoothing data with Savitzky-Golay filter (pymca)...")
             for y in ydats:
-                ysdats.append(_pymca_SG(y, npoints=npoints, degree=degree, order=order))
+                ysdats.append(_pymca_SG(y, npoints=npoints,
+                                        degree=degree, order=order))
             return ysdats
         elif method == 'scipySG':
             window_size = kws.get('window_size', 9)
@@ -747,15 +803,18 @@ class SpecfileData(object):
             ysdats = []
             print("Smoothing data with Savitzky-Golay filter (scipy)...")
             for y in ydats:
-                ysdats.append(savitzky_golay(y, window_size=window_size, order=order, deriv=deriv))
+                ysdats.append(savitzky_golay(y,
+                                             window_size=window_size,
+                                             order=order,
+                                             deriv=deriv))
             return ysdats
         else:
             raise NameError("method not known!")
 
     def write_ascii(self, scans, **kws):
-        """ export single scans to separate ascii files """
+        """export single scans to separate ascii files"""
         if not HAS_SFDW:
-            raise ImportError('specfiledatawriter required for this method!!!')
+            raise ImportError("specfiledatawriter required for this method!!!")
         #get keywords arguments
         cntx = kws.get('cntx', self.cntx)
         csig = kws.get('csig', self.csig)
@@ -765,29 +824,40 @@ class SpecfileData(object):
 
         nscans = _checkScans(scans)
         for scn in nscans:
-            x, y, m, i = self.get_scan(scan=scn, scnt=None, cntx=cntx, cnty=None, csig=csig, cmon=cmon, csec=csec, norm=norm)
-            fout = SpecfileDataWriter('{0}_S{1}'.format(self.fname, str(scn).rjust(3, '0')))
-            fout.wHeader(epoch=self.sf.epoch(), date=self.sf.date(), title='spec2spec', motnames=self.sf.allmotors())
-            fout.wScan(['Energy', '{0}'.format(i['zlabel'])], [x, y], title='{0}'.format(self.sd.command()), motpos=self.sd.allmotorpos())
+            x, y, m, i = self.get_scan(scan=scn, scnt=None, cntx=cntx,
+                                       cnty=None, csig=csig,
+                                       cmon=cmon, csec=csec,
+                                       norm=norm)
+            fout = SpecfileDataWriter('{0}_S{1}'.format(self.fname,
+                                                        str(scn).rjust(3, '0')))
+            fout.wHeader(epoch=self.sf.epoch(), date=self.sf.date(),
+                         title='spec2spec',
+                         motnames=self.sf.allmotors())
+            fout.wScan(['Energy', '{0}'.format(i['zlabel'])], [x, y],
+                       title='{0}'.format(self.sd.command()),
+                       motpos=self.sd.allmotorpos())
         
            
 ### LARCH ###
 def _specfiledata_getdoc(method):
-    """ to get the docstring of method inside a class """
+    """to get the docstring of method inside a class"""
     s = SpecfileData('DUMMY!')
     head = "\n Docstring from {0}:\n -------------------\n".format(method)
     return head + getattr(getattr(s, method), '__doc__')
 
-def spec_getscan2group(fname, scan=None, cntx=None, csig=None, cmon=None, csec=None,
-                       scnt=None, norm=None, _larch=None):
-    """ *** simple mapping of SpecfileData.get_scan() to Larch group *** """
+def spec_getscan2group(fname, scan=None, cntx=None, csig=None,
+                       cmon=None, csec=None, scnt=None, norm=None,
+                       _larch=None):
+    """*** simple mapping of SpecfileData.get_scan() to Larch group ***"""
     if _larch is None:
         raise Warning("larch broken?")
 
     s = SpecfileData(fname)
     group = _larch.symtable.create_group()
     group.__name__ = 'SPEC data file %s' % fname
-    x, y, motors, infos = s.get_scan(scan=scan, cntx=cntx, csig=csig, cmon=cmon, csec=csec, scnt=scnt, norm=norm)
+    x, y, motors, infos = s.get_scan(scan=scan, cntx=cntx, csig=csig,
+                                     cmon=cmon, csec=csec, scnt=scnt,
+                                     norm=norm)
     setattr(group, 'x', x)
     setattr(group, 'y', y)
     setattr(group, 'motors', motors)
@@ -814,15 +884,18 @@ def spec_getmap2group(fname, scans=None, cntx=None, cnty=None, csig=None, cmon=N
     return group
 spec_getmap2group.__doc__ += _specfiledata_getdoc('get_map')
 
-def spec_getmrg2group(fname, scans=None, cntx=None, csig=None, cmon=None, csec=None, norm=None, action='average', _larch=None):
-    """ *** simple mapping of SpecfileData.get_mrg() to Larch group *** """
+def spec_getmrg2group(fname, scans=None, cntx=None, csig=None,
+                      cmon=None, csec=None, norm=None,
+                      action='average', _larch=None):
+    """*** simple mapping of SpecfileData.get_mrg() to Larch group ***"""
     if _larch is None:
         raise Warning("larch broken?")
 
     s = SpecfileData(fname)
     group = _larch.symtable.create_group()
     group.__name__ = 'SPEC data file {0}; scans {1}; action {2}'.format(fname, scans, action)
-    x, y = s.get_mrg(scans=scans, cntx=cntx, csig=csig, cmon=cmon, csec=csec, norm=norm, action=action)
+    x, y = s.get_mrg(scans=scans, cntx=cntx, csig=csig, cmon=cmon,
+                     csec=csec, norm=norm, action=action)
     setattr(group, 'x', x)
     setattr(group, 'y', y)
 
@@ -847,10 +920,8 @@ def registerLarchPlugin():
         return ('_io', {})
 
 if __name__ == '__main__':
-    """ test/examples in examples/specfiledata_test.py """
+    """test/examples in examples/specfiledata_test.py"""
     #test01()
     #test02(100)
     #test03
     pass
-
-
