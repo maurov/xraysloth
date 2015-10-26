@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-GsList1D: work with 1D data sets (scans)
+"""GsList1D: work with 1D data sets (scans)
 
 TODO
 ----
 - [] mksum
 - [] plotxy: self.pw.setGeometry(700, 50, 900, 900), use config!
-- [] 
+- []
 
 """
 
@@ -29,7 +28,6 @@ from datetime import datetime
 HAS_LARCH = False
 try:
     from larch import use_plugin_path, Group
-    HAS_LARCH = True
     # Larch Plugins
     use_plugin_path('io')
     from columnfile import _read_ascii
@@ -41,6 +39,7 @@ try:
     use_plugin_path('xafs')
     from xafsft import xftf, xftr, xftf_prep, xftf_fast, xftr_fast, ftwindow
     from pre_edge import pre_edge
+    HAS_LARCH = True
 except ImportError:
     pass
     
@@ -70,8 +69,9 @@ else:
 
 class GsList1D(GsList):
     """1D version of GsList"""
+    
     def __init__(self, kwsd=None, _larch=None):
-        GsList.__init__(self, kwsd=kwsd, _larch=_larch)
+        super(GsList1D, self).__init__(kwsd=kwsd, _larch=_larch)
 
     def read_ascii(self, fname, labels=None, sort=False, sort_column=0):
         """see 'read_ascii' in Larch"""
@@ -80,7 +80,10 @@ class GsList1D(GsList):
                            _larch=self._larch)
 
     def write_ascii_xy(self, fname, g, xattr='x', yattr='y', label=None):
-        """write a two-columns ascii file to fname using xattr and yattr of a given group"""
+        """write a two-columns ascii file to fname using xattr and yattr of a
+given group
+
+        """
         from larch_plugins.io import write_ascii
         _x = getattr(self.gs[g], xattr)
         _y = getattr(self.gs[g], yattr)
@@ -161,7 +164,7 @@ class GsList1D(GsList):
             return g.norm
 
     def xcalib(self, g, ref=0, method='com', set_attr=False):
-        """ find the x-shift to calibrate two spectra
+        """find the x-shift to calibrate two spectra
 
         Keyword arguments
         -----------------
@@ -170,6 +173,7 @@ class GsList1D(GsList):
         method : the method to perform this task
                  'com' -> overlap the center of mass
         set_attr : [False] write 'xcalib' attr for the calibrated group
+
         """
         if method == 'com':
             xmin = max(min(self.gs[g].x), min(self.gs[ref].x))
@@ -189,9 +193,9 @@ class GsList1D(GsList):
         setattr(self.gs[g], xattr, _x + xshift)
 
     def mkinterpxy(self, ref=0, sel='*', **kws):
-        """ interpolate (xattr, yattr) to (xnew, ynew) on a selected
-        list of groups (sel); xnew is taken from the reference group
-        or as linear space -- xnew = np.linspace(xmin, xmax,
+        """interpolate (xattr, yattr) to (xnew, ynew) on a selected list of
+        groups (sel); xnew is taken from the reference group or as
+        linear space -- xnew = np.linspace(xmin, xmax,
         (xmax-xmin)/xstep) -- if xmin,xmax,xstep are given as input
 
         Keyword arguments
@@ -204,6 +208,7 @@ class GsList1D(GsList):
         Returns
         -------
         None -- output written to attributes: 'xnew', 'ynew'
+
         """
         xattr = kws.get('xattr', 'x')
         yattr = kws.get('yattr', 'y')
@@ -377,14 +382,14 @@ class GsList1D(GsList):
                 _m += 1
 
 class GsListXanes(GsList1D):
-    """ GsList for XANES scans """
+    """GsList for XANES scans"""
     def __init__(self, kwsd=None, _larch=None):
-        GsList1D.__init__(self, kwsd=kwsd, _larch=_larch)
+        super(GsListXanes, self).__init__(kwsd=kwsd, _larch=_larch)
 
 class GsListExafs(GsList1D):
-    """ GsList for EXAFS scans """
+    """GsList for EXAFS scans"""
     def __init__(self, kwsd=None, _larch=None):
-        GsList1D.__init__(self, kwsd=kwsd, _larch=_larch)
+        super(GsListExafs, self).__init__(kwsd=kwsd, _larch=_larch)
 
     def mkchikw(self, kws=[1,2,3]):
         """makes kws-weighted groups
@@ -392,6 +397,7 @@ class GsListExafs(GsList1D):
         Returns
         -------
         None -- output written to attributes: 'chik[1,2,3]'
+
         """
         for kw in kws:
             _attr = 'chik'+str(kw)
@@ -468,7 +474,7 @@ class GsListExafs(GsList1D):
 class GsListXes(GsList1D):
     """GsList for XES scans"""
     def __init__(self, kwsd=None, _larch=None):
-        GsList1D.__init__(self, kwsd=kwsd, _larch=_larch)
+        super(GsListXes, self).__init__(kwsd=kwsd, _larch=_larch)
 
     def mkiads(self, ref=0, plot=False, **kws):
         """IAD analysis for XES

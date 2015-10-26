@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-GsList: utility to perform standard operations on a list of Larch groups
+"""GsList: utility to perform standard operations on a list of Larch
+groups
 
 TODO
 ----
@@ -35,7 +35,6 @@ from scipy.interpolate import interp1d
 HAS_LARCH = False
 try:
     from larch import use_plugin_path, Group
-    HAS_LARCH = True
     # load Larch Plugins
     use_plugin_path('io')
     from columnfile import _read_ascii
@@ -46,6 +45,7 @@ try:
     use_plugin_path('xafs')
     from xafsft import xftf, xftr, xftf_prep, xftf_fast, xftr_fast, ftwindow
     from pre_edge import pre_edge
+    HAS_LARCH = True
 except ImportError:
     pass
 
@@ -60,7 +60,6 @@ except ImportError:
 # Mauro's Larch Plugins (https://github.com/maurov/xraysloth)
 from specfiledata import _str2rng as str2rng
 from specfiledata import spec_getmap2group, spec_getmrg2group
-from rixsdata_plotter import RixsDataPlotter
 
 ### GLOBAL VARIABLES ###
 MODNAME = '_contrib'
@@ -145,6 +144,7 @@ def _norm(y, norm=None, **kws):
 ### CLASS ###
 class GsList(object):
     """a list of groups with some wrapped methods from Larch & friends"""
+    
     def __init__(self, kwsd=None, _larch=None):
         if _larch is None:
             if HAS_LARCH:
