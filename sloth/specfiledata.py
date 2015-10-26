@@ -182,6 +182,11 @@ def _make_dlist(dall, rep=1):
     return dlist
 
 def _checkZeroDiv(num, dnum):
+    """compatibility layer"""
+    print("DEPRECATED: use '_check_zero_div' instead")
+    return _check_zero_div(num, dnum)
+
+def _check_zero_div(num, dnum):
     """simple division check to avoid ZeroDivisionError"""
     try:
         return num/dnum
@@ -189,6 +194,11 @@ def _checkZeroDiv(num, dnum):
         print("ERROR: found a division by zero")
 
 def _checkScans(scans):
+    """compatibility layer"""
+    print("DEPRECATED: use '_check_scans' instead")
+    return _check_scans(scans)
+        
+def _check_scans(scans):
     """simple checker for scans input"""
     if scans is None:
         raise NameError("Provide a string or list of scans to load")
@@ -371,13 +381,13 @@ class SpecfileData(object):
         elif not os.path.isfile(fname):
             raise OSError("File not found: '%s'" % fname)
         else:
-            self.fname = fname
-            if hasattr(self, 'sf'):
-                pass
+            if hasattr(self, 'sf') and hasattr(self, 'fname'):
+                if self.fname == fname:
+                    pass
             else:
                 self.sf = specfile.Specfile(fname) #sf = specfile file
-                print("Loaded SPEC file: {0}".format(fname))
-                # print("The total number of scans is: {0}".format(self.sf.scanno())
+                self.fname = fname
+                print("Loaded: {0} ({1} scans)".format(fname, self.sf.scanno()))
         #if HAS_SIMPLEMATH: self.sm = SimpleMath.SimpleMath()
         #set common attributes
         self.cntx = cntx
@@ -492,13 +502,13 @@ class SpecfileData(object):
         if norm is not None:
             _zlabel = "{0} norm by {1}".format(_zlabel, norm)
             if norm == "max":
-                scan_datz = _checkZeroDiv(scan_datz, np.max(scan_datz))
+                scan_datz = _check_zero_div(scan_datz, np.max(scan_datz))
             elif norm == "max-min":
-                scan_datz = _checkZeroDiv(scan_datz-np.min(scan_datz), np.max(scan_datz)-np.min(scan_datz))
+                scan_datz = _check_zero_div(scan_datz-np.min(scan_datz), np.max(scan_datz)-np.min(scan_datz))
             elif norm == "area":
-                scan_datz = _checkZeroDiv(scan_datz-np.min(scan_datz), np.trapz(scan_datz, x=scan_datx))
+                scan_datz = _check_zero_div(scan_datz-np.min(scan_datz), np.trapz(scan_datz, x=scan_datx))
             elif norm == "sum":
-                scan_datz = _checkZeroDiv(scan_datz-np.min(scan_datz), np.sum(scan_datz))
+                scan_datz = _check_zero_div(scan_datz-np.min(scan_datz), np.sum(scan_datz))
             else:
                 raise NameError("Provide a correct normalization type string")
 
@@ -548,7 +558,7 @@ class SpecfileData(object):
         csec = kws.get('csec', self.csec)
         norm = kws.get('norm', self.norm)
         #check inputs - some already checked in get_scan()
-        nscans = _checkScans(scans)
+        nscans = _check_scans(scans)
         if cnty is None:
             raise NameError("Provide the name of an existing motor")
         #
@@ -602,7 +612,7 @@ class SpecfileData(object):
         csec = kws.get('csec', self.csec)
         norm = kws.get('norm', self.norm)
         #
-        nscans = _checkScans(scans)
+        nscans = _check_scans(scans)
         #
         _ct = 0
         xdats = []
@@ -646,7 +656,7 @@ class SpecfileData(object):
 
         """
         #check inputs - some already checked in get_scan()/get_scans()
-        nscans = _checkScans(scans)
+        nscans = _check_scans(scans)
         
         actions = ['single', 'average', 'join']
         if not action in actions:
@@ -822,7 +832,7 @@ class SpecfileData(object):
         csec = kws.get('csec', self.csec)
         norm = kws.get('norm', self.norm)
 
-        nscans = _checkScans(scans)
+        nscans = _check_scans(scans)
         for scn in nscans:
             x, y, m, i = self.get_scan(scan=scn, scnt=None, cntx=cntx,
                                        cnty=None, csig=csig,
