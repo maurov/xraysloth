@@ -80,7 +80,8 @@ class SpecfileDataWriter(object):
         print("DEPRECATED: use 'write_header' method")
         return self.write_header(**kws)
         
-    def write_header(self, epoch=None, date=None, title=None, motnames=None, comms=None):
+    def write_header(self, epoch=None, date=None, title=None,
+                     motnames=None, comms=None):
         """write the header to file by over-writing
 
         Parameters
@@ -125,8 +126,13 @@ class SpecfileDataWriter(object):
                 _hl.append('#C {0}'.format(str(_com)))
 
         _hl.append('\n')
+
+        if sys.version < '3.0':
+            accessMode = 'wb'
+        else:
+            accessMode = 'w'
         
-        with open(self.fn, 'wb') as f:
+        with open(self.fn, accessMode) as f:
             outstr = '\n'.join(_hl)
             f.write(outstr)
 
@@ -180,8 +186,13 @@ class SpecfileDataWriter(object):
             _sl.append('{0}'.format(' '.join(_dl)))
 
         _sl.append('\n')
+
+        if sys.version < '3.0':
+            accessMode = 'ab'
+        else:
+            accessMode = 'a'
         
-        with open(self.fn, 'ab') as f:
+        with open(self.fn, accessMode) as f:
             f.write('\n'.join(_sl))
 
         self.scan += 1
