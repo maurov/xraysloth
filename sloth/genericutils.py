@@ -19,6 +19,39 @@ __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
 __year__ = "2011-2015"
 
+
+### colorized output ###
+HAS_TERMCOLOR = False
+try:
+    from termcolor import colored
+    HAS_TERMCOLOR = True
+except:
+    pass
+
+def colorstr(instr, color='green', on_color=None, attrs=['bold']):
+    """colorized string
+
+    Parameters
+    ----------
+    color : str, 'green'
+            Available text colors:
+            'red', 'green', 'yellow', 'blue', 'magenta', 'cyan',
+            'white'
+
+    on_color : str, None
+               Available text highlights:
+               'on_red', 'on_green', 'on_yellow', 'on_blue', 'on_magenta',
+               'on_cyan', 'on_white'
+
+    attrs : list of str, ['bold']
+            Available attributes:
+            'bold', 'dark', 'underline', 'blink', 'reverse', 'concealed'
+    """
+    if HAS_TERMCOLOR:
+        return colored(instr, color=color, on_color=None, attrs=attrs)
+    else:
+        return instr
+
 ### Files ###
 def cp_replace(grepfns, grepstr, rplstr, splitstr='_'):
     """given a filenames search string, copy the files with replaced string
