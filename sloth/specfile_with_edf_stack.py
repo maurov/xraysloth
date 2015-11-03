@@ -44,7 +44,7 @@ from matplotlib import gridspec
 
 ### PyMca5 imports
 from PyMca5.PyMcaIO import EdfFile
-from PyMca5.PyMcaGui.plotting import ImageView #better than MaskImageWidget
+from PyMca5.PyMcaGui.plotting import MaskImageWidget, ImageView
 
 ### local imports
 from specfiledata import SpecfileData
@@ -145,12 +145,27 @@ class SpecWithEdfStack(SpecfileData):
         
     def plot_image(self, idx, cmap_min=0, cmap_max=10):
         """show given image index"""
-        self.miw.setImageData(self.imgs[idx])
-        self.miw.colormap = [1, False, cmap_min, cmap_max,\
-                           self.imgs[idx].min(), self.imgs[idx].max(), 0]
-        self.miw.plotImage(update=True)
+        #with MaskImageWidget
+        #self.miw.setImageData(self.imgs[idx])
+        #self.miw.colormap = [1, False, cmap_min, cmap_max,\
+        #                  self.imgs[idx].min(), self.imgs[idx].max(), 0]
+        #self.miw.plotImage(update=True)
+        #with ImageView
+        self.miw.setImage(self.imgs[idx])
+        cmapdict = {'name' : 'Blues',
+                    'normalization' : 'linear',
+                    'autoscale' : False,
+                    'vmin' : cmap_min,
+                    'vmax' : cmap_max}
+        self.miw.imageView.setColormap(cmapdict)
+        self.miw.imageView.replot()
         self.miw.show()
 
+    def plot_set_limits(self, xmin, xmax, ymin, ymax):
+        """set limits on the imageView and replot"""
+        self.miw.imageView.setLimits(xmin, xmax, ymin, ymax)
+        self.miw.imageView.replot()
+        
     def make_animation(self, cmap_min=0, cmap_max=10, cmap=cm.Blues):
         """animation with matplotlib"""
         self.imgs_mpl = []
