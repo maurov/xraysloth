@@ -11,7 +11,7 @@ __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
 __year__ = "2014--2015"
 
-import sys
+import os, sys
 from __init__ import _libDir
 sys.path.append(_libDir)
 
@@ -228,7 +228,7 @@ class TestProtoBender(object):
         _headstr = '{0: >2s}: {1: >7s} {2: >7s} {3: >7s}'
         _outstr = '{0: >2.0f}: {1: >7.3f} {2: >7.3f} {3: >7.3f}'
         print(_headstr.format('#', 'X', 'Y', 'Z'))
-        for aN in xrange(6):
+        for aN in range(6):
             chi = self.rc.get_chi2(aN=aN)
             axoff = self.rc.get_axoff(chi)
             axyz = self.rc.get_ana_pos(aXoff=axoff)
@@ -249,6 +249,7 @@ class TestProtoBender(object):
         if showPlot:
             import matplotlib.pyplot as plt
             from mpl_toolkits.mplot3d import Axes3D
+            plt.ion()
             # create x,y
             xypts = 10
             xrng_mesh = np.linspace(P0[0], P0[0]+xypts, xypts)
@@ -298,7 +299,11 @@ class TestProtoBender(object):
         import csv
         import copy
         angs = {}
-        with open(fname, 'rb') as f:
+        if sys.version < '3.0':
+            access_mode = 'rb'
+        else:
+            access_mode = 'r'
+        with open(fname, access_mode) as f:
             fr = csv.reader(f, skipinitialspace=True)
             _pts = np.zeros((12, 3))
             _apos = {}
@@ -321,7 +326,7 @@ class TestProtoBender(object):
                         _apos[str(_bpos)] = _pts
                         _ptx = False
                         _pts = np.zeros((12, 3))
-                    _pts[pt] = map(float, row[-3:])
+                    _pts[pt] = list(map(float, row[-3:]))
                     if pt == 11:
                         _bpos = copy.deepcopy(pos)
                         _ptx = True
@@ -353,7 +358,13 @@ class TestProtoBender(object):
             self.dats = angs
 
     def eval_data(self, ang, run, **kws):
-        """data evaluation: main method"""
+        """data evaluation: main method
+
+        Parameters
+        ----------
+        see sub-methods
+        
+        """
         self.eval_data_th0s(ang, run, showPlot=False)
         self.eval_data_dists(ang, run, showPlot=True)
             
@@ -394,7 +405,7 @@ class TestProtoBender(object):
         _headstr = '{0: >3s} {1: >3s} {2: >10s} {3: >7s}'
         _outstr = '{0: >3.0f} {1: >3.0f} {2: >10s} {3: >7.3f}'
         _headx = True
-        sp = d.items()
+        sp = list(d.items())
         sp.sort()
         th0s = []
         x0s, y0s, z0s = [], [], []
@@ -472,7 +483,7 @@ class TestProtoBender(object):
             print('ERROR: dats[ang][run] not found!')
             return 0
 
-        sp = d.items()
+        sp = list(d.items())
         sp.sort()
 
         self.poss = []
@@ -531,7 +542,7 @@ class TestProtoBender(object):
         except:
             print('ERROR: dats[ang][run] not found!')
             return 0
-        sp = d.items()
+        sp = list(d.items())
         sp.sort()
         for _pos, _pts in sp:
             a, b, c = _pts[0:3]
@@ -568,6 +579,6 @@ if __name__ == "__main__":
     t = TestProtoBender()
     t.read_data(fname)
     plt.close('all')
-    t.eval_data(5,0)
+    #t.eval_data(5,0)
     #testMiscutOff1Ana(500., 65., 36.)
     
