@@ -237,9 +237,8 @@ class TestProtoBender(object):
             print(_outstr.format(aN, *pxyz))
 
     def set_sag_plane(self, P0, th0, showPlot=False):
-        """set sagittal plane Ax+By+Cz+D=0 at point P0(x,y,z) for a given th0
-(deg)
-
+        """set sagittal plane Ax+By+Cz+D=0 at point P0(x,y,z) at given
+        th0 (deg)
         """
         from rotmatrix import rotate
         norm = rotate(np.array([0,0,1]), np.array([1,0,0]), math.radians(90.-th0))
@@ -277,7 +276,8 @@ class TestProtoBender(object):
             return 0
         else:
             sp = self.sp
-        return abs(P[0]*sp[0] + P[1]*sp[1] + P[2]*sp[2] + sp[3]) / math.sqrt(sp[0]**2 + sp[1]**2 + sp[2]**2)
+        #return abs(P[0]*sp[0] + P[1]*sp[1] + P[2]*sp[2] + sp[3]) / math.sqrt(sp[0]**2 + sp[1]**2 + sp[2]**2)
+        return abs(P[0]*sp[0] + P[1]*sp[1] + P[2]*sp[2] + sp[3]) / math.sqrt(sp.dot(sp))
             
     def get_circle_3p(self, A, B, C):
         """center and radius of a circle given 3 points in space
@@ -295,7 +295,32 @@ class TestProtoBender(object):
         return R, P
 
     def read_data(self, fname, retAll=False):
-        """read data (custom format) using flushing technique"""
+        """read data (custom format) using flushing technique
+
+        Parameters
+        ----------
+
+        fname : str, file name
+
+        File format
+        -----------
+
+        # comments:
+        # theta position (0..5) => _pts.shape is (12, 3)
+        # measurement run (0..1)
+        # actuator abs pos (0 limit plus, 119 limit minus (-119 on sb motor)
+        # point position (0..5 front, 6..11 back)
+
+        # columns (comma separated values):
+        # Collection, Theta, Run, Actuator, Point, X, Y, Z
+        0, 0, 0, 0, 0, -0.030695, -0.000152, -0.028512
+
+        Returns
+        -------
+        retAll : boolean, False => set self.dats
+                          True => return data dictionary 
+
+        """
         import csv
         import copy
         angs = {}
@@ -305,7 +330,7 @@ class TestProtoBender(object):
             access_mode = 'r'
         with open(fname, access_mode) as f:
             fr = csv.reader(f, skipinitialspace=True)
-            _pts = np.zeros((12, 3))
+            _pts = np.zeros((12, 3)) #size depends on theta positions
             _apos = {}
             _runs = {}
             _bpos = 0
@@ -357,6 +382,17 @@ class TestProtoBender(object):
         else:
             self.dats = angs
 
+    def get_dats(self, ang, run, dats=None):
+        """get data for a given angle/run"""
+        if dats is None: dats = self.dats
+        try:
+            d = dats[ang][run]
+        except:
+            raise NameError('dats[{0}][{1}] not found!'.format(ang, run))
+        splist = list(d.items())
+        splist.sort()
+        return splist
+        
     def eval_data(self, ang, run, **kws):
         """data evaluation: main method
 
@@ -394,19 +430,11 @@ class TestProtoBender(object):
 
                 plot the sagittal plane
         """
-        #TODO: move this common check to a method
-        if dats is None: dats = self.dats
-        try:
-            d = dats[ang][run]
-        except:
-            print('ERROR: dats[ang][run] not found!')
-            return 0
         #header/output format strings
         _headstr = '{0: >3s} {1: >3s} {2: >10s} {3: >7s}'
         _outstr = '{0: >3.0f} {1: >3.0f} {2: >10s} {3: >7.3f}'
         _headx = True
-        sp = list(d.items())
-        sp.sort()
+        sp = self.get_dats(ang, run, dats=dats)
         th0s = []
         x0s, y0s, z0s = [], [], []
         for _pos, _pts in sp:
@@ -420,14 +448,14 @@ class TestProtoBender(object):
                 beta = math.atan((z0-z6)/(y6-y0))
             except:
                 print('ERROR getting measured theta0')
-                print('z0 = {0}; z6 = {1}; z0-z6 = {2}'.format(z0, z1, z0-z1))
-                print('y0 = {0}; y6 = {1}; y6-y0 = {2}'.format(y0, y1, y1-y0))
-                print('(z0-z6)/(y6-y0) = {0}'.format((z0-z1)/(y1-y0)))
+                print('z0 = {0}; z6 = {1}; z0-z6 = {2}'.format(z0, z6, z0-z6))
+                print('y0 = {0}; y6 = {1}; y6-y0 = {2}'.format(y0, y6, y6-y0))
+                print('(z0-z6)/(y6-y0) = {0}'.format((z0-z6)/(y6-y0)))
                 return 0
             th0 = math.degrees(math.pi/2.-beta)
             th0s.append(th0)
             if _headx:
-                print('INFO: angle given by the centre analyzer (P0-P6)')
+                print('INFO: theta angle given by the centre analyzer (P0-P6)')
                 print(_headstr.format('ang', 'run', 'pos', 'th0'))
                 print(_headstr.format('#', '#', 'spec', 'deg'))
                 _headx = False
@@ -443,7 +471,7 @@ class TestProtoBender(object):
             avgth0 = np.mean(ath0s)
             stdth0 = np.std(ath0s)
             self.set_sag_plane(avgP0, avgth0, showPlot=showPlot)
-            print('INFO: sagittal plane at centre analyzer')
+            print('INFO: setted sagittal plane at centre analyzer')
             print('P0_mean ( {0:.4f}, {1:.4f}, {2:.4f} ) mm'.format(avgP0[0], avgP0[1], avgP0[2]))
             print('P0_std ({0:.4f}, {1:.4f}, {2:.4f}) mm'.format(stdP0[0], stdP0[1], stdP0[2]))
             print('th0_mean = {0:.4f} +/- {1:.4f} deg'.format(avgth0, stdth0))
@@ -475,17 +503,7 @@ class TestProtoBender(object):
 
                 plot the sagittal plane
         """
-        #TODO: move this common check to a method
-        if dats is None: dats = self.dats
-        try:
-            d = dats[ang][run]
-        except:
-            print('ERROR: dats[ang][run] not found!')
-            return 0
-
-        sp = list(d.items())
-        sp.sort()
-
+        sp = self.get_dats(ang, run, dats=dats)
         self.poss = []
         self.dists = {}
         for ipt in xrange(12):
@@ -537,13 +555,7 @@ class TestProtoBender(object):
         _headstr = '{0: >3s} {1: >3s} {2: >10s} {3: >10s} {4: >10s}'
         _outstr = '{0: >3.0f} {1: >3.0f} {2: >10s} {3: >10.3f} {4: >10.3f}'
         _headx = True
-        try:
-            d = dats[ang][run]
-        except:
-            print('ERROR: dats[ang][run] not found!')
-            return 0
-        sp = list(d.items())
-        sp.sort()
+        sp = self.get_dats(ang, run, dats=dats)
         for _pos, _pts in sp:
             a, b, c = _pts[0:3]
             rs012, cen012 = self.get_circle_3p(a,b,c)
