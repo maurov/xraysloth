@@ -34,6 +34,8 @@ dSi220 = d_cubic(SI_ALAT, (2,2,0))
 dGe220 = d_cubic(GE_ALAT, (2,2,0))
 dQz100 = d_hexagonal(SIO2_A, SIO2_C, (1,0,0))
 
+epsilon = 1.e-10 # Default epsilon for equality testing of points and vectors
+
 ### TESTS ###
 def testSagOff(Rm, theta0, aXoff, aL=100.):
     rc = RcHoriz(Rm, theta0, aL=aL, showInfos=True)
@@ -294,6 +296,37 @@ class TestProtoBender(object):
         P /= b1 + b2 + b3
         return R, P
 
+    def get_projection_point(self, point, plane, test=False):
+        """get the orthogonal projection of a 3d point on plane
+
+        http://stackoverflow.com/questions/7565748/3d-orthogonal-projection-on-a-plane
+
+        Parameters
+        ----------
+
+        point : 3d P(x,y,z) => np.array([x,y,z])
+
+        plane : Ax+By+Cz+d=0, norm = (A,B,C)
+                => np.array([norm_x, norm_y, norm_z, d])
+
+        Returns
+        -------
+
+        proj_pt : projected point = point - norm * offset
+                  => np.array([proj_x, proj_y, proj_z])
+        
+        """
+        try:
+            norm = plane[:-1]
+            d = plane[-1]
+            offset = (point.dot(norm) + d) / norm.dot(norm)
+        except:
+            raise NameError('something wrong in get_projection_point')
+        proj_pt = point - norm * offset
+        if test:
+            assert (norm.dot(proj_pt) + d <= epsilon)
+        return proj_pt
+        
     def read_data(self, fname, retAll=False):
         """read data (custom format) using flushing technique
 
@@ -314,6 +347,7 @@ class TestProtoBender(object):
         # columns (comma separated values):
         # Collection, Theta, Run, Actuator, Point, X, Y, Z
         0, 0, 0, 0, 0, -0.030695, -0.000152, -0.028512
+        [...]
 
         Returns
         -------
@@ -389,10 +423,10 @@ class TestProtoBender(object):
             d = dats[ang][run]
         except:
             raise NameError('dats[{0}][{1}] not found!'.format(ang, run))
-        splist = list(d.items())
-        splist.sort()
-        return splist
-        
+        datslist = list(d.items())
+        datslist.sort()
+        return datslist
+
     def eval_data(self, ang, run, **kws):
         """data evaluation: main method
 
@@ -406,7 +440,7 @@ class TestProtoBender(object):
             
     def eval_data_th0s(self, ang, run, dats=None, retAll=False,\
                        setSp=True, showPlot=False):
-        """data evaluation
+        """data evaluation: get average th0 and set sagittal plane at it
 
         Parameters
         ----------
@@ -434,10 +468,10 @@ class TestProtoBender(object):
         _headstr = '{0: >3s} {1: >3s} {2: >10s} {3: >7s}'
         _outstr = '{0: >3.0f} {1: >3.0f} {2: >10s} {3: >7.3f}'
         _headx = True
-        sp = self.get_dats(ang, run, dats=dats)
+        dats = self.get_dats(ang, run, dats=dats)
         th0s = []
         x0s, y0s, z0s = [], [], []
-        for _pos, _pts in sp:
+        for _pos, _pts in dats:
             x0, y0, z0 = _pts[0][0:3]
             x6, y6, z6 = _pts[6][0:3]
             x0s.append(x0)
@@ -503,12 +537,12 @@ class TestProtoBender(object):
 
                 plot the sagittal plane
         """
-        sp = self.get_dats(ang, run, dats=dats)
+        dats = self.get_dats(ang, run, dats=dats)
         self.poss = []
         self.dists = {}
         for ipt in xrange(12):
             self.dists[ipt] = []
-        for _pos, _pts in sp:
+        for _pos, _pts in dats:
             self.poss.append(_pos)
             for ipt in xrange(12):
                 self.dists[ipt].append(self.get_sag_plane_dist(_pts[ipt][0:3]))
@@ -548,24 +582,38 @@ class TestProtoBender(object):
             #ax.legend(bbox_to_anchor=(1.05, 1.), loc=2, ncol=1, mode="expand", borderaxespad=0.)
             plt.tight_layout()
             plt.show()
-        
-    def get_meas_rs(self, ang, run, dats=None):
+            
+    def get_meas_rs(self, ang, run, dats=None, setSp=False):
         """get the measured sagittal radius"""
         if dats is None: dats = self.dats
         _headstr = '{0: >3s} {1: >3s} {2: >10s} {3: >10s} {4: >10s}'
         _outstr = '{0: >3.0f} {1: >3.0f} {2: >10s} {3: >10.3f} {4: >10.3f}'
         _headx = True
-        sp = self.get_dats(ang, run, dats=dats)
-        for _pos, _pts in sp:
+        dats = self.get_dats(ang, run, dats=dats)
+        if setSp:
+            self.eval_data_th0s(ang, run)
+        for _pos, _pts in dats:
             a, b, c = _pts[0:3]
             rs012, cen012 = self.get_circle_3p(a,b,c)
+            if self.sp is not None:
+                ap = self.get_projection_point(a, self.sp)
+                bp = self.get_projection_point(b, self.sp)
+                cp = self.get_projection_point(c, self.sp)
+                rs012p, cen012p = self.get_circle_3p(ap,bp,cp)
             a, b, c = _pts[3:6]
             rs345, cen345 = self.get_circle_3p(a,b,c)
+            if self.sp is not None:
+                ap = self.get_projection_point(a, self.sp)
+                bp = self.get_projection_point(b, self.sp)
+                cp = self.get_projection_point(c, self.sp)
+                rs345p, cen345p = self.get_circle_3p(ap,bp,cp)
             if _headx:
                 print(_headstr.format('ang', 'run', 'pos', 'rs012', 'rs345'))
                 print(_headstr.format('#', '#', 'spec', 'mm', 'mm'))
                 _headx = False
             print(_outstr.format(ang, run, _pos, rs012, rs345))
+            if self.sp is not None:
+                print(_outstr.format(ang, run, _pos, rs012p, rs345p))
          
         
 def testMiscutOff1Ana(Rm, theta, alpha, d=dSi111):
