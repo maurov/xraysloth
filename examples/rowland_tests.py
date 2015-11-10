@@ -18,7 +18,26 @@ sys.path.append(_libDir)
 import numpy as np
 import matplotlib.pyplot as plt
 
+try:
+    #https://jiffyclub.github.io/palettable/
+    import palettable
+    colors = palettable.colorbrewer.qualitative.Dark2_6.mpl_colors
+except:
+    colors = [(0.10588235294117647, 0.6196078431372549, 0.4666666666666667),
+              (0.8509803921568627, 0.37254901960784315, 0.00784313725490196),
+              (0.4588235294117647, 0.4392156862745098, 0.7019607843137254),
+              (0.9058823529411765, 0.1607843137254902, 0.5411764705882353),
+              (0.4, 0.6509803921568628, 0.11764705882352941),
+              (0.9019607843137255, 0.6705882352941176, 0.00784313725490196)]
+    pass
+    
+from matplotlib import rcParams
+from matplotlib import gridspec
+from matplotlib.ticker import MaxNLocator, AutoLocator, MultipleLocator
+rcParams['axes.color_cycle'] = colors
+
 from rowland import cs_h, acenx, det_pos_rotated, RcHoriz, RcVert
+from genericutils import colorstr
 
 RS_MIN = 157.915
 RS_MAX = 1012.252
@@ -439,7 +458,7 @@ class TestProtoBender(object):
         self.eval_data_dists(ang, run, showPlot=True)
             
     def eval_data_th0s(self, ang, run, dats=None, retAll=False,\
-                       setSp=True, showPlot=False):
+                       set_sp=True, showPlot=False):
         """data evaluation: get average th0 and set sagittal plane at it
 
         Parameters
@@ -455,7 +474,7 @@ class TestProtoBender(object):
                  returns a Numpy array with the calculated theta0
                  positions
 
-        setSp : boolean, True
+        set_sp : boolean, True
 
                 sets the sagittal plane (self.sp) for the average
                 theta0, using position of point 0
@@ -498,7 +517,7 @@ class TestProtoBender(object):
         ax0s = np.array(x0s)
         ay0s = np.array(y0s)
         az0s = np.array(z0s)
-        if setSp:
+        if set_sp:
             #set sagittal plane at mean P0 and th0
             avgP0 = np.array([np.mean(ax0s), np.mean(ay0s), np.mean(z0s)])
             stdP0 = np.array([np.std(ax0s), np.std(ay0s), np.std(z0s)])
@@ -512,7 +531,7 @@ class TestProtoBender(object):
         if retAll: return ath0s
 
     def eval_data_dists(self, ang, run, dats=None, retAll=False,\
-                        setSp=True, showPlot=False):
+                        set_sp=True, showPlot=False):
         """data evaluation: points distances from sagittal plane
 
         Parameters
@@ -528,7 +547,7 @@ class TestProtoBender(object):
                  returns a Numpy array with the calculated theta0
                  positions
 
-        setSp : boolean, True
+        set_sp : boolean, True
 
                 sets the sagittal plane (self.sp) for the average
                 theta0, using position of point 0
@@ -548,22 +567,6 @@ class TestProtoBender(object):
                 self.dists[ipt].append(self.get_sag_plane_dist(_pts[ipt][0:3]))
         self.aposs = np.array(map(float, self.poss[:]))
         if showPlot:
-            try:
-                #https://jiffyclub.github.io/palettable/
-                import palettable
-                colors = palettable.colorbrewer.qualitative.Dark2_6.mpl_colors
-            except:
-                colors = [(0.10588235294117647, 0.6196078431372549, 0.4666666666666667),
-                          (0.8509803921568627, 0.37254901960784315, 0.00784313725490196),
-                          (0.4588235294117647, 0.4392156862745098, 0.7019607843137254),
-                          (0.9058823529411765, 0.1607843137254902, 0.5411764705882353),
-                          (0.4, 0.6509803921568628, 0.11764705882352941),
-                          (0.9019607843137255, 0.6705882352941176, 0.00784313725490196)]
-                pass
-            from matplotlib import rcParams
-            from matplotlib import gridspec
-            from matplotlib.ticker import MaxNLocator, AutoLocator, MultipleLocator
-            rcParams['axes.color_cycle'] = colors
             fig = plt.figure()
             ax = fig.add_subplot(111)
             for ipt in xrange(12):
@@ -583,14 +586,14 @@ class TestProtoBender(object):
             plt.tight_layout()
             plt.show()
             
-    def get_meas_rs(self, ang, run, dats=None, setSp=False):
+    def get_meas_rs(self, ang, run, set_sp=False, dats=None):
         """get the measured sagittal radius"""
         if dats is None: dats = self.dats
         _headstr = '{0: >3s} {1: >3s} {2: >10s} {3: >10s} {4: >10s}'
         _outstr = '{0: >3.0f} {1: >3.0f} {2: >10s} {3: >10.3f} {4: >10.3f}'
         _headx = True
         dats = self.get_dats(ang, run, dats=dats)
-        if setSp:
+        if set_sp:
             self.eval_data_th0s(ang, run)
         for _pos, _pts in dats:
             a, b, c = _pts[0:3]
