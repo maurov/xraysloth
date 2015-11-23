@@ -266,34 +266,54 @@ class TestProtoBender(object):
         d = -P0.dot(norm)
         self.sp = np.array([norm[0], norm[1], norm[2], d])
         self.th0 = th0
-        if showPlot:
-            import matplotlib.pyplot as plt
-            from mpl_toolkits.mplot3d import Axes3D
-            plt.ion()
-            # create x,y
-            xypts = 10
-            xrng_mesh = np.linspace(P0[0], P0[0]+xypts, xypts)
-            yrng_mesh = np.linspace(P0[1], P0[1]-xypts, xypts)
-            xx, yy = np.meshgrid(xrng_mesh, yrng_mesh)
-            # calculate corresponding z
-            zz = -1 * (norm[0] * xx + norm[1] * yy + d) / norm[2]
-            # plot the surface
-            fig = plt.figure()
-            ax = fig.add_subplot(111, projection='3d')
-            ax.plot_wireframe(xx, yy, zz)
-            #ax.quiver(P0[0], P0[1], norm[0], norm[1])
-            ax.set_xlabel('X')
-            ax.set_ylabel('Y')
-            ax.set_zlabel('Z')
-            ax.set_zlim(P0[2]-xypts, P0[2]+xypts)
-            plt.show()
+        if showPlot: self.plot_sag_plane(P0=P0, sag_pl=self.sp)
+
+    def plot_sag_plane(self, P0=None, sag_pl=None):
+        """3D plot sagittal plane at P0"""
+        if P0 is None: P0 = np.array([0,0,0])
+        if sag_pl is None: sag_pl = self.sp
+        norm, d = sag_pl[:3], sag_pl[3]
+        import matplotlib.pyplot as plt
+        from mpl_toolkits.mplot3d import Axes3D
+        plt.ion()
+        # create x,y
+        xypts = 10
+        xrng = 300
+        yrng = 130
+        xrng_mesh = np.linspace(P0[0], P0[0]-xrng, xypts)
+        yrng_mesh = np.linspace(P0[1]-yrng/2., P0[1]+yrng, xypts)
+        xx, yy = np.meshgrid(xrng_mesh, yrng_mesh)
+        # calculate corresponding z
+        zz = -1 * (norm[0] * xx + norm[1] * yy + d) / norm[2]
+        # plot the surface
+        self.fig = plt.figure()
+        self.fig_ax = self.fig.add_subplot(111, projection='3d')
+        self.fig_ax.plot_wireframe(xx, yy, zz, color='gray')
+        #ax.quiver(P0[0], P0[1], norm[0], norm[1])
+        self.fig_ax.set_xlabel('X')
+        self.fig_ax.set_ylabel('Y')
+        self.fig_ax.set_zlabel('Z')
+        self.fig_ax.set_zlim(P0[2]-xrng, P0[2]+yrng)
+        plt.show()
+
+    def plot_meas_points(self, ang, run):
+        """plot measured points on sagittal plane"""
+        dats = self.get_dats(ang, run)
+        for _pos, _pts in dats:
+            if str(_pos) == '0.0':
+                xs, ys, zs = _pts[:,0], _pts[:,1], _pts[:,2]
+                self.fig_ax.scatter(xs, ys, zs, c='b', marker='o')
+                plt.draw()
+            if str(_pos) == '100.0':
+                xs, ys, zs = _pts[:,0], _pts[:,1], _pts[:,2]
+                self.fig_ax.scatter(xs, ys, zs, c='r', marker='o')
+                plt.draw()
+
         
     def get_sag_plane_dist(self, P):
-        """get the distance of point P(x,y,z) from the sagittal plane
-
-        """
+        """get the distance of point P(x,y,z) from the sagittal plane"""
         if self.sp is None:
-            print('ERROR: generate first the sagittal plane using get_sag_plane')
+            print('ERROR: sagittal plane not setted yet!')
             return 0
         else:
             sp = self.sp
@@ -435,7 +455,7 @@ class TestProtoBender(object):
         else:
             self.dats = angs
 
-    def get_dats(self, ang, run, dats=None):
+    def get_dats(self, ang, run, pos=None, dats=None):
         """get data for a given angle/run"""
         if dats is None: dats = self.dats
         try:
@@ -444,6 +464,13 @@ class TestProtoBender(object):
             raise NameError('dats[{0}][{1}] not found!'.format(ang, run))
         datslist = list(d.items())
         datslist.sort()
+        if pos is not None:
+            for _pos, _pts in datslist:
+                if str(_pos) == pos:
+                    print("(*) pos '{0}'".format(str(_pos)))
+                    return _pts
+                else:
+                    print("( ) pos '{0}'".format(str(_pos)))
         return datslist
 
     def eval_data(self, ang, run, **kws):
@@ -589,21 +616,24 @@ class TestProtoBender(object):
     def get_meas_rs(self, ang, run, set_sp=False, dats=None):
         """get the measured sagittal radius"""
         if dats is None: dats = self.dats
-        _headstr = '{0: >3s} {1: >3s} {2: >10s} {3: >10s} {4: >10s}'
-        _outstr = '{0: >3.0f} {1: >3.0f} {2: >10s} {3: >10.3f} {4: >10.3f}'
+        _headstr = '{0: >3s} {1: >3s} {2: >10s} {3: >10s} {4: >10s}  {5: >10s}'
+        _outstr = '{0: >3.0f} {1: >3.0f} {2: >10s} {3: >10.3f} {4: >10.3f} {5: >10.3f} '
         _headx = True
         dats = self.get_dats(ang, run, dats=dats)
         if set_sp:
             self.eval_data_th0s(ang, run)
+        rss, cens = [], []
         for _pos, _pts in dats:
-            a, b, c = _pts[0:3]
+            a, b, c = _pts[0], _pts[3], _pts[5] #_pts[0:3]
             rs012, cen012 = self.get_circle_3p(a,b,c)
+            rss.append(rs012)
+            cens.append(cen012)
             if self.sp is not None:
                 ap = self.get_projection_point(a, self.sp)
                 bp = self.get_projection_point(b, self.sp)
                 cp = self.get_projection_point(c, self.sp)
                 rs012p, cen012p = self.get_circle_3p(ap,bp,cp)
-            a, b, c = _pts[3:6]
+            a, b, c = _pts[6], _pts[9], _pts[11] #_pts[3:6]
             rs345, cen345 = self.get_circle_3p(a,b,c)
             if self.sp is not None:
                 ap = self.get_projection_point(a, self.sp)
@@ -611,12 +641,13 @@ class TestProtoBender(object):
                 cp = self.get_projection_point(c, self.sp)
                 rs345p, cen345p = self.get_circle_3p(ap,bp,cp)
             if _headx:
-                print(_headstr.format('ang', 'run', 'pos', 'rs012', 'rs345'))
-                print(_headstr.format('#', '#', 'spec', 'mm', 'mm'))
+                print(_headstr.format('ang', 'run', 'pos', 'rs012', 'rs345', 'deltars'))
+                print(_headstr.format('#', '#', 'spec', 'mm', 'mm', 'mm'))
                 _headx = False
-            print(_outstr.format(ang, run, _pos, rs012, rs345))
+            print(_outstr.format(ang, run, _pos, rs012, rs345, rs345-rs012))
             if self.sp is not None:
-                print(_outstr.format(ang, run, _pos, rs012p, rs345p))
+                print(_outstr.format(ang, run, _pos, rs012p, rs345p, rs345p-rs012p))
+        return rss, cens
          
         
 def testMiscutOff1Ana(Rm, theta, alpha, d=dSi111):
@@ -628,12 +659,34 @@ def testMiscutOff1Ana(Rm, theta, alpha, d=dSi111):
     print('RcVert: {0}'.format(tv_mo))
     print('RcHor: {0}'.format(th_mo))
 
+### http://stackoverflow.com/questions/15481242/python-optimize-leastsq-fitting-a-circle-to-3d-set-of-points
+def distanceToPlane(p0, n0, p):
+    return np.dot(np.array(n0), np.array(p) - np.array(p0))    
+
+def residualsPlane(parameters, dataPoint):
+    px, py, pz, theta, phi = parameters
+    nx, ny, nz = math.sin(theta)*math.cos(phi),\
+                 math.sin(theta)*math.sin(phi), math.cos(theta)
+    distances = [distanceToPlane([px,py,pz], [nx,ny,nz], [x,y,z])\
+                 for x,y,z in dataPoint]
+    return distances
+
+def residualsCircle(parameters, dataPoint):
+    r, s, Ri = parameters
+    planePointArr = s*sArr + r*rArr + np.array(point)
+    distance = [np.linalg.norm( planePointArr-np.array([x,y,z]))\
+                 for x,y,z in dataPoint]
+    res = [(Ri-dist) for dist in distance]
+    return res
+    
 if __name__ == "__main__":
+    plt.close('all')
     #pass
     #testSagOff(250., 35., 150., aL=12.)
     #dres = testChiOpt()
     #testAzOff(0.5)
     #dres = testDetMove()
+    #testMiscutOff1Ana(500., 65., 36.)
     import math
     #t0 = testSagFocus()
     #t1 = testFrictionPrototype(240., 65.)
@@ -641,7 +694,9 @@ if __name__ == "__main__":
     fname = '2015-06-18-all_points.dat'
     t = TestProtoBender()
     t.read_data(fname)
-    plt.close('all')
+    d = t.get_dats(5, 0, pos='0.0')
+    #t.get_meas_rs(0, 0, set_sp=True)
+    #t.eval_data_th0s(5,0, showPlot=True)
+    #t.plot_meas_points(5,0)
     #t.eval_data(5,0)
-    #testMiscutOff1Ana(500., 65., 36.)
-    
+
