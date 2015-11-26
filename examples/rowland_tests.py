@@ -257,7 +257,7 @@ class TestProtoBender(object):
             pxyz = [i+j for i,j in zip(axyz, xyz0)]
             print(_outstr.format(aN, *pxyz))
 
-    def set_sag_plane(self, P0, th0, showPlot=False):
+    def set_sag_plane(self, P0, th0, plot=False):
         """set sagittal plane Ax+By+Cz+D=0 at point P0(x,y,z) at given
         th0 (deg)
         """
@@ -266,7 +266,7 @@ class TestProtoBender(object):
         d = -P0.dot(norm)
         self.sp = np.array([norm[0], norm[1], norm[2], d])
         self.th0 = th0
-        if showPlot: self.plot_sag_plane(P0=P0, sag_pl=self.sp)
+        if plot: self.plot_sag_plane(P0=P0, sag_pl=self.sp)
 
     def plot_sag_plane(self, P0=None, sag_pl=None):
         """3D plot sagittal plane at P0"""
@@ -350,6 +350,12 @@ class TestProtoBender(object):
         """
         t = (p20 - p10) / (p11 - p10 - p21 + p20)
         return p10 + t * (p11 - p10)
+
+    def get_intersect_angle(self, p0, p1, p2):
+        """get the angle between three 3D points, p0 is the intersection point"""
+        u, v = p1-p0, p2-p0
+        costheta = u.dot(v) / math.sqrt(u.dot(u) * v.dot(v))
+        return math.degrees(math.acos(costheta))
 
     def get_projection_point(self, point, plane, test=False):
         """get the orthogonal projection of a 3d point on plane
@@ -507,11 +513,11 @@ class TestProtoBender(object):
         see sub-methods
         
         """
-        self.eval_data_th0s(ang, run, showPlot=False)
-        self.eval_data_dists(ang, run, showPlot=True)
+        self.eval_data_th0s(ang, run, plot=False)
+        self.eval_data_dists(ang, run, plot=True)
             
     def eval_data_th0s(self, ang, run, dats=None, retAll=False,\
-                       set_sp=True, showPlot=False):
+                       set_sp=True, plot=False):
         """data evaluation: get average th0 and set sagittal plane at it
 
         Parameters
@@ -532,13 +538,13 @@ class TestProtoBender(object):
                 sets the sagittal plane (self.sp) for the average
                 theta0, using position of point 0
 
-        showPlot : boolean, False
+        plot : boolean, False
 
                 plot the sagittal plane
         """
         #header/output format strings
-        _headstr = '{0: >3s} {1: >3s} {2: >10s} {3: >7s}'
-        _outstr = '{0: >3.0f} {1: >3.0f} {2: >10s} {3: >7.3f}'
+        _headstr = '{0: >3s} {1: >3s} {2: >8s} {3: >7s}'
+        _outstr = '{0: >3.0f} {1: >3.0f} {2: >8.3f} {3: >7.3f}'
         _headx = True
         dats = self.get_dats(ang, run, dats=dats)
         th0s = []
@@ -576,7 +582,7 @@ class TestProtoBender(object):
             stdP0 = np.array([np.std(ax0s), np.std(ay0s), np.std(z0s)])
             avgth0 = np.mean(ath0s)
             stdth0 = np.std(ath0s)
-            self.set_sag_plane(avgP0, avgth0, showPlot=showPlot)
+            self.set_sag_plane(avgP0, avgth0, plot=plot)
             print('INFO: setted sagittal plane at centre analyzer')
             print('P0_mean ( {0:.4f}, {1:.4f}, {2:.4f} ) mm'.format(avgP0[0], avgP0[1], avgP0[2]))
             print('P0_std ({0:.4f}, {1:.4f}, {2:.4f}) mm'.format(stdP0[0], stdP0[1], stdP0[2]))
@@ -584,7 +590,7 @@ class TestProtoBender(object):
         if retAll: return ath0s
 
     def eval_data_dists(self, ang, run, dats=None, retAll=False,\
-                        set_sp=True, showPlot=False):
+                        set_sp=True, plot=False):
         """data evaluation: points distances from sagittal plane
 
         Parameters
@@ -605,7 +611,7 @@ class TestProtoBender(object):
                 sets the sagittal plane (self.sp) for the average
                 theta0, using position of point 0
 
-        showPlot : boolean, False
+        plot : boolean, False
 
                 plot the sagittal plane
         """
@@ -619,7 +625,7 @@ class TestProtoBender(object):
             for ipt in xrange(12):
                 self.dists[ipt].append(self.get_sag_plane_dist(_pts[ipt][0:3]))
         self.aposs = np.array(map(float, self.poss[:]))
-        if showPlot:
+        if plot:
             fig = plt.figure()
             ax = fig.add_subplot(111)
             for ipt in xrange(12):
@@ -642,8 +648,8 @@ class TestProtoBender(object):
     def get_meas_rs(self, ang, run, set_sp=False, dats=None):
         """get the measured sagittal radius"""
         if dats is None: dats = self.dats
-        _headstr = '{0: >3s} {1: >3s} {2: >10s} {3: >10s} {4: >10s}  {5: >10s}'
-        _outstr = '{0: >3.0f} {1: >3.0f} {2: >10s} {3: >10.3f} {4: >10.3f} {5: >10.3f} '
+        _headstr = '{0: >3s} {1: >3s} {2: >8s} {3: >10s} {4: >10s}  {5: >10s}'
+        _outstr = '{0: >3.0f} {1: >3.0f} {2: >8.3f} {3: >10.3f} {4: >10.3f} {5: >10.3f} '
         _headx = True
         dats = self.get_dats(ang, run, dats=dats)
         if set_sp:
@@ -675,28 +681,33 @@ class TestProtoBender(object):
                 print(_outstr.format(ang, run, _pos, rs012p, rs345p, rs345p-rs012p))
         return rss, cens
          
-    def eval_data_rs(self, ang, run, set_sp=True, do_test=False):
+    def eval_data_rs(self, ang, run, set_sp=True, do_test=False, plot=False):
         """data evaluation: sagittal radius"""
-        _headstr = '{0: >3s} {1: >3s} {2: >10s} {3: >10s} {4: >10s}  {5: >10s} {6: >10s} {7: >10s} {8: >10s}'
-        _outstr = '{0: >3.0f} {1: >3.0f} {2: >10s} {3: >10.3f} {4: >10.3f} {5: >10.3f} {6: >10.3f}  {7: >10.3f} {8: >10.3f}'
+        _headstr = '{0: >3s} {1: >3s} {2: >8s} {3: >8s} {4: >8s}  {5: >8s} {6: >8s} {7: >8s} {8: >8s}'
+        _outstr = '{0: >3.0f} {1: >3.0f} {2: >8.3f} {3: >8.3f} {4: >8.3f} {5: >8.3f} {6: >8.3f}  {7: >8.3f} {8: >8.3f}'
         _headx = True
-        if set_sp: self.eval_data_th0s(ang, run)
+        if set_sp: self.eval_data_th0s(ang, run, plot=plot)
         dats = self.get_dats(ang, run)
-        rss, cens = [], []
+        cens, rss, chis = [], [], []
         for _pos, _pts in dats:
+            if plot: self.plot_points(_pts)
             pj = [self.get_projection_point(_pt, self.sp) for _pt in _pts]
             #sagittal circle center using lines (0,6) and (5,11)
             cen = t.get_intersect_lines(pj[0], pj[6], pj[5], pj[11])
             if do_test: self.test_point_on_plane(cen, self.sp)
-            rs = [self.get_circle_radius(pj[idx], cen) for idx in range(12)]
-            rss.append(rs)
+            rs = [self.get_circle_radius(_pts[idx], cen) for idx in range(12)]
+            chi = [t.get_intersect_angle(cen, pj[idx], pj[idx+1]) for idx in range(5)] 
             cens.append(cen)
+            rss.append(rs)
+            chis.append(chi)
             if _headx:
                 print(_headstr.format('ang', 'run', 'pos', 'rs0', 'drs1', 'drs2', 'drs3', 'drs4', 'drs5'))
                 print(_headstr.format('#', '#', 'spec', 'mm', 'mm', 'mm', 'mm', 'mm', 'mm'))
                 _headx = False
             print(_outstr.format(ang, run, _pos, rs[0], rs[1]-rs[0], rs[2]-rs[0], rs[3]-rs[0], rs[4]-rs[0], rs[5]-rs[0]))
-        return rss, cens
+        cens = np.array(cens)
+        if plot: self.plot_points(cens, color='green', marker='^')
+        return cens, rss, chis
         
 def testMiscutOff1Ana(Rm, theta, alpha, d=dSi111):
     """test miscut offsets NOT WORKING YET!!!"""
@@ -743,10 +754,10 @@ if __name__ == "__main__":
     t = TestProtoBender()
     t.read_data(fname)
     ang, run, pos = 5, 0, 0.0
-    d = t.get_dats(ang, run, pos=pos)
-    #t.eval_data_th0s(ang, run, showPlot=True)
+    d = t.get_dats(ang, run, pos=pos)[1]
+    t.eval_data_th0s(ang, run, plot=False)
+    dpj = [t.get_projection_point(d[idx], t.sp) for idx in range(12)]
     #t.plot_points(d)
-    #dp = [t.get_projection_point(pt, t.sp) for pt in d]
     #a = t.get_intersect_lines(d[0], d[6], d[5], d[11])
     #ap = t.get_intersect_lines(dp[0], dp[6], dp[5], dp[11])
     #t.test_point_on_plane(a, t.sp) #not on plane
@@ -755,6 +766,6 @@ if __name__ == "__main__":
     #t.fig_ax.scatter(ap[0], ap[1], ap[2], color='green', marker='o')
     #plt.draw()
 
-    #rss, cens = t.eval_data_rs(ang, run, do_test=False)
+    cens, rss, chis = t.eval_data_rs(ang, run, do_test=False, plot=False)
     #t.eval_data(5,0)
     #t.get_meas_rs(0, 0, set_sp=True)
