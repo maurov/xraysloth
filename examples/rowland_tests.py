@@ -296,19 +296,20 @@ class TestProtoBender(object):
         self.fig_ax.set_zlim(P0[2]-xrng, P0[2]+yrng)
         plt.show()
 
-    def plot_meas_points(self, ang, run):
+    def plot_meas_points(self, ang, run, pos=None):
         """plot measured points on sagittal plane"""
-        dats = self.get_dats(ang, run)
-        for _pos, _pts in dats:
-            if str(_pos) == '0.0':
-                xs, ys, zs = _pts[:,0], _pts[:,1], _pts[:,2]
-                self.fig_ax.scatter(xs, ys, zs, c='b', marker='o')
-                plt.draw()
-            if str(_pos) == '100.0':
-                xs, ys, zs = _pts[:,0], _pts[:,1], _pts[:,2]
-                self.fig_ax.scatter(xs, ys, zs, c='r', marker='o')
-                plt.draw()
+        dats = self.get_dats(ang, run, pos=pos)
+        if pos is not None:
+            self.plot_points(dats[1])
+        else:
+            for _pos, _pts in dats:
+                self.plot_points(_pts)
 
+    def plot_points(self, _pts, color='b', marker='o'):
+        """plot set of 3D points"""
+        xs, ys, zs = _pts[:,0], _pts[:,1], _pts[:,2]
+        self.fig_ax.scatter(xs, ys, zs, color=color, marker=marker)
+        plt.draw()
         
     def get_sag_plane_dist(self, P):
         """get the distance of point P(x,y,z) from the sagittal plane"""
@@ -385,9 +386,9 @@ class TestProtoBender(object):
         """check point is on plane (within epsilon)"""
         _dist = point.dot(plane[:3]) + plane[3]
         if _dist <= epsilon:
-            print('OK, point on plane')
+            print('OK => point on plane')
         else:
-            print('NO, point away from plane by {0}'.format(_dist))
+            print('NO => point not on plane')
         
     def read_data(self, fname, retAll=False):
         """read data (custom format) using flushing technique
@@ -486,15 +487,17 @@ class TestProtoBender(object):
         except:
             raise NameError('dats[{0}][{1}] not found!'.format(ang, run))
         datslist = list(d.items())
-        datslist.sort()
-        if pos is not None:
-            for _pos, _pts in datslist:
-                if str(_pos) == pos:
-                    print("(*) pos '{0}'".format(str(_pos)))
-                    return _pts
-                else:
-                    print("( ) pos '{0}'".format(str(_pos)))
-        return datslist
+        _retlist = []
+        for _pos, _pts in datslist:
+            _pos = float(_pos)
+            if _pos == pos:
+                print("=> data for actuator position '{0}'".format(_pos))
+                _retlist = [_pos, _pts]
+                break
+            else:
+                _retlist.append((_pos, _pts))
+                _retlist.sort()
+        return _retlist
 
     def eval_data(self, ang, run, **kws):
         """data evaluation: main method
@@ -672,6 +675,28 @@ class TestProtoBender(object):
                 print(_outstr.format(ang, run, _pos, rs012p, rs345p, rs345p-rs012p))
         return rss, cens
          
+    def eval_data_rs(self, ang, run, set_sp=True, do_test=False):
+        """data evaluation: sagittal radius"""
+        _headstr = '{0: >3s} {1: >3s} {2: >10s} {3: >10s} {4: >10s}  {5: >10s} {6: >10s} {7: >10s} {8: >10s}'
+        _outstr = '{0: >3.0f} {1: >3.0f} {2: >10s} {3: >10.3f} {4: >10.3f} {5: >10.3f} {6: >10.3f}  {7: >10.3f} {8: >10.3f}'
+        _headx = True
+        if set_sp: self.eval_data_th0s(ang, run)
+        dats = self.get_dats(ang, run)
+        rss, cens = [], []
+        for _pos, _pts in dats:
+            pj = [self.get_projection_point(_pt, self.sp) for _pt in _pts]
+            #sagittal circle center using lines (0,6) and (5,11)
+            cen = t.get_intersect_lines(pj[0], pj[6], pj[5], pj[11])
+            if do_test: self.test_point_on_plane(cen, self.sp)
+            rs = [self.get_circle_radius(pj[idx], cen) for idx in range(12)]
+            rss.append(rs)
+            cens.append(cen)
+            if _headx:
+                print(_headstr.format('ang', 'run', 'pos', 'rs0', 'drs1', 'drs2', 'drs3', 'drs4', 'drs5'))
+                print(_headstr.format('#', '#', 'spec', 'mm', 'mm', 'mm', 'mm', 'mm', 'mm'))
+                _headx = False
+            print(_outstr.format(ang, run, _pos, rs[0], rs[1]-rs[0], rs[2]-rs[0], rs[3]-rs[0], rs[4]-rs[0], rs[5]-rs[0]))
+        return rss, cens
         
 def testMiscutOff1Ana(Rm, theta, alpha, d=dSi111):
     """test miscut offsets NOT WORKING YET!!!"""
@@ -717,18 +742,19 @@ if __name__ == "__main__":
     fname = '2015-06-18-all_points.dat'
     t = TestProtoBender()
     t.read_data(fname)
-    ang, run, pos = 5, 0, '100.0'
+    ang, run, pos = 5, 0, 0.0
     d = t.get_dats(ang, run, pos=pos)
-    t.eval_data_th0s(ang, run, showPlot=True)
-    t.plot_meas_points(ang, run)
-    dp = [t.get_projection_point(pt, t.sp) for pt in d]
-    a = t.get_intersect_lines(d[0], d[6], d[5], d[11])
-    ap = t.get_intersect_lines(dp[0], dp[6], dp[5], dp[11])
+    #t.eval_data_th0s(ang, run, showPlot=True)
+    #t.plot_points(d)
+    #dp = [t.get_projection_point(pt, t.sp) for pt in d]
+    #a = t.get_intersect_lines(d[0], d[6], d[5], d[11])
+    #ap = t.get_intersect_lines(dp[0], dp[6], dp[5], dp[11])
     #t.test_point_on_plane(a, t.sp) #not on plane
-    t.test_point_on_plane(ap, t.sp)
-    print('plotting it in green')
-    t.fig_ax.scatter(ap[0], ap[1], ap[2], color='green', marker='o')
-    plt.draw()
+    #t.test_point_on_plane(ap, t.sp)
+    #print('plotting it in green')
+    #t.fig_ax.scatter(ap[0], ap[1], ap[2], color='green', marker='o')
+    #plt.draw()
 
+    #rss, cens = t.eval_data_rs(ang, run, do_test=False)
     #t.eval_data(5,0)
     #t.get_meas_rs(0, 0, set_sp=True)
