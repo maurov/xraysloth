@@ -310,7 +310,93 @@ class TestProtoBender(object):
         xs, ys, zs = _pts[:,0], _pts[:,1], _pts[:,2]
         self.fig_ax.scatter(xs, ys, zs, color=color, marker=marker)
         plt.draw()
-        
+
+    def plot_rs_single(self, ang, run):
+        """plot sagittal radii"""
+        poss, cens, rss, chis = self.eval_data_rs(ang, run)
+        plt.close('plot_rs')
+        fig = plt.figure('plot_rs')
+        ax = fig.add_subplot(111)
+        for idx in range(1,6):
+            xplt = rss[:,0]
+            yplt = rss[:,0]-rss[:,idx]
+            xmax = max(xplt)+50
+            xmin = min(xplt)-50
+            ymin = min(yplt)-0.55
+            ax.plot(xplt, yplt, label=str(idx), linewidth=2, marker='o')
+        #ax.set_xlabel('actuator position (spec values, mm)')
+        ax.set_xlabel('sagittal radius central analyzer (mm)')
+        ax.set_ylabel('sagittal radius deviation from central analyzer (mm)')
+        #ax.set_xlim(-0.1, 120.1)
+        #ax.set_ylim(-0.005, 0.7)
+        #ax.xaxis.set_major_locator(MultipleLocator(10))
+        #ax.xaxis.set_minor_locator(MultipleLocator(2))
+        #ax.yaxis.set_major_locator(MultipleLocator(0.05))
+        #ax.yaxis.set_minor_locator(MultipleLocator(0.01))
+        ax.set_xlim(xmin, xmax)
+        ax.set_ylim(ymin, 0.55)
+        ax.xaxis.set_major_locator(MultipleLocator(200))
+        ax.xaxis.set_minor_locator(MultipleLocator(50))
+        ax.yaxis.set_major_locator(MultipleLocator(0.3))
+        ax.yaxis.set_minor_locator(MultipleLocator(0.1))
+        ax.set_title('Proto pos {0}, run {1}: <th0> = {2:.3f} deg'.format(ang, run, self.th0))
+        ax.grid(alpha=0.5)
+        ax.legend(loc='upper left', ncol=6, numpoints=1, frameon=True)
+        #ax.legend(bbox_to_anchor=(1.05, 1.), loc=2, ncol=1, mode="expand", borderaxespad=0.)
+        plt.tight_layout()
+        plt.show()
+
+    def plot_rs(self):
+        """plot sagittal radii"""
+        plt.close('plot_rs')
+        fig = plt.figure('plot_rs')
+        ax = fig.add_subplot(111)
+
+        for ang in range(6):
+            poss, cens, rss, chis = self.eval_data_rs(ang, 0)
+            xplt = rss[:,0]
+            yplt = ( np.array([np.std(rss[idx,:6]) for idx in range(15)]) + np.array([np.std(rss[idx,:6]) for idx in range(15)]) ) / 2.
+            ax.plot(xplt, yplt, label='{0:.3f} deg'.format(self.th0), linewidth=2, marker='o')
+        ax.set_xlabel('sagittal radius for central analyzer (mm)')
+        ax.set_ylabel('standard deviation all sagittal radii (mm)')
+        ax.xaxis.set_major_locator(MultipleLocator(400))
+        ax.xaxis.set_minor_locator(MultipleLocator(50))
+        ax.yaxis.set_major_locator(MultipleLocator(0.2))
+        ax.yaxis.set_minor_locator(MultipleLocator(0.05))
+        ax.set_title('Sagittal radius')
+        ax.grid(alpha=0.5)
+        ax.legend(loc='upper right', ncol=1, numpoints=1, frameon=True)
+        plt.tight_layout()
+        plt.show()
+
+    def plot_chi(self):
+        """plot sagittal chis"""
+        plt.close('plot_chi')
+        fig = plt.figure('plot_chi')
+        ax = fig.add_subplot(111)
+
+        for ang in range(6):
+            poss, cens, rss, chis = self.eval_data_rs(ang, 0)
+            xplt = chis[:,0]
+            yplt = np.array([np.std(chis[idx,:]) for idx in range(15)])
+            xmax = max(xplt)+1.5
+            xmin = min(xplt)-1.5
+            ymin = min(yplt)-0.55
+            ax.plot(xplt, yplt, label='{0:.3f} deg'.format(self.th0), linewidth=2, marker='o')
+        ax.set_xlabel('chi angle first analyzer (deg)')
+        ax.set_ylabel('standard deviation chi (deg)')
+        ax.set_xlim(xmin, xmax)
+        #ax.set_ylim(ymin, 0.55)
+        ax.xaxis.set_major_locator(MultipleLocator(1))
+        ax.xaxis.set_minor_locator(MultipleLocator(0.25))
+        #ax.yaxis.set_major_locator(MultipleLocator(0.3))
+        #ax.yaxis.set_minor_locator(MultipleLocator(0.1))
+        ax.set_title('Sagittal angles')
+        ax.grid(alpha=0.5)
+        ax.legend(loc='upper left', ncol=1, numpoints=1, frameon=True)
+        plt.tight_layout()
+        plt.show()
+       
     def get_sag_plane_dist(self, P):
         """get the distance of point P(x,y,z) from the sagittal plane"""
         if self.sp is None:
@@ -618,17 +704,17 @@ class TestProtoBender(object):
         dats = self.get_dats(ang, run, dats=dats)
         self.poss = []
         self.dists = {}
-        for ipt in xrange(12):
+        for ipt in range(12):
             self.dists[ipt] = []
         for _pos, _pts in dats:
             self.poss.append(_pos)
-            for ipt in xrange(12):
+            for ipt in range(12):
                 self.dists[ipt].append(self.get_sag_plane_dist(_pts[ipt][0:3]))
         self.aposs = np.array(map(float, self.poss[:]))
         if plot:
             fig = plt.figure()
             ax = fig.add_subplot(111)
-            for ipt in xrange(12):
+            for ipt in range(12):
                 ax.plot(self.aposs, self.dists[ipt], label=str(ipt), linewidth=2)
             ax.set_xlabel('bender motor position (spec values, mm)')
             ax.set_ylabel('distance from mean sagittal plane (mm)')
@@ -688,7 +774,7 @@ class TestProtoBender(object):
         _headx = True
         if set_sp: self.eval_data_th0s(ang, run, plot=plot)
         dats = self.get_dats(ang, run)
-        cens, rss, chis = [], [], []
+        poss, cens, rss, chis = [], [], [], []
         for _pos, _pts in dats:
             if plot: self.plot_points(_pts)
             pj = [self.get_projection_point(_pt, self.sp) for _pt in _pts]
@@ -696,7 +782,10 @@ class TestProtoBender(object):
             cen = t.get_intersect_lines(pj[0], pj[6], pj[5], pj[11])
             if do_test: self.test_point_on_plane(cen, self.sp)
             rs = [self.get_circle_radius(_pts[idx], cen) for idx in range(12)]
-            chi = [t.get_intersect_angle(cen, pj[idx], pj[idx+1]) for idx in range(5)] 
+            chi = [t.get_intersect_angle(cen, pj[idx], pj[idx+1]) for idx in range(5)]
+            chi2 = [t.get_intersect_angle(cen, pj[idx], pj[idx+1]) for idx in range(6,11)]
+            chi += chi2
+            poss.append(_pos)
             cens.append(cen)
             rss.append(rs)
             chis.append(chi)
@@ -705,9 +794,12 @@ class TestProtoBender(object):
                 print(_headstr.format('#', '#', 'spec', 'mm', 'mm', 'mm', 'mm', 'mm', 'mm'))
                 _headx = False
             print(_outstr.format(ang, run, _pos, rs[0], rs[1]-rs[0], rs[2]-rs[0], rs[3]-rs[0], rs[4]-rs[0], rs[5]-rs[0]))
+        poss = np.array(poss)
         cens = np.array(cens)
+        rss = np.array(rss)
+        chis = np.array(chis)
         if plot: self.plot_points(cens, color='green', marker='^')
-        return cens, rss, chis
+        return poss, cens, rss, chis
         
 def testMiscutOff1Ana(Rm, theta, alpha, d=dSi111):
     """test miscut offsets NOT WORKING YET!!!"""
@@ -766,6 +858,8 @@ if __name__ == "__main__":
     #t.fig_ax.scatter(ap[0], ap[1], ap[2], color='green', marker='o')
     #plt.draw()
 
-    cens, rss, chis = t.eval_data_rs(ang, run, do_test=False, plot=False)
+    poss, cens, rss, chis = t.eval_data_rs(ang, run, do_test=False, plot=False)
+    t.plot_rs()
+    t.plot_chi()
     #t.eval_data(5,0)
     #t.get_meas_rs(0, 0, set_sp=True)
