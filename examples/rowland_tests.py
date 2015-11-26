@@ -53,7 +53,7 @@ dSi220 = d_cubic(SI_ALAT, (2,2,0))
 dGe220 = d_cubic(GE_ALAT, (2,2,0))
 dQz100 = d_hexagonal(SIO2_A, SIO2_C, (1,0,0))
 
-epsilon = 1.e-10 # Default epsilon for equality testing of points and vectors
+epsilon = 1.E-10 # Default epsilon for equality testing of points and vectors
 
 ### TESTS ###
 def testSagOff(Rm, theta0, aXoff, aL=100.):
@@ -335,6 +335,21 @@ class TestProtoBender(object):
         P /= b1 + b2 + b3
         return R, P
 
+    def get_circle_radius(self, point, center):
+        """circle radius given point/center as 3D arrays"""
+        x, y, z = point[:]
+        x0, y0, z0 = center[:]
+        return math.sqrt((x-x0)**2 + (y-y0)**2 + (z-z0)**2)
+
+    def get_intersect_lines(self, p10, p11, p20, p21):
+        """intesection point, assuming line1 and line2 intersect and
+        represented by two points each line, respectively, (p10, p11)
+        and (p20, p21)
+
+        """
+        t = (p20 - p10) / (p11 - p10 - p21 + p20)
+        return p10 + t * (p11 - p10)
+
     def get_projection_point(self, point, plane, test=False):
         """get the orthogonal projection of a 3d point on plane
 
@@ -365,6 +380,14 @@ class TestProtoBender(object):
         if test:
             assert (norm.dot(proj_pt) + d <= epsilon)
         return proj_pt
+
+    def test_point_on_plane(self, point, plane):
+        """check point is on plane (within epsilon)"""
+        _dist = point.dot(plane[:3]) + plane[3]
+        if _dist <= epsilon:
+            print('OK, point on plane')
+        else:
+            print('NO, point away from plane by {0}'.format(_dist))
         
     def read_data(self, fname, retAll=False):
         """read data (custom format) using flushing technique
@@ -694,9 +717,18 @@ if __name__ == "__main__":
     fname = '2015-06-18-all_points.dat'
     t = TestProtoBender()
     t.read_data(fname)
-    d = t.get_dats(5, 0, pos='0.0')
-    #t.get_meas_rs(0, 0, set_sp=True)
-    #t.eval_data_th0s(5,0, showPlot=True)
-    #t.plot_meas_points(5,0)
-    #t.eval_data(5,0)
+    ang, run, pos = 5, 0, '100.0'
+    d = t.get_dats(ang, run, pos=pos)
+    t.eval_data_th0s(ang, run, showPlot=True)
+    t.plot_meas_points(ang, run)
+    dp = [t.get_projection_point(pt, t.sp) for pt in d]
+    a = t.get_intersect_lines(d[0], d[6], d[5], d[11])
+    ap = t.get_intersect_lines(dp[0], dp[6], dp[5], dp[11])
+    #t.test_point_on_plane(a, t.sp) #not on plane
+    t.test_point_on_plane(ap, t.sp)
+    print('plotting it in green')
+    t.fig_ax.scatter(ap[0], ap[1], ap[2], color='green', marker='o')
+    plt.draw()
 
+    #t.eval_data(5,0)
+    #t.get_meas_rs(0, 0, set_sp=True)
