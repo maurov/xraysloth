@@ -314,10 +314,10 @@ class TestSagittalFocusing(object):
         for ang in range(6):
             poss, cens, rss, chis = self.eval_data_rs(ang, 0)
             xplt = rss[:,0]
-            yplt = ( np.array([np.std(rss[idx,:6]) for idx in range(15)]) + np.array([np.std(rss[idx,:6]) for idx in range(15)]) ) / 2.
-            ax.plot(xplt, yplt, label='{0:.3f} deg'.format(self.th0), linewidth=2, marker='o')
+            yplt = ( np.array([np.mean(abs(rss[idx,:6]-np.mean(rss[idx,:6]))) for idx in range(15)]) + np.array([np.mean(abs(rss[idx,6:]-np.mean(rss[idx,6:]))) for idx in range(15)]) ) / 2.
+            ax.plot(xplt, yplt, label='{0:.0f} deg'.format(self.th0), linewidth=2, marker='o')
         ax.set_xlabel('sagittal radius for central analyzer (mm)')
-        ax.set_ylabel('standard deviation all sagittal radii (mm)')
+        ax.set_ylabel('average deviation all sagittal radii (mm)')
         ax.xaxis.set_major_locator(MultipleLocator(400))
         ax.xaxis.set_minor_locator(MultipleLocator(50))
         ax.yaxis.set_major_locator(MultipleLocator(0.2))
@@ -337,13 +337,13 @@ class TestSagittalFocusing(object):
         for ang in range(6):
             poss, cens, rss, chis = self.eval_data_rs(ang, 0)
             xplt = chis[:,0]
-            yplt = np.array([np.std(chis[idx,:]) for idx in range(15)])
+            yplt = np.array([np.mean(abs(chis[idx,:]-np.mean(chis[idx,:]))) for idx in range(15)])
             xmax = max(xplt)+1.5
             xmin = min(xplt)-1.5
             ymin = min(yplt)-0.55
-            ax.plot(xplt, yplt, label='{0:.3f} deg'.format(self.th0), linewidth=2, marker='o')
+            ax.plot(xplt, yplt, label='{0:.0f} deg'.format(self.th0), linewidth=2, marker='o')
         ax.set_xlabel('chi angle first analyzer (deg)')
-        ax.set_ylabel('standard deviation chi (deg)')
+        ax.set_ylabel('average deviation chi (deg)')
         ax.set_xlim(xmin, xmax)
         #ax.set_ylim(ymin, 0.55)
         ax.xaxis.set_major_locator(MultipleLocator(1))
@@ -676,25 +676,32 @@ class TestSagittalFocusing(object):
         return [self.eval_data_rs(ang, run) for ang in angs]
         
 if __name__ == "__main__":
-    plt.close('all')
-    fname = '2015-06-18-all_points.dat'
-    t = TestSagittalFocusing(showInfos=False)
-    t.read_data(fname)
-    ang, run, pos = 5, 0, 0.0
-    d = t.get_dats(ang, run, pos=pos)[1]
-    t.eval_data_th0s(ang, run, plot=False)
-    dpj = [t.get_projection_point(d[idx], t.sp) for idx in range(12)]
-    #t.plot_points(d)
-    #a = t.get_intersect_lines(d[0], d[6], d[5], d[11])
-    #ap = t.get_intersect_lines(dp[0], dp[6], dp[5], dp[11])
-    #t.test_point_on_plane(a, t.sp) #not on plane
-    #t.test_point_on_plane(ap, t.sp)
-    #print('plotting it in green')
-    #t.fig_ax.scatter(ap[0], ap[1], ap[2], color='green', marker='o')
-    #plt.draw()
+    if 1:
+        plt.close('all')
+        plt.ion()
+        fname = '2015-06-18-all_points.dat'
+        t = TestSagittalFocusing(showInfos=False)
+        t.read_data(fname)
+    if 0:
+        ang, run, pos = 2, 0, 0.0
+        d = t.get_dats(ang, run, pos=pos)[1]
+        t.eval_data_th0s(ang, run, plot=False)
+        dpj = [t.get_projection_point(d[idx], t.sp) for idx in range(12)]
+        poss, cens, rss, chis = t.eval_data_rs(ang, run, do_test=False, plot=True)
+        #t.plot_points(d)
+        #a = t.get_intersect_lines(d[0], d[6], d[5], d[11])
+        #ap = t.get_intersect_lines(dp[0], dp[6], dp[5], dp[11])
+        #t.test_point_on_plane(a, t.sp) #not on plane
+        #t.test_point_on_plane(ap, t.sp)
+        #print('plotting it in green')
+        #t.fig_ax.scatter(ap[0], ap[1], ap[2], color='green', marker='o')
+        #plt.draw()
+    if 1:
+        rl = t.eval_data_loop_ang() # all results collected to a single list of lists
+        #play with the data simply by slicing or looping
+        #t.plot_rs()
+        t.plot_chi()
+        #t.eval_data(5,0)
+        #t.get_meas_rs(0, 0, set_sp=True)
 
-    #poss, cens, rss, chis = t.eval_data_rs(ang, run, do_test=False, plot=False)
-    #t.plot_rs()
-    #t.plot_chi()
-    #t.eval_data(5,0)
-    #t.get_meas_rs(0, 0, set_sp=True)
+    
