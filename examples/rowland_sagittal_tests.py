@@ -680,10 +680,10 @@ if __name__ == "__main__":
         plt.close('all')
         plt.ion()
         fname = '2015-06-18-all_points.dat'
-        t = TestSagittalFocusing(showInfos=False)
+        t = TestSagittalFocusing(showInfos=True)
         t.read_data(fname)
-    if 0:
-        ang, run, pos = 2, 0, 0.0
+    if 1:
+        ang, run, pos = 5, 0, 0.0
         d = t.get_dats(ang, run, pos=pos)[1]
         t.eval_data_th0s(ang, run, plot=False)
         dpj = [t.get_projection_point(d[idx], t.sp) for idx in range(12)]
@@ -696,11 +696,11 @@ if __name__ == "__main__":
         #print('plotting it in green')
         #t.fig_ax.scatter(ap[0], ap[1], ap[2], color='green', marker='o')
         #plt.draw()
-    if 1:
+    if 0:
         rl = t.eval_data_loop_ang() # all results collected to a single list of lists
         #play with the data simply by slicing or looping
         #t.plot_rs()
-        t.plot_chi()
+        #t.plot_chi()
         #t.eval_data(5,0)
         #t.get_meas_rs(0, 0, set_sp=True)
 
