@@ -24,7 +24,7 @@ import numpy as np
 from matplotlib import cm
 
 # Larch & friends
-from gridutils import _gridxyz
+from gridxyz import gridxyz
 from specfiledata import _str2rng as str2rng
 from specfiledata import SpecfileData
 
@@ -162,18 +162,18 @@ class RixsData(object):
         method = kws.get('method', self.kwsd['grid']['method'])
         lib = kws.get('lib', self.kwsd['grid']['lib'])
 
-        self.x, self.y, self.zz = _gridxyz(self.xcol,
-                                           self.ycol,
-                                           self.zcol,
-                                           xystep=xystep,
-                                           method=method,
-                                           lib=lib)
-        self.ex, self.et, self.ezz = _gridxyz(self.xcol,
-                                              self.etcol,
-                                              self.zcol,
-                                              xystep=xystep,
-                                              method=method,
-                                              lib=lib)
+        self.x, self.y, self.zz = gridxyz(self.xcol,
+                                          self.ycol,
+                                          self.zcol,
+                                          xystep=xystep,
+                                          method=method,
+                                          lib=lib)
+        self.ex, self.et, self.ezz = gridxyz(self.xcol,
+                                             self.etcol,
+                                             self.zcol,
+                                             xystep=xystep,
+                                             method=method,
+                                             lib=lib)
         
     def load_spec_map(self, **kws):
         """ load the plane from SPEC file
