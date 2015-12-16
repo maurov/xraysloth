@@ -69,6 +69,15 @@ def circle_3p(A, B, C):
     P /= b1 + b2 + b3
     return R, P
 
+def plane_3p(p1, p2, p3):
+    """get the plane ax+by+cz+d=0 given 3 points, p1, p2, p3"""
+    v1 = p3 - p1
+    v2 = p2 - p1
+    cp = np.cross(v1, v2)
+    a, b, c = cp
+    d = - np.dot(cp, p3)
+    return np.array([a, b, c, d])
+    
 def circle_radius(point, center):
     """get circle radius given a point and center as 3D arrays"""
     x, y, z = point[:]
