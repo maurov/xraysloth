@@ -61,10 +61,6 @@ try:
 except:
     pass
 
-#sloth
-from __init__ import _libDir
-sys.path.append(_libDir)
-
 # ../xop/data
 _pardir = os.path.realpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.pardir))
 DATA_DIR = os.path.join(_pardir, 'xop', 'data')
