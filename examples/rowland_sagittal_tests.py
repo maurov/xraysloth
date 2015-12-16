@@ -39,6 +39,7 @@ from __init__ import _libDir
 sys.path.append(_libDir)
 from rowland import RcHoriz
 from genericutils import colorstr
+from geometry3D import (circle_3p, point_on_plane_projection)
 
 epsilon = 1.E-10 # Default epsilon for equality testing of points and vectors
 
@@ -367,20 +368,9 @@ class TestSagittalFocusing(object):
         return abs(P[0]*sp[0] + P[1]*sp[1] + P[2]*sp[2] + sp[3]) / math.sqrt(sp.dot(sp))
             
     def get_circle_3p(self, A, B, C):
-        """center and radius of a circle given 3 points in space
-        http://stackoverflow.com/questions/20314306/find-arc-circle-equation-given-three-points-in-space-3d"""
-        a = np.linalg.norm(C - B)
-        b = np.linalg.norm(C - A)
-        c = np.linalg.norm(B - A)
-        s = (a + b + c) / 2
-        R = a*b*c / 4 / np.sqrt(s * (s - a) * (s - b) * (s - c))
-        b1 = a*a * (b*b + c*c - a*a)
-        b2 = b*b * (a*a + c*c - b*b)
-        b3 = c*c * (a*a + b*b - c*c)
-        P = np.column_stack((A, B, C)).dot(np.hstack((b1, b2, b3)))
-        P /= b1 + b2 + b3
-        return R, P
-
+        """get center and radius of a circle given 3 points in space"""
+        return circle_3p(A, B, C)
+        
     def get_circle_radius(self, point, center):
         """circle radius given point/center as 3D arrays"""
         x, y, z = point[:]
@@ -405,8 +395,6 @@ class TestSagittalFocusing(object):
     def get_projection_point(self, point, plane, test=False):
         """get the orthogonal projection of a 3d point on plane
 
-        http://stackoverflow.com/questions/7565748/3d-orthogonal-projection-on-a-plane
-
         Parameters
         ----------
 
@@ -422,17 +410,8 @@ class TestSagittalFocusing(object):
                   => np.array([proj_x, proj_y, proj_z])
         
         """
-        try:
-            norm = plane[:-1]
-            d = plane[-1]
-            offset = (point.dot(norm) + d) / norm.dot(norm)
-        except:
-            raise NameError('something wrong in get_projection_point')
-        proj_pt = point - norm * offset
-        if test:
-            assert (norm.dot(proj_pt) + d <= epsilon)
-        return proj_pt
-
+        return point_on_plane_projection(point, plane, test=test)
+        
     def test_point_on_plane(self, point, plane):
         """check point is on plane (within epsilon)"""
         _dist = point.dot(plane[:3]) + plane[3]
@@ -696,7 +675,7 @@ if __name__ == "__main__":
         #print('plotting it in green')
         #t.fig_ax.scatter(ap[0], ap[1], ap[2], color='green', marker='o')
         #plt.draw()
-    if 0:
+    if 1:
         rl = t.eval_data_loop_ang() # all results collected to a single list of lists
         #play with the data simply by slicing or looping
         #t.plot_rs()
