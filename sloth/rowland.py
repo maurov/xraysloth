@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-Rowland circle geometry
+"""Rowland circle geometry
 =======================
 
 Units here:
@@ -24,6 +23,20 @@ Table of variables and conventions
 | sample pos (X,Y,Z)     | (0,0,0) |        | (0,0,0) |         |
 |                        |         |        |         |         |
 
+.. note::
+
+   in the sagittal plane local reference system, everything is
+   referred to the central analyzer at (0,0) facing to the
+   sample. This is a 2D reference system because all analyzers are
+   sitting on this plane. The coordinates are (aXoff,
+   SagOff). ``aXoff`` is positive on the right of the central
+   analyzer. ``SagOff`` is positive toward the sample.
+
+.. note::
+
+   the following code has been tested with a CAD model built using
+   SolidWorks: ``RowlandSketchPrototype-v1512``
+
 
 RT4XES
 ------
@@ -35,7 +48,7 @@ ID26specVII.m
 TODO
 ----
 
-- check formulas when a miscut is given (alpha != 0)
+- check the full thing formulas when a miscut is given (alpha != 0)
 
 """
 
@@ -349,7 +362,7 @@ class RowlandCircle(object):
         else:
             return rchi
 
-    def get_chi2(self, aN=1., aWext=None, Rs=None, inDeg=True):
+    def get_chi2(self, aN=1., aWext=None, Rs=None, rSext=None, inDeg=True):
         """get \chi angle in sagittal focusing using Thales's theorem
         (touching/connected analyzers)
 
@@ -358,9 +371,11 @@ class RowlandCircle(object):
         aN : float, 1.
              n-th analyser (0 is the central one)
         """
-        if Rs is None: Rs = self.Rs
         if aWext is None: aWext = self.aWext
-        rchi = ( 2 * math.atan( aWext / (2 * Rs) ) ) * aN
+        if Rs is None: Rs = self.Rs
+        if rSext is None: rSext = self.rSext
+        Rsp = Rs + rSext
+        rchi = ( 2 * math.atan( aWext / (2 * Rsp) ) ) * aN
         if (inDeg is True):
             return math.degrees(rchi)
         else:
