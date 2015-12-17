@@ -193,7 +193,7 @@ class RowlandCircle(object):
 
         self.Rm
         self.inCircle
-        self.sampPos : sample position center, always at (0,0,0)
+        self.sampPos
         self.alpha
         self.ralpha
         self.aL
@@ -706,21 +706,22 @@ axis
         return self.get_pos(vDet)
 
     def get_ana_pos(self, aXoff=0.):
-        """analyser XYZ center position for a given X offset
+        """analyser XYZ center position for a given chi
 
         Parameters
         ==========
-        aXoff : offset in X direction for the analyser
+        
+        chi : float, 0. [deg]
+              rotation angle on the sagittal plane (hor plane here)
 
         """
         yAcen = 2 * self.Rm * math.sin(self.rtheta0)**2
         zAcen = 2 * self.Rm * math.sin(self.rtheta0) * math.cos(self.rtheta0)
         Acen = np.array([0, yAcen, zAcen])
-        if (aXoff == 0.):
+        if (chi == 0.):
             return self.get_pos(Acen)
         else:
-            Chi = self.get_chi(aXoff, inDeg=False)
-            Aside = rotate(Acen, np.array([0,0,1]), Chi)
+            Aside = rotate(Acen, np.array([0,0,1]), math.radians(chi))
             return self.get_pos(Aside)
 
     def get_miscut_off(self, alpha=None, Rm=None):
@@ -748,21 +749,22 @@ Y axis
         zDet = self.q * math.sin(2 * self.rtheta0)
         return np.array([0, yDet, zDet])
 
-    def get_ana_pos(self, aXoff=0.):
-        """analyser XYZ center position for a given X offset
+    def get_ana_pos(self, chi=0.):
+        """analyser XYZ center position for a given chi
 
         Parameters
         ==========
-        aXoff : offset in X direction for the analyser
-
+        
+        chi : float, 0. [deg]
+              rotation angle on the sagittal plane (around sample-detector axis)
+        
         """
         Acen = np.array([0, self.q, 0])
-        if (aXoff == 0.):
+        if (chi == 0.):
             return Acen
         else:
-            SDax = self.get_det_pos()
-            Chi = self.get_chi(aXoff, inDeg=False)
-            Aside = rotate(Acen, SDax, Chi)
+            SDax = self.get_det_pos() - self.sampPos
+            Aside = rotate(Acen, SDax, math.radians(chi))
             return Aside
         
     def get_miscut_off(self, alpha=None, p=None):
