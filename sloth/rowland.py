@@ -26,11 +26,11 @@ Table of variables and conventions
 .. note::
 
    in the sagittal plane local reference system, everything is
-   referred to the central analyzer at (0,0) facing to the
-   sample. This is a 2D reference system because all analyzers are
+   referred to the central analyser at (0,0) facing to the
+   sample. This is a 2D reference system because all analysers are
    sitting on this plane. The coordinates are (aXoff,
    SagOff). ``aXoff`` is positive on the right of the central
-   analyzer. ``SagOff`` is positive toward the sample.
+   analyser. ``SagOff`` is positive toward the sample.
 
 .. note::
 
@@ -140,7 +140,7 @@ class RowlandCircle(object):
                 miscut angle in deg: the angle between the surface of
                 the crystal and the crystal planes at the centre
                 point; for positive alpha, q > p, that is, the center
-                analyzer moves downward (or clockwise) the vertical
+                analyser moves downward (or clockwise) the vertical
                 Rowland circle
 
         d : float, None
@@ -248,8 +248,8 @@ class RowlandCircle(object):
         self.theta0  : in degrees
         self.rtheta0 : in radians
         self.sd      : sample-detector distance (independent of \alpha)
-        self.p       : sample-analyzer distance
-        self.q       : analyzer-detector distance
+        self.p       : sample-analyser distance
+        self.q       : analyser-detector distance
         self.Rs      : sagittal radius (analyser center, self.aL == 0.)
         """
         if showInfos is None: showInfos = self.showInfos
@@ -352,7 +352,7 @@ class RowlandCircle(object):
             
     def get_chi(self, aXoff, Rs=None, aL=None, inDeg=True):
         """get \chi angle in sagittal focusing using offset from
-        centre analyzer (aXoff)"""
+        centre analyser (aXoff)"""
         if Rs is None: Rs = self.Rs
         if aL is None: aL = self.aL
         Rs2 = Rs + aL
@@ -364,7 +364,7 @@ class RowlandCircle(object):
 
     def get_chi2(self, aN=1., aWext=None, Rs=None, rSext=None, inDeg=True):
         """get \chi angle in sagittal focusing using Thales's theorem
-        (touching/connected analyzers)
+        (touching/connected analysers)
 
         Parameters
         ----------
@@ -382,7 +382,7 @@ class RowlandCircle(object):
             return rchi
 
     def get_ana_dist(self, chi, aN=1., aW=None, Rs=None, inDeg=True):
-        """get analyzer-analyzer distance at Rs"""
+        """get analyser-analyser distance at Rs"""
         if aW is None: aW = self.aW
         if Rs is None: Rs = self.Rs
         if not (aN == 0): chi = chi/aN
@@ -402,6 +402,10 @@ class RowlandCircle(object):
         if aL is None: aL = self.aL
         return (Rs + aL) * math.sin(math.radians(chi))
 
+    def get_axoff0(self, chi, Rs=None):
+        """get aXoff at the surface of the analyser"""
+        return self.get_axoff(chi, Rs=Rs, aL=0)
+        
     def get_axoff_line(self, aXoffMin, SagOffMin, degRot=0., Rs=None, aL=None):
         """get aXoff for the pivot point when only a linear trajectory is known
 
@@ -486,7 +490,10 @@ class RowlandCircle(object):
 
         Parameters
         ----------
-        aXoff : float
+        
+        aXoff : float, required position at the pivot point (will give
+                       a wrong result using the position at the
+                       analyser surface)
 
         retAll : boolean, False
 
@@ -503,6 +510,7 @@ class RowlandCircle(object):
                    float
 
                    SagOff
+
         """
         if Rs is None: Rs = self.Rs
         if aL is None: aL = self.aL
@@ -523,6 +531,11 @@ class RowlandCircle(object):
             return [math.degrees(rchi), aXoff, SagOff, math.degrees(rchi0), aXoff0, SagOff0]
         else:
             return SagOff
+
+    def get_sag_off0(self, aXoff):
+        """quick wrap to get the sagittal offset at the analyser
+        surface, use get_sag_off() for full control!"""
+        return self.get_sag_off(aXoff, retAll=True)[-1]
 
     def get_sag_off_mots(self, aXoff, degRot=0., pivotSide=10., Rs=None, aL=None):
         """motors positions for sagittal offset
@@ -660,15 +673,18 @@ class RowlandCircle(object):
 
             
 class RcVert(RowlandCircle):
-    """ Rowland circle vertical frame: sample-detector on XZ plane along Z axis """
+    """Rowland circle vertical frame: sample-detector on XZ plane along Z
+axis
+
+    """
 
     def __init__(self, *args, **kws):
-        """ RowlandCircle init
+        """RowlandCircle init
         
         Parameters
         ==========
         rotHor : boolean, rotate to horizontal [False]
-    
+
         """
         try:
             self.rotHor = kws.pop('rotHor')
@@ -677,24 +693,25 @@ class RcVert(RowlandCircle):
         RowlandCircle.__init__(self, *args, **kws)
 
     def get_pos(self, vect):
-        """ utility method: return 'vect' or its rotated form if self.rotHor """
+        """utility method: return 'vect' or its rotated form if self.rotHor"""
         if self.rotHor:
             return rotate(vect, np.array([1,0,0]), (math.pi/2.-self.rtheta0))
         else:
             return vect
 
     def get_det_pos(self):
-        """ returns detector center position [X,Y,Z] """
+        """detector center position [X,Y,Z]"""
         zDet = 4 * self.Rm * math.sin(self.rtheta0) * math.cos(self.rtheta0)
         vDet = np.array([0, 0, zDet])
         return self.get_pos(vDet)
 
     def get_ana_pos(self, aXoff=0.):
-        """ returns analyser XYZ center position for a given X offset
+        """analyser XYZ center position for a given X offset
 
         Parameters
         ==========
         aXoff : offset in X direction for the analyser
+
         """
         yAcen = 2 * self.Rm * math.sin(self.rtheta0)**2
         zAcen = 2 * self.Rm * math.sin(self.rtheta0) * math.cos(self.rtheta0)
@@ -716,24 +733,28 @@ class RcVert(RowlandCircle):
         return - Rm * (1-math.cos(ralpha)), - Rm * math.sin(ralpha)
 
 class RcHoriz(RowlandCircle):
-    """ Rowland circle horizontal frame: sample-analyzer on XY plane along Y axis """
+    """Rowland circle horizontal frame: sample-analyser on XY plane along
+Y axis
+
+    """
 
     def __init__(self, *args, **kws):
         """RowlandCircle init """
         RowlandCircle.__init__(self, *args, **kws)
 
     def get_det_pos(self):
-        """ returns detector position [X,Y,Z] """
+        """detector position [X,Y,Z]"""
         yDet = self.p + self.q * math.cos(2 * self.rtheta0)
         zDet = self.q * math.sin(2 * self.rtheta0)
         return np.array([0, yDet, zDet])
 
     def get_ana_pos(self, aXoff=0.):
-        """ analyzer analyser XYZ center position for a given X offset
+        """analyser XYZ center position for a given X offset
 
         Parameters
         ==========
         aXoff : offset in X direction for the analyser
+
         """
         Acen = np.array([0, self.q, 0])
         if (aXoff == 0.):
