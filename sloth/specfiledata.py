@@ -227,7 +227,7 @@ def _pymca_average(xdats, zdats):
     """
     if HAS_SIMPLEMATH:
         sm = SimpleMath.SimpleMath()
-        print("Merging data...")
+        if self.verbosity > 0: print("INFO merging data...")
         return sm.average(xdats, zdats)
     else:
         raise NameError("SimpleMath is not available -- this operation cannot be performed!")
@@ -343,7 +343,7 @@ class SpecfileData(object):
     """SpecfileData object"""
     
     def __init__(self, fname=None, cntx=1, cnty=None, csig=None,
-                 cmon=None, csec=None, norm=None):
+                 cmon=None, csec=None, norm=None, verbosity=0):
         """reads the given specfile
 
         Parameters
@@ -363,6 +363,8 @@ class SpecfileData(object):
                'area' -> (z-min(z))/trapz(z, x)
                'sum' -> (z-min(z)/sum(z)
 
+        verbosity : level of verbosity [int, 0]
+        
         Returns
         -------
         None, sets attributes.
@@ -371,10 +373,11 @@ class SpecfileData(object):
         self.cntx/cnty/csig/cmon/csec/norm
 
         """
+        self.verbosity = verbosity
         if (fname == 'DUMMY!'):
             return
         if (HAS_SPECFILE is False):
-            print("WARNING: 'specfile' is missing -> check requirements!")
+            if self.verbosity > 1: print("WARNING 'specfile' is missing -> check requirements!")
             return
         if (fname is None):
             raise NameError("Provide a SPEC data file to load with full path")
@@ -387,7 +390,7 @@ class SpecfileData(object):
             else:
                 self.sf = specfile.Specfile(fname) #sf = specfile file
                 self.fname = fname
-                print("Loaded: {0} ({1} scans)".format(fname, self.sf.scanno()))
+                if self.verbosity > 0: print("Loaded: {0} ({1} scans)".format(fname, self.sf.scanno()))
         #if HAS_SIMPLEMATH: self.sm = SimpleMath.SimpleMath()
         #set common attributes
         self.cntx = cntx
@@ -569,7 +572,7 @@ class SpecfileData(object):
                                        cmon=cmon, csec=csec,\
                                        scnt=None, norm=norm)
             y = _mot2array(moty, x)
-            print("Loading scan {0} into the map...".format(scan))
+            if self.verbosity > 0: print("INFO loading scan {0} into the map...".format(scan))
             if _counter == 0:
                 xcol = x
                 ycol = y
@@ -619,7 +622,7 @@ class SpecfileData(object):
         zdats = []
         mdats = []
         idats = []
-        print("Loading {0} scans from SPEC ...".format(len(nscans)))
+        if self.verbosity > 0: print("INFO loading {0} scans from SPEC ...".format(len(nscans)))
         for scan in nscans:
             _x, _z, _m, _i = self.get_scan(scan=scan, cntx=cntx,\
                                            cnty=None, csig=csig,\
@@ -668,7 +671,7 @@ class SpecfileData(object):
         # override 'action' keyword if it is only one scan
         if len(nscans) == 1:
             action = 'single'
-            #print("WARNING(get_mrg): len(scans)==1 -> using 'action=single'")
+            if self.verbosity > 1: print("WARNING(get_mrg): len(scans)==1 -> using 'action=single'")
         if action == 'average':
             return _pymca_average(xdats, zdats)
         elif action == 'join':
@@ -711,12 +714,12 @@ class SpecfileData(object):
         for iAvg, Avg in enumerate(nAvg):
             iStart = iAvg*nbin
             if Avg == nAvg[-1] and not nScansLast == 0:
-                print("WARNING: avg {0} is of {1} scans only".format(iAvg, nScansLast))
+                if self.verbosity > 1: print("WARNING avg {0} is of {1} scans only".format(iAvg, nScansLast))
                 nAdd = nScansLast
             else:
                 nAdd = nbin
             mscans = nScans[iStart:iStart+nAdd]
-            #print("avg {0}: scans='{1}'".format(iAvg, str(mscans)))
+            if self.verbosity > 0: print("INFO avg {0}: scans='{1}'".format(iAvg, str(mscans)))
             _xmrg, _zmrg = self.get_mrg(scans=mscans, action=action,\
                                         cntx=cntx, cnty=None,\
                                         csig=csig, cmon=cmon,\
@@ -801,7 +804,7 @@ class SpecfileData(object):
             degree = kws.get('degree', 4)
             order = kws.get('order', 0)
             ysdats = []
-            print("Smoothing data with Savitzky-Golay filter (pymca)...")
+            if self.verbosity > 0: print("INFO smoothing data with Savitzky-Golay filter (pymca)...")
             for y in ydats:
                 ysdats.append(_pymca_SG(y, npoints=npoints,
                                         degree=degree, order=order))
@@ -811,7 +814,7 @@ class SpecfileData(object):
             order = kws.get('order', 4)
             deriv = kws.get('deriv', 0)
             ysdats = []
-            print("Smoothing data with Savitzky-Golay filter (scipy)...")
+            if self.verbosity > 0: print("INFO smoothing data with Savitzky-Golay filter (scipy)...")
             for y in ydats:
                 ysdats.append(savitzky_golay(y,
                                              window_size=window_size,
