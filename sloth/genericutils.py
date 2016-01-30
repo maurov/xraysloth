@@ -101,7 +101,7 @@ def ipythonAutoreload():
     mgc(u'%autoreload 2')
 
 ### PyMca ###
-def getPyMcaMain():
+def getPyMcaMain(fload=None):
     """ show PyMcaMain from a shell (e.g. IPython) and return its obj """
     from matplotlib import rcParams
     rcParams['text.usetex'] = False
@@ -115,12 +115,13 @@ def getPyMcaMain():
 
     if HAS_PYMCA:
         m = PyMcaMain.PyMcaMain()
+        if fload is not None: m.sourceWidget.sourceSelector.openFile(fload)
         m.show()
         return m
     else:
         print("PyMca not found")
         return 0
-
+        
 ### Matplotlib ###
 def mplSetPubFont(size=8, usetex=True):
     """ very basic mpl set font for publication-quality figures """
