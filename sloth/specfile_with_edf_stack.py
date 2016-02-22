@@ -29,7 +29,7 @@ Related
 
 __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
-__credits__ = "Thomas Vincent"
+__credits__ = "Thomas Vincent (ESRF)"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
 __year__ = "2015"
@@ -141,6 +141,7 @@ class SpecWithEdfStack(SpecfileData):
         self.miw = ImageView.ImageViewMainWindow()
         _radarview = RadarViewWithOverlay(self.miw.imageView)
         self.miw.imageView.setRadarView(_radarview)
+        self.keep_aspect_ratio(True)
         
         # animation figure layout
         self.anim_fig = plt.figure(num='SpecWithEdfStack', figsize=(5,5), dpi=150)
@@ -187,16 +188,24 @@ class SpecWithEdfStack(SpecfileData):
     def load_imgs(self, **kws):
         """load images in self.imgs list"""
         noisy_pxs = kws.get('noisy_pxs', None)
+        _iload = 0
         self.imgs = []
         self.imgs_head = []
         self.imgs_int = []
+        self.imgs_fname = []
         for idx, x in enumerate(self.x):
             _fname = '{0}{1}{2}{3:04d}{4}'.format(self.edf_dir,
                                                   os.sep,
                                                   self.edf_root, idx,
                                                   self.edf_ext)
             #print(_fname)
-            edf = EdfFile.EdfFile(_fname, "rb")
+            try:
+                edf = EdfFile.EdfFile(_fname, "rb")
+                self.imgs_fname.append(_fname)
+                _iload += 1
+            except:
+                print("WARNING: {0} not found => NOT LOADED!".format(_fname))
+                continue
             data = edf.GetData(0)
             header = edf.GetHeader(0)
             if (noisy_pxs is not None) and type(noisy_pxs == list):
@@ -211,8 +220,12 @@ class SpecWithEdfStack(SpecfileData):
             self.imgs_head.append(header)
             self.imgs_int.append(_int)
         edf = None
-        print('Loaded {0} images'.format(len(self.x)-1))
+        print('Loaded {0} images'.format(_iload))
 
+    def keep_aspect_ratio(self, flag=True):
+        """wrapper to self.miw.imageView._imagePlot.keepDataAspectRatio"""
+        self.miw.imageView._imagePlot.keepDataAspectRatio(flag)
+        
     def slice_stack(self, rowmin, rowmax, colmin, colmax):
         """crop the stack"""
         for idx, img in enumerate(self.imgs):
