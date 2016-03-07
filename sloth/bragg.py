@@ -52,9 +52,12 @@ def theta_b(wlen, d, n=1):
     r""" return the Bragg angle, $\theta_{B}$, (deg) for a given wavelength
     (\AA$^{-1}$) and d-spacing (\AA)"""
     if not (d == 0):
-        return np.rad2deg( np.arcsin( ( ( wlen * n ) / ( 2 * d ) ) ) )
+        try:
+            return np.rad2deg( np.arcsin( ( ( wlen * n ) / ( 2 * d ) ) ) )
+        except:
+            return 0
     else:
-        return
+        return 0
 
 def bragg_th(d, ene, n=1):
     r""" return the Bragg angle, $\theta_{B}$, (deg) for a given energy (eV)
