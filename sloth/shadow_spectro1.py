@@ -56,7 +56,7 @@ except:
     pass
 
 try:
-    from Shadow import ShadowLibExtensions as sle
+    from Shadow import ShadowLibExtensions
     HAS_SHADOW = True
 except:
     pass
@@ -222,9 +222,10 @@ class ShadowSpectro1(object):
         **kws : see RcHoriz
         
         """
+        # Rowland circle geometry
         self.rc = RcHoriz(**kws)
-
-        self.src = sle.Source()
+        # source
+        self.src = ShadowLibExtensions.Source()
         self.src.NPOINT = nrays
         if (seed % 2 == 0): seed += 1
         self.src.ISTAR1 = seed
@@ -233,17 +234,11 @@ class ShadowSpectro1(object):
         emin = ene0 - ene_src_hwidth_ev
         emax = ene0 + ene_src_hwidth_ev
         self.src.set_energy_box(emin, emax)
-        self.src.write("start.00")
-        
-        self.beam = sle.Beam()
-        self.beam.genSource(self.src)
-        self.beam.write("begin.dat")
-        self.src.write("end.00")
-
-        self.spe1 = sle.CompoundOE(name='spectro1')
-
+        # beam
+        self.beam = ShadowLibExtensions.Beam()
+        self.spe1 = ShadowLibExtensions.CompoundOE(name='spectro1')
         #spherical crystal, TODO: make separate class
-        self.oe1 = sle.OE()
+        self.oe1 = ShadowLibExtensions.OE()
         self.oe1.FMIRR = 1 #spherical
         self.oe1.F_CRYSTAL = 1
         self.oe1.FILE_REFL = file_refl.encode('utf-8')
@@ -267,7 +262,7 @@ class ShadowSpectro1(object):
         self.oe1.RLEN2  = dimensions[1]
         self.oe1.RWIDX1 = dimensions[2]
         self.oe1.RWIDX2 = dimensions[3]
-        self.oe1.F_CENTRAL = 1 # energy auto tuning: yes (1), no (0)
+        self.oe1.F_CENTRAL = 0 # energy auto tuning: yes (1), no (0)
         self.oe1.F_PHOT_CENT = ene0 # eV
         self.oe1.F_JOHANSSON = 0 # Johansson: yes (1), no (0)
         self.oe1.R_JOHANSSON = 0.0 # radius_johansson
@@ -276,7 +271,7 @@ class ShadowSpectro1(object):
         self.spe1.append(self.oe1)
         
         #TODO detector
-        #self.det = sle.OE()
+        #self.det = ShadowLibExtensions.OE()
 
         print('init rc, beam, src, spe1')
         # self.run() # better not to run at init!
@@ -284,9 +279,11 @@ class ShadowSpectro1(object):
     def run(self):
         #trace
         self.spe1.dump_systemfile()
-        self.beam.traceCompoundOE(self.spe1, write_start_files=1,
-                                  write_end_files=1,
-                                  write_star_files=1)
+        self.beam.genSource(self.src)
+        self.beam.traceCompoundOE(self.spe1, write_start_files=0,
+                                  write_end_files=0,
+                                  write_star_files=0,
+                                  write_mirr_files=0)
     
 if __name__ == "__main__":
     from PyQt4.QtGui import QApplication
@@ -300,16 +297,18 @@ if __name__ == "__main__":
     d_si111 = 3.1356268397363549
     #file_refl = os.path.join(DATA_DIR, 'Si_444-E_2000_20000_50-A_3-T_1.bragg')
     #file_refl = os.path.join(os.getcwd(), 'Si444_xoppy.dat')
-    file_refl = os.path.join(os.getcwd(), 'Si444_OW.dat')
+    #file_refl = os.path.join(os.getcwd(), 'Si444_OW.dat')
+    file_refl = os.path.join(os.getcwd(), 'Si444.dat') #spectro-1603
     dimensions_cm=np.array([5., 5., 5., 5.])
 
     # ---------------------------------------------------------------#
     # SwSpectro1 tests
+    # !!! BROKEN !!!
     # ---------------------------------------------------------------#
     if 0 and HAS_SWOUI:
         s = SwSpectro1(file_refl=file_refl, Rm=50., useCm=True,
                        showInfos=True, d=d_si111/4., theta0=75.)
-        s.update_divergence(fdistr=1, expand=1.1)
+        #s.update_divergence(fdistr=1, expand=1.1)
         #s.src.sw_src.src.load('spectro-1411_start.src')
         #s.oe1.sw_oe._oe.load('spectro-1411_start.oe1')
         #s.det.sw_scr._oe.load('spectro-1411_start.det')
