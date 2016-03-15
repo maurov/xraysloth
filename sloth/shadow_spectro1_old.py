@@ -50,8 +50,8 @@ from peakfit import fit_splitpvoigt, fit_results
 import bragg as bu
 from rowland import RcHoriz
 
-# SRC
-class FluoSource(ShadowLib.Source):
+# SRC => TODO: merge with shadow_sources.py
+class FluoSource(ShadowLibExtensions.Source):
     """mimic a divergent fluorescence source
 
     geometric source of rectangular shape and conical angular
@@ -223,7 +223,7 @@ class FluoSource(ShadowLib.Source):
         self.POL_ANGLE = pol_angle
         self.POL_DEG = pol_deg
 
-# OE
+# OE => TODO: merge with shadow_oes.py
 class CrystalFlat(ShadowLibExtensions.OE):
     """flat crystal mirror"""
 
@@ -265,31 +265,48 @@ class JohanssonCylinder(JohannCylinder):
         super(JohannCylinder, self).__init__(**kws)
         self.setJohansson(**kws)
 
+# ----------------------------------------------------------------------- #
+# ShadowSpectro1: Spectrometer w 1 crystal analyser based on SHADOW3 only #
+# ----------------------------------------------------------------------- #
 class ShadowSpectro1(object):
     """Spectrometer w 1 crystal analyser based on SHADOW3"""
-    def __init__(self, nrays=10000, seed=6775431, **kws):
+    def __init__(self, file_refl, dimensions=np.array([0., 0., 0., 0.]),\
+                 nrays=10000, seed=6775431, **kws):
         """mimic spectrometer with 1 crystal analyzer
 
         Parameters
         ----------
+
+        file_refl : str
+                    reflectivity file
+
+        dimensions : array of floats, np.array([0., 0., 0., 0.])
+                     dimensions[0] : dimension y plus  [cm] 
+                     dimensions[1] : dimension y minus [cm] 
+                     dimensions[2] : dimension x plus  [cm] 
+                     dimensions[3] : dimension x minus [cm] 
+        
         nrays : int, 10000
                 number of rays
+
         seed : int, 6775431
                seed for random number generator
 
         **kws : see RcHoriz
         
         """
+        self.iwrite = kws.get('iwrite', 0) # write (1) or not (0) SHADOW
+                                           # files start.xx end.xx star.xx
         self.rc = RcHoriz(**kws)
-        print('init beam, src and oe1')
-        self.beam = ShadowLib.Beam()
-        self.src = FluoSource() # ShadowLib.Source()
+        self.beam = ShadowLibExtensions.Beam()
+        self.src = FluoSource() # ShadowLibExtensions.Source()
         #self.src.load('start.00')   
         self.oe1 = ShadowLibExtensions.OE() # ShadowLib.OE()
         #self.oe1.load('start.01')
         self.det = ShadowLibExtensions.OE()
         #self.det.load('start.02')
         self.src.set_rays(nrays, seed=seed)
+        print('init self.rc, .beam, .src, .oe1 and .det')
         # self.run() # better not to run at init!
 
     def run(self, nrays=None):
@@ -408,7 +425,7 @@ class ShadowSpectro1(object):
         ------
         if an error occurs an ArgsError is raised.
         """
-        return ShadowTools.plotxy(*args, **kws)
+        return ShadowTools.plotxy_old(*args, **kws)
 
     def plotxy_footprint(self, **kws):
         """source foot print on optical element
@@ -595,7 +612,7 @@ class ShadowSpectro1(object):
         ArgsError
 
         """
-        return ShadowTools.histo1(*args, **kws)
+        return ShadowTools.histo1_old(*args, **kws)
 
     def histo1_energy(self, **kws):
         """energy histogram
@@ -781,8 +798,8 @@ class ShadowSpectro1(object):
         aXoff : float
                 analyser center offset in X [cm]
         """
-        _offXYZ = self.rc.getAnaPos(aXoff) - self.rc.getAnaPos(0.)
-        _chi = self.rc.getChi(aXoff)
+        _offXYZ = self.rc.get_ana_pos(aXoff) - self.rc.get_ana_pos(0.)
+        _chi = self.rc.get_chi(aXoff)
         self.move_mirr(move=True, offXYZ=_offXYZ, rotXYZ=np.array([0., _chi, 0.]), **kws)
         
         #self.run()
@@ -811,9 +828,9 @@ class ShadowSpectro1(object):
             print('Aborted: set the Rowland circle radius first')
             return
         else:
-            self.rc.setTheta0(theta0)
+            self.rc.set_theta0(theta0)
             d = self.rc.d
-            ene0 = self.rc.getEne()
+            ene0 = self.rc.get_ene()
             # adjust source energy to new theta0
             self.oe1.PHOT_CENT = ene0
             if (deltaE[0] is None):
@@ -864,4 +881,6 @@ class ShadowSpectro1(object):
             #self.run()
 
 if __name__ == '__main__':
+    dsi444 = bu.d_cubic(bu.SI_ALAT, (4,4,4))
+    t = ShadowSpectro1(theta0=75., Rm=50., d=dsi444, useCm=True, showInfos=True)
     pass
