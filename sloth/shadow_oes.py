@@ -56,16 +56,25 @@ class SwOE(object):
     def get_instance(self):
         return self.sw
 
-    def set_output_files(self, fwrite=0, f_angle=0):
+    def set_unit(self, length='cm'):
+        """set length unit (['cm'], 'mm' or 'm')"""
+        if length == 'cm':
+            self.sw._oe.DUMMY = 1.0
+        elif length == 'mm':
+            self.sw._oe.DUMMY = 0.1
+        elif length == 'm':
+            self.sw._oe.DUMMY = 0.0
+
+    def set_output_files(self, fwrite=1, f_angle=0):
         """optional file output
 
         Parameters
         ----------
 
-        fwrite : int [3]
+        fwrite : int [1]
                  files to write out
                  0 -> all files
-                 1 -> mirror file  only -- mirr
+                 1 -> mirror file  only -- mirr [REQUIRED FOR FOOTPRINT]
                  2 -> image file only -- star
                  3 -> none
                  
