@@ -40,9 +40,11 @@ import numpy as np
 # see README.rst how to install XOP and SHADOW3
 HAS_SHADOW = False
 try:
+    import Shadow
     from Shadow import ShadowLib
     from Shadow import ShadowLibExtensions
     from Shadow import ShadowTools
+    ShadowTools.plt.ion()
     HAS_SHADOW = True
 except:
     print(sys.exc_info()[1])
@@ -167,14 +169,18 @@ class FluoSource(ShadowLibExtensions.Source):
                 1 rectangle
                 2 ellipse
                 3 gaussian
+        
         wxsou : float, 0.05
                 for fsour=1,2; source width (X) [cm]
+        
         wzsou : float, 0.05
                 for fsour=1,2; source height (Z) [cm]
+        
         fsource_depth : int, 1
                         source depth (Y). Options are: no depth (1),
                         flat depth (2), gaussian (3), synchrotron
                         depth (4)
+        
         wysou : float, 0.
                 for fsource_depth=2; source depth (Y)
         """
@@ -185,7 +191,8 @@ class FluoSource(ShadowLibExtensions.Source):
 
     def set_angle_distr(self, fdistr=1,\
                         cone_min=0.0, cone_max=0.1,\
-                        hdiv_pos=0.0, hdiv_neg=0.0, vdiv_pos=6E-5, vdiv_neg=6E-5):
+                        hdiv_pos=0.0, hdiv_neg=0.0,\
+                        vdiv_pos=6E-5, vdiv_neg=6E-5):
         """angle distribution
 
         Parameters
@@ -238,11 +245,14 @@ class FluoSource(ShadowLibExtensions.Source):
                   2 mutliple discrete energies, up to 10 energies
                   3 uniform energy distribution
                   4 relative intensities
+        
         f_phot : int, 0
                  defines whether the photon energy will be specified
                  in eV (0) or Angstroms (1)
+        
         phn : list of floats, [5E3, 10E3]
               photon energies up to 10
+        
         rln : list of floats, [0.0]
               relative intensities up to 10
         """
@@ -277,14 +287,18 @@ class FluoSource(ShadowLibExtensions.Source):
 
         Parameters
         ----------
+        
         f_polar : int, 1
                   flag defining whether or not to generate the A
                   vectors: yes (1), no (0)
+        
         f_coher : int, 0
                   if generating the A vectors, defines whether the
                   light is incoherent (0), or coherent (1)
+        
         pol_angle : float, 0.0
                     phase diff [deg, 0=linear, +90=ell/right]
+        
         pol_deg : float, 1.0
                   polarization degree [cos_s/(cos_s+sin_s)]
         """
@@ -306,8 +320,8 @@ class SwOE(ShadowLibExtensions.OE):
         """
         super(SwOE, self).__init__(**kws)
         self_repair_oe(self)
-        self.set_screens()
-        self.set_empty()
+        # self.set_screens()
+        # self.set_empty()
         self.init_empty()
         self.set_unit()
         self.set_output_files()
@@ -331,7 +345,7 @@ class SwOE(ShadowLibExtensions.OE):
         elif length == 'm':
             self.DUMMY = 0.0
 
-    def set_output_files(self, fwrite=1, f_angle=0):
+    def set_output_files(self, fwrite=0, f_angle=0):
         """optional file output
 
         Parameters
@@ -424,7 +438,7 @@ class PlaneCrystal(SwOE):
 
     def init_plane_crystal(self):
         """template method pattern"""
-        self.FMIRR=5
+        self.FMIRR = 5
         self.F_CRYSTAL = 1
         self.FILE_REFL = bytes("", 'utf-8')
         self.F_REFLECT = 0
@@ -489,8 +503,7 @@ class PlaneCrystal(SwOE):
 
         """
         self.F_CRYSTAL = 1
-        self.FILE_REFL = bytes(file_refl, 'utf-8')
-
+        self.FILE_REFL = adjust_shadow_string(file_refl)
 
         if a_bragg != 0.0: self.set_asymmetric_cut(a_bragg, thickness)
 
@@ -585,15 +598,16 @@ class PlaneCrystal(SwOE):
         ----------
 
         r_johansson : float
-                      Johansson radius (cm)
+                      Johansson radius, that is, radius of the crystal planes (cm)
 
         Notes
         -----
         mutually exclusive with mosaic
         """
-        self.F_JOHANSSON = 1
         self.F_EXT = 1
+        self.F_JOHANSSON = 1
         self.R_JOHANSSON = r_johansson
+        self.RMIRR = r_johansson / 2.
         
         #MUTUALLY EXCLUSIVE!
         self.F_MOSAIC = 0
@@ -641,7 +655,7 @@ class SphericalCrystal(PlaneCrystal):
 
     def init_spherical_crystal(self):
         """template method pattern"""
-        self.FMIRR=1
+        self.FMIRR = 1
         self.F_CRYSTAL = 1
         self.FILE_REFL = bytes("", 'utf-8')
         self.F_REFLECT = 0
@@ -650,13 +664,13 @@ class SphericalCrystal(PlaneCrystal):
         self.F_REFRAC = 0
 
     def set_radius(self, rmirr):
-        """set radius of curvature (rmirr)
+        """set radius of curvature of the surface (rmirr)
 
         Parameters
         ----------
 
         rmirr : float
-                radius of curvature (cm)
+                surface radius of curvature (cm)
 
         """
         self.F_EXT = 1
@@ -733,8 +747,8 @@ class SphericalCrystal(PlaneCrystal):
 # ----------------------------------------------------------------------- #
 class ShadowSpectro1(object):
     """Spectrometer w 1 crystal analyser based on SHADOW3"""
-    def __init__(self, file_refl, dimensions=np.array([0., 0., 0., 0.]),\
-                 init_from_file=False, **kws):
+    def __init__(self, file_refl, oe_shape='rect', dimensions=np.array([0., 0., 0., 0.]),\
+                 cyl_ang=None, set_johansson=False, init_from_file=False, **kws):
         """mimic spectrometer with 1 crystal analyzer
 
         Parameters
@@ -743,11 +757,24 @@ class ShadowSpectro1(object):
         file_refl : str
                     reflectivity file
 
+        oe_shape : str, 'rectangular'
+                   'rectangular'
+                   'ellipse'
+                   'ellipse_with_hole'
+        
         dimensions : array of floats, np.array([0., 0., 0., 0.])
                      dimensions[0] : dimension y plus  [cm] 
                      dimensions[1] : dimension y minus [cm] 
                      dimensions[2] : dimension x plus  [cm] 
                      dimensions[3] : dimension x minus [cm] 
+
+        cyl_ang : float, None
+                  cylinder orientation [deg] CCW from X axis]
+                  0 -> cylindrical: meridional bending
+                  90. -> cylindrical: sagittal bending
+
+        set_johansson : boolean, False
+                        if True, sets Johansson crystal cut (Rm should be given)
         
         init_from_file : boolean flag to load settings from file
         
@@ -757,20 +784,36 @@ class ShadowSpectro1(object):
         """
         if (not HAS_SHADOW):
             raise ImportError('ShadowSpectro1 requires Shadow3, not found!')
-            
+        alpha = kws.get('alpha', None)
+        if alpha is not None:
+            raise NotImplementedError('miscut crystal not implemented yet!!!')
         if (file_refl is None) or (not os.path.isfile(file_refl)):
             raise NameError('file_refl not given or not existing')
-        
-        self.iwrite = kws.get('iwrite', 0) # write (1) or not (0) SHADOW
+        self.iwrite = kws.get('iwrite', 1) # write (1) or not (0) SHADOW
                                            # files start.xx end.xx star.xx
+        #INIT
         self.rc = RcHoriz(**kws)
         self.beam = ShadowLibExtensions.Beam()
         self.src = FluoSource() # ShadowLibExtensions.Source()
-        self.oe1 = SphericalCrystal() #ShadowLibExtensions.OE() # ShadowLib.OE()
+        self.oe1 = SphericalCrystal(cyl_ang=cyl_ang) #ShadowLibExtensions.OE() # ShadowLib.OE()
         #self.det = ShadowLibExtensions.OE()
-        print('init self.rc, .beam, .src, .oe1 and .det')
+        print('INFO: init self.rc, .beam, .src, .oe1 and .det')
         if init_from_file: self.init_from_file()
-        # self.run() # better not to run at init!
+        #CONFIGURE
+        self.set_rowland_radius(self.rc.Rm, isJohansson=set_johansson)
+        self.oe1.set_crystal(adjust_shadow_string(file_refl))
+        if oe_shape == 'ellipse':
+            fshape = 2
+        elif oe_shape == 'ellipse_with_hole':
+            fshape = 3
+        else:
+            fshape = 1
+        self.oe1.set_dimensions(fshape=fshape, params=dimensions)
+        #
+        try:
+            self.move_theta(deltaE=[2, 2])
+        except:
+            print('ERROR: CONFIGURE SRC/OE1 BEFORE RUN!')
 
     def init_from_file(self):
         """load shadow variables from file"""
@@ -799,11 +842,11 @@ class ShadowSpectro1(object):
             self.oe1.write("end.01")
             self.beam.write("star.01")
         #trace detector (not required yet)
-        #if self.iwrite: self.det.write("start.02")
-        #self.beam.traceOE(self.det, 2)
-        #if self.iwrite:
-        #    self.det.write("end.02")
-        #    self.beam.write("star.02")
+        # if self.iwrite: self.det.write("start.02")
+        # self.beam.traceOE(self.det, 2)
+        # if self.iwrite:
+        #     self.det.write("end.02")
+        #     self.beam.write("star.02")
 
     def runHisto1EneAndPyMcaFit(self, **kws):
         """generate energy histogram and fit with PyMca"""
@@ -991,7 +1034,7 @@ class ShadowSpectro1(object):
         _col2 = kws.get('col2', 3)
         _nbins = kws.get('nbins', 100)
         _nolost = kws.get('nolost', 1)
-        _title = kws.get('title', r'Image at $\theta$ = {0}'.format(self.theta))
+        _title = kws.get('title', r'Image at $\theta$ = {0}'.format(self.rc.theta0))
         _xtitle = kws.get('xtitle', 'x - sagittal (Hor. focusing) [cm]')
         _ytitle = kws.get('ytitle', 'z - meridional (E dispersion) [cm]')
         _xrange = kws.get('xrange', None)
@@ -1117,8 +1160,10 @@ class ShadowSpectro1(object):
         calfwhm = kws.get('calfwhm', 1)
         noplot = kws.get('noplot', 1)
         write = kws.get('write', 0)
+        # self.h1e = self.histo1(beam, col, nbins=nbins, nolost=nolost, ref=ref,
+        #                        calfwhm=calfwhm, noplot=noplot, write=write)
         self.h1e = self.histo1(beam, col, nbins=nbins, nolost=nolost, ref=ref,
-                               calfwhm=calfwhm, noplot=noplot, write=write)
+                               write=write)
 
     def specfileReadXY(self, fname=None, **kws):
         """read x/y from a specfile and set to self.x/self.y
@@ -1180,17 +1225,18 @@ class ShadowSpectro1(object):
         Parameters
         ----------
         Rm : float
-             meridional Rowland radius in cm
+             meridional Rowland circle radius in cm
+        
         isJohansson : boolean, False
                       flag to set Johansson geometry
         """
+        self.oe1.F_EXT = 1
         self.oe1.FMIRR = 1
-        self.oe1.RMIRR = Rm
         if isJohansson:
-            self.oe1.F_JOHANSSON = 1
-            self.oe1.R_JOHANSSON = Rm * 2.
+            self.oe1.set_johansson(Rm*2.)
         else:
             self.oe1.F_JOHANSSON = 0
+            self.oe1.set_radius(Rm*2.)
 
     def set_dspacing(self, d=None, hkl=None, latfunz=None, **kws):
         """set the crystal d-spacing [Ang]
@@ -1288,15 +1334,17 @@ class ShadowSpectro1(object):
         
         #self.run()
     
-    def move_theta(self, theta0, dth=[0.1, 0.1], deltaE=[None, None]):
+    def move_theta(self, theta0=None, dth=[0.1, 0.1], deltaE=[None, None]):
         """from a starting config, go to a given Bragg angle
 
         Parameters
         ----------
-        theta0 : float
+        theta0 : float, None
                  the Bragg angle where to move [deg]
+        
         dth : list of floats [0.1, 0.1]
               delta from theta0 in deg
+        
         deltaE : list of floats [None, None]
                  if None, deltaE is calculated using dth values
                  E_source = [E_Bragg-deltaE[0], E_Bragg+deltaE[1]] in eV
@@ -1305,69 +1353,79 @@ class ShadowSpectro1(object):
         -------
         None: set attributes to src and oe1
         """
-        if not self.rc.d:
-            print('Aborted: set the crystal d-spacing first')
-            return
-        elif not self.rc.Rm:
-            print('Aborted: set the Rowland circle radius first')
-            return
+        if (theta0 is None) and (not self.rc.theta0):
+            raise NameError('move_theta(): set theta0 first!')
         else:
-            self.rc.set_theta0(theta0)
-            d = self.rc.d
-            ene0 = self.rc.get_ene()
-            # adjust source energy to new theta0
-            self.oe1.PHOT_CENT = ene0
-            if (deltaE[0] is None):
-                self.src.PH1 = bu.bragg_ev(d, theta0+abs(dth[1]))
-            else:
-                self.src.PH1 = ene0 - abs(deltaE[0])    
-            if (deltaE[1] is None):
-                self.src.PH2 = bu.bragg_ev(d, theta0-abs(dth[0]))
-            else:
-                self.src.PH2 = ene0 + abs(deltaE[1])
-            # adjust source divergence to new theta0 (assumig flat)
-            _hlp = abs(self.oe1.RLEN1)  # half-length pos
-            _hln = abs(self.oe1.RLEN2)  # half-length neg
-            _hwp = abs(self.oe1.RWIDX1) # half-width pos
-            _hwn = abs(self.oe1.RWIDX2) # half-width neg
-            _rth0 = self.rc.rtheta0
-            _pcm = self.rc.p # cm
-            _vdiv_pos = math.atan( (_hlp * math.sin(_rth0)) / (_pcm + _hlp * math.cos(_rth0) ) )
-            _vdiv_neg = math.atan( (_hln * math.sin(_rth0)) / (_pcm - _hln * math.cos(_rth0) ) )
-            _hdiv_pos = math.atan( (_hwp / _pcm) )
-            _hdiv_neg = math.atan( (_hwn / _pcm) )
-            self.src.VDIV1 = _vdiv_pos * 1.1 # empirical!
-            self.src.VDIV2 = _vdiv_neg * 1.1 # empirical!
-            self.src.HDIV1 = _hdiv_pos * 1.1 # empirical!
-            self.src.HDIV2 = _hdiv_neg * 1.1 # empirical!
+            theta0 = self.rc.theta0
+        if not self.rc.d:
+            raise NameError('move_theta(): set crystal d-spacing first!')
+        if not self.rc.Rm:
+            raise NameError('move_theta(): set Rowland circle radius first')
 
-            # adjust analyser to new theta0
-            self.oe1.T_SOURCE = self.rc.p # cm
-            self.oe1.T_IMAGE = self.rc.q # cm
-            self.oe1.T_INCIDENCE = 90.0 - theta0
-            self.oe1.T_REFLECTION = 90.0 - theta0
-            # adjust detector ...
+        self.rc.set_theta0(theta0)
+        d = self.rc.d
+        ene0 = self.rc.get_ene()
+        # adjust source energy to new theta0
+        self.oe1.PHOT_CENT = ene0
+        if (deltaE[0] is None):
+            self.src.PH1 = bu.bragg_ev(d, theta0+abs(dth[1]))
+        else:
+            self.src.PH1 = ene0 - abs(deltaE[0])    
+        if (deltaE[1] is None):
+            self.src.PH2 = bu.bragg_ev(d, theta0-abs(dth[0]))
+        else:
+            self.src.PH2 = ene0 + abs(deltaE[1])
+            
+        # adjust source divergence to new theta0 (assumig flat)
+        _hlp = abs(self.oe1.RLEN1)  # half-length pos
+        _hln = abs(self.oe1.RLEN2)  # half-length neg
+        _hwp = abs(self.oe1.RWIDX1) # half-width pos
+        _hwn = abs(self.oe1.RWIDX2) # half-width neg
+        _rth0 = self.rc.rtheta0
+        _pcm = self.rc.p # cm
+        _vdiv_pos = math.atan( (_hlp * math.sin(_rth0)) / (_pcm + _hlp * math.cos(_rth0) ) )
+        _vdiv_neg = math.atan( (_hln * math.sin(_rth0)) / (_pcm - _hln * math.cos(_rth0) ) )
+        _hdiv_pos = math.atan( (_hwp / _pcm) )
+        _hdiv_neg = math.atan( (_hwn / _pcm) )
+        self.src.VDIV1 = _vdiv_pos * 1.1 # empirical!
+        self.src.VDIV2 = _vdiv_neg * 1.1 # empirical!
+        self.src.HDIV1 = _hdiv_pos * 1.1 # empirical!
+        self.src.HDIV2 = _hdiv_neg * 1.1 # empirical!
 
-            if self.rc.showInfos:
-                print(' --- theta movement infos --- ')
-                print('OE1: PHOT_CENT    = {0}'.format(self.oe1.PHOT_CENT   )) 
-                print('SRC: PH1          = {0}'.format(self.src.PH1         )) 
-                print('SRC: PH2          = {0}'.format(self.src.PH2         )) 
-                print('SRC: VDIV1        = {0}'.format(self.src.VDIV1       )) 
-                print('SRC: VDIV2        = {0}'.format(self.src.VDIV2       )) 
-                print('SRC: HDIV1        = {0}'.format(self.src.HDIV1       )) 
-                print('SRC: HDIV2        = {0}'.format(self.src.HDIV2       )) 
-                print('OE1: T_SOURCE     = {0}'.format(self.oe1.T_SOURCE    )) 
-                print('OE1: T_IMAGE      = {0}'.format(self.oe1.T_IMAGE     )) 
-                print('OE1: T_INCIDENCE  = {0}'.format(self.oe1.T_INCIDENCE )) 
-                print('OE1: T_REFLECTION = {0}'.format(self.oe1.T_REFLECTION)) 
-                
-            #self.run()
+        # adjust analyser to new theta0
+        self.oe1.set_frame_of_reference(self.rc.p, self.rc.q, 90.-theta0)
+
+        if self.rc.showInfos:
+            print(' --- theta movement infos --- ')
+            print('OE1: PHOT_CENT    = {0}'.format(self.oe1.PHOT_CENT   )) 
+            print('SRC: PH1          = {0}'.format(self.src.PH1         )) 
+            print('SRC: PH2          = {0}'.format(self.src.PH2         )) 
+            print('SRC: VDIV1        = {0}'.format(self.src.VDIV1       )) 
+            print('SRC: VDIV2        = {0}'.format(self.src.VDIV2       )) 
+            print('SRC: HDIV1        = {0}'.format(self.src.HDIV1       )) 
+            print('SRC: HDIV2        = {0}'.format(self.src.HDIV2       )) 
+            print('OE1: T_SOURCE     = {0}'.format(self.oe1.T_SOURCE    )) 
+            print('OE1: T_IMAGE      = {0}'.format(self.oe1.T_IMAGE     )) 
+            print('OE1: T_INCIDENCE  = {0}'.format(self.oe1.T_INCIDENCE )) 
+            print('OE1: T_REFLECTION = {0}'.format(self.oe1.T_REFLECTION)) 
 
 if __name__ == '__main__':
     dsi444 = bu.d_cubic(bu.SI_ALAT, (4,4,4))
-    file_refl = '../Si444.dat'
+    _curDir = os.path.dirname(os.path.realpath(__file__))
+    _parDir = os.path.realpath(os.path.join(_curDir, os.path.pardir))
+    file_refl = b'/media/sf_WinLinShare/WORK14/1-SpectroX/SHADOW3/spectro-1603/Si444.dat'
     circ_4in = np.array([5, 5, 5, 5])
-    t = ShadowSpectro1(file_refl, dimensions=circ_4in,\
+    t = ShadowSpectro1(file_refl, oe_shape='ellipse', dimensions=circ_4in,\
                        theta0=75., Rm=50., d=dsi444, useCm=True, showInfos=True)
+    #CONFIGURE SRC
+    # t.src.set_angle_distr(fdistr=5, cone_max=0.3)
+    # src_ene_hw = 2 # eV
+    # src_ene_min = t.rc.get_ene() - src_ene_hw
+    # src_ene_max = t.rc.get_ene() + src_ene_hw
+    # t.src.set_energy_distr(f_color=3, f_phot=0, phn=[src_ene_min, src_ene_max])
+    
+    #RUN
+    t.run(50000)
+    #import IPython
+    #IPython.embed(header='t => ShadowSpectro1')
     pass
