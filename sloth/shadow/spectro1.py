@@ -34,14 +34,16 @@ __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
 __year__ = "2014-2015"
 
-import sys, os
+import sys, os, platform
 import math
 import numpy as np
 # see README.rst how to install XOP and SHADOW3
+HAS_SHADOW = False
 try:
     from Shadow import ShadowLib
     from Shadow import ShadowLibExtensions
     from Shadow import ShadowTools
+    HAS_SHADOW = True
 except:
     print(sys.exc_info()[1])
     pass
@@ -50,7 +52,73 @@ from peakfit import fit_splitpvoigt, fit_results
 import bragg as bu
 from rowland import RcHoriz
 
-# SRC => TODO: merge with shadow_sources.py
+####################################################################
+# FOR WEIRD BUG ON LINUX - STRING NOT PROPERLY RETURNED BY BINDING
+####################################################################
+#https://github.com/lucarebuffi/ShadowOui/blob/master/orangecontrib/shadow/util/shadow_objects.py
+def adjust_shadow_string(string_to_adjust):
+    if string_to_adjust is None:
+        return None
+    else:
+        if len(string_to_adjust) > 1024:
+            temp = str(string_to_adjust[:1023])
+            if (len(temp) == 1026 and temp[0] == "b" and temp[1] == "'" and temp[1025] == "'"):
+                temp = temp[2:1025]
+
+            return bytes(temp.rstrip(), 'utf-8')
+        else:
+            return string_to_adjust
+
+def self_repair_src(cls):
+    if platform.system() == 'Linux':
+        distname, version, codename = platform.linux_distribution()
+        distname = distname.lower()
+        if distname == 'ubuntu' or distname == 'centos linux' or distname=='debian':
+            cls.FILE_SOURCE      = adjust_shadow_string(cls.FILE_SOURCE)
+            cls.FILE_BOUND       = adjust_shadow_string(cls.FILE_BOUND)
+            cls.FILE_TRAJ       = adjust_shadow_string(cls.FILE_TRAJ)
+            
+def self_repair_oe(cls):
+    if platform.system() == 'Linux':
+        distname, version, codename = platform.linux_distribution()
+        distname = distname.lower()
+        if distname == 'ubuntu' or distname == 'centos linux' or distname=='debian':
+            FILE_ABS = [adjust_shadow_string(cls.FILE_ABS[0]),
+                        adjust_shadow_string(cls.FILE_ABS[1]),
+                        adjust_shadow_string(cls.FILE_ABS[2]),
+                        adjust_shadow_string(cls.FILE_ABS[3]),
+                        adjust_shadow_string(cls.FILE_ABS[4]),
+                        adjust_shadow_string(cls.FILE_ABS[5]),
+                        adjust_shadow_string(cls.FILE_ABS[6]),
+                        adjust_shadow_string(cls.FILE_ABS[7]),
+                        adjust_shadow_string(cls.FILE_ABS[8]),
+                        adjust_shadow_string(cls.FILE_ABS[9])]
+            cls.FILE_ABS = np.array(FILE_ABS)
+            cls.FILE_FAC         = adjust_shadow_string(cls.FILE_FAC)
+            cls.FILE_KOMA        = adjust_shadow_string(cls.FILE_KOMA)
+            cls.FILE_KOMA_CA     = adjust_shadow_string(cls.FILE_KOMA_CA)
+            cls.FILE_MIR         = adjust_shadow_string(cls.FILE_MIR)
+            cls.FILE_REFL        = adjust_shadow_string(cls.FILE_REFL)
+            cls.FILE_R_IND_OBJ   = adjust_shadow_string(cls.FILE_R_IND_OBJ)
+            cls.FILE_R_IND_IMA   = adjust_shadow_string(cls.FILE_R_IND_IMA)
+            cls.FILE_RIP         = adjust_shadow_string(cls.FILE_RIP)
+            cls.FILE_ROUGH       = adjust_shadow_string(cls.FILE_ROUGH)
+            FILE_SCR_EXT = [adjust_shadow_string(cls.FILE_SCR_EXT[0]),
+                            adjust_shadow_string(cls.FILE_SCR_EXT[1]),
+                            adjust_shadow_string(cls.FILE_SCR_EXT[2]),
+                            adjust_shadow_string(cls.FILE_SCR_EXT[3]),
+                            adjust_shadow_string(cls.FILE_SCR_EXT[4]),
+                            adjust_shadow_string(cls.FILE_SCR_EXT[5]),
+                            adjust_shadow_string(cls.FILE_SCR_EXT[6]),
+                            adjust_shadow_string(cls.FILE_SCR_EXT[7]),
+                            adjust_shadow_string(cls.FILE_SCR_EXT[8]),
+                            adjust_shadow_string(cls.FILE_SCR_EXT[9])]
+            cls.FILE_SCR_EXT = np.array(FILE_SCR_EXT)
+            cls.FILE_SEGMENT     = adjust_shadow_string(cls.FILE_SEGMENT)
+            cls.FILE_SEGP        = adjust_shadow_string(cls.FILE_SEGP)
+            cls.FILE_SOURCE      = adjust_shadow_string(cls.FILE_SOURCE)
+
+# SRC => TODO: move to shadow/sources.py
 class FluoSource(ShadowLibExtensions.Source):
     """mimic a divergent fluorescence source
 
@@ -58,8 +126,10 @@ class FluoSource(ShadowLibExtensions.Source):
     distrubution with uniform energy distribution
     """
 
-    def __init__(self):
-        super(FluoSource, self).__init__(self)
+    def __init__(self, **kws):
+        super(FluoSource, self).__init__(**kws)
+        self_repair_src(self)
+        self.set_rays()
         self.set_sampling()
         self.set_spatial_type()
         self.set_angle_distr()
@@ -223,47 +293,440 @@ class FluoSource(ShadowLibExtensions.Source):
         self.POL_ANGLE = pol_angle
         self.POL_DEG = pol_deg
 
-# OE => TODO: merge with shadow_oes.py
-class CrystalFlat(ShadowLibExtensions.OE):
-    """flat crystal mirror"""
+# OE => TODO: move to shadow/optical_elements.py
+class SwOE(ShadowLibExtensions.OE):
 
     def __init__(self, **kws):
         """
+        Empty Shadow optical element (default unit length = 'cm')
+        
+        Keyword parameters
+        ------------------
+
+        """
+        super(SwOE, self).__init__(**kws)
+        self_repair_oe(self)
+        self.set_screens()
+        self.set_empty()
+        self.init_empty()
+        self.set_unit()
+        self.set_output_files()
+        self.set_parameters()
+        self.set_infinite()
+
+    def init_empty(self):
+        """template method pattern"""
+        self.FMIRR = 5
+        self.F_CRYSTAL = 0
+        self.F_REFRAC = 2
+        self.F_SCREEN = 0
+        self.N_SCREEN = 0
+        
+    def set_unit(self, length='cm'):
+        """set length unit (['cm'], 'mm' or 'm')"""
+        if length == 'cm':
+            self.DUMMY = 1.0
+        elif length == 'mm':
+            self.DUMMY = 0.1
+        elif length == 'm':
+            self.DUMMY = 0.0
+
+    def set_output_files(self, fwrite=1, f_angle=0):
+        """optional file output
+
         Parameters
         ----------
-        source_distance : float [10.0]
-                          source plane distance [cm]
-        image_distance : float [20.0]
-                         image plane distance [cm]
-        source_angle : float [10.0]
-                       incidence angle respect to normal [deg]
-        image_angle : float [10.0]
-                      reflection angle respect to normal [deg]
-        alpha : float [0.0]
-                mirror orientation angle [deg]
-                  
-        Returns
-        -------
-        None: set attributes
+
+        fwrite : int [1]
+                 files to write out
+                 0 -> all files
+                 1 -> mirror file  only -- mirr [REQUIRED FOR FOOTPRINT]
+                 2 -> image file only -- star
+                 3 -> none
+                 
+        f_angle : int [0]
+                  write out incident/reflected angles [angle.xx]
+                  0 -> no
+                  1 -> yes
         """
-        super(CrystalFlat, self).__init__(self)
-        self.setFrameOfReference(**kws)
-        self.setCrystal(**kws)
+        self.FWRITE = fwrite
+        self.F_ANGLE = f_angle 
 
-class JohannCylinder(CrystalFlat):
-    """crystal bent in meridional direction"""
+    def set_parameters(self, f_ext=0):
+        """set internal/calculated (0) parameters vs. external/user
+        defined parameters (1)
+        """
+        self.F_EXT = f_ext
 
+    def set_infinite(self):
+        """set infinite dimensions (fhit_c = 0)"""
+        self.FHIT_C = 0
+
+    def set_frame_of_reference(self, p, q, deg_inc, deg_refl=None,
+                               deg_mirr=0.):
+        """set frame of reference
+
+        Parameters
+        ----------
+        p, q : float
+               source, image plane distances [cm]
+
+        deg_inc : float
+                  angle of incidence wrt the normal [deg]
+
+        deg_refl : float [None]
+                   angle of reflection wrt the normal [deg]
+                   if None = deg_inc
+        
+        deg_mirr : float [0]
+                   mirror orientation [deg]
+        
+        """
+        if deg_refl is None: deg_refl = deg_inc
+        self.T_SOURCE     = p
+        self.T_IMAGE      = q
+        self.T_INCIDENCE  = deg_inc
+        self.T_REFLECTION = deg_refl
+        self.ALPHA        = deg_mirr
+ 
+    def set_dimensions(self, fshape=1, params=np.array([0., 0., 0., 0.])):
+        """set finite mirror dimensions (fhit_c = 1)
+
+        Parameters
+        ----------
+
+        fshape : int [1]
+                 1 : rectangular
+                 2 : full ellipse
+                 3 : ellipse with hole
+
+        params : array of floats, np.array([0., 0., 0., 0.])
+                 params[0] : dimension y plus  [cm] 
+                 params[1] : dimension y minus [cm] 
+                 params[2] : dimension x plus  [cm] 
+                 params[3] : dimension x minus [cm] 
+                 
+        """
+        self.FHIT_C = 1
+        self.FSHAPE = fshape
+        self.RLEN1  = params[0]
+        self.RLEN2  = params[1]
+        self.RWIDX1 = params[2]
+        self.RWIDX2 = params[3]
+
+class PlaneCrystal(SwOE):
+    """plane crystal"""
+    
     def __init__(self, **kws):
-        super(CrystalFlat, self).__init__(**kws)
-        self.setConcave()
-        self.setCylindric(cyl_ang=0.0)
+        super(PlaneCrystal, self).__init__(**kws)
+        self.init_plane_crystal()
+        self.set_reflectivity(f_reflec=0, f_refl=0)
 
-class JohanssonCylinder(JohannCylinder):
-    """crystal ground and bent in meridional direction"""
+    def init_plane_crystal(self):
+        """template method pattern"""
+        self.FMIRR=5
+        self.F_CRYSTAL = 1
+        self.FILE_REFL = bytes("", 'utf-8')
+        self.F_REFLECT = 0
+        self.F_BRAGG_A = 0
+        self.A_BRAGG = 0.0
 
-    def __init__(self, **kws):
-        super(JohannCylinder, self).__init__(**kws)
-        self.setJohansson(**kws)
+    def set_reflectivity(self, f_reflec=0, f_refl=0):
+        """set reflectivity of surface
+
+        Parameters
+        ----------
+
+        f_reflec : int [0]
+
+                   reflectivity of surface: no reflectivity dependence
+                   (0), full polarization dependence (1), no
+                   polarization dependence / scalar (2)
+
+        f_refl : int [0]
+
+                 for f_reflec=1,2 - source of optical constants: file
+                 generated by PREREFL (0), keyboard (1), multilayers
+                 (2).
+
+        """
+        self.F_REFLEC = f_reflec
+        self.F_REFL = f_refl
+
+    def set_crystal(self, file_refl, a_bragg=0.0, thickness=0.1,\
+                    tune_auto=0, tune_units=0, tune_ev=0.0, tune_ang=0.0):
+        """set crystal (f_crystal = 1)
+
+        Parameters
+        ----------
+        
+        file_refl : string
+                    file containing the crystal parameters
+                    for f_reflec=1,2 and f_refl=0: file with optical
+                    constants
+                    for f_reflec=1,2 and f_refl=2: file with
+                    thicknesses and refractive indices for
+                    multilayers
+
+        a_bragg : float [0.0]
+                  asymmetric angle between crystal planes and surface [deg]
+
+        thickness : float [0.1]
+                    crystal thickness (cm)
+        
+        tune_auto : int [0]
+                    flag: auto tune angle of grating or crystal
+                    -> yes (1), no (0)
+        
+        tune_units : int [0]
+                     flag: tune to eV (0) or Angstroms (1)
+        
+        tune_ev : float [0.]
+                  energy (eV) to autotune
+        
+        tune_ang : float [0.]
+                   wavelength to autotune
+
+        """
+        self.F_CRYSTAL = 1
+        self.FILE_REFL = bytes(file_refl, 'utf-8')
+
+
+        if a_bragg != 0.0: self.set_asymmetric_cut(a_bragg, thickness)
+
+        if tune_auto == 0:
+            self.F_CENTRAL = 0
+        else:
+            self.set_auto_tuning(f_phot_cent=tune_units,
+                                 phot_cent=tune_ev,
+                                 r_lambda=tune_ang)
+
+    def set_auto_tuning(self, f_phot_cent=0, phot_cent=0.0, r_lambda=0.0):
+        """set auto tuning of grating or crystal [f_central = 1]
+        
+        Parameters
+        ----------
+        
+        f_phot_cent : [0] flag, tune to eV (0) or Angstroms (1)
+
+        phot_cent : [0.0] photon energy (eV) to autotune grating/crystal to.
+
+        r_lambda : [0.0] Angstroms to autotune grating/crystal to.
+
+        """
+        self.F_CENTRAL = 1
+        self.F_PHOT_CENT = f_phot_cent
+        self.PHOT_CENT = phot_cent
+        self.R_LAMBDA = r_lambda
+
+    def set_mosaic(self, mosaic_seed=4732093, spread_mos=0.0, thickness=0.1):
+        """set mosaic crystal (f_mosaic = 1)
+
+        Parameters
+        ----------
+        
+        mosaic_seed : int [4732094]
+        
+                      random number seed for mosaic crystal calculations
+        
+        spread_mos : float [0.0]
+        
+                     mosaic spread FWHM (degrees)
+
+        thickness : float [0.1]
+
+                    crystal thickness (cm)
+
+        Notes
+        -----
+        mutually exclusive with asymmetric cut and Johansson
+        """
+        self.F_MOSAIC = 1
+        self.MOSAIC_SEED = mosaic_seed
+        self.SPREAD_MOS = spread_mos
+        self.THICKNESS = thickness
+
+        #MUTUALLY EXCLUSIVE!
+        self.F_BRAGG_A = 0
+        self.F_JOHANSSON = 0
+
+    def set_asymmetric_cut(self, a_bragg, thickness, order=-1.):
+        """set asymmetric cut (f_bragg_a = 1)
+
+        Parameters
+        ----------
+        a_bragg : float
+                  asymmetric angle between crystal planes and surface [deg]
+        
+        thickness : float
+                    thickness [cm]
+        
+        order : float [-1]
+                diffraction order, negative inside (European convention)
+                below (-1.) / onto (1.) Bragg planes
+
+
+        Notes
+        -----
+        mutually exclusive with mosaic
+        
+        """
+        self.F_BRAGG_A = 1
+        self.F_MOSAIC = 0
+
+        self.A_BRAGG = a_bragg
+        self.THICKNESS = thickness
+        self.ORDER = order
+        
+    def set_johansson(self, r_johansson):
+        """set Johansson geometry (f_johansson = 1)
+
+        Parameters
+        ----------
+
+        r_johansson : float
+                      Johansson radius (cm)
+
+        Notes
+        -----
+        mutually exclusive with mosaic
+        """
+        self.F_JOHANSSON = 1
+        self.F_EXT = 1
+        self.R_JOHANSSON = r_johansson
+        
+        #MUTUALLY EXCLUSIVE!
+        self.F_MOSAIC = 0
+
+class SphericalCrystal(PlaneCrystal):
+    """spherical (Johann) crystal"""
+    
+    def __init__(self, convex=False, cyl_ang=None, rmirr=None, **kws):
+        """if no keyword arguments given: init a spherical concave crystal
+
+        Parameters
+        ----------
+
+        convex : boolean, False
+                 is convex?
+        
+        cyl_ang : float, None
+                  cylinder orientation [deg] CCW from X axis]
+                  0 -> meridional bending
+                  90. -> sagittal bending
+        
+        rmirr : float, None
+                meridional radius
+
+        """
+        super(SphericalCrystal, self).__init__(**kws)
+        self.init_spherical_crystal()
+
+        # convex/concave
+        if convex:
+            f_convex = 1
+        else:
+            f_convex = 0
+        self.set_curvature(f_convex)
+        
+        # cylindrical
+        if cyl_ang is not None:
+            self.set_cylindrical(cyl_ang)
+            
+        # radius of curvature (internal or external)
+        if rmirr is None:
+            self.set_calculated_shape_params(self, **kws)
+        else:
+            self.set_radius(rmirr)
+
+    def init_spherical_crystal(self):
+        """template method pattern"""
+        self.FMIRR=1
+        self.F_CRYSTAL = 1
+        self.FILE_REFL = bytes("", 'utf-8')
+        self.F_REFLECT = 0
+        self.F_BRAGG_A = 0
+        self.A_BRAGG = 0.0
+        self.F_REFRAC = 0
+
+    def set_radius(self, rmirr):
+        """set radius of curvature (rmirr)
+
+        Parameters
+        ----------
+
+        rmirr : float
+                radius of curvature (cm)
+
+        """
+        self.F_EXT = 1
+        self.RMIRR = rmirr
+
+    def set_curvature(self, f_convex=0):
+        """set curvature (concave is default)"""
+        self.F_CONVEX = f_convex
+
+    def set_cylindrical(self, cyl_ang):
+        """set cylindrical (fcyl = 1)
+        
+        cyl_ang : float
+                  cylinder orientation [deg] CCW from X axis
+                  0 -> meridional curvature
+                  90. -> sagittal curvature
+        """
+        self.FCYL = 1
+        self.CIL_ANG = cyl_ang
+
+    def set_auto_focus(self, f_default=0, ssour=0.0, simag=0.0, theta=0.0):
+        """set auto focus
+
+        Parameters
+        ----------
+
+        f_default : int, 0
+                    focii coincident with continuation plane - yes
+                    (1), no (0)
+
+         ssour : float, 0.0
+                 for f_default=0: distance from object focus to the
+                 mirror pole
+        
+         simag : float, 0.0
+                 for f_default=0: distance from mirror pole to image
+                 focus
+        
+        theta : float, 0.0
+                for f_default=0: incidence angle (degrees)
+
+        """
+        self.set_parameters(f_ext=0)
+        if f_default == 0:
+            self.SSOUR = ssour
+            self.SIMAG = simag
+            self.THETA = theta
+
+    def set_calculated_shape_params(self, coincident=True, p_cm=0.,
+                                    q_cm=0., inc_deg=0.):
+        """internally calculated shape parameters"""
+        if self.FCYL and self.CYL_ANG == 90.0:
+            # sagittal curvature
+            self.F_EXT=1
+
+            # RADIUS = (2 F1 F2 sin (theta)) / (F1+F2)
+            if coincident:
+                p_cm = self.T_SOURCE
+                q_cm = self.T_IMAGE
+                inc_deg =  self.T_REFLECTION
+
+            self.RMIRR = ( (2 * p_cm * q_cm) / (p_cm + q_cm) ) * math.sin(math.radians(90-inc_deg))
+        else:
+            self.F_EXT=0
+            if coincident:
+                self.set_auto_focus(f_default=1)
+            else:
+                self.set_auto_focus(f_default=0, ssour=p_cm,
+                                    simag=q_cm, theta=inc_deg)
+
 
 # ----------------------------------------------------------------------- #
 # ShadowSpectro1: Spectrometer w 1 crystal analyser based on SHADOW3 only #
@@ -271,7 +734,7 @@ class JohanssonCylinder(JohannCylinder):
 class ShadowSpectro1(object):
     """Spectrometer w 1 crystal analyser based on SHADOW3"""
     def __init__(self, file_refl, dimensions=np.array([0., 0., 0., 0.]),\
-                 nrays=10000, seed=6775431, **kws):
+                 init_from_file=False, **kws):
         """mimic spectrometer with 1 crystal analyzer
 
         Parameters
@@ -286,40 +749,61 @@ class ShadowSpectro1(object):
                      dimensions[2] : dimension x plus  [cm] 
                      dimensions[3] : dimension x minus [cm] 
         
-        nrays : int, 10000
-                number of rays
-
-        seed : int, 6775431
-               seed for random number generator
-
+        init_from_file : boolean flag to load settings from file
+        
+        
         **kws : see RcHoriz
         
         """
+        if (not HAS_SHADOW):
+            raise ImportError('ShadowSpectro1 requires Shadow3, not found!')
+            
+        if (file_refl is None) or (not os.path.isfile(file_refl)):
+            raise NameError('file_refl not given or not existing')
+        
         self.iwrite = kws.get('iwrite', 0) # write (1) or not (0) SHADOW
                                            # files start.xx end.xx star.xx
         self.rc = RcHoriz(**kws)
         self.beam = ShadowLibExtensions.Beam()
         self.src = FluoSource() # ShadowLibExtensions.Source()
-        #self.src.load('start.00')   
-        self.oe1 = ShadowLibExtensions.OE() # ShadowLib.OE()
-        #self.oe1.load('start.01')
-        self.det = ShadowLibExtensions.OE()
-        #self.det.load('start.02')
-        self.src.set_rays(nrays, seed=seed)
+        self.oe1 = SphericalCrystal() #ShadowLibExtensions.OE() # ShadowLib.OE()
+        #self.det = ShadowLibExtensions.OE()
         print('init self.rc, .beam, .src, .oe1 and .det')
+        if init_from_file: self.init_from_file()
         # self.run() # better not to run at init!
 
-    def run(self, nrays=None):
+    def init_from_file(self):
+        """load shadow variables from file"""
+        self.src.load('start.00')   
+        self.oe1.load('start.01')
+        #self.det.load('start.02')
+        print('NOTE: variables loaded from start.00/start.01 files')
+        
+    def run(self, nrays=None, seed=None):
         """run SHADOW/source and SHADOW/trace"""
-        if nrays is not None: self.src.set_rays(nrays)
+        #reset nrays/seed if given
+        if (nrays is not None) and (seed is not None): self.src.set_rays(nrays=nrays, seed=seed)
+        if (nrays is not None): self.src.set_rays(nrays)
+        #generate source
+        if self.iwrite: self.src.write("start.00")
+        self_repair_src(self.src)
         self.beam.genSource(self.src)
-        self.beam.write('begin.dat')
-        self.oe1.write('start.01')
+        if self.iwrite:
+            self.src.write("end.00")
+            self.beam.write("begin.dat")
+        #trace oe1
+        if self.iwrite: self.oe1.write("start.01")
+        self_repair_oe(self.oe1)
         self.beam.traceOE(self.oe1, 1)
-        self.oe1.write('end.01')
-        self.det.write('start.02')
-        self.beam.traceOE(self.det, 2)
-        self.det.write('end.02')
+        if self.iwrite:
+            self.oe1.write("end.01")
+            self.beam.write("star.01")
+        #trace detector (not required yet)
+        #if self.iwrite: self.det.write("start.02")
+        #self.beam.traceOE(self.det, 2)
+        #if self.iwrite:
+        #    self.det.write("end.02")
+        #    self.beam.write("star.02")
 
     def runHisto1EneAndPyMcaFit(self, **kws):
         """generate energy histogram and fit with PyMca"""
@@ -882,5 +1366,8 @@ class ShadowSpectro1(object):
 
 if __name__ == '__main__':
     dsi444 = bu.d_cubic(bu.SI_ALAT, (4,4,4))
-    t = ShadowSpectro1(theta0=75., Rm=50., d=dsi444, useCm=True, showInfos=True)
+    file_refl = '../Si444.dat'
+    circ_4in = np.array([5, 5, 5, 5])
+    t = ShadowSpectro1(file_refl, dimensions=circ_4in,\
+                       theta0=75., Rm=50., d=dsi444, useCm=True, showInfos=True)
     pass
