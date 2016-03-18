@@ -1362,10 +1362,11 @@ class ShadowSpectro1(object):
         -------
         None: set attributes to src and oe1
         """
-        if (theta0 is None) and (not self.rc.theta0):
-            raise NameError('move_theta(): set theta0 first!')
-        else:
-            theta0 = self.rc.theta0
+        if (theta0 is None):
+            if (not self.rc.theta0):
+                raise NameError('move_theta(): set theta0 first!')
+            else:
+                theta0 = self.rc.theta0
         if not self.rc.d:
             raise NameError('move_theta(): set crystal d-spacing first!')
         if not self.rc.Rm:
@@ -1423,8 +1424,7 @@ class ShadowSpectro1(object):
             print('OE1: T_REFLECTION = {0}'.format(self.oe1.T_REFLECTION)) 
 
 if __name__ == '__main__':
-    dsi444 = bu.d_cubic(bu.SI_ALAT, (4,4,4))
-    dsi333 = bu.d_cubic(bu.SI_ALAT, (3,3,3))
+    dsi111 = bu.d_cubic(bu.SI_ALAT, (1,1,1))
     _curDir = os.path.dirname(os.path.realpath(__file__))
     _parDir = os.path.realpath(os.path.join(_curDir, os.path.pardir))
     refl444 = b'/media/sf_WinLinShare/WORK14/1-SpectroX/SHADOW3/spectro-1603/Si444.dat'
@@ -1432,9 +1432,10 @@ if __name__ == '__main__':
     circ_4in = np.array([5, 5, 5, 5])
     rect_texs = np.array([1.25, 1.25, 4., 4.])
     rect_tsts = np.array([0.25, 0.25, 4., 4.])
-    #t = ShadowSpectro1(refl444, oe_shape='ellipse', dimensions=circ_4in, theta0=75., Rm=50., d=dsi444, useCm=True, showInfos=True)
-    #t = ShadowSpectro1(refl333, oe_shape='rectangle', dimensions=rect_tsts, theta0=65., Rm=50., d=dsi333, useCm=True, showInfos=True)
-    t = ShadowSpectro1(refl444, oe_shape='rectangle', dimensions=rect_texs, theta0=75., Rm=50., d=dsi444, useCm=True, showInfos=True)
+    #t = ShadowSpectro1(refl444, oe_shape='ellipse', dimensions=circ_4in, theta0=75., Rm=50., d=dsi111/4., useCm=True, showInfos=True)
+    #t = ShadowSpectro1(refl333, oe_shape='rectangle', dimensions=rect_tsts, theta0=65., Rm=50., d=dsi111/3., useCm=True, showInfos=True)
+    #t = ShadowSpectro1(refl444, oe_shape='rectangle', dimensions=rect_texs, theta0=75., Rm=50., d=dsi111/4., useCm=True, showInfos=True)
+    t = ShadowSpectro1(refl444, oe_shape='rectangle', dimensions=rect_tsts, theta0=35., Rm=50., d=dsi111, useCm=True, showInfos=True)
     #CONFIGURE SRC
     # t.src.set_angle_distr(fdistr=5, cone_max=0.3)
     # src_ene_hw = 2 # eV
@@ -1443,9 +1444,7 @@ if __name__ == '__main__':
     # t.src.set_energy_distr(f_color=3, f_phot=0, phn=[src_ene_min, src_ene_max])
     
     #RUN
-    t.run(100)
-    t = ShadowSpectro1(refl444, oe_shape='rectangle', dimensions=rect_texs, theta0=75., Rm=50., d=dsi444, useCm=True, showInfos=True)
-    t.run(100)
+    #t.run(10000)
     #import IPython
     #IPython.embed(header='t => ShadowSpectro1')
     pass
