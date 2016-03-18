@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""shadow3_spectro1: an utility toolbox to raytrace a
+"""shadow_spectro1: an utility toolbox to raytrace a
 wavelength-dispersive spectrometer with SHADOW3_ from Python
 
 .. note:: this is only an idea (e.g. example) on how to automatize
@@ -13,10 +13,11 @@ wavelength-dispersive spectrometer with SHADOW3_ from Python
           but the correct way to extend SHADOW3_ functionality is to
           inherit from ShadowLibExtensions!!! Please, do not inherit
           from this object. It will be soon deprecated. See also the
-          current develpment of OASYS1_, Orange-Shadow_ or
-          Orange-XOPPY_.
+          current develpment of related projects as ShadowOui_,
+          OASYS1_, Orange-Shadow_ or Orange-XOPPY_.
 
 .. _SHADOW3: http://forge.epn-campus.eu/projects/shadow3
+.. _ShadowOui: https://github.com/lucarebuffi/ShadowOui
 .. _OASYS1: https://github.com/lucarebuffi/OASYS1
 .. _Orange-Shadow: https://github.com/lucarebuffi/Orange-Shadow
 .. _Orange-XOPPY: https://github.com/srio/Orange-XOPPY
@@ -32,7 +33,7 @@ __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2014-2015"
+__year__ = "2014-2016"
 
 import sys, os, platform
 import math
@@ -40,7 +41,6 @@ import numpy as np
 # see README.rst how to install XOP and SHADOW3
 HAS_SHADOW = False
 try:
-    import Shadow
     from Shadow import ShadowLib
     from Shadow import ShadowLibExtensions
     from Shadow import ShadowTools
@@ -120,7 +120,9 @@ def self_repair_oe(cls):
             cls.FILE_SEGP        = adjust_shadow_string(cls.FILE_SEGP)
             cls.FILE_SOURCE      = adjust_shadow_string(cls.FILE_SOURCE)
 
-# SRC => TODO: move to shadow/sources.py
+##################################################
+### SOURCES => TODO: move to shadow_sources.py ###
+##################################################
 class FluoSource(ShadowLibExtensions.Source):
     """mimic a divergent fluorescence source
 
@@ -307,8 +309,10 @@ class FluoSource(ShadowLibExtensions.Source):
         self.POL_ANGLE = pol_angle
         self.POL_DEG = pol_deg
 
-# OE => TODO: move to shadow/optical_elements.py
-class SwOE(ShadowLibExtensions.OE):
+####################################################################
+### OPTICAL ELEMENTS => TODO: move to shadow_optical_elements.py ###
+####################################################################
+class ShadowOE(ShadowLibExtensions.OE):
 
     def __init__(self, **kws):
         """
@@ -318,7 +322,7 @@ class SwOE(ShadowLibExtensions.OE):
         ------------------
 
         """
-        super(SwOE, self).__init__(**kws)
+        super(ShadowOE, self).__init__(**kws)
         self_repair_oe(self)
         # self.set_screens()
         # self.set_empty()
@@ -428,7 +432,7 @@ class SwOE(ShadowLibExtensions.OE):
         self.RWIDX1 = params[2]
         self.RWIDX2 = params[3]
 
-class PlaneCrystal(SwOE):
+class PlaneCrystal(ShadowOE):
     """plane crystal"""
     
     def __init__(self, **kws):
@@ -741,122 +745,129 @@ class SphericalCrystal(PlaneCrystal):
                 self.set_auto_focus(f_default=0, ssour=p_cm,
                                     simag=q_cm, theta=inc_deg)
 
+##################################################
+### PLOTTER => TODO: move to shadow_plotter.py ###
+##################################################
+class ShadowPlotter(object):
+    """ShadowPlotter: plotxy and histo1"""
+    def __init__(self):
+        pass
 
-# ----------------------------------------------------------------------- #
-# ShadowSpectro1: Spectrometer w 1 crystal analyser based on SHADOW3 only #
-# ----------------------------------------------------------------------- #
-class ShadowSpectro1(object):
-    """Spectrometer w 1 crystal analyser based on SHADOW3"""
-    def __init__(self, file_refl, oe_shape='rect', dimensions=np.array([0., 0., 0., 0.]),\
-                 cyl_ang=None, set_johansson=False, init_from_file=False, **kws):
-        """mimic spectrometer with 1 crystal analyzer
+    def histo1(self, *args, **kws):
+        """wrapper to ShadowTools.histo1_old
+        
+        Plot the histogram of a column, simply counting the rays, or
+        weighting with the intensity.  It returns a
+        ShadowTools.Histo1_Ticket which contains the histogram data,
+        and the figure.
 
         Parameters
         ----------
+        beam : str
+               instance with the name of the Shadow binary file to be loaded,
+               or a Shadow.Beam() instance.
+        col : int
+              1   X spatial coordinate [user's unit]
+              2   Y spatial coordinate [user's unit]
+              3   Z spatial coordinate [user's unit]
+              4   X' direction or divergence [rads]
+              5   Y' direction or divergence [rads]
+              6   Z' direction or divergence [rads]
+              7   X component of the electromagnetic vector (s-polariz)
+              8   Y component of the electromagnetic vector (s-polariz)
+              9   Z component of the electromagnetic vector (s-polariz)
+              10   Lost ray flag
+              11   Energy [eV]
+              12   Ray index
+              13   Optical path length
+              14   Phase (s-polarization)
+              15   Phase (p-polarization)
+              16   X component of the electromagnetic vector (p-polariz)
+              17   Y component of the electromagnetic vector (p-polariz)
+              18   Z component of the electromagnetic vector (p-polariz)
+              19   Wavelength [A]
+              20   R= SQRT(X^2+Y^2+Z^2)
+              21   angle from Y axis
+              22   the magnituse of the Electromagnetic vector
+              23   |E|^2 (total intensity)
+              24   total intensity for s-polarization
+              25   total intensity for p-polarization
+              26   K = 2 pi / lambda [A^-1]
+              27   K = 2 pi / lambda * col4 [A^-1]
+              28   K = 2 pi / lambda * col5 [A^-1]
+              29   K = 2 pi / lambda * col6 [A^-1]
+              30   S0-stokes = |Es|^2 + |Ep|^2
+              31   S1-stokes = |Es|^2 - |Ep|^2
+              32   S2-stokes = 2 |Es| |Ep| cos(phase_s-phase_p)
+              33   S3-stokes = 2 |Es| |Ep| sin(phase_s-phase_p)
+        xrange/yrange : tuple or list of 2 float [None]
+                        interval of interest for x/y, the data read
+                        from the chosen column.
+        nbins : int, [50]
+                number of bins of the histogram.
+        nolost : int [0]
+                 0 All rays
+                 1 Only good rays
+                 2 Only lost rays
+        ref : int, [0]
+              0 only count the rays (weight==1)
+              1 weight with intensity (use col 23 |E|^2 total intensity)
+              # if another col is given, it is then used for weight 
+        write : int [0]
+                0   don't write any file
+                1   write the histogram into the file 'HISTO1'.
+        title : str, ['HISTO1']
+                title of the figure, it will appear on top of the window.
+        xtitle/ytitle : str, [None]
+                        label for the x axis.
+        calfwhm : int [0]
+                  0   don't compute the fwhm
+                  1   compute the fwhm
+        noplot : int [0]
+           0   plot the histogram
+           1   don't plot the histogram
+        orientation : str
+                      'vertical'   x axis for data, y for intensity
+                      'horizontal'   y axis for data, x for intensity
+        plotxy : int, [0]
+                 0   standalone version
+                 1   to use within plotxy
 
-        file_refl : str
-                    reflectivity file
+        Returns
+        -------
+        ShadowTools.Histo1_Ticket instance.
+     
+        Raises
+        ------
+        ArgsError
 
-        oe_shape : str, 'rectangular'
-                   'rectangular'
-                   'ellipse'
-                   'ellipse_with_hole'
-        
-        dimensions : array of floats, np.array([0., 0., 0., 0.])
-                     dimensions[0] : dimension y plus  [cm] 
-                     dimensions[1] : dimension y minus [cm] 
-                     dimensions[2] : dimension x plus  [cm] 
-                     dimensions[3] : dimension x minus [cm] 
-
-        cyl_ang : float, None
-                  cylinder orientation [deg] CCW from X axis]
-                  0 -> cylindrical: meridional bending
-                  90. -> cylindrical: sagittal bending
-
-        set_johansson : boolean, False
-                        if True, sets Johansson crystal cut (Rm should be given)
-        
-        init_from_file : boolean flag to load settings from file
-        
-        
-        **kws : see RcHoriz
-        
         """
-        if (not HAS_SHADOW):
-            raise ImportError('ShadowSpectro1 requires Shadow3, not found!')
-        alpha = kws.get('alpha', None)
-        if alpha is not None:
-            raise NotImplementedError('miscut crystal not implemented yet!!!')
-        if (file_refl is None) or (not os.path.isfile(file_refl)):
-            raise NameError('file_refl not given or not existing')
-        self.iwrite = kws.get('iwrite', 1) # write (1) or not (0) SHADOW
-                                           # files start.xx end.xx star.xx
-        #INIT
-        self.rc = RcHoriz(**kws)
-        self.beam = ShadowLibExtensions.Beam()
-        self.src = FluoSource() # ShadowLibExtensions.Source()
-        self.oe1 = SphericalCrystal(cyl_ang=cyl_ang) #ShadowLibExtensions.OE() # ShadowLib.OE()
-        #self.det = ShadowLibExtensions.OE()
-        print('INFO: init self.rc, .beam, .src, .oe1 and .det')
-        if init_from_file: self.init_from_file()
-        #CONFIGURE
-        self.set_rowland_radius(self.rc.Rm, isJohansson=set_johansson)
-        self.oe1.set_crystal(adjust_shadow_string(file_refl))
-        if oe_shape == 'ellipse':
-            fshape = 2
-        elif oe_shape == 'ellipse_with_hole':
-            fshape = 3
-        else:
-            fshape = 1
-        self.oe1.set_dimensions(fshape=fshape, params=dimensions)
-        #
-        try:
-            self.move_theta(deltaE=[2, 2])
-        except:
-            print('ERROR: CONFIGURE SRC/OE1 BEFORE RUN!')
+        return ShadowTools.histo1_old(*args, **kws)
 
-    def init_from_file(self):
-        """load shadow variables from file"""
-        self.src.load('start.00')   
-        self.oe1.load('start.01')
-        #self.det.load('start.02')
-        print('NOTE: variables loaded from start.00/start.01 files')
+    def histo1_energy(self, *args, **kws):
+        """energy histogram
+
+        Parameters
+        ----------
+        See self.histo1
         
-    def run(self, nrays=None, seed=None):
-        """run SHADOW/source and SHADOW/trace"""
-        #reset nrays/seed if given
-        if (nrays is not None) and (seed is not None): self.src.set_rays(nrays=nrays, seed=seed)
-        if (nrays is not None): self.src.set_rays(nrays)
-        #generate source
-        if self.iwrite: self.src.write("start.00")
-        self_repair_src(self.src)
-        self.beam.genSource(self.src)
-        if self.iwrite:
-            self.src.write("end.00")
-            self.beam.write("begin.dat")
-        #trace oe1
-        if self.iwrite: self.oe1.write("start.01")
-        self_repair_oe(self.oe1)
-        self.beam.traceOE(self.oe1, 1)
-        if self.iwrite:
-            self.oe1.write("end.01")
-            self.beam.write("star.01")
-        #trace detector (not required yet)
-        # if self.iwrite: self.det.write("start.02")
-        # self.beam.traceOE(self.det, 2)
-        # if self.iwrite:
-        #     self.det.write("end.02")
-        #     self.beam.write("star.02")
-
-    def runHisto1EneAndPyMcaFit(self, **kws):
-        """generate energy histogram and fit with PyMca"""
-        self.histo1_energy(**kws)
-        self.x = self.h1e.bin_center
-        self.y = self.h1e.histogram
-        self.fitSplitPVoigt(**kws)
+        Returns
+        -------
+        None: sets self.h1e
+        """
+        beam = args[0]
+        col = 11
+        nbins = kws.get('nbins', 500)
+        nolost = kws.get('nolost', 1)
+        ref = kws.get('ref', 1)
+        calfwhm = kws.get('calfwhm', 1)
+        noplot = kws.get('noplot', 1)
+        write = kws.get('write', 0)
+        return self.histo1(beam, col, nbins=nbins, nolost=nolost, ref=ref,\
+                           calfwhm=calfwhm, noplot=noplot, write=write)
 
     def plotxy(self, *args, **kws):
-        """wrapper to ShadowTools.plotxy
+        """wrapper to ShadowTools.plotxy_old
 
         Draw the scatter or contour or pixel-like plot of two columns
         of a Shadow.Beam instance or of a given shadow file, along
@@ -954,8 +965,8 @@ class ShadowSpectro1(object):
         """
         return ShadowTools.plotxy_old(*args, **kws)
 
-    def plotxy_footprint(self, **kws):
-        """source foot print on optical element
+    def plotxy_footprint(self, *args, **kws):
+        """foot print on optical element
 
         Parameters
         ----------
@@ -963,29 +974,29 @@ class ShadowSpectro1(object):
 
         Returns
         -------
-        None, sets self.fp
+        ShadowTools.Histo1_Ticket instance
         """
-        _beam = kws.get('beam', 'mirr.01')
-        _col1 = kws.get('col1', 2)
-        _col2 = kws.get('col2', 1)
+        _beam = args[0]
+        _col1 = 2
+        _col2 = 1
         _nbins = kws.get('nbins', 100)
         _nolost = kws.get('nolost', 2)
-        _title = kws.get('title', r'Footprint at $\theta$ = {0}'.format(self.rc.theta0))
+        _title = kws.get('title', r'Footprint')
         _xtitle = kws.get('ytitle', r'mirror meridional direction [cm]')
         _ytitle = kws.get('xtitle', r'mirror sagittal direction [cm]')
         _xr, _yr = 1.1, 1.1 # expand x,y ranges
-        _xrange = kws.get('xrange', (self.oe1.RLEN2*_yr, self.oe1.RLEN1*_yr))
-        _yrange = kws.get('yrange', (self.oe1.RWIDX2*_xr, self.oe1.RWIDX1*_xr))
+        _xrange = kws.get('xrange', None)
+        _yrange = kws.get('yrange', None)
         _calfwhm = kws.get('calfwhm', 1)
         _level = kws.get('level', 15)
         _noplot = kws.get('noplot', 0)
         _contour = kws.get('contour', 5)
-        self.fp = self.plotxy(_beam, _col1, _col2, nbins=_nbins, nolost=_nolost,
-                              title=_title, xtitle=_xtitle, ytitle=_ytitle,
-                              xrange=_xrange, yrange=_yrange,
-                              calfwhm=_calfwhm, noplot=_noplot,
-                              contour=_contour, level=_level)
-
+        return self.plotxy(_beam, _col1, _col2, nbins=_nbins, nolost=_nolost,\
+                           title=_title, xtitle=_xtitle, ytitle=_ytitle,\
+                           xrange=_xrange, yrange=_yrange,\
+                           calfwhm=_calfwhm, noplot=_noplot,\
+                           contour=_contour, level=_level)
+        
     def plotxy_detector(self, **kws):
         """oe1 foot print on detector
 
@@ -1016,9 +1027,8 @@ class ShadowSpectro1(object):
                                   xrange=_xrange, yrange=_yrange,
                                   calfwhm=_calfwhm, noplot=_noplot,
                                   contour=_contour, level=_level)
-
         
-    def plotxy_image(self, **kws):
+    def plotxy_image(self, *args, **kws):
         """image of an optical element
 
         Parameters
@@ -1027,14 +1037,14 @@ class ShadowSpectro1(object):
 
         Returns
         -------
-        None, sets self.ip
+        ShadowTools.Histo1_Ticket instance
         """
-        _beam = kws.get('beam', 'star.01')
-        _col1 = kws.get('col1', 1)
-        _col2 = kws.get('col2', 3)
+        _beam = args[0]
+        _col1 = 1
+        _col2 = 3
         _nbins = kws.get('nbins', 100)
         _nolost = kws.get('nolost', 1)
-        _title = kws.get('title', r'Image at $\theta$ = {0}'.format(self.rc.theta0))
+        _title = kws.get('title', r'Image')
         _xtitle = kws.get('xtitle', 'x - sagittal (Hor. focusing) [cm]')
         _ytitle = kws.get('ytitle', 'z - meridional (E dispersion) [cm]')
         _xrange = kws.get('xrange', None)
@@ -1043,127 +1053,11 @@ class ShadowSpectro1(object):
         _level = kws.get('level', 15)
         _noplot = kws.get('noplot', 0)
         _contour = kws.get('contour', 6)
-        self.ip = self.plotxy(_beam, _col1, _col2, nbins=_nbins, nolost=_nolost,
-                              title=_title, xtitle=_xtitle, ytitle=_ytitle,
-                              xrange=_xrange, yrange=_yrange,
-                              calfwhm=_calfwhm, noplot=_noplot,
-                              contour=_contour, level=_level)
-
-
-    def histo1(self, *args, **kws):
-        """wrapper to ShadowTools.histo1
-        
-        Plot the histogram of a column, simply counting the rays, or
-        weighting with the intensity.  It returns a
-        ShadowTools.Histo1_Ticket which contains the histogram data,
-        and the figure.
-
-        Parameters
-        ----------
-        beam : str
-               instance with the name of the shadow file to be loaded,
-               or a ShadowLib.Beam initialized instance.
-        col : int
-              1   X spatial coordinate [user's unit]
-              2   Y spatial coordinate [user's unit]
-              3   Z spatial coordinate [user's unit]
-              4   X' direction or divergence [rads]
-              5   Y' direction or divergence [rads]
-              6   Z' direction or divergence [rads]
-              7   X component of the electromagnetic vector (s-polariz)
-              8   Y component of the electromagnetic vector (s-polariz)
-              9   Z component of the electromagnetic vector (s-polariz)
-              10   Lost ray flag
-              11   Energy [eV]
-              12   Ray index
-              13   Optical path length
-              14   Phase (s-polarization)
-              15   Phase (p-polarization)
-              16   X component of the electromagnetic vector (p-polariz)
-              17   Y component of the electromagnetic vector (p-polariz)
-              18   Z component of the electromagnetic vector (p-polariz)
-              19   Wavelength [A]
-              20   R= SQRT(X^2+Y^2+Z^2)
-              21   angle from Y axis
-              22   the magnituse of the Electromagnetic vector
-              23   |E|^2 (total intensity)
-              24   total intensity for s-polarization
-              25   total intensity for p-polarization
-              26   K = 2 pi / lambda [A^-1]
-              27   K = 2 pi / lambda * col4 [A^-1]
-              28   K = 2 pi / lambda * col5 [A^-1]
-              29   K = 2 pi / lambda * col6 [A^-1]
-              30   S0-stokes = |Es|^2 + |Ep|^2
-              31   S1-stokes = |Es|^2 - |Ep|^2
-              32   S2-stokes = 2 |Es| |Ep| cos(phase_s-phase_p)
-              33   S3-stokes = 2 |Es| |Ep| sin(phase_s-phase_p)
-        xrange/yrange : tuple or list of 2 float [None]
-                        interval of interest for x/y, the data read
-                        from the chosen column.
-        nbins : int, [50]
-                number of bins of the histogram.
-        nolost : int [0]
-                 0 All rays
-                 1 Only good rays
-                 2 Only lost rays
-        ref : int, [0]
-              0 only count the rays (weight==1)
-              1 weight with intensity (use col 23 |E|^2 total intensity)
-              # if another col is given, it is then used for weight 
-        write : int [0]
-                0   don't write any file
-                1   write the histogram into the file 'HISTO1'.
-        title : str, ['HISTO1']
-                title of the figure, it will appear on top of the window.
-        xtitle/ytitle : str, [None]
-                        label for the x axis.
-        calfwhm : int [0]
-                  0   don't compute the fwhm
-                  1   compute the fwhm
-        noplot : int [0]
-           0   plot the histogram
-           1   don't plot the histogram
-        orientation : str
-                      'vertical'   x axis for data, y for intensity
-                      'horizontal'   y axis for data, x for intensity
-        plotxy : int, [0]
-                 0   standalone version
-                 1   to use within plotxy
-
-        Returns
-        -------
-        ShadowTools.Histo1_Ticket instance.
-     
-        Raises
-        ------
-        ArgsError
-
-        """
-        return ShadowTools.histo1_old(*args, **kws)
-
-    def histo1_energy(self, **kws):
-        """energy histogram
-
-        Parameters
-        ----------
-        See self.histo1
-        
-        Returns
-        -------
-        None: sets self.h1e
-        """
-        beam = kws.get('beam', 'star.01')
-        col = kws.get('col', 11)
-        nbins = kws.get('nbins', 500)
-        nolost = kws.get('nolost', 1)
-        ref = kws.get('ref', 1)
-        calfwhm = kws.get('calfwhm', 1)
-        noplot = kws.get('noplot', 1)
-        write = kws.get('write', 0)
-        # self.h1e = self.histo1(beam, col, nbins=nbins, nolost=nolost, ref=ref,
-        #                        calfwhm=calfwhm, noplot=noplot, write=write)
-        self.h1e = self.histo1(beam, col, nbins=nbins, nolost=nolost, ref=ref,
-                               write=write)
+        return self.plotxy(_beam, _col1, _col2, nbins=_nbins, nolost=_nolost,\
+                           title=_title, xtitle=_xtitle, ytitle=_ytitle,\
+                           xrange=_xrange, yrange=_yrange,\
+                           calfwhm=_calfwhm, noplot=_noplot,\
+                           contour=_contour, level=_level)
 
     def specfileReadXY(self, fname=None, **kws):
         """read x/y from a specfile and set to self.x/self.y
@@ -1215,9 +1109,124 @@ class ShadowSpectro1(object):
                                             bkg=bkg, plot=plot,
                                             show_res=show_res)
 
+
+    def runHisto1EneAndPyMcaFit(self, **kws):
+        """generate energy histogram and fit with PyMca"""
+        self.histo1_energy(**kws)
+        self.x = self.h1e.bin_center
+        self.y = self.h1e.histogram
+        self.fitSplitPVoigt(**kws)
+        
     def close_all_plots(self):
         """close all Matplotlib plots"""
         return ShadowTools.plt.close("all")
+
+# ----------------------------------------------------------------------- #
+# ShadowSpectro1: Spectrometer w 1 crystal analyser based on SHADOW3 only #
+# ----------------------------------------------------------------------- #
+class ShadowSpectro1(object):
+    """Spectrometer w 1 crystal analyser based on SHADOW3"""
+    def __init__(self, file_refl, oe_shape='rect', dimensions=np.array([0., 0., 0., 0.]),\
+                 cyl_ang=None, set_johansson=False, init_from_file=False, **kws):
+        """mimic spectrometer with 1 crystal analyzer
+
+        Parameters
+        ----------
+
+        file_refl : str
+                    reflectivity file
+
+        oe_shape : str, 'rectangular'
+                   'rectangular'
+                   'ellipse'
+                   'ellipse_with_hole'
+        
+        dimensions : array of floats, np.array([0., 0., 0., 0.])
+                     dimensions[0] : dimension y plus  [cm] 
+                     dimensions[1] : dimension y minus [cm] 
+                     dimensions[2] : dimension x plus  [cm] 
+                     dimensions[3] : dimension x minus [cm] 
+
+        cyl_ang : float, None
+                  cylinder orientation [deg] CCW from X axis]
+                  0 -> cylindrical: meridional bending
+                  90. -> cylindrical: sagittal bending
+
+        set_johansson : boolean, False
+                        if True, sets Johansson crystal cut (Rm should be given)
+        
+        init_from_file : boolean flag to load settings from file
+        
+        
+        **kws : see RcHoriz
+        
+        """
+        if (not HAS_SHADOW):
+            raise ImportError('ShadowSpectro1 requires Shadow3, not found!')
+        alpha = kws.get('alpha', None)
+        if alpha is not None:
+            raise NotImplementedError('miscut crystal not implemented yet!!!')
+        if (file_refl is None) or (not os.path.isfile(file_refl)):
+            raise NameError('file_refl not given or not existing')
+        self.iwrite = kws.get('iwrite', 1) # write (1) or not (0) SHADOW
+                                           # files start.xx end.xx star.xx
+        #INIT
+        self.rc = RcHoriz(**kws)
+        self.beam = ShadowLibExtensions.Beam()
+        self.src = FluoSource() # ShadowLibExtensions.Source()
+        self.oe1 = SphericalCrystal(cyl_ang=cyl_ang) #ShadowLibExtensions.OE() # ShadowLib.OE()
+        #self.det = ShadowLibExtensions.OE()
+        self.plt = ShadowPlotter()
+        print('INFO: init .rc, .beam, .src, .oe1, .det and .plt')
+        if init_from_file: self.init_from_file()
+        #CONFIGURE
+        self.set_rowland_radius(self.rc.Rm, isJohansson=set_johansson)
+        self.oe1.set_crystal(adjust_shadow_string(file_refl))
+        if oe_shape == 'ellipse':
+            fshape = 2
+        elif oe_shape == 'ellipse_with_hole':
+            fshape = 3
+        else:
+            fshape = 1
+        self.oe1.set_dimensions(fshape=fshape, params=dimensions)
+        #
+        try:
+            self.move_theta(deltaE=[2, 2])
+        except:
+            print('ERROR: CONFIGURE SRC/OE1 BEFORE RUN!')
+
+    def init_from_file(self):
+        """load shadow variables from file"""
+        self.src.load('start.00')   
+        self.oe1.load('start.01')
+        #self.det.load('start.02')
+        print('NOTE: variables loaded from start.00/start.01 files')
+        
+    def run(self, nrays=None, seed=None):
+        """run SHADOW/source and SHADOW/trace"""
+        #reset nrays/seed if given
+        if (nrays is not None) and (seed is not None): self.src.set_rays(nrays=nrays, seed=seed)
+        if (nrays is not None): self.src.set_rays(nrays)
+        #generate source
+        if self.iwrite: self.src.write("start.00")
+        self_repair_src(self.src)
+        self.beam.genSource(self.src)
+        if self.iwrite:
+            self.src.write("end.00")
+            self.beam.write("begin.dat")
+        #trace oe1
+        if self.iwrite: self.oe1.write("start.01")
+        self_repair_oe(self.oe1)
+        self.beam.traceOE(self.oe1, 1)
+        if self.iwrite:
+            self.oe1.write("end.01")
+            self.beam.write("star.01")
+        #trace detector (not required yet)
+        # if self.iwrite: self.det.write("start.02")
+        # self.beam.traceOE(self.det, 2)
+        # if self.iwrite:
+        #     self.det.write("end.02")
+        #     self.beam.write("star.02")
 
     def set_rowland_radius(self, Rm, isJohansson=False):
         """set Rowland circle radius [cm]
@@ -1383,10 +1392,14 @@ class ShadowSpectro1(object):
         _hwn = abs(self.oe1.RWIDX2) # half-width neg
         _rth0 = self.rc.rtheta0
         _pcm = self.rc.p # cm
-        _vdiv_pos = math.atan( (_hlp * math.sin(_rth0)) / (_pcm + _hlp * math.cos(_rth0) ) )
-        _vdiv_neg = math.atan( (_hln * math.sin(_rth0)) / (_pcm - _hln * math.cos(_rth0) ) )
-        _hdiv_pos = math.atan( (_hwp / _pcm) )
-        _hdiv_neg = math.atan( (_hwn / _pcm) )
+        # _vdiv_pos = math.atan( (_hlp * math.sin(_rth0)) / (_pcm + _hlp * math.cos(_rth0) ) )
+        # _vdiv_neg = math.atan( (_hln * math.sin(_rth0)) / (_pcm - _hln * math.cos(_rth0) ) )
+        # _hdiv_pos = math.atan( (_hwp / _pcm) )
+        # _hdiv_neg = math.atan( (_hwn / _pcm) )
+        _vdiv_pos = (_hlp * math.sin(_rth0)) / (_pcm + _hlp * math.cos(_rth0) )
+        _vdiv_neg = (_hln * math.sin(_rth0)) / (_pcm - _hln * math.cos(_rth0) )
+        _hdiv_pos = (_hwp / _pcm)
+        _hdiv_neg = (_hwn / _pcm)
         self.src.VDIV1 = _vdiv_pos * 1.1 # empirical!
         self.src.VDIV2 = _vdiv_neg * 1.1 # empirical!
         self.src.HDIV1 = _hdiv_pos * 1.1 # empirical!
@@ -1411,12 +1424,17 @@ class ShadowSpectro1(object):
 
 if __name__ == '__main__':
     dsi444 = bu.d_cubic(bu.SI_ALAT, (4,4,4))
+    dsi333 = bu.d_cubic(bu.SI_ALAT, (3,3,3))
     _curDir = os.path.dirname(os.path.realpath(__file__))
     _parDir = os.path.realpath(os.path.join(_curDir, os.path.pardir))
-    file_refl = b'/media/sf_WinLinShare/WORK14/1-SpectroX/SHADOW3/spectro-1603/Si444.dat'
+    refl444 = b'/media/sf_WinLinShare/WORK14/1-SpectroX/SHADOW3/spectro-1603/Si444.dat'
+    refl333 = b'/media/sf_WinLinShare/WORK14/1-SpectroX/SHADOW3/spectro-1603/Si333.dat'
     circ_4in = np.array([5, 5, 5, 5])
-    t = ShadowSpectro1(file_refl, oe_shape='ellipse', dimensions=circ_4in,\
-                       theta0=75., Rm=50., d=dsi444, useCm=True, showInfos=True)
+    rect_texs = np.array([1.25, 1.25, 4., 4.])
+    rect_tsts = np.array([0.25, 0.25, 4., 4.])
+    #t = ShadowSpectro1(refl444, oe_shape='ellipse', dimensions=circ_4in, theta0=75., Rm=50., d=dsi444, useCm=True, showInfos=True)
+    #t = ShadowSpectro1(refl333, oe_shape='rectangle', dimensions=rect_tsts, theta0=65., Rm=50., d=dsi333, useCm=True, showInfos=True)
+    t = ShadowSpectro1(refl444, oe_shape='rectangle', dimensions=rect_texs, theta0=75., Rm=50., d=dsi444, useCm=True, showInfos=True)
     #CONFIGURE SRC
     # t.src.set_angle_distr(fdistr=5, cone_max=0.3)
     # src_ene_hw = 2 # eV
@@ -1425,7 +1443,9 @@ if __name__ == '__main__':
     # t.src.set_energy_distr(f_color=3, f_phot=0, phn=[src_ene_min, src_ene_max])
     
     #RUN
-    t.run(50000)
+    t.run(100)
+    t = ShadowSpectro1(refl444, oe_shape='rectangle', dimensions=rect_texs, theta0=75., Rm=50., d=dsi444, useCm=True, showInfos=True)
+    t.run(100)
     #import IPython
     #IPython.embed(header='t => ShadowSpectro1')
     pass

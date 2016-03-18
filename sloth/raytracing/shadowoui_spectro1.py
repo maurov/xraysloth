@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""shadow_spectro1: an utility toolbox to raytrace a
+"""shadowoui_spectro1: an utility toolbox to raytrace a
 wavelength-dispersive spectrometer with SHADOW3_ from Python, via
 ShadowOui_ layer
 
-.. note:: requires python3.x
+.. note:: requires python3.4
 
 .. note:: this is only an idea (e.g. example) on how to automatize
           some repetitive steps in SHADOW3_ as, for example, scanning
@@ -39,7 +39,7 @@ __credits__ = "Luca Rebuffi"
 __email__ = "mauro.rovezzi@gmail.com"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2014-2015"
+__year__ = "2014-2016"
 
 import sys, os, copy, math
 import numpy as np
