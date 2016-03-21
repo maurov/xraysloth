@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
@@ -50,8 +51,15 @@ except:
     print(sys.exc_info()[1])
     pass
 
+#dirty way to import -> TODO: clean when this will be a package
+_curDir = os.path.dirname(os.path.realpath(__file__))
+_parDir = os.path.realpath(os.path.join(_curDir, os.path.pardir))
+sys.path.append(_parDir)
 from peakfit import fit_splitpvoigt, fit_results
-import bragg as bu
+from bragg import (d_cubic, d_hexagonal,\
+                   d_tetragonal, d_orthorhombic,\
+                   d_monoclinic, d_triclinic, bragg_ev,\
+                   SI_ALAT) 
 from rowland import RcHoriz
 
 ####################################################################
@@ -1257,12 +1265,12 @@ class ShadowSpectro1(object):
         hkl : tuple, None
               (h, k, l)
         lattice : function, None
-                  bu.d_cubic -> a
-                  bu.d_hexagonal -> a, c
-                  bu.d_tetragonal -> a, c
-                  bu.d_orthorhombic -> a, b, c
-                  bu.d_monoclinic -> a, b, c, beta
-                  bu.d_triclinic -> a, b, c, alpha, beta, gamma
+                  d_cubic -> a
+                  d_hexagonal -> a, c
+                  d_tetragonal -> a, c
+                  d_orthorhombic -> a, b, c
+                  d_monoclinic -> a, b, c, beta
+                  d_triclinic -> a, b, c, alpha, beta, gamma
         a, b, c : float
         alpha, beta, gamma : float
      
@@ -1378,11 +1386,11 @@ class ShadowSpectro1(object):
         # adjust source energy to new theta0
         self.oe1.PHOT_CENT = ene0
         if (deltaE[0] is None):
-            self.src.PH1 = bu.bragg_ev(d, theta0+abs(dth[1]))
+            self.src.PH1 = bragg_ev(d, theta0+abs(dth[1]))
         else:
             self.src.PH1 = ene0 - abs(deltaE[0])    
         if (deltaE[1] is None):
-            self.src.PH2 = bu.bragg_ev(d, theta0-abs(dth[0]))
+            self.src.PH2 = bragg_ev(d, theta0-abs(dth[0]))
         else:
             self.src.PH2 = ene0 + abs(deltaE[1])
             
@@ -1424,18 +1432,18 @@ class ShadowSpectro1(object):
             print('OE1: T_REFLECTION = {0}'.format(self.oe1.T_REFLECTION)) 
 
 if __name__ == '__main__':
-    dsi111 = bu.d_cubic(bu.SI_ALAT, (1,1,1))
-    _curDir = os.path.dirname(os.path.realpath(__file__))
-    _parDir = os.path.realpath(os.path.join(_curDir, os.path.pardir))
-    refl444 = b'/media/sf_WinLinShare/WORK14/1-SpectroX/SHADOW3/spectro-1603/Si444.dat'
-    refl333 = b'/media/sf_WinLinShare/WORK14/1-SpectroX/SHADOW3/spectro-1603/Si333.dat'
+    dsi111 = d_cubic(SI_ALAT, (1,1,1))
+    _rootDir = os.path.realpath(os.path.join(_parDir, os.path.pardir))
+    refl444 = os.path.join(_rootDir, 'data', 'Si444_refl_oasys.dat')
+    refl333 = os.path.join(_rootDir, 'data', 'Si333_refl_oasys.dat')
+    refl111 = os.path.join(_rootDir, 'data', 'Si111_refl_oasys.dat')
     circ_4in = np.array([5, 5, 5, 5])
     rect_texs = np.array([1.25, 1.25, 4., 4.])
     rect_tsts = np.array([0.25, 0.25, 4., 4.])
     #t = ShadowSpectro1(refl444, oe_shape='ellipse', dimensions=circ_4in, theta0=75., Rm=50., d=dsi111/4., useCm=True, showInfos=True)
     #t = ShadowSpectro1(refl333, oe_shape='rectangle', dimensions=rect_tsts, theta0=65., Rm=50., d=dsi111/3., useCm=True, showInfos=True)
     #t = ShadowSpectro1(refl444, oe_shape='rectangle', dimensions=rect_texs, theta0=75., Rm=50., d=dsi111/4., useCm=True, showInfos=True)
-    t = ShadowSpectro1(refl444, oe_shape='rectangle', dimensions=rect_tsts, theta0=35., Rm=50., d=dsi111, useCm=True, showInfos=True)
+    t = ShadowSpectro1(bytes(refl444, 'utf8'), oe_shape='rectangle', dimensions=rect_tsts, theta0=35., Rm=50., d=dsi111, useCm=True, showInfos=True)
     #CONFIGURE SRC
     # t.src.set_angle_distr(fdistr=5, cone_max=0.3)
     # src_ene_hw = 2 # eV
