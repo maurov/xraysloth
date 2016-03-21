@@ -67,8 +67,12 @@ else:
     except:
         print(sys.exc_info()[1])
         pass
-    from PyQt4 import QtGui, Qt
-    HAS_QT = True
+    try:
+        from PyQt5 import QtGui, Qt
+        HAS_QT = True
+    except:
+        from PyQt4 import QtGui, Qt
+        HAS_QT = True
 
 # IPy machinery
 try:

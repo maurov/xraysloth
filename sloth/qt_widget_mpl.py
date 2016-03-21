@@ -38,7 +38,12 @@ else:
     except:
         print(sys.exc_info()[1])
         pass
-    from PyQt4 import QtGui
+    try:
+        from PyQt5 import QtGui
+        HAS_QT = True
+    except:
+        from PyQt4 import QtGui
+        HAS_QT = True
 
 # Matplotlib stuff
 import matplotlib.pyplot as plt
