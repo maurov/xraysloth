@@ -51,6 +51,8 @@ except:
     print(sys.exc_info()[1])
     pass
 
+from PyMca5.PyMcaGui.plotting import PlotWindow, ImageView
+    
 #dirty way to import -> TODO: clean when this will be a package
 _curDir = os.path.dirname(os.path.realpath(__file__))
 _parDir = os.path.realpath(os.path.join(_curDir, os.path.pardir))
@@ -357,7 +359,7 @@ class ShadowOE(ShadowLibExtensions.OE):
         elif length == 'm':
             self.DUMMY = 0.0
 
-    def set_output_files(self, fwrite=0, f_angle=0):
+    def set_output_files(self, fwrite=1, f_angle=0):
         """optional file output
 
         Parameters
@@ -759,8 +761,15 @@ class SphericalCrystal(PlaneCrystal):
 class ShadowPlotter(object):
     """ShadowPlotter: plotxy and histo1"""
     def __init__(self):
+        #self.pw1 = PlotWindow.PlotWindow()
+        #self.pw2 = ImageView.ImageViewMainWindow()
+        #self.keep_aspect_ratio(False)
         pass
 
+    def keep_aspect_ratio(self, flag=True):
+        """wrapper to self.miw.imageView._imagePlot.keepDataAspectRatio"""
+        self.pw2.imageView._imagePlot.keepDataAspectRatio(flag)
+        
     def histo1(self, *args, **kws):
         """wrapper to ShadowTools.histo1_old
         
@@ -984,14 +993,14 @@ class ShadowPlotter(object):
         -------
         ShadowTools.Histo1_Ticket instance
         """
-        _beam = args[0]
-        _col1 = 2
-        _col2 = 1
-        _nbins = kws.get('nbins', 100)
+        _beam = kws.get('beam', 'mirr.01')
+        _col1 = kws.get('col1', 2)
+        _col2 = kws.get('col1', 1)
+        _nbins = kws.get('nbins', 101)
         _nolost = kws.get('nolost', 2)
         _title = kws.get('title', r'Footprint')
-        _xtitle = kws.get('ytitle', r'mirror meridional direction [cm]')
-        _ytitle = kws.get('xtitle', r'mirror sagittal direction [cm]')
+        _xtitle = kws.get('ytitle', r'Y - mirror meridional direction [cm]')
+        _ytitle = kws.get('xtitle', r'X - mirror sagittal direction [cm]')
         _xr, _yr = 1.1, 1.1 # expand x,y ranges
         _xrange = kws.get('xrange', None)
         _yrange = kws.get('yrange', None)
@@ -1005,37 +1014,6 @@ class ShadowPlotter(object):
                            calfwhm=_calfwhm, noplot=_noplot,\
                            contour=_contour, level=_level)
         
-    def plotxy_detector(self, **kws):
-        """oe1 foot print on detector
-
-        Parameters
-        ----------
-        See self.plotxy
-
-        Returns
-        -------
-        None, sets self.fp_det
-        """
-        _beam = kws.get('beam', 'mirr.02')
-        _col1 = kws.get('col1', 1)
-        _col2 = kws.get('col2', 2)
-        _nbins = kws.get('nbins', 100)
-        _nolost = kws.get('nolost', 1)
-        _title = kws.get('title', r'Footprint at $\theta$ = {0}'.format(self.rc.theta0))
-        _xtitle = kws.get('ytitle', 'x - ??? [cm]')
-        _ytitle = kws.get('xtitle', 'y - ??? [cm]')
-        _xrange = kws.get('xrange', None)
-        _yrange = kws.get('yrange', None) 
-        _calfwhm = kws.get('calfwhm', 1)
-        _level = kws.get('level', 15)
-        _noplot = kws.get('noplot', 0)
-        _contour = kws.get('contour', 6)
-        self.fp_det = self.plotxy(_beam, _col1, _col2, nbins=_nbins, nolost=_nolost,
-                                  title=_title, xtitle=_xtitle, ytitle=_ytitle,
-                                  xrange=_xrange, yrange=_yrange,
-                                  calfwhm=_calfwhm, noplot=_noplot,
-                                  contour=_contour, level=_level)
-        
     def plotxy_image(self, *args, **kws):
         """image of an optical element
 
@@ -1047,10 +1025,10 @@ class ShadowPlotter(object):
         -------
         ShadowTools.Histo1_Ticket instance
         """
-        _beam = args[0]
-        _col1 = 1
-        _col2 = 3
-        _nbins = kws.get('nbins', 100)
+        _beam = kws.get('beam', 'star.01')
+        _col1 = kws.get('col1', 1)
+        _col2 = kws.get('col1', 3)
+        _nbins = kws.get('nbins', 101)
         _nolost = kws.get('nolost', 1)
         _title = kws.get('title', r'Image')
         _xtitle = kws.get('xtitle', 'x - sagittal (Hor. focusing) [cm]')
@@ -1176,7 +1154,7 @@ class ShadowSpectro1(object):
             raise NotImplementedError('miscut crystal not implemented yet!!!')
         if (file_refl is None) or (not os.path.isfile(file_refl)):
             raise NameError('file_refl not given or not existing')
-        self.iwrite = kws.get('iwrite', 1) # write (1) or not (0) SHADOW
+        self.iwrite = kws.get('iwrite', 0) # write (1) or not (0) SHADOW
                                            # files start.xx end.xx star.xx
         #INIT
         self.rc = RcHoriz(**kws)
@@ -1432,6 +1410,8 @@ class ShadowSpectro1(object):
             print('OE1: T_REFLECTION = {0}'.format(self.oe1.T_REFLECTION)) 
 
 if __name__ == '__main__':
+    # NOTE: works within 'ipython'
+    # NOTE: does NOT work within 'ipython --gui=qt', 'ipython --gui=qt5', 'ipython --matplotlib qt5'
     dsi111 = d_cubic(SI_ALAT, (1,1,1))
     _rootDir = os.path.realpath(os.path.join(_parDir, os.path.pardir))
     refl444 = os.path.join(_rootDir, 'data', 'Si444_refl_oasys.dat')
@@ -1441,7 +1421,7 @@ if __name__ == '__main__':
     rect_texs = np.array([1.25, 1.25, 4., 4.])
     rect_tsts = np.array([0.25, 0.25, 4., 4.])
     #t = ShadowSpectro1(bytes(refl444, 'utf8'), oe_shape='ellipse', dimensions=circ_4in, theta0=75., Rm=50., d=dsi111/4., useCm=True, showInfos=True)
-    t = ShadowSpectro1(bytes(refl333, 'utf8'), oe_shape='rectangle', dimensions=rect_tsts, theta0=65., Rm=50., d=dsi111/3., useCm=True, showInfos=True)
+    t = ShadowSpectro1(bytes(refl333, 'utf8'), oe_shape='rectangle', dimensions=rect_tsts, theta0=65., Rm=50., d=dsi111/3., useCm=True, showInfos=True, set_johansson=True)
     #t = ShadowSpectro1(bytes(refl444, 'utf8'), oe_shape='rectangle', dimensions=rect_texs, theta0=75., Rm=50., d=dsi111/4., useCm=True, showInfos=True)
     #t = ShadowSpectro1(bytes(refl111, 'utf8'), oe_shape='rectangle', dimensions=rect_tsts, theta0=35., Rm=50., d=dsi111, useCm=True, showInfos=True)
     #CONFIGURE SRC
