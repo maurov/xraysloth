@@ -1440,10 +1440,10 @@ if __name__ == '__main__':
     circ_4in = np.array([5, 5, 5, 5])
     rect_texs = np.array([1.25, 1.25, 4., 4.])
     rect_tsts = np.array([0.25, 0.25, 4., 4.])
-    #t = ShadowSpectro1(refl444, oe_shape='ellipse', dimensions=circ_4in, theta0=75., Rm=50., d=dsi111/4., useCm=True, showInfos=True)
-    #t = ShadowSpectro1(refl333, oe_shape='rectangle', dimensions=rect_tsts, theta0=65., Rm=50., d=dsi111/3., useCm=True, showInfos=True)
-    #t = ShadowSpectro1(refl444, oe_shape='rectangle', dimensions=rect_texs, theta0=75., Rm=50., d=dsi111/4., useCm=True, showInfos=True)
-    t = ShadowSpectro1(bytes(refl444, 'utf8'), oe_shape='rectangle', dimensions=rect_tsts, theta0=35., Rm=50., d=dsi111, useCm=True, showInfos=True)
+    #t = ShadowSpectro1(bytes(refl444, 'utf8'), oe_shape='ellipse', dimensions=circ_4in, theta0=75., Rm=50., d=dsi111/4., useCm=True, showInfos=True)
+    t = ShadowSpectro1(bytes(refl333, 'utf8'), oe_shape='rectangle', dimensions=rect_tsts, theta0=65., Rm=50., d=dsi111/3., useCm=True, showInfos=True)
+    #t = ShadowSpectro1(bytes(refl444, 'utf8'), oe_shape='rectangle', dimensions=rect_texs, theta0=75., Rm=50., d=dsi111/4., useCm=True, showInfos=True)
+    #t = ShadowSpectro1(bytes(refl111, 'utf8'), oe_shape='rectangle', dimensions=rect_tsts, theta0=35., Rm=50., d=dsi111, useCm=True, showInfos=True)
     #CONFIGURE SRC
     # t.src.set_angle_distr(fdistr=5, cone_max=0.3)
     # src_ene_hw = 2 # eV
