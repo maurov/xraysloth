@@ -131,12 +131,13 @@ def mplSetPubFont(size=8, usetex=True):
 
 
 ### Qt ###
-def create_qt_window(window_class):
+def qt_create_window(window_class):
     """Create a Qt window in Python, or interactively in IPython with Qt GUI
     event loop integration.
 
     Credits: http://cyrille.rossant.net/making-pyqt4-pyside-and-ipython-work-together/
     """
+    from PyQt4 import QtCore, QtGui
     app_created = False
     app = QtCore.QCoreApplication.instance()
     if app is None:
@@ -150,7 +151,12 @@ def create_qt_window(window_class):
         app.exec_()
     return window
 
-def get_qt5_version():
+def qt_close_all_windows():
+    """close all qt windows!!!"""
+    from PyMca5.PyMcaGui import PyMcaQt as qt
+    qt.QApplication.closeAllWindows()
+    
+def qt5_get_version():
     from PyQt5.QtCore import QT_VERSION_STR
     from PyQt5.Qt import PYQT_VERSION_STR
     from sip import SIP_VERSION_STR
@@ -158,7 +164,8 @@ def get_qt5_version():
     print("Qt version:", QT_VERSION_STR)
     print("SIP version:", SIP_VERSION_STR)
     print("PyQt version:", PYQT_VERSION_STR)
+
     
 if __name__ == '__main__':
+    #qt5_get_version()
     pass
-    get_qt5_version()
