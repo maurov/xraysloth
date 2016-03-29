@@ -83,7 +83,7 @@ class TestSagittalFocusing(object):
         self.sb = self.get_sb() #self.rc.Rs is updated in set_theta0
         print('INFO: bender motor at {0:.3f}'.format(self.sb))
         
-    def read_data(self, fname, retAll=False):
+    def read_data(self, fname, pts_shape=(12,3), retAll=False):
         """read data (custom format) using flushing technique
 
         Parameters
@@ -91,15 +91,18 @@ class TestSagittalFocusing(object):
 
         fname : str, file name
 
+        pts_shape : tuple, shape of the points array
+
         File format
         -----------
 
         # comments:
-        # theta position (0..5) => _pts.shape is (12, 3)
+        # theta position (0..5)
         # measurement run (0..1)
         # actuator abs pos (0 limit plus, 119 limit minus (-119 on sb motor)
-        # point position (0..5 front, 6..11 back)
-
+        # point position (0..5 front, 6..11 back)  => pts_shape is (12, 3)
+        #                (0..5 front, 6..11 back, 12 actuator) => pts_shape is (13, 3)
+        
         # columns (comma separated values):
         # Collection, Theta, Run, Actuator, Point, X, Y, Z
         0, 0, 0, 0, 0, -0.030695, -0.000152, -0.028512
@@ -120,7 +123,7 @@ class TestSagittalFocusing(object):
             access_mode = 'r'
         with open(fname, access_mode) as f:
             fr = csv.reader(f, skipinitialspace=True)
-            _pts = np.zeros((12, 3)) #size depends on theta positions
+            _pts = np.zeros(pts_shape) #size depends on theta positions
             _apos = {}
             _runs = {}
             _bpos = 0
@@ -140,9 +143,9 @@ class TestSagittalFocusing(object):
                         #flush points
                         _apos[str(_bpos)] = _pts
                         _ptx = False
-                        _pts = np.zeros((12, 3))
+                        _pts = np.zeros(pts_shape)
                     _pts[pt] = list(map(float, row[-3:]))
-                    if pt == 11:
+                    if pt == (pts_shape[0]-1):
                         _bpos = copy.deepcopy(pos)
                         _ptx = True
                     if run != _rnx:
@@ -655,13 +658,13 @@ class TestSagittalFocusing(object):
         return [self.eval_data_rs(ang, run) for ang in angs]
         
 if __name__ == "__main__":
-    if 1:
-        plt.close('all')
-        plt.ion()
-        fname = '2015-06-18-all_points.dat'
+    plt.close('all')
+    plt.ion()
+    if 0:
+        fn1 = '2015-06-18-all_points.dat'
         t = TestSagittalFocusing(showInfos=True)
-        t.read_data(fname)
-    if 1:
+        t.read_data(fn1, pts_shape=(12,3))
+    if 0:
         ang, run, pos = 5, 0, 0.0
         d = t.get_dats(ang, run, pos=pos)[1]
         t.eval_data_th0s(ang, run, plot=False)
@@ -675,12 +678,17 @@ if __name__ == "__main__":
         #print('plotting it in green')
         #t.fig_ax.scatter(ap[0], ap[1], ap[2], color='green', marker='o')
         #plt.draw()
-    if 1:
+    if 0:
         rl = t.eval_data_loop_ang() # all results collected to a single list of lists
         #play with the data simply by slicing or looping
         #t.plot_rs()
         #t.plot_chi()
         #t.eval_data(5,0)
         #t.get_meas_rs(0, 0, set_sp=True)
+    if 1:
+        fn2 = '2016-02-29-all_points.dat'
+        t = TestSagittalFocusing(showInfos=True)
+        t.read_data(fn2, pts_shape=(13,3))
+
 
     
