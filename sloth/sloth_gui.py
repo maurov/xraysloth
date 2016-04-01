@@ -36,7 +36,10 @@ try:
 except:
     raise RuntimeError('Could not set API version (%s): did you import PyQt4 directly?' % e)
 
-from PyQt4 import QtGui, uic
+try:
+    from PyQt5 import QtGui, uic
+except:
+    from PyQt4 import QtGui, uic
 
 # PyMca
 HAS_PYMCA = False
