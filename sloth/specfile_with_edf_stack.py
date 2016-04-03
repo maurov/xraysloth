@@ -374,34 +374,4 @@ class SpecWithEdfStack(SpecfileData):
         self.anim.save(anim_save, writer=writer, fps=fps, extra_args=extra_args)
 
 if __name__ == '__main__':
-    plt.ion()
-    plt.close('all')
-    qt.QApplication.closeAllWindows()
-    if 1:
-        ### GLOB VARS FOR CUSTOM TESTS ###
-        _commDir = os.path.join(os.getenv('HOME'), 'WORK14', '1-COMMISSIONING')
-        DATADIR1602 = os.path.join(_commDir, '2016_02_JSCYL', 'data')
-        DATADIR1509 = os.path.join(_commDir, '2015_09_SBCA_JSCYL', 'data')
-        DATADIR1511_J = os.path.join(_commDir, '2015_11_JSCYL', 'data')
-        DATADIR1511_S = os.path.join(_commDir, '2015_11_SBCA', 'data')
-        FIGSDIR = os.path.join(DATADIR1602, 'reports', '0_SG', 'figs')
-        ### TODO: MOVE TO EVALS ###
-        fname = os.path.join(DATADIR1509, 't03_1m_Js')
-        t = SpecWithEdfStack(fname, 37, cmon='I02', csec='Seconds',\
-                             edf_root='t03_37_',\
-                             origin=(0.,0.), scale=(0.075, 0.075),
-                             img_aspect=4,
-                             img_title='Saint-Gobain SG1',
-                             img_xlabel='Sagittal (mm)',
-                             img_ylabel='Meridional (mm)',
-                             scan_xlabel='Energy (eV)',
-                             scan_ylabel='Integrated intensity (a.u.)')
-        t.keep_aspect_ratio(False)
-        #t.plot_image(40, cmap_min=0, cmap_max=10, show_pixels=True)
-        t.slice_stack(100, 220, 620, 1150)
-        #t.plot_image(40, cmap_min=0, cmap_max=5, show_pixels=False)
-        t.make_animation(cmap_min=0, cmap_max=5)
-        t.plot_animation()
-        fnsave = os.path.join(FIGSDIR, '1509_JSCYL_SG1_elastic.mp4')
-        #t.save_animation(fnsave)
     pass
