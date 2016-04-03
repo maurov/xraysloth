@@ -276,7 +276,22 @@ class SpecWithEdfStack(SpecfileData):
             self.imgs_head.append(header)
             self.imgs_int.append(_int)
         edf = None
+        self.y = np.array(self.imgs_int)
         print('Loaded {0} images'.format(_iload))
+
+    def fit_xy(self, *args, **kwargs):
+        """fit xy"""
+        try:
+            x = args[0]
+            y = args[1]
+        except:
+            x = self.x
+            y = self.y
+        try:
+            from peakfit import fit_splitpvoigt
+            self.fit, self.fit_pw = fit_splitpvoigt(x, y, **kwargs)
+        except:
+            print('FIT ERROR')
 
     def keep_aspect_ratio(self, flag=True):
         """wrapper to self.miw.imageView._imagePlot.keepDataAspectRatio"""
@@ -291,7 +306,8 @@ class SpecWithEdfStack(SpecfileData):
                 _int = np.trapz(np.trapz(self.imgs[idx]))
                 self.imgs_int[idx] = _int
             except:
-                print('Error slicing image {0}, shape is {1}'.format(idx, shp))
+                print('ERROR: slicing image {0}, shape is {1}'.format(idx, shp))
+        self.y = np.array(self.imgs_int)
 
     def set_roi_rect(self, xmin, xmax, ymin, ymax):
         """rectangular region of interest"""
@@ -331,7 +347,7 @@ class SpecWithEdfStack(SpecfileData):
         self.miw.imageView.setLimits(xmin, xmax, ymin, ymax)
         self.miw.imageView.replot()
         
-    def make_animation(self, cmap_min=0, cmap_max=10, cmap=cm.Blues):
+    def make_animation(self, cmap_min=0, cmap_max=10, cmap=cm.Blues, xscale=1.):
         """animation with matplotlib"""
         h, w = self.imgs[0].shape[0:2]
         xmin = self.origin[0]
@@ -342,14 +358,21 @@ class SpecWithEdfStack(SpecfileData):
         self.imgs_mpl = []
         norm = cm.colors.Normalize(vmin=cmap_min, vmax=cmap_max)
         for idx, (img, _x, _int) in enumerate(zip(self.imgs, self.x, self.imgs_int)):
-            impl = self.anim_img.imshow(img, norm=norm, cmap=cmap, origin='lower', extent=extent, aspect=self.img_aspect)
-            iint_ln, = self.anim_int.plot(self.x*1000, self.imgs_int,\
+            impl = self.anim_img.imshow(img, norm=norm, cmap=cmap,
+                                        origin='lower', extent=extent,
+                                        aspect=self.img_aspect)
+            iint_ln, = self.anim_int.plot(self.x*xscale, self.imgs_int,\
                                           linestyle='-', linewidth=1.5,\
                                           color='gray')
-            iint_mk, = self.anim_int.plot(_x*1000, _int, linestyle='',\
+            iint_mk, = self.anim_int.plot(_x*xscale, _int, linestyle='',\
                                           marker='o', markersize=5,\
                                           color='black')
-            self.imgs_mpl.append([impl, iint_ln, iint_mk])
+            iint_txt = self.anim_int.text(0.05, 0.8, 'Img: {0}'.format(idx),
+                                          horizontalalignment='left',
+                                          verticalalignment='center',
+                                          transform=self.anim_int.transAxes,
+                                          fontsize=12, color='black')
+            self.imgs_mpl.append([impl, iint_ln, iint_mk, iint_txt])
 
     def plot_animation(self):
         """plot the animation"""
@@ -358,7 +381,7 @@ class SpecWithEdfStack(SpecfileData):
         #self.anim_fig.tight_layout()
         self.anim = animation.ArtistAnimation(self.anim_fig,\
                                               self.imgs_mpl,\
-                                              interval=100,\
+                                              interval=200,\
                                               blit=False,\
                                               repeat_delay=1000)
         #plt.subplots_adjust()
