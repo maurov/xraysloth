@@ -105,9 +105,12 @@ Y: [%d, %d[
 class SpecWithEdfStack(SpecfileData):
     """scan data as a SPEC file plus a stack of EDF images"""
 
-    def __init__(self, spec_fname, spec_scanno, anim_title=None,\
-                 edf_root=None, edf_dir=None, edf_ext=None,
-                 noisy_pxs=None, **kws):
+    def __init__(self, spec_fname, spec_scanno, img_title=None,\
+                 img_xlabel=None, img_ylabel=None,\
+                 img_aspect=1, scan_axes=(0.15, 0.1, 0.8, 0.3),\
+                 scan_xlabel=None, scan_ylabel=None,\
+                 edf_root=None, edf_dir=None, edf_ext=None,\
+                 noisy_pxs=None, origin=(0.,0.), scale=(1.,1.), **kws):
         """load SPEC and EDF data
 
         Parameters
@@ -117,8 +120,27 @@ class SpecWithEdfStack(SpecfileData):
 
         spec_scanno : int, the scan number corresponding to the edf stack to load
 
-        anim_title : string, title shown on the animation plot
+        img_title : string, None
+                    title shown on the image plot
 
+        img_xlabel : string, None
+                     xlabel image plot
+
+        img_ylabel : string, None
+                     ylabel image plot
+
+        img_aspect : aspect ratio for imshow Y/X
+
+        scan_axes : tuple, (0.15, 0.1, 0.8, 0.2)
+                    define the scan plot axes (left, bottom, width, height)
+                    NOTE: the image plot axes are complementary to this
+        
+        scan_xlabel : string, None
+                      xlabel scan plot
+
+        scan_ylabel : string, None
+                      ylabel scan plot
+        
         edf_root : string, the root name of the images, before the _####.edf
                    if None, {spec_fname}_{spec_scanno} is used by default
         
@@ -131,6 +153,12 @@ class SpecWithEdfStack(SpecfileData):
         noisy_pxs : list of tuples, (X,Y) coordinates of noisy pixels
                     to set to 0
 
+        origin : tuple of floats, (0., 0.)
+                 (X,Y) origin of the images
+
+        scale : tuple of floats, (1., 1.)
+                (X,Y) scale of the images, e.g. the real size of the pixels
+        
         **kws : as in SpecfileData
 
         """
@@ -139,25 +167,48 @@ class SpecWithEdfStack(SpecfileData):
         # init image plot window
         #self.miw = MaskImageWidget.MaskImageWidget()
         self.miw = ImageView.ImageViewMainWindow()
-        _radarview = RadarViewWithOverlay(self.miw.imageView)
-        self.miw.imageView.setRadarView(_radarview)
+        #_radarview = RadarViewWithOverlay(self.miw.imageView)
+        #self.miw.imageView.setRadarView(_radarview)
         self.keep_aspect_ratio(True)
         
         # animation figure layout
-        self.anim_fig = plt.figure(num='SpecWithEdfStack', figsize=(5,5), dpi=150)
-        gs = gridspec.GridSpec(3, 2)
-        self.anim_img = plt.subplot(gs[:-1, :])
-        self.anim_int = plt.subplot(gs[2, :])
-        if anim_title is not None:
-            self.anim_img.set_title(anim_title)
-        self.anim_img.set_xlabel('Sagittal direction (pixel)')
-        self.anim_img.set_ylabel('Dispersive direction (pixel)')
-        self.anim_int.set_xlabel('Energy (eV)')
-        self.anim_int.set_ylabel('Integrated intesity')
-        self.anim_int.ticklabel_format(axis='y', style='sci', scilimits=(-2,2))
-        plt.ion()
-        self.anim = None
+        self.anim_fig = plt.figure(num='SpecWithEdfStack', figsize=(4,6), dpi=150)
+        
+        #gs = gridspec.GridSpec(3, 2)
+        #self.anim_img = plt.subplot(gs[:-1, :])
+        #self.anim_int = plt.subplot(gs[2, :])
 
+        left, bottom, width, height = scan_axes
+        bottom2 = bottom + height + 0.1
+        height2 = 0.95 - bottom2
+
+        #          (left  bottom   width  height)
+        rect_bot = [left, bottom,  width, height]
+        rect_top = [left, bottom2, width, height2]
+
+        self.anim_int = plt.axes(rect_bot)
+        self.anim_img = plt.axes(rect_top)
+        
+        if img_title is not None:
+            self.miw.imageView._imagePlot.setGraphTitle(img_title)
+            self.anim_img.set_title(img_title)
+        if img_xlabel is not None:
+            self.miw.imageView._imagePlot.setGraphXLabel(img_xlabel)
+            self.anim_img.set_xlabel(img_xlabel)
+        if img_ylabel is not None:
+            self.miw.imageView._imagePlot.setGraphYLabel(img_ylabel)
+            self.anim_img.set_ylabel(img_ylabel)
+        if scan_xlabel is not None:
+            self.anim_int.set_xlabel(scan_xlabel)
+        if scan_ylabel is not None:
+            self.anim_int.set_ylabel(scan_ylabel)
+
+        self.img_aspect = img_aspect
+        
+        self.anim_int.ticklabel_format(axis='y', style='sci', scilimits=(-2,2))
+
+        self.anim = None
+        
         # load scan
         self.sd = self.sf.select(str(spec_scanno))
         self.mots = dict(zip(self.sf.allmotors(), self.sd.allmotorpos()))
@@ -183,6 +234,11 @@ class SpecWithEdfStack(SpecfileData):
             self.edf_ext = '.edf'
         else:
             self.edf_ext = edf_ext
+
+        self.noisy_pxs = noisy_pxs
+        self.origin = origin
+        self.scale = scale
+        
         self.load_imgs(noisy_pxs=noisy_pxs)
 
     def load_imgs(self, **kws):
@@ -236,8 +292,12 @@ class SpecWithEdfStack(SpecfileData):
                 self.imgs_int[idx] = _int
             except:
                 print('Error slicing image {0}, shape is {1}'.format(idx, shp))
+
+    def set_roi_rect(self, xmin, xmax, ymin, ymax):
+        """rectangular region of interest"""
+        return self.slice_stack(ymin, ymax, xmin, xmax)
         
-    def plot_image(self, idx, cmap_min=0, cmap_max=10):
+    def plot_image(self, idx, cmap_min=0, cmap_max=10, show_pixels=False):
         """show given image index"""
         #with MaskImageWidget
         #self.miw.setImageData(self.imgs[idx])
@@ -245,7 +305,18 @@ class SpecWithEdfStack(SpecfileData):
         #                  self.imgs[idx].min(), self.imgs[idx].max(), 0]
         #self.miw.plotImage(update=True)
         #with ImageView
-        self.miw.setImage(self.imgs[idx])
+        if show_pixels:
+            self.miw.setImage(self.imgs[idx],
+                              origin=(0., 0.),
+                              scale=(1., 1.),
+                              copy=True,
+                              reset=True)
+        else:
+            self.miw.setImage(self.imgs[idx],
+                              origin=self.origin,
+                              scale=self.scale,
+                              copy=True,
+                              reset=True)
         cmapdict = {'name' : 'Blues',
                     'normalization' : 'linear',
                     'autoscale' : False,
@@ -262,10 +333,16 @@ class SpecWithEdfStack(SpecfileData):
         
     def make_animation(self, cmap_min=0, cmap_max=10, cmap=cm.Blues):
         """animation with matplotlib"""
+        h, w = self.imgs[0].shape[0:2]
+        xmin = self.origin[0]
+        xmax = xmin + self.scale[0] * w
+        ymin = self.origin[1]
+        ymax = ymin + self.scale[1] * h
+        extent = (xmin, xmax, ymax, ymin)
         self.imgs_mpl = []
         norm = cm.colors.Normalize(vmin=cmap_min, vmax=cmap_max)
         for idx, (img, _x, _int) in enumerate(zip(self.imgs, self.x, self.imgs_int)):
-            impl = self.anim_img.imshow(img, norm=norm, cmap=cmap, origin='lower')
+            impl = self.anim_img.imshow(img, norm=norm, cmap=cmap, origin='lower', extent=extent, aspect=self.img_aspect)
             iint_ln, = self.anim_int.plot(self.x*1000, self.imgs_int,\
                                           linestyle='-', linewidth=1.5,\
                                           color='gray')
@@ -278,6 +355,7 @@ class SpecWithEdfStack(SpecfileData):
         """plot the animation"""
         # blit=True updates only what is really changed
         #THIS WILL NOT WORK TO SAVE THE VIDEO!!!
+        #self.anim_fig.tight_layout()
         self.anim = animation.ArtistAnimation(self.anim_fig,\
                                               self.imgs_mpl,\
                                               interval=100,\
@@ -296,4 +374,34 @@ class SpecWithEdfStack(SpecfileData):
         self.anim.save(anim_save, writer=writer, fps=fps, extra_args=extra_args)
 
 if __name__ == '__main__':
+    plt.ion()
+    plt.close('all')
+    qt.QApplication.closeAllWindows()
+    if 1:
+        ### GLOB VARS FOR CUSTOM TESTS ###
+        _commDir = os.path.join(os.getenv('HOME'), 'WORK14', '1-COMMISSIONING')
+        DATADIR1602 = os.path.join(_commDir, '2016_02_JSCYL', 'data')
+        DATADIR1509 = os.path.join(_commDir, '2015_09_SBCA_JSCYL', 'data')
+        DATADIR1511_J = os.path.join(_commDir, '2015_11_JSCYL', 'data')
+        DATADIR1511_S = os.path.join(_commDir, '2015_11_SBCA', 'data')
+        FIGSDIR = os.path.join(DATADIR1602, 'reports', '0_SG', 'figs')
+        ### TODO: MOVE TO EVALS ###
+        fname = os.path.join(DATADIR1509, 't03_1m_Js')
+        t = SpecWithEdfStack(fname, 37, cmon='I02', csec='Seconds',\
+                             edf_root='t03_37_',\
+                             origin=(0.,0.), scale=(0.075, 0.075),
+                             img_aspect=4,
+                             img_title='Saint-Gobain SG1',
+                             img_xlabel='Sagittal (mm)',
+                             img_ylabel='Meridional (mm)',
+                             scan_xlabel='Energy (eV)',
+                             scan_ylabel='Integrated intensity (a.u.)')
+        t.keep_aspect_ratio(False)
+        #t.plot_image(40, cmap_min=0, cmap_max=10, show_pixels=True)
+        t.slice_stack(100, 220, 620, 1150)
+        #t.plot_image(40, cmap_min=0, cmap_max=5, show_pixels=False)
+        t.make_animation(cmap_min=0, cmap_max=5)
+        t.plot_animation()
+        fnsave = os.path.join(FIGSDIR, '1509_JSCYL_SG1_elastic.mp4')
+        #t.save_animation(fnsave)
     pass
