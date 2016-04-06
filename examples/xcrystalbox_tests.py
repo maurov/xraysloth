@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-""" examples/tests for xcrystalbox """
+"""examples/tests for raytracing/crystal_box"""
 
 __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
+__year__ = "2014-2016"
 
 import sys
 from datetime import date

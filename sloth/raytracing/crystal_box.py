@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-xcrystalbox: a toolbox to work with CRYSTAL_ from Python via system
+"""crystal_box: a toolbox to work with CRYSTAL_ from Python via a system
 call to diff_pat
 
 .._CRYSTAL: https://github.com/srio/CRYSTAL
@@ -59,7 +58,7 @@ _parpardir = os.path.realpath(os.path.join(_pardir, os.path.pardir))
 DATA_DIR = os.path.join(_parpardir, 'data')
 
 class XCrystalBox(object):
-    """ XCrystalBox
+    """XCrystalBox
     
     xcrystal.inp
     ------------
@@ -126,10 +125,10 @@ class XCrystalBox(object):
     poisson_ratio : Poisson ratio
 
     crys_idx : CrystalIndex: 0,1,2=Si,3=Ge,4=Diamond
-    
+
     """
     def __init__(self, opts=None):
-        self.pars = {} #initi dictionary to store parameters
+        self.pars = {} #init dictionary to store parameters
         if opts is None:
             self.opts = dict(creator = 'XCrystalBox',
                              today = date.today(),
@@ -162,7 +161,7 @@ class XCrystalBox(object):
         print(self.__doc__)
 
     def check_opts(self):
-        """ performs a global check on setted options """
+        """performs a global check on setted options"""
         # bragg file
         if (self.opts['bragg_file'] is None):
             raise NameError("missing 'bragg_file'")
@@ -216,12 +215,12 @@ class XCrystalBox(object):
                 raise NameError('Poisson ratio not given')
 
     def set_opt(self, opt, value):
-        """ set option and run global check """
+        """set option and run global check"""
         self.opts[opt] = value
         self.check_opts()
 
     def write_inp_file(self, fname='xcrystal.inp'):
-        """ write xcrystal.inp """
+        """write xcrystal.inp"""
         outlst = ['{bragg_file}']
         outlst.append('{crys_type}')
         outlst.append('{geom}')
@@ -250,7 +249,7 @@ class XCrystalBox(object):
             f.write(outstr)
         
     def run(self):
-        """ runs diff_pat """
+        """runs diff_pat"""
         self.write_inp_file() # write xcrystal.inp
         cmdstr = '{} < xcrystal.inp'.format(DIFFPAT_EXEC)
         try:
@@ -261,7 +260,7 @@ class XCrystalBox(object):
 
 
     def load_refl(self, fname='diff_pat.dat', pol='s', kind='cubic', fill_value=0.):
-        """ load reflectivity curve and interpolate
+        """load reflectivity curve and interpolate
 
         Parameters
         ----------
@@ -282,7 +281,7 @@ class XCrystalBox(object):
 
         fill_value : float, [0] this value will be used to fill in for
                      requested points outside of the data range
-        
+
         """
         # PyMca5 branch
         try:
@@ -320,7 +319,7 @@ class XCrystalBox(object):
         self.refl = interp1d(self.x, self.y, kind=kind, bounds_error=False, fill_value=fill_value)
                     
     def fit_refl(self, fname='diff_pat.dat', pol='s'):
-        """ evaluate diff_pat.dat """
+        """evaluate diff_pat.dat"""
         self.load_refl(fname=fname, pol=pol)
         self.fit, self.pw = fit_splitpvoigt(self.x, self.y, plot=True)
 
