@@ -39,7 +39,20 @@ except:
     pass
 
 if __name__ == "__main__":
-    from PyQt4.QtGui import QApplication
+    if not HAS_SWOUI:
+        print('ERROR: importing OWxsh_bragg from orangecontrib.shadow.widgets.preprocessor.xsh_bragg')
+        print('INFO: there is a conflict with double import Qt4/Qt5')
+        print('TIP: import and init the preprocessor within "ipython --gui=qt"')
+        sys.exit(1)
+    try:
+        qtversion = QtCore.QT_VERSION_STR.split('.')[0]
+        print('INFO: QtCore already loaded with version {0}'.format(qtversion))
+    except:
+        qtversion = None
+    if qtversion == '5':
+        from PyQt4.QtGui import QApplication
+    else:
+        from PyQt4.QtGui import QApplication
     app = QApplication(sys.argv)
     t = OWxsh_bragg()
     t.show()
