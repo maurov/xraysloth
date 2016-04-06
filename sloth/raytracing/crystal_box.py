@@ -19,15 +19,17 @@ __email__ = "mauro.rovezzi@gmail.com"
 __credits__ = ""
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2014-2015"
+__year__ = "2014-2016"
 
 import sys, os
 import subprocess
 from optparse import OptionParser
 from datetime import date
 import numpy as np
-from peakfit import fit_splitpvoigt, fit_results
 from scipy.interpolate import interp1d
+
+#sloth
+from peakfit import fit_splitpvoigt, fit_results
 
 # check XOP is correctly installed and define DIFFPAT_EXEC
 HAS_XOP = False
@@ -51,9 +53,10 @@ except KeyError:
         print("ERROR: $DIFFPAT_EXEC or $XOP_HOME environmental variables not set!")
         sys.exit(1)
 
-# ../xop/data
+# ../../xop/data
 _pardir = os.path.realpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.pardir))
-DATA_DIR = os.path.join(_pardir, 'xop', 'data')
+_parpardir = os.path.realpath(os.path.join(_pardir, os.path.pardir))
+DATA_DIR = os.path.join(_parpardir, 'data')
 
 class XCrystalBox(object):
     """ XCrystalBox

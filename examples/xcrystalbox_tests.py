@@ -15,9 +15,7 @@ import numpy as np
 from __init__ import _libDir
 sys.path.append(_libDir)
 
-from xcrystalbox import XCrystalBox
-
-
+from raytracing.crystal_box import XCrystalBox
 
 ### TESTING ###
 def test_Si444():
