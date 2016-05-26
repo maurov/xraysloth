@@ -519,7 +519,11 @@ class SpecfileData(object):
         scan_datz = np.nan_to_num(scan_datz)
 
         ## the motors dictionary
-        scan_mots = dict(zip(self.sf.allmotors(), self.sd.allmotorpos()))
+        try:
+            scan_mots = dict(zip(self.sf.allmotors(), self.sd.allmotorpos()))
+        except:
+            if self.verbosity > 0: print("INFO: NO MOTORS IN {0}".format(self.fname)
+            scan_mots = {}
 
         ## y-axis
         if cnty is not None:
