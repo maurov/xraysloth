@@ -34,7 +34,7 @@ Table of variables and conventions
 
 .. note::
 
-   the following code has been tested with a CAD model built using
+   the following code has been tested with a 3D CAD model built using
    SolidWorks: ``RowlandSketchPrototype-v1512``
 
 
@@ -57,7 +57,7 @@ __email__ = "mauro.rovezzi@gmail.com"
 __credits__ = ""
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2011-2015"
+__year__ = "2011-2016"
 
 import sys, os, math
 import numpy as np
