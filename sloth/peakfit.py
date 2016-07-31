@@ -40,7 +40,7 @@ except:
 def fit_splitpvoigt(x, y, dy=False,\
                     theory='Split Pseudo-Voigt', bkg='Constant',\
                     conf=None, npeaks=1,\
-                    show_res=True, plot=True, **kws):
+                    show_infos=True, show_res=True, plot=True, **kws):
     """simple wrapper to PyMca.Specfit
 
     the goal is to fit (automagically) a set of 1D data (x,y) with an
@@ -85,6 +85,9 @@ def fit_splitpvoigt(x, y, dy=False,\
     npeaks : int, 1
              limit the number of split-PseudoVoigt peaks to guess
 
+    show_infos: boolean, True
+                print information on the peakfit setup
+
     show_res : boolean, True
                print fit results to standard output
 
@@ -119,18 +122,11 @@ def fit_splitpvoigt(x, y, dy=False,\
 
     if conf is not None: dconf.update(conf) 
 
-    # limit number of estimated peaks
-    def _estimate_splitpvoigt2(xx, yy, zzz, xscaling=1.0, yscaling=None, npeaks=npeaks):
-        """wrap to SpecfitFunctions.estimate_splitpvoigt to limit to npeaks"""
-        currpars, currcons = sff.estimate_splitpvoigt(xx, yy, zzz, xscaling, yscaling)
-        #print(currpars)
-        #print(currcons)
-        newpars = currpars[:5*npeaks]
-        newcons = currcons[:][:5*npeaks]
-        return newpars, newcons
+    if show_infos: print('{0:=^64}'.format('FIT INFOS'))
     
     # init Specfit object
     fit = Specfit.Specfit()
+    
     # set the data
     if dy is True:
         dy = np.sqrt(y)
@@ -147,14 +143,26 @@ def fit_splitpvoigt(x, y, dy=False,\
             funsFile = os.path.join(os.path.dirname(Specfit.__file__), funsFile)
             fit.importfun(funsFile)
 
-    # check again, if still empty, init splitpvoigt manually
-    if not len(fit.theorylist):
-        print('Warning: using manual import of Split Pseudo-Voigt')
-        sff = SpecfitFunctions.SpecfitFunctions()
-        conf_fun = sff.configure(**dconf)
-        fit.addtheory('Split Pseudo-Voigt', sff.splitpvoigt, ['Height','Position','LowFWHM', 'HighFWHM', 'Eta'], _estimate_splitpvoigt2)
-        theory = 'Split Pseudo-Voigt'
+    # limit number of estimated peaks
+    def _estimate_splitpvoigt2(xx, yy, zzz, xscaling=1.0, yscaling=None, npeaks=npeaks):
+        """wrap to SpecfitFunctions.estimate_splitpvoigt to limit to npeaks"""
+        currpars, currcons = sff.estimate_splitpvoigt(xx, yy, zzz, xscaling, yscaling)
+        #print(currpars)
+        #print(currcons)
+        newpars = currpars[:5*npeaks]
+        newcons = currcons[:][:5*npeaks]
+        return newpars, newcons
     
+    # force Split Pseudo-Voigt estimate to a single peak
+    sff = SpecfitFunctions.SpecfitFunctions()
+    conf_fun = sff.configure(**dconf)
+    fit.addtheory('Split Pseudo-Voigt', sff.splitpvoigt, ['Height','Position','LowFWHM', 'HighFWHM', 'Eta'], _estimate_splitpvoigt2)
+    theory = 'Split Pseudo-Voigt'
+
+    if show_infos:
+        print('backgroung: {0}'.format(bkg))
+        print('theory: {0} {1}'.format(npeaks, theory))
+        
     # update configuration
     fit_conf = fit.configure(**dconf)
 
