@@ -9,7 +9,7 @@ __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2015"
+__year__ = "2015-2016"
 
 import os, sys
 import math
@@ -436,7 +436,7 @@ class TestSagittalFocusing(object):
         self.eval_data_dists(ang, run, plot=True)
             
     def eval_data_th0s(self, ang, run, dats=None, retAll=False,\
-                       set_sp=True, plot=False):
+                       set_sp=True, plot=False, showInfos=None):
         """data evaluation: get average th0 and set sagittal plane at it
 
         Parameters
@@ -448,9 +448,10 @@ class TestSagittalFocusing(object):
         dats : dictionary, None
                as parsed by read_data method (if None: self.dats)
 
-        retAll : boolean, False
-                 returns a Numpy array with the calculated theta0
-                 positions
+        retAll : boolean or string, False
+                 True:  return a Numpy array with the calculated theta0
+                        positions
+                 'avg': return tuple (avth0, stdth0)
 
         set_sp : boolean, True
 
@@ -462,6 +463,7 @@ class TestSagittalFocusing(object):
                 plot the sagittal plane
         """
         #header/output format strings
+        if showInfos is None: showInfos = self.rc.showInfos
         _headstr = '{0: >3s} {1: >3s} {2: >8s} {3: >7s}'
         _outstr = '{0: >3.0f} {1: >3.0f} {2: >8.3f} {3: >7.3f}'
         _headx = True
@@ -485,7 +487,7 @@ class TestSagittalFocusing(object):
                 return 0
             th0 = math.degrees(math.pi/2.-beta)
             th0s.append(th0)
-            if self.rc.showInfos:
+            if showInfos and (retAll is False):
                 if _headx:
                     print('INFO: theta angle given by the centre analyzer (P0-P6)')
                     print(_headstr.format('ang', 'run', 'pos', 'th0'))
@@ -496,23 +498,28 @@ class TestSagittalFocusing(object):
         ax0s = np.array(x0s)
         ay0s = np.array(y0s)
         az0s = np.array(z0s)
+        avgP0 = np.array([np.mean(ax0s), np.mean(ay0s), np.mean(z0s)])
+        stdP0 = np.array([np.std(ax0s), np.std(ay0s), np.std(z0s)])
+        avgth0 = np.mean(ath0s)
+        stdth0 = np.std(ath0s)
+        if showInfos and (retAll is False):
+            print('INFO: mean theta and P0')
+            print('th0_mean = {0:.4f} +/- {1:.4f} deg'.format(avgth0, stdth0))
+            print('P0_mean ( {0:.4f}, {1:.4f}, {2:.4f} ) mm'.format(avgP0[0],\
+                                                                    avgP0[1],\
+                                                                    avgP0[2]))
+            print('P0_std ({0:.4f}, {1:.4f}, {2:.4f}) mm'.format(stdP0[0],\
+                                                                 stdP0[1],\
+                                                                 stdP0[2]))
+
+ 
         if set_sp:
             #set sagittal plane at mean P0 and th0
-            avgP0 = np.array([np.mean(ax0s), np.mean(ay0s), np.mean(z0s)])
-            stdP0 = np.array([np.std(ax0s), np.std(ay0s), np.std(z0s)])
-            avgth0 = np.mean(ath0s)
-            stdth0 = np.std(ath0s)
             self.set_sag_plane(avgP0, avgth0, plot=plot)
-            if self.rc.showInfos:
-                print('INFO: setted sagittal plane at centre analyzer')
-                print('P0_mean ( {0:.4f}, {1:.4f}, {2:.4f} ) mm'.format(avgP0[0],\
-                                                                        avgP0[1],\
-                                                                        avgP0[2]))
-                print('P0_std ({0:.4f}, {1:.4f}, {2:.4f}) mm'.format(stdP0[0],\
-                                                                     stdP0[1],\
-                                                                     stdP0[2]))
-                print('th0_mean = {0:.4f} +/- {1:.4f} deg'.format(avgth0, stdth0))
+            print('INFO: setted sagittal plane at centre analyzer')
+        if retAll == 'avg': return (avgth0, stdth0)
         if retAll: return ath0s
+
 
     def eval_data_dists(self, ang, run, dats=None, retAll=False,\
                         set_sp=True, plot=False):
@@ -606,29 +613,29 @@ class TestSagittalFocusing(object):
                 print(_outstr.format(ang, run, _pos, rs012p, rs345p, rs345p-rs012p))
         return rss, cens
          
-    def eval_data_rs(self, ang, run, set_sp=True, do_test=False, plot=False):
+    def eval_data_rs(self, ang, run, set_sp=True, do_test=False, plot=False, retAll=True, showInfos=True):
         """data evaluation: sagittal radius"""
         _headstr = '{0: >3s} {1: >3s} {2: >8s} {3: >8s} {4: >8s}  {5: >8s} {6: >8s} {7: >8s} {8: >8s}'
         _outstr = '{0: >3.0f} {1: >3.0f} {2: >8.3f} {3: >8.3f} {4: >8.3f} {5: >8.3f} {6: >8.3f}  {7: >8.3f} {8: >8.3f}'
         _headx = True
-        if set_sp: self.eval_data_th0s(ang, run, plot=plot)
+        if set_sp: self.eval_data_th0s(ang, run, plot=plot, showInfos=False)
         dats = self.get_dats(ang, run)
         poss, cens, rss, chis = [], [], [], []
         for _pos, _pts in dats:
             if plot: self.plot_points(_pts)
             pj = [self.get_projection_point(_pt, self.sp) for _pt in _pts]
             #sagittal circle center using lines (0,6) and (5,11)
-            cen = t.get_intersect_lines(pj[0], pj[6], pj[5], pj[11])
+            cen = self.get_intersect_lines(pj[0], pj[6], pj[5], pj[11])
             if do_test: self.test_point_on_plane(cen, self.sp)
             rs = [self.get_circle_radius(_pts[idx], cen) for idx in range(12)]
-            chi = [t.get_intersect_angle(cen, pj[idx], pj[idx+1]) for idx in range(5)]
-            chi2 = [t.get_intersect_angle(cen, pj[idx], pj[idx+1]) for idx in range(6,11)]
+            chi = [self.get_intersect_angle(cen, pj[idx], pj[idx+1]) for idx in range(5)]
+            chi2 = [self.get_intersect_angle(cen, pj[idx], pj[idx+1]) for idx in range(6,11)]
             chi += chi2
             poss.append(_pos)
             cens.append(cen)
             rss.append(rs)
             chis.append(chi)
-            if self.rc.showInfos:
+            if showInfos:
                 if _headx:
                     print(_headstr.format('ang', 'run', 'pos', 'rs0',
                                           'drs1', 'drs2', 'drs3', 'drs4', 'drs5'))
@@ -644,7 +651,7 @@ class TestSagittalFocusing(object):
         rss = np.array(rss)
         chis = np.array(chis)
         if plot: self.plot_points(cens, color='green', marker='^')
-        return poss, cens, rss, chis
+        if retAll: return poss, cens, rss, chis
 
     def eval_data_loop_ang(self, angs=range(6), run=0):
         """angular loop to evaluate data
@@ -660,10 +667,53 @@ class TestSagittalFocusing(object):
 if __name__ == "__main__":
     plt.close('all')
     plt.ion()
-    if 0:
+    if 1:
+        #read data and init objects from 3 measurement sessions
         fn1 = '2015-06-18-all_points.dat'
-        t = TestSagittalFocusing(showInfos=True)
-        t.read_data(fn1, pts_shape=(12,3))
+        fn2 = '2016-02-29-all_points.dat'
+        fn3 = '2016-03-31-all_points.dat'
+        
+        t1 = TestSagittalFocusing()
+        t1.read_data(fn1, pts_shape=(12,3))
+
+        t2 = TestSagittalFocusing()
+        t2.read_data(fn2, pts_shape=(13,3))
+
+        t3 = TestSagittalFocusing()
+        t3.read_data(fn3, pts_shape=(13,3))
+        
+        print('TestSagittalFocusing objects are "t1, t2, t3", enjoy!')
+
+        #angular positions of the prototype
+        angs_labs = ('T0', 'T1', 'T2', 'T3', 'T4', 'T5')
+        angs =      ( 0,    1,    2,    3,    4,    5  )
+
+        #corresponding real (approximated) theta positions
+        ths = [90, 79, 68, 57, 46, 35]
+
+        if 0:
+            #get average theta0 for the six angular positions T0--T5
+            for ang in angs:
+                print('T{0} : {1}'.format(ang, t1.eval_data_th0s(ang, 0, set_sp=False, retAll='avg')))
+                print('T{0} : {1}'.format(ang, t2.eval_data_th0s(ang, 0, set_sp=False, retAll='avg')))
+                print('T{0} : {1}'.format(ang, t3.eval_data_th0s(ang, 0, set_sp=False, retAll='avg')))
+                print('---')
+
+
+        #expected sagittal radii for ths and 2*Rm = 1000 and 500
+        rss1m, rss05m = [], []
+
+        t3.rc.Rm = 500
+        for th in ths:
+            t3.rc.set_theta0(th)
+            rss1m.append(t3.rc.Rs) 
+
+        t3.rc.Rm = 250
+        for th in ths:
+            t3.rc.set_theta0(th)
+            rss05m.append(t3.rc.Rs) 
+ 
+        
     if 0:
         ang, run, pos = 5, 0, 0.0
         d = t.get_dats(ang, run, pos=pos)[1]
@@ -685,10 +735,6 @@ if __name__ == "__main__":
         #t.plot_chi()
         #t.eval_data(5,0)
         #t.get_meas_rs(0, 0, set_sp=True)
-    if 1:
-        fn2 = '2016-02-29-all_points.dat'
-        t = TestSagittalFocusing(showInfos=True)
-        t.read_data(fn2, pts_shape=(13,3))
 
 
     
