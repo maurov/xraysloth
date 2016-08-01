@@ -53,15 +53,36 @@ try:
 except:
     pass
 
-def gaussian(x, cen=0, sigma=1):
-    """1 dimensional gaussian: gaussian(x, cen, sigma)"""
-    s2pi = math.sqrt(2*math.pi)
-    return ( 1. / (s2pi*sigma) ) * np.exp( -(1.0*x-cen)**2 / (2 * sigma**2) )
+# <LINESHAPES> #
+def gaussian(x, cen=0, sigma=1, fwhm=False, peak=None):
+    """1 dimensional Gaussian function (https://en.wikipedia.org/wiki/Gaussian_function)
 
-def lorentzian(x, cen=0, sigma=1):
-    """1 dimensional lorentzian: lorentzian(x, cen, sigma)"""
-    return (1. / (1 + ( (1.0*x-cen) / sigma)**2 ) ) / (math.pi*sigma)
-    
+    Parameters
+    ==========
+    x     : array
+    cen   : [0] center, x0
+    sigma : [1] standard deviation, FWHM = 2*sqrt(2*ln(2)) * sigma =~ 2.35482 * sigma
+    fwhm  : [False] if True, the given sigma is assumed as fwhm and then converted accordingly
+    peak  : [None] if None, peak = 1 / math.sqrt(2*math.pi), the distribution integrate to 1
+    """
+    if fwhm is True: sigma = sigma / 2*math.sqrt(2*math.log(2))
+    if peak is None: peak = 1. / math.sqrt(2*math.pi) 
+    return peak * np.exp( -(1.*x-cen)**2 / (2*sigma**2) )
+
+def lorentzian(x, cen=0, gamma=1, peak=None):
+    """1 dimensional Lorentzian
+
+    Parameters
+    ==========
+    x     : array
+    cen   : [0] center, x0
+    gamma : [1] half width at half maximum
+    peak  : [None] if None, peak = 1 / (math.pi*sigma), the distribution integrate to 1
+    """
+    if peak is None: peak = 1. / (math.pi*gamma)
+    return peak * (1. / (1. + ( (1.*x-cen) / gamma)**2 ) )
+# </LINESHAPES> #
+
 def get_ene_index(ene, cen, hwhm):
     """ returns the min/max indexes for array ene at (cen-hwhm) and (cen+hwhm)
     very similar to index_of in larch
