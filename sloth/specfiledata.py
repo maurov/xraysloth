@@ -213,6 +213,30 @@ def _check_scans(scans):
         raise NameError("Provide a string or list of scans to load")
     return nscans
 
+def _numpy_sum_list(xdats, zdats):
+    """sum list of arrays
+
+    Parameters
+    ----------
+    xdats, zdats : lists of arrays
+
+    Returns
+    -------
+    xdats[0], sum(zdats)
+    """
+    try:
+        #sum element-by-element
+        arr_zdats = np.array(zdats)
+        return xdats[0], np.sum(arr_zdats, 0)
+    except:
+        #sum by interpolation
+        xref = xdats[0]
+        zsum = np.zeros_like(xref)
+        for xdat, zdat in zip(xdats, zdats):
+            fdat = interp1d(xdat, zdat)
+            zsum += fdat(xref)
+        return xref, zsum
+
 def _pymca_average(xdats, zdats):
     """call to SimpleMath.average() method from PyMca/SimpleMath.py
 
@@ -227,7 +251,6 @@ def _pymca_average(xdats, zdats):
     """
     if HAS_SIMPLEMATH:
         sm = SimpleMath.SimpleMath()
-        if self.verbosity > 0: print("INFO merging data...")
         return sm.average(xdats, zdats)
     else:
         raise NameError("SimpleMath is not available -- this operation cannot be performed!")
@@ -652,7 +675,8 @@ class SpecfileData(object):
         scans : scans to load in the merge [string]
                 the format of the string is intended to be parsed by '_str2rng()'
         action : action to perform on the loaded list of scans
-                 'average' -> average the scans
+                 'average' -> average the scans ( see _pymca_average() )
+                 'sum' -> sum all zscans ( see _numpy_sum_list() )
                  'join' -> concatenate the scans
                  'single' -> scans_list[0] : equivalent to get_scan()
         **kws : see get_scan() method
@@ -665,7 +689,7 @@ class SpecfileData(object):
         #check inputs - some already checked in get_scan()/get_scans()
         nscans = _check_scans(scans)
         
-        actions = ['single', 'average', 'join']
+        actions = ['single', 'average', 'sum', 'join']
         if not action in actions:
             raise NameError("'action={0}' not in known actions {1}".format(actions))
 
@@ -675,9 +699,12 @@ class SpecfileData(object):
         # override 'action' keyword if it is only one scan
         if len(nscans) == 1:
             action = 'single'
-            if self.verbosity > 1: print("WARNING(get_mrg): len(scans)==1 -> using 'action=single'")
+            if self.verbosity > 1: print("WARNING(get_mrg): len(scans)==1 -> 'action=single'")
         if action == 'average':
+            if self.verbosity > 0: print("INFO: merging data...")
             return _pymca_average(xdats, zdats)
+        elif action == 'sum':
+            return _numpy_sum_list(xdats, zdats)    
         elif action == 'join':
             return np.concatenate(xdats, axis=0), np.concatenate(zdats, axis=0)
         elif action == 'single':
