@@ -100,6 +100,14 @@ def ipythonAutoreload():
     mgc(u'%load_ext autoreload')
     mgc(u'%autoreload 2')
 
+def run_from_ipython():
+    """check if inside ipython"""
+    try:
+        __IPYTHON__
+        return True
+    except NameError:
+        return False
+    
 ### PyMca ###
 def getPyMcaMain(fload=None):
     """ show PyMcaMain from a shell (e.g. IPython) and return its obj """
