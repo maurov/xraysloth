@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-generic utilities for daily work
+"""Generic utilities for daily work
+===================================
 
 TODO
 ====
-- collect here daily work utilities
+
+- collect all bits and pieces here
 
 """
 
@@ -17,7 +18,7 @@ __email__ = "mauro.rovezzi@gmail.com"
 __credits__ = ""
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2011-2015"
+__year__ = "2011-2016"
 
 
 ### colorized output ###
@@ -79,14 +80,14 @@ def cp_replace(grepfns, grepstr, rplstr, splitstr='_'):
 
 ### Numpy ###
 def imin(arr, check=False):
-    """ index of minimum value """
+    """index of minimum value"""
     _im = np.argmin(arr)
     if check:
         print('Check: {0} = {1}'.format(np.min(arr), arr[_im]))
     return _im
         
 def imax(arr, check=False):
-    """ index of maximum value """
+    """index of maximum value"""
     _im = np.argmax(arr)
     if check:
         print('Check: {0} = {1}'.format(np.max(arr), arr[_im]))
@@ -94,7 +95,7 @@ def imax(arr, check=False):
         
 ### IPython ###
 def ipythonAutoreload():
-    """ force ipython to autoreload imported modules """
+    """force ipython to autoreload imported modules"""
     from IPython import get_ipython
     mgc = get_ipython().magic
     mgc(u'%load_ext autoreload')
@@ -110,7 +111,7 @@ def run_from_ipython():
     
 ### PyMca ###
 def getPyMcaMain(fload=None):
-    """ show PyMcaMain from a shell (e.g. IPython) and return its obj """
+    """show PyMcaMain from a shell (e.g. IPython) and return its obj"""
     from matplotlib import rcParams
     rcParams['text.usetex'] = False
     HAS_PYMCA = False
@@ -132,7 +133,7 @@ def getPyMcaMain(fload=None):
         
 ### Matplotlib ###
 def mplSetPubFont(size=8, usetex=True):
-    """ very basic mpl set font for publication-quality figures """
+    """very basic mpl set font for publication-quality figures"""
     from matplotlib import rc
     rc('font',**{'family':'sans-serif','sans-serif':['Helvetica'], 'size':size})
     rc('text', usetex=usetex)
@@ -140,10 +141,11 @@ def mplSetPubFont(size=8, usetex=True):
 
 ### Qt ###
 def qt_create_window(window_class):
-    """Create a Qt window in Python, or interactively in IPython with Qt GUI
-    event loop integration.
+    """Create a Qt window in Python, or interactively in IPython with Qt
+    GUI event loop integration.
 
     Credits: http://cyrille.rossant.net/making-pyqt4-pyside-and-ipython-work-together/
+
     """
     from PyQt4 import QtCore, QtGui
     app_created = False
