@@ -47,10 +47,10 @@ except KeyError:
             DIFFPAT_EXEC = os.path.join(HAS_XOP, 'bin.darwin', 'diff_pat')
         else:
             print("ERROR: cannot set DIFFPAT_EXEC")
-            sys.exit(1)
+            #sys.exit(1)
     except KeyError:
         print("ERROR: $DIFFPAT_EXEC or $XOP_HOME environmental variables not set!")
-        sys.exit(1)
+        #sys.exit(1)
 
 # ../../xop/data
 _pardir = os.path.realpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.pardir))
