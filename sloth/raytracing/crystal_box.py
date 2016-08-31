@@ -26,6 +26,7 @@ from optparse import OptionParser
 from datetime import date
 import numpy as np
 from scipy.interpolate import interp1d
+import matplotlib.pyplot as plt
 
 #sloth
 from peakfit import fit_splitpvoigt, fit_results
@@ -259,7 +260,7 @@ class XCrystalBox(object):
             print("ERROR: check $DIFFPAT_EXEC")
 
 
-    def load_refl(self, fname='diff_pat.dat', pol='s', kind='cubic', fill_value=0.):
+    def load_refl(self, fname='diff_pat.dat', pol='s', kind='cubic', fill_value=0., plot=False):
         """load reflectivity curve and interpolate
 
         Parameters
@@ -282,6 +283,8 @@ class XCrystalBox(object):
         fill_value : float, [0] this value will be used to fill in for
                      requested points outside of the data range
 
+        plot : boolean [False] plot the loaded reflectivity
+        
         """
         # PyMca5 branch
         try:
@@ -308,15 +311,26 @@ class XCrystalBox(object):
         else:
             raise NameError("XCrystalBox.load_refl: wrong polarization keyword")
         try:
-            sf = specfile.Specfile(fname)
-            sd = sf.select('1')
-            self.x = sd.datacol(1)
-            self.y = sd.datacol(int(scol))
-            sf = 0 # close file
+            if HAS_SPECFILE:
+                sf = specfile.Specfile(fname)
+                sd = sf.select('1')
+                self.x = sd.datacol(1)
+                self.y = sd.datacol(int(scol))
+                sf = 0 #close file
+            else:
+                sd = np.loadtxt(fname)
+                self.x = sd[:,0]
+                self.y = sd[:,scol-1]
+                sd = 0 #flush memory
         except:
             print("ERROR(XCrystalBox.load_refl): cannot read {0}".format(fname))
             return
         self.refl = interp1d(self.x, self.y, kind=kind, bounds_error=False, fill_value=fill_value)
+        if plot:
+            plt.close(fname)
+            fig, ax = plt.subplots(num=fname)
+            ax.plot(self.x, self.y)
+            #ax.plot(self.x, self.refl(self.x))
                     
     def fit_refl(self, fname='diff_pat.dat', pol='s'):
         """evaluate diff_pat.dat"""
