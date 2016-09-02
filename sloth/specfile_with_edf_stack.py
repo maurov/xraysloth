@@ -393,6 +393,7 @@ class SpecWithEdfStack(SpecfileData):
 
         if writer is None:
             writer = animation.FFMpegWriter()
+        if self.anim is None: self.plot_animation()
         print('saving animation... (NOTE: may take a while!)')
         self.anim.save(anim_save, writer=writer, fps=fps, extra_args=extra_args)
 
