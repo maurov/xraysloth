@@ -37,6 +37,23 @@ Table of variables and conventions
    the following code has been tested with a 3D CAD model built using
    SolidWorks: ``RowlandSketchPrototype-v1512``
 
+.. note ::
+
+   Lens equations used here are taken from:
+
+   - Suortti et al., J. Synchrotron Rad. 6, 69 (1999), DOI: 10.1107/S0909049599000291
+   - Podorov et al., J. Phys. D: Appl. Phys 34, 2363 (2001), DOI: 10.1088/0022-3727/34/15/317
+
+   *Meridional*
+
+   p0 = 2 * Rm * sin(theta0 - alpha)
+   q0 = 2 * Rm * sin(theta0 + alpha)
+
+   p0/p + q0/q = 2
+
+   *Sagittal*
+
+   1/p + 1/q = ( sin(theta0 - alpha) + sin(theta0 + alpha) ) / Rs
 
 RT4XES
 ------
@@ -225,6 +242,8 @@ class RowlandCircle(object):
             self.sampPos = np.array([0,0,0])
         elif (('int' in str(type(inCircle))) or ('float' in str(type(inCircle)))):
             self.sampPos = np.array([0,inCircle,0])
+            print('WARNING: inCircle not tested/implementd yet, REVERTED to 0 position!')
+            self.sampPos = np.array([0,0,0])
         else:
             raise NameError('Sample inside the Rowland circle: y offset is required')
         self.alpha = alpha
@@ -247,7 +266,7 @@ class RowlandCircle(object):
         
         self.theta0  : in degrees
         self.rtheta0 : in radians
-        self.sd      : sample-detector distance (independent of \alpha)
+        self.sd      : sample-detector distance (independent of \alpha?)
         self.p       : sample-analyser distance
         self.q       : analyser-detector distance
         self.Rs      : sagittal radius (analyser center, self.aL == 0.)
@@ -256,9 +275,10 @@ class RowlandCircle(object):
         self.theta0 = theta0
         self.rtheta0 = math.radians(self.theta0)       
         self.sd = 2. * self.Rm * math.sin(2. * self.rtheta0)
-        self.p0 = 2. * self.Rm * math.sin(self.rtheta0 - self.ralpha/2.) # TODO: check alpha/2
-        self.p = self.p0 - self.sampPos[1]
-        self.q0 = 2. * self.Rm * math.sin(self.rtheta0 + self.ralpha/2.)
+        self.p0 = 2. * self.Rm * math.sin(self.rtheta0 - self.ralpha)
+        #self.p = self.p0 - self.sampPos[1] #not fully tested yet
+        self.p = self.p0
+        self.q0 = 2. * self.Rm * math.sin(self.rtheta0 + self.ralpha)
         self.q = self.q0 # TODO: generic case!
         if self.p == self.p0:
             if self.alpha == 0:
@@ -266,13 +286,15 @@ class RowlandCircle(object):
                 self.Rs = 2 * self.Rm * (math.sin(self.rtheta0))**2 # no miscut
             else :
                 print('WARNING: sagittal focusing with miscut (CHECK FORMULA!)')
-                self.Rs = self.Rm * (math.cos(2*self.ralpha) - math.cos(2*self.theta0)) # TODO: check this
+                #self.Rs = self.Rm * (math.cos(2*self.ralpha) - math.cos(2*self.theta0)) # TODO: check this
+                self.Rs = 2 * self.Rm * math.sin(self.rtheta0 - self.ralpha) * math.sin(self.rtheta0 + self.ralpha) #this one should be correct: TO TEST!
         else :
             # generic sagittal focusing # TODO: check this!!!
             print('WARNING: sagittal focusing generic (CHECK FORMULA!)')
             self.Rs = ( 2. * math.sin(self.rtheta0) * self.p * self.q ) / (self.p + self.q)
         if showInfos:
             print("INFO: theta0 = {0:.3f} deg".format(self.theta0))
+            print("INFO: alpha = {0:.3f} deg".format(self.alpha))
             if self.d is not None:
                 print("INFO: ene0 = {0:.2f} eV".format(self.get_ene()))
                 print("INFO: d = {0:.3f} \AA".format(self.d))
