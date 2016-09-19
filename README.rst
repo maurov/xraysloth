@@ -18,10 +18,12 @@ Sloth: slowly evolving utilities for x-ray spectroscopists
 This repository contains (simple) utilities for x-ray spectroscopists, oriented
 to x-ray optics and data reduction/analysis for XAS/XES/RIXS techniques.
 
-There is no build/install script (``setup.py``) because at the moment these
-utilities are rather independent from each other. To use these utilities in your
-scripts, simply clone the GIT repository to ``somewhere`` and then append it to
-your PYTHONPATH ::
+The utilities can be installed the standard way ::
+
+  python setup.py install --user
+
+or directly by cloning the GIT repository to ``somewhere`` and
+appending it to PYTHONPATH ::
 
   import sys
   sys.path.append('path_to_somewhere')
@@ -194,12 +196,3 @@ installed in a virtual environment.
    python setup.py develop
    #to test: cd; python -m Orange.canvas
 
-   
-License
--------
-
-`BSD 3-Clause License <http://opensource.org/licenses/BSD-3-Clause>`_
-::
-   <OWNER> = Mauro Rovezzi
-   <ORGANIZATION> = European Synchrotron Radiation Facility, Grenoble
-   <YEAR> = 2011-2015
