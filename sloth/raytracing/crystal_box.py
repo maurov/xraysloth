@@ -329,13 +329,13 @@ class XCrystalBox(object):
         if plot:
             plt.close(fname)
             fig, ax = plt.subplots(num=fname)
-            ax.plot(self.x, self.y)
+            ax.plot(self.x, self.y, marker='o', markersize=5)
             #ax.plot(self.x, self.refl(self.x))
                     
-    def fit_refl(self, fname='diff_pat.dat', pol='s'):
+    def fit_refl(self, fname='diff_pat.dat', pol='s', plot=True):
         """evaluate diff_pat.dat"""
-        self.load_refl(fname=fname, pol=pol)
-        self.fit, self.pw = fit_splitpvoigt(self.x, self.y, plot=True)
+        self.load_refl(fname=fname, pol=pol, plot=False)
+        self.fit, self.pw = fit_splitpvoigt(self.x, self.y, plot=plot)
 
     def load_pars(self, fname='diff_pat.par'):
         """load DIFF_PAT output (.par file) into self.pars (dictionary)
