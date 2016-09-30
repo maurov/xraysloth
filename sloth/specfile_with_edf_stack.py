@@ -347,7 +347,7 @@ class SpecWithEdfStack(SpecfileData):
         self.miw.imageView.setLimits(xmin, xmax, ymin, ymax)
         self.miw.imageView.replot()
         
-    def make_animation(self, cmap_min=0, cmap_max=10, cmap=cm.Blues, xscale=1.):
+    def make_animation(self, cmap_min=0, cmap_max=10, cmap=cm.Blues, xscale=1., xshift=0):
         """animation with matplotlib"""
         h, w = self.imgs[0].shape[0:2]
         xmin = self.origin[0]
@@ -361,10 +361,10 @@ class SpecWithEdfStack(SpecfileData):
             impl = self.anim_img.imshow(img, norm=norm, cmap=cmap,
                                         origin='lower', extent=extent,
                                         aspect=self.img_aspect)
-            iint_ln, = self.anim_int.plot(self.x*xscale, self.imgs_int,\
+            iint_ln, = self.anim_int.plot(self.x*xscale+xshift, self.imgs_int,\
                                           linestyle='-', linewidth=1.5,\
                                           color='gray')
-            iint_mk, = self.anim_int.plot(_x*xscale, _int, linestyle='',\
+            iint_mk, = self.anim_int.plot(_x*xscale+xshift, _int, linestyle='',\
                                           marker='o', markersize=5,\
                                           color='black')
             iint_txt = self.anim_int.text(0.05, 0.8, 'Img: {0}'.format(idx),
