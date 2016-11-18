@@ -1,6 +1,9 @@
 Sloth: slowly evolving utilities for x-ray spectroscopists
 ==========================================================
 
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.167068.svg
+   :target: https://doi.org/10.5281/zenodo.167068
+
 .. _Numpy : http://www.numpy.org
 .. _Matplotlib : http://matplotlib.org
 .. _PyMca : https://github.com/vasole/pymca
