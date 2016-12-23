@@ -29,7 +29,7 @@ __pkgs__ = ['sloth',
             'sloth.math',       #math&friends
             'sloth.raytracing', #ray tracing
             'sloth.rixs',       #rixs
-            'sloth.test',       #test suite
+            'sloth.tests',      #test suite
             'sloth.utils',      #utilities
             'sloth.xanes',      #xanes analysis tools
             'sloth.xes'         #xes analysis tools
