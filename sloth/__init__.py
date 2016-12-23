@@ -11,7 +11,7 @@ Naming
 
 """
 __author__ = "Mauro Rovezzi"
-__version__ = "0.0.1"
+__version__ = "0.2.0"
 
 # import os, sys
 # _libDir = os.path.dirname(os.path.realpath(__file__))
