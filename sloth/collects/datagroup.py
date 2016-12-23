@@ -1,29 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-"""GsList: utility to perform standard operations on a list of Larch
-groups
+"""DataGroup: generic container for data objects (=groups in Larch, =generic Python class)
 
 TODO
 ----
+- [] REFACTOR THE WHOLE THING!!!
 - [] move self.getkwsd() to the respective data objects
-- [] move 1D parts to gsutils_1D
+- [] move 1D parts to datagroup1D
 - [] use map() instead of for loops...
 - [] use update() for kwsd: see https://github.com/xraypy/xraylarch/issues/66#issuecomment-30948135
 - [] control multiple plot windows ('win' keyword argument) when
      plotting with PyMca
 
 """
-
-__author__ = "Mauro Rovezzi"
-__email__ = "mauro.rovezzi@gmail.com"
-__credits__ = ""
-__license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__owner__ = "Mauro Rovezzi"
-__organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2011-2015"
-
-### IMPORTS ###
 import os, sys
 import numpy as np
 from datetime import datetime
@@ -57,9 +46,8 @@ try:
 except ImportError:
     pass
 
-# Mauro's Larch Plugins (https://github.com/maurov/xraysloth)
-from specfiledata import _str2rng as str2rng
-from specfiledata import spec_getmap2group, spec_getmrg2group
+from ..io.specfile_reader import _str2rng as str2rng
+from ..io.specfile_reader import spec_getmap2group, spec_getmrg2group
 
 ### GLOBAL VARIABLES ###
 MODNAME = '_contrib'
@@ -128,7 +116,7 @@ def _norm(y, norm=None, **kws):
         print("TODO!")
         return y
         # try:
-        #     d = GsListXanes()
+        #     d = DataGroupXanes()
         #     d.gs.append(Group(_larch=d._larch))
         #     d.gs[-1].x = kws.get('x')
         #     d.gs[-1].y = y
@@ -142,7 +130,7 @@ def _norm(y, norm=None, **kws):
         return y
 
 ### CLASS ###
-class GsList(object):
+class DataGroup(object):
     """a list of groups with some wrapped methods from Larch & friends"""
     
     def __init__(self, kwsd=None, _larch=None):
@@ -152,7 +140,7 @@ class GsList(object):
                 self._larch = Interpreter()
                 self._inlarch = False
             else:
-                raise NameError('GsList requires Larch')
+                raise NameError('DataGroup requires Larch')
         else:
             self._larch = _larch
             self._inlarch = True
@@ -326,7 +314,7 @@ class GsList(object):
 
     ### DEPRECATED METHODS ###
     def _deprecated_msg(self):
-        print("Deprecated: moved to GsList1D (update your script!)")
+        print("Deprecated: moved to DataGroup1D (update your script!)")
     def mkftf(self, *args, **kwargs):
         return self._deprecated_msg()
     def mkchikw(self, *args, **kwargs):
@@ -363,12 +351,12 @@ class GsList(object):
         return self._deprecated_msg()
 
 ### LARCH ###    
-def gslist(kwsd=None, _larch=None):
+def datagroup(kwsd=None, _larch=None):
     """ utility to perform common operations on a list of data groups """
-    return GsList(kwsd=kwsd, _larch=_larch)
+    return DataGroup(kwsd=kwsd, _larch=_larch)
    
 def registerLarchPlugin():
-    return (MODNAME, {'gslist': gslist})
+    return (MODNAME, {'datagroup': datagroup})
 
 if __name__ == '__main__':
     pass

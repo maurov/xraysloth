@@ -1,36 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-GsList2D: work with 2D data sets (planes/maps)
+"""DataGroup2D: work with 2D data sets (planes/maps)
 
 TODO
 ----
+- [] REFACTOR THE WHOLE THING!!!
+- [] MOVE TECHNIQUE-BASED DATAGROUPS TO "sloth.technique"!!!
 - [] 
-- [] 
+- []
 
 """
+from .datagroup import DataGroup
+from ..rixs.rixsdata_plotter import RixsDataPlotter
 
-__author__ = "Mauro Rovezzi"
-__email__ = "mauro.rovezzi@gmail.com"
-__credits__ = ""
-__license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__owner__ = "Mauro Rovezzi"
-__organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2011-2015"
-
-from gsutils import GsList
-from rixsdata_plotter import RixsDataPlotter
-
-class GsList2D(GsList):
-    """ 2D version of GsList """
+class DataGroup2D(DataGroup):
+    """ 2D version of DataGroup """
     def __init__(self, kwsd=None, _larch=None):
-        GsList.__init__(self, kwsd=kwsd, _larch=_larch)
+        DataGroup.__init__(self, kwsd=kwsd, _larch=_larch)
 
-class GsListRixs(GsList2D):
-    """ GsList for RIXS planes """
+class DataGroupRixs(DataGroup2D):
+    """DataGroup for RIXS planes"""
     def __init__(self, kwsd=None, _larch=None):
-        GsList2D.__init__(self, kwsd=kwsd, _larch=_larch)
+        DataGroup2D.__init__(self, kwsd=kwsd, _larch=_larch)
 
     def getspecmap(self, fname, scans, scanlab=None, **kws):
         """ 2D map from a list of scans read from SPEC data files"""
@@ -54,9 +46,10 @@ class GsListRixs(GsList2D):
         return g
 
     def plotmap(self, imap, **kws):
-        """ plot for 2D map (e.g. RIXS plane)
+        """plot for 2D map (e.g. RIXS plane)
 
         imap : index in gs list
+
         """
         p = RixsDataPlotter(self.gs[imap])
         p.plot()

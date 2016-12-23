@@ -1,24 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""GsList1D: work with 1D data sets (scans)
+"""DataGroup1D: work with 1D data sets (scans)
 
 TODO
 ----
+- [] REFACTOR THE WHOLE THING!!!
+- [] MOVE TECHNIQUE-BASED DATAGROUPS TO "sloth.technique"!!!
 - [] mksum
 - [] plotxy: self.pw.setGeometry(700, 50, 900, 900), use config!
 - []
 
 """
-
-__author__ = "Mauro Rovezzi"
-__email__ = "mauro.rovezzi@gmail.com"
-__credits__ = ""
-__license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__owner__ = "Mauro Rovezzi"
-__organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2011-2015"
-
 ### IMPORTS ###
 import os, sys
 import numpy as np
@@ -43,11 +36,10 @@ try:
 except ImportError:
     pass
     
-# Mauro's Larch Plugins (https://github.com/maurov/xraysloth)
-from specfiledata import _str2rng as str2rng
-from specfiledata import spec_getmap2group, spec_getmrg2group
-from rixsdata_plotter import RixsDataPlotter
-from gsutils import GsList, _norm
+from ..io.specfile_reader import _str2rng as str2rng
+from ..io.specfile_reader import spec_getmap2group, spec_getmrg2group
+from ..rixs.rixsdata_plotter import RixsDataPlotter
+from .datagroup import DataGroup, _norm
 
 # PyMca
 HAS_PYMCA = False
@@ -67,11 +59,11 @@ if 'DEBUG' in globals():
 else:
     DEBUG = False
 
-class GsList1D(GsList):
-    """1D version of GsList"""
+class DataGroup1D(DataGroup):
+    """1D version of DataGroup"""
     
     def __init__(self, kwsd=None, _larch=None):
-        super(GsList1D, self).__init__(kwsd=kwsd, _larch=_larch)
+        super(DataGroup1D, self).__init__(kwsd=kwsd, _larch=_larch)
 
     def read_ascii(self, fname, labels=None, sort=False, sort_column=0):
         """see 'read_ascii' in Larch"""
@@ -168,8 +160,8 @@ given group
 
         Keyword arguments
         -----------------
-        g : spectrum to shift (index in gslist)
-        ref : reference spectrum (in gslist)
+        g : spectrum to shift (index in datagroup)
+        ref : reference spectrum (in datagroup)
         method : the method to perform this task
                  'com' -> overlap the center of mass
         set_attr : [False] write 'xcalib' attr for the calibrated group
@@ -254,7 +246,7 @@ given group
         Returns
         -------
         None -- output written to given attributes: 'xattr', 'yattr'
-                of a new group in gslist
+                of a new group in datagroup
         """
         iref = sel[0]
         xattr = kws.get('xattr', 'x')
@@ -381,15 +373,15 @@ given group
                                      replace=False)
                 _m += 1
 
-class GsListXanes(GsList1D):
-    """GsList for XANES scans"""
+class DataGroupXanes(DataGroup1D):
+    """DataGroup for XANES scans"""
     def __init__(self, kwsd=None, _larch=None):
-        super(GsListXanes, self).__init__(kwsd=kwsd, _larch=_larch)
+        super(DataGroupXanes, self).__init__(kwsd=kwsd, _larch=_larch)
 
-class GsListExafs(GsList1D):
-    """GsList for EXAFS scans"""
+class DataGroupExafs(DataGroup1D):
+    """DataGroup for EXAFS scans"""
     def __init__(self, kwsd=None, _larch=None):
-        super(GsListExafs, self).__init__(kwsd=kwsd, _larch=_larch)
+        super(DataGroupExafs, self).__init__(kwsd=kwsd, _larch=_larch)
 
     def mkchikw(self, kws=[1,2,3]):
         """makes kws-weighted groups
@@ -471,10 +463,10 @@ class GsListExafs(GsList1D):
         if 'Q' in space.upper():
             print('Not implemented yet.')
 
-class GsListXes(GsList1D):
-    """GsList for XES scans"""
+class DataGroupXes(DataGroup1D):
+    """DataGroup for XES scans"""
     def __init__(self, kwsd=None, _larch=None):
-        super(GsListXes, self).__init__(kwsd=kwsd, _larch=_larch)
+        super(DataGroupXes, self).__init__(kwsd=kwsd, _larch=_larch)
 
     def mkiads(self, ref=0, plot=False, **kws):
         """IAD analysis for XES
@@ -598,25 +590,25 @@ class GsListXes(GsList1D):
             print('plotting with matplotlib not implemented yet. do it yourself!')
         
 ### LARCH ###    
-def gslist_xan(kwsd=None, _larch=None):
+def datagroup_xan(kwsd=None, _larch=None):
     """utility to perform wrapped operations on a list of XANES data
     groups"""
-    return GsListXanes(kwsd=kwsd, _larch=_larch)
+    return DataGroupXanes(kwsd=kwsd, _larch=_larch)
 
-def gslist_exa(kwsd=None, _larch=None):
+def datagroup_exa(kwsd=None, _larch=None):
     """utility to perform wrapped operations on a list of EXAFS data
     groups"""
-    return GsListExafs(kwsd=kwsd, _larch=_larch)
+    return DataGroupExafs(kwsd=kwsd, _larch=_larch)
 
-def gslist_xes(kwsd=None, _larch=None):
+def datagroup_xes(kwsd=None, _larch=None):
     """utility to perform wrapped operations on a list of XES data
     groups"""
-    return GsListXes(kwsd=kwsd, _larch=_larch)
+    return DataGroupXes(kwsd=kwsd, _larch=_larch)
 
 def registerLarchPlugin():
-    return (MODNAME, {'gslist_xan' : gslist_xan,
-                      'gslist_exa' : gslist_exa,
-                      'gslist_xes' : gslist_xes})
+    return (MODNAME, {'datagroup_xan' : datagroup_xan,
+                      'datagroup_exa' : datagroup_exa,
+                      'datagroup_xes' : datagroup_xes})
 
 if __name__ == '__main__':
     pass
