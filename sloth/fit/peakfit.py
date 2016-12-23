@@ -1,22 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-Simple peak fitting utility based on PyMca_
+"""Simple peak fitting utility based on PyMca_
 
 .. _PyMca: https://github.com/vasole/pymca
 
 TODO
 ----
 - [] move the functions to a Specfit object
+
 """
-
-__author__ = "Mauro Rovezzi"
-__email__ = "mauro.rovezzi@gmail.com"
-__license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2011-2015"
-
 import sys, os
 import numpy as np
 

@@ -1,20 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""examples/tests for peakfit"""
 
-""" examples/tests for peakfit """
+# Fix Python 2.x
+from __future__ import print_function
+try: input = raw_input
+except NameError: pass
 
-__author__ = "Mauro Rovezzi"
-__email__ = "mauro.rovezzi@gmail.com"
-__license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2014-2015"
-
-import sys
-from __init__ import _libDir
-sys.path.append(_libDir)
-
-from peakfit import fit_splitpvoigt, fit_results
-
+import os, sys
 import numpy as np
 
 try:
@@ -24,6 +17,10 @@ except:
         from PyMca import specfilewrapper as specfile
     except:
         from PyMca import specfile
+
+from sloth.fit.peakfit import fit_splitpvoigt, fit_results
+
+_curDir = os.path.dirname(os.path.realpath(__file__))
 
 def test_mock():
     # create mock data
@@ -46,7 +43,7 @@ def test_diffpat(fname=None):
     try:
         sf = specfile.Specfile(fname)
     except:
-        print '{0} not found'.format(fname)
+        print('{0} not found'.format(fname))
         return
     sd = sf.select('1')
     x = sd.datacol(1)
@@ -62,7 +59,7 @@ def test_real(scanno, fname=None, noreturn=False):
     try:
         sf = specfile.Specfile(fname)
     except:
-        print '{0} not found'.format(fname)
+        print('{0} not found'.format(fname))
         return
     sd = sf.select(str(scanno))
     x = sd.datacol(1)*1000 #eV
@@ -72,7 +69,7 @@ def test_real(scanno, fname=None, noreturn=False):
     y = sd.datacol(csig)/sd.datacol(cmon)*np.mean(sd.datacol(cmon))/sd.datacol(csec) #cps
     fit, pw = fit_splitpvoigt(x, y, dy=True, bkg='Constant', plot=True, show_res=True)
     if noreturn:
-        raw_input("Press Enter to return (kills plot window)...")
+        input("Press Enter to return (kills plot window)...")
         return
     else:
         return x, y, fit, pw

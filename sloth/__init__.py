@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-Sloth: some utilies for x-ray spectroscopists
+"""Sloth: some utilies for x-ray spectroscopists
 
 Naming
 ======
@@ -23,6 +22,7 @@ _libDir = os.path.dirname(os.path.realpath(__file__))
 __pkgs__ = ['sloth',
             'sloth.collects',   #data containers
             'sloth.io',         #input-output
+            'sloth.fit',        #fit
             'sloth.gui',        #graphical user interface widgets
             'sloth.math',       #math&friends
             'sloth.raytracing', #ray tracing
