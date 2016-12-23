@@ -21,7 +21,7 @@ def main():
     kwargs = dict(
         name='sloth',
         version=sloth.__version__,
-        packages=['sloth', 'sloth.test', 'sloth.gui', 'sloth.raytracing'],
+        packages=sloth.__pkgs__,
         description='some utilities for x-ray spectroscopists',
         long_description=get_readme(),
         license='BSD',
