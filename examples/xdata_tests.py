@@ -1,22 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""Tests/Examples for xdata
 
 """
-Tests/Examples for xdata
-"""
-
-__author__ = "Mauro Rovezzi"
-__email__ = "mauro.rovezzi@gmail.com"
-__license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2013-2015"
-
 import sys
-from __init__ import _libDir
-sys.path.append(_libDir)
+# from __init__ import _libDir
+# sys.path.append(_libDir)
 
-from xdata import ELEMENTS, SHELLS, LINES_DICT, LINES_K, LINES_L, LINES_M, LINES, TRANSITIONS
-from xdata import ene_res, fluo_width, find_line, mapLine2Trans
+from sloth.xray.xdata import ELEMENTS, SHELLS, LINES_DICT, LINES_K, LINES_L, LINES_M, LINES, TRANSITIONS
+from sloth.xray.xdata import ene_res, fluo_width, find_line, mapLine2Trans
 
 ### TESTS/EXAMPLES
 def testEresLinesKLM(emin, emax):

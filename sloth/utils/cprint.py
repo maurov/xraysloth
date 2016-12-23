@@ -1,14 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """ Simple color print """
 
-__author__ = 'Mauro Rovezzi'
-__email__ = "mauro.rovezzi@gmail.com"
-__credits__ = 'ESRF beamline control unit'
-__license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2011-2015"
+from __future__ import print_function
 
 # settings
 CPRINT_PAR = {}
@@ -53,7 +47,7 @@ def _cprint_bad_contrast(fgcolor, bgcolor, bold, underlined):
         return 0
 
 def _cprint_bad_contrast2(fgcolor, bgcolor, bold, underlined):
-    """ Returns 1 if one of the conditions of poor contrast is matched """
+    """Returns 1 if one of the conditions of poor contrast is matched """
 
     #### LIGHT BG
     _c1 = (fgcolor == 3) and (bgcolor == 8) and (bold == 1) and (CPRINT_PAR["light_background"])
@@ -65,7 +59,7 @@ def _cprint_bad_contrast2(fgcolor, bgcolor, bold, underlined):
         return 0
 
 def _cprint_bad_contrast3(fgcolor, bgcolor, bold, underlined):
-    """ Returns 1 if one of the conditions of poor contrast is matched """
+    """Returns 1 if one of the conditions of poor contrast is matched """
 
     #### black on black with LIGHT BG
     _c1 = (fgcolor == 8) and (bgcolor == 0) and (CPRINT_PAR["light_background"])
@@ -78,28 +72,28 @@ def _cprint_bad_contrast3(fgcolor, bgcolor, bold, underlined):
 ### COLOR PRINT ###
 
 def bprint(str):
-    """ returns a bold <str>"""
+    """returns a bold <str>"""
     return "\033[1m{0}\033[0m".format (str)
 
 def cprint_bold(str):
-    """ Prints <str> in bold """
-    print bprint(str)
+    """Prints <str> in bold """
+    print(bprint(str))
 
 def buprint(str):
-    """ returns underlined bold <str>"""
+    """returns underlined bold <str>"""
     return "\033[1m\033[4m{0}\033[0m".format(str)
 
 def cprint_bold_underlined(str):
-    """ prints underlined bold <str>"""
-    print buprint(str)
+    """prints underlined bold <str>"""
+    print(buprint(str))
 
 def uprint(str):
-    """ returns underlined <str> """
+    """returns underlined <str> """
     return "\033[4m{0}\033[0m".format(str)
 
 def cprint_underlined(str):
-    """ prints underlined <str> """
-    print uprint(str)
+    """prints underlined <str>"""
+    print(uprint(str))
 
 def cprint(_str, fgcolor, bgcolor, bold, underlined, st):
     """
@@ -152,21 +146,21 @@ def cprint(_str, fgcolor, bgcolor, bold, underlined, st):
 
     _colored_str = "{0}{1}{2}{3}\033[0m\n".format(_mod_str, _fg_str, _bg_str, _str)
 
-    print _colored_str
+    print(_colored_str)
 
 def cprint_examples():
-    """ prints 'Ab1' string in many colored and modified typos """
+    """prints 'Ab1' string in many colored and modified typos"""
 
     mystr = "Ab1 "
 
-    print "        color print"
-    print "usage : cprint(str, <p1>, <p2>, <p3>, <p4>)"
-    print ""
-    print "p1\\p2-> 0               1               2               3           "      \
-        "    4               5               6               7               8     "
+    print("        color print")
+    print("usage : cprint(str, <p1>, <p2>, <p3>, <p4>)")
+    print("")
+    print("p1\\p2-> 0               1               2               3           "      \
+          "    4               5               6               7               8     ")
 
     for ii in range(9):
-        print "{0}--".format(ii)
+        print("{0}--".format(ii))
         for jj in range(9):
             cprint("{0}{1}".format(mystr,ii), ii , jj, 0, 0, 0)
             cprint("{0}{1}".format(mystr,ii), ii , jj, 1, 0, 0)

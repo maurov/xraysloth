@@ -26,8 +26,9 @@ __pkgs__ = ['sloth',
             'sloth.gui', #graphical user interface widgets
             'sloth.math', #math&friends
             'sloth.raytracing', #ray tracing
-            #'sloth.rixs' #rixs
-            'sloth.xray' #x-ray utilities
+            'sloth.rixs', #rixs
+            'sloth.xray', #x-ray utilities
+            'sloth.utils' #generic utilities
             ]
 
 

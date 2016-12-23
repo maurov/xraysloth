@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-Resonant Inelastic X-ray Scattering (RIXS) data objects (2D maps)
+"""Resonant Inelastic X-ray Scattering (RIXS) data objects (2D maps)
 
 TODO
 ----
@@ -10,28 +9,23 @@ TODO
 
 """
 
-from __future__ import division
-
-__author__ = "Mauro Rovezzi"
-__email__ = "mauro.rovezzi@gmail.com"
-__license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__owner__ = "Mauro Rovezzi"
-__organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2011-2015"
+from __future__ import print_function, division
 
 import os, sys
 import numpy as np
 from matplotlib import cm
 
 # Larch & friends
-from gridxyz import gridxyz
-from specfiledata import _str2rng as str2rng
-from specfiledata import SpecfileData
+from ..math.gridxyz import gridxyz
+from ..io.specfile_reader import _str2rng as str2rng
+from ..io.specfile_reader import SpecfileData
 
 class RixsData(object):
-    """ RIXS plane object """
+    """RIXS plane object"""
+    
     def __init__(self, label=None, kwsd=None):
-        "initialize with keyword arguments dictionaries"
+        """initialize with keyword arguments dictionaries"""
+        
         if kwsd is None:
             kwsd = self.getkwsd()
         self.kwsd = kwsd
@@ -136,14 +130,16 @@ class RixsData(object):
         return kwsd
 
     def loadxyz(self, fname, **kws):
-        """ load data from a 3 columns ASCII file assuming the format:
-        e_in, e_out, signal"""
+        """load data from a 3 columns ASCII file assuming the format: e_in,
+        e_out, signal
+
+        """
       
         try:
             self.dat = np.loadtxt(fname)
-            print 'Loaded {0}'.format(fname)
+            print('Loaded {0}'.format(fname))
         except:
-            print 'Error in loading {0}'.format(fname)
+            print('Error in loading {0}'.format(fname))
             return
         
         self.xcol = self.dat[:,0]
@@ -157,7 +153,7 @@ class RixsData(object):
         self.zcol = self.dat[:,2]
 
     def gridxyz(self, **kws):
-        """ create gridded standard groups """
+        """create gridded standard groups"""
         xystep = kws.get('xystep', self.kwsd['grid']['xystep'])
         method = kws.get('method', self.kwsd['grid']['method'])
         lib = kws.get('lib', self.kwsd['grid']['lib'])
@@ -176,10 +172,11 @@ class RixsData(object):
                                              lib=lib)
         
     def load_spec_map(self, **kws):
-        """ load the plane from SPEC file
+        """load the plane from SPEC file
 
         TODO: merge this in the previous load_xyz and the SPEC part in
         specfile
+
         """
         datdir = kws.get('datdir', self.kwsd['spec']['datdir'])
         fname = kws.get('fname', self.kwsd['spec']['fname'])
@@ -211,7 +208,7 @@ class RixsData(object):
         self.etcol = self.xcol-self.ycol # energy transfer
 
     def crop(self, x1, y1, x2, y2, **kws):
-        """ crop the plane in given range (x1, y1) -> (x2, y2) """
+        """crop the plane in given range (x1, y1) -> (x2, y2)"""
         xystep = kws.get('xystep', self.kwsd['spec']['xystep'])
         from matplotlib.mlab import griddata
         self.xcrop = np.arange(x1, x2, xystep)
@@ -225,7 +222,7 @@ class RixsData(object):
         return
 
     def norm(self, zz):
-        """ normalization to max-min """
+        """normalization to max-min"""
         return zz/(np.nanmax(zz)-np.nanmin(zz))
 
 if __name__ == '__main__':
