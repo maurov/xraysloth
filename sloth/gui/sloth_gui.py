@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
 Simple Qt graphical user interface for sloth
 ============================================
@@ -12,15 +14,6 @@ main = uic.loadUi('designer.ui')
 main.show()
 
 """
-
-__author__ = "Mauro Rovezzi"
-__email__ = "mauro.rovezzi@gmail.com"
-__credits__ = ""
-__license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__organization__ = "European Synchrotron Radiation Facility"
-__owner__ = "Mauro Rovezzi"
-__year__ = "2014-2015"
-
 import os, sys
 
 # force API 2
