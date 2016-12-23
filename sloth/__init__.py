@@ -21,14 +21,18 @@ _libDir = os.path.dirname(os.path.realpath(__file__))
 
 __pkgs__ = ['sloth',
             'sloth.collects',   #data containers
-            'sloth.io',         #input-output
+            'sloth.exafs',      #exafs analysis tools
             'sloth.fit',        #fit
             'sloth.gui',        #graphical user interface widgets
+            'sloth.io',         #input-output
+            'sloth.inst',       #instrumentation
             'sloth.math',       #math&friends
             'sloth.raytracing', #ray tracing
             'sloth.rixs',       #rixs
             'sloth.test',       #test suite
-            'sloth.utils'       #utilities
+            'sloth.utils',      #utilities
+            'sloth.xanes',      #xanes analysis tools
+            'sloth.xes'         #xes analysis tools
             ]
 
 

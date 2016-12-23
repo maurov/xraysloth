@@ -1,23 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-r"""
-Analytical expression of $\Delta \theta (x, z)$ from Wittry
+"""Analytical expression of $\Delta \theta (x, z)$ from Wittry
+
 """
-
-__author__ = "Mauro Rovezzi"
-__email__ = "mauro.rovezzi@gmail.com"
-__credits__ = ""
-__license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2011-2015"
-
+from __future__ import print_function
 import sys, os
 import math
 import numpy as np
 import numpy.ma as ma
 
-from specfiledatawriter import SpecfileDataWriter
+from sloth.io.specfile_writer import SpecfileDataWriter
 
 # ----------------
 # Global variables
@@ -93,7 +86,7 @@ def mapNum2Case(case, mode='label'):
         return 'Unknown'
 
 def dThetaXZ(x, z, thetab, case=None):
-    r""" Analytical espression of the angular deviation from Bragg
+    """Analytical espression of the angular deviation from Bragg
     reflection over a diffractor in conventional point-to-point
     focusing geometries
 
@@ -232,14 +225,14 @@ def dThetaXZ(x, z, thetab, case=None):
     A4 = (1./(2.*R2)) + (1./(2.*R2p)) - (1/(2.*R2p**2)) + (1./(math.sin(rthetab)**2)) * ((1./R2p) - (1./(2*R2)) - 1.)
 
     if DEBUG:
-        print 'Analytical DeltaTheta(x,z) for {0}'.format(case)
-        print 'Radii: R1={0}, R1p={1}, R2={2}, R2p={3}'.format(R1, R1p, R2, R2p)
-        print 'Coefficients:'
-        print 'A1 = {0}'.format(A1)
-        print 'A2 = {0}'.format(A2)
-        print 'A3 = {0}'.format(A3)
-        print 'A4p = {0}'.format(A4p)
-        print 'A4 = {0}'.format(A4)
+        print('Analytical DeltaTheta(x,z) for {0}'.format(case))
+        print('Radii: R1={0}, R1p={1}, R2={2}, R2p={3}'.format(R1, R1p, R2, R2p))
+        print('Coefficients:')
+        print('A1 = {0}'.format(A1))
+        print('A2 = {0}'.format(A2))
+        print('A3 = {0}'.format(A3))
+        print('A4p = {0}'.format(A4p))
+        print('A4 = {0}'.format(A4))
     
     return A1 * x**2 + A2 * x**3 + A3 * z**2 + A4 * x * z**2
 
@@ -310,7 +303,7 @@ def getDthetaDats(mxx, mzz, wrc=1.25E-4,
         #dd[cs]['mdth'] = []
         dd[cs]['sa'] = []
         dd[cs]['eres'] = []
-        print 'Angle loop for {0}...'.format(cs)
+        print('Angle loop for {0}...'.format(cs))
         for th in angles:
             dth = dThetaXZ(mxx, mzz, th, case=cs)
             # calc effective (< wrc) solid angle and energy resolution
@@ -324,7 +317,7 @@ def getDthetaDats(mxx, mzz, wrc=1.25E-4,
                 mm = ma.ones(mzz.shape)
                 mm = mm * gridSizeZZ
             else:
-                print 'Error: 0 grid size in solid angle for {0} at {1} deg'.format(cs, th)
+                print('Error: 0 grid size in solid angle for {0} at {1} deg'.format(cs, th))
                 continue
             mm.mask = mdth.mask
             #eff_area = (mm.sum()/(mm.shape[0]*mm.shape[1]))*(np.pi*(r_cryst**2))
@@ -358,4 +351,3 @@ def writeScanDats(dd, fname, scanLabel=None, motpos=None):
 if __name__ == '__main__':
     # TESTS in xrayspina/examples/dthetaxz_tests.py
     pass
-

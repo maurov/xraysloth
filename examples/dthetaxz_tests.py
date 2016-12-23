@@ -1,32 +1,26 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-Tests/Examples for dThetaXZ
+"""Tests/Examples for dThetaXZ
 
 TODO
 ====
+
 """
+# Fix Python 2.x
+try: input = raw_input
+except NameError: pass
 
-__author__ = "Mauro Rovezzi"
-__email__ = "mauro.rovezzi@gmail.com"
-__license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2013-2015"
-
-import sys
-from __init__ import _libDir
-sys.path.append(_libDir)
-
-from dthetaxz import dThetaXZ, mapCase2Num, mapNum2Case, getMeshMasked, getDthetaDats, writeScanDats
-from dthetaxz_plot import plotEffScatt, plotScanThetaFile
-# plot011
+import os, sys
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
 
+from sloth.inst.dthetaxz import dThetaXZ, mapCase2Num, mapNum2Case, getMeshMasked, getDthetaDats, writeScanDats
+from sloth.inst.dthetaxz_plot import plotEffScatt, plotScanThetaFile
+
 ### TESTS ###
 def test009():
-    """ effective scattering figure (updt: 2014-08-15) """
+    """effective scattering figure (updt: 2014-08-15)"""
     mxx1, mzz1 = getMeshMasked(mask='circular', r1p=500., cryst_x=50., cryst_z=50., csteps=500j)
     wrc = 1.25E-4
     cases = ['Jn', 'Js', 'SphJn', 'TorJs']
@@ -35,7 +29,7 @@ def test009():
     plotEffScatt(mxx1, mzz1, wrc=wrc, cases=cases, angles=angles, nlevels=30, plotMask=True, absWrc=False, casesLabels=casesLabs, xyFigSize=(8*150, 4.3*150), figName='test009')
 
 def test009b():
-    """ effective scattering figure (updt: 2014-08-21) """
+    """effective scattering figure (updt: 2014-08-21)"""
     mxx1, mzz1 = getMeshMasked(mask='circular', r1p=500., cryst_x=50., cryst_z=50., csteps=500j)
     wrc = 1.25E-4
     cases = ['Jn', 'Js', 'SphJn', 'TorJs', 'JsFocus']
@@ -44,7 +38,7 @@ def test009b():
     plotEffScatt(mxx1, mzz1, wrc=wrc, cases=cases, casesLabels=casesLabs, angles=angles, nlevels=30, plotMask=True, absWrc=False, xyFigSize=(8.3*150, 3.7*150), figName='test009b', fontSize=9, colSpan=2, xyTicks=0.1)
 
 def test009c(retDats=False, showPlot=True):
-    """ effective scattering figure (updt: 2014-09-03) """
+    """effective scattering figure (updt: 2014-09-03)"""
     mxx1, mzz1 = getMeshMasked(mask='circular', r1p=500., cryst_x=50., cryst_z=50., csteps=500j)
     wrc = 1.25E-4
     cases = ['Jn', 'Js', 'SphJn', 'TorJs', 'JsFocus']
@@ -86,17 +80,17 @@ def test009d():
                  xyFigSize=(6.0*150, 4.0*150), xylab=(0.04, 0.96),\
                  figName='{0}mm.{1}'.format(int(rd), msks[1]), fontSize=9, colSpan=2, xyTicks=0.1)
     
-    raw_input('Press ENTER to close figures')
+    input('Press ENTER to close figures')
      
 def test010():
-    """ multiple effective scattering figures (updt: 2014-06-29) """
+    """multiple effective scattering figures (updt: 2014-06-29)"""
     for rd in [1000., 500.]:
         for msk, cx, cz in zip(['circular', 'rectangular'], [50., 40.], [50., 12.5]):
             mxx1, mzz1 = getMeshMasked(mask=msk, r1p=rd, cryst_x=cx, cryst_z=cz, csteps=500j)
             plotEffScatt(mxx1, mzz1, wrc=1E-4, cases=['Johansson', 'Spherical Jn', 'Spherical Js', 'Toroidal Js'], angles=[35,55,75], nlevels=30, plotMask=True, absWrc=False, figName='{0}mm.{1}'.format(int(rd), msk), xyFigHalfRange=0.1, xyFigSize=(8*150, 4.3*150))
 
 def plotDats011(_d):
-    """ buggy """
+    """buggy"""
     fig = plt.figure(num='plotDats011', figsize=(5,5), dpi=150)
     gs = gridspec.GridSpec(1,2)
     for ird, rd in enumerate(_d['rds']):
@@ -128,7 +122,7 @@ def plotDats011(_d):
     return fig
 
 def test011(retDats=True, plotDats=False):
-    """ angular study for analyser shapes: circular 50^2 vs rectangular 80x25 """
+    """angular study for analyser shapes: circular 50^2 vs rectangular 80x25"""
     _d = {} # container
     _d['rds'] = [1000., 500.]
     #_d['cases'] = ['Johansson', 'Spherical Jn', 'Toroidal Js', 'Spherical Js', 'Js 45 deg focusing', 'Berreman']
@@ -154,7 +148,7 @@ def test011(retDats=True, plotDats=False):
         return _d
 
 def plotDats012(_d):
-    """ buggy """
+    """buggy"""
     fig = plt.figure(num='plotDats012', figsize=(5,5), dpi=150)
     #gs = gridspec.GridSpec(1,2)
     gs = []
@@ -215,7 +209,7 @@ def test012(retDats=True):
         return d
 
 def test013(retDats=True):
-    """ energy resolution """
+    """energy resolution"""
     d = {} # container
     d['fname'] = 'dth_test013.spec'
     d['rds'] = [1000., 500.]

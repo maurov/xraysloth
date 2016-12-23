@@ -21,30 +21,21 @@ the data reduction are:
   table
 
 """
-
-__author__ = "Mauro Rovezzi"
-__email__ = "mauro.rovezzi@gmail.com"
-__license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2015"
-
 import sys, os, math, time
 import numpy as np
 import matplotlib.pyplot as plt
 
-from __init__ import _libDir
-sys.path.append(_libDir)
+from sloth.io.specfile_reader import SpecfileData
+from sloth.fit.peakfit import fit_splitpvoigt, fit_results
+from sloth.io.specfile_writer import SpecfileDataWriter
+from sloth.utils.generic import imin, imax, colorstr
+from sloth.inst.rowland import RcHoriz
 
-from specfiledata import SpecfileData
-from peakfit import fit_splitpvoigt, fit_results
-from specfiledatawriter import SpecfileDataWriter
-from peakfit import fit_splitpvoigt, fit_results
-from genericutils import imin, imax, colorstr
-from rowland import RcHoriz
+_curDir = os.path.dirname(os.path.realpath(__file__))
 
 ### EVALUATION FUNCTIONS ###
 def eval_scan(fndat, scan, infodict, counter=1, signal='det_dtc',
-              monitor='I02', seconds='Seconds', norm='mon_sec',
+              monitor='I02', seconds='Seconds', norm='mon',
               showFit=False, **kws):
     """data evaluation of a single peak-type scan contained in a SPEC
     file: load, fit with an asymmetric PseudoVoigt and return data
@@ -74,7 +65,6 @@ def eval_scan(fndat, scan, infodict, counter=1, signal='det_dtc',
 
     norm : str, signal normalization ['mon_sec']
            'mon'     : y = y_signal / y_monitor
-           'mon_sec' : y = (y_signal / y_monitor) / y_seconds
            'cps'     : y = y_normon * np.mean(y_monitor) / y_seconds
 
     
@@ -124,9 +114,6 @@ def eval_scan(fndat, scan, infodict, counter=1, signal='det_dtc',
     if norm == 'mon':
         y = y_sig/y_mon
         infodict.update({'norm' : 'y_signal/y_monitor'})
-    elif norm == 'mon_sec':
-        y = (y_sig/y_mon)/y_sec
-        infodict.update({'norm' : '(y_signal/y_monitor)/y_seconds'})
     elif norm == 'cps':
         y = y_sig/y_sec
         infodict.update({'norm' : '(y_signal/y_monitor)*np.mean(y_monitor)/y_seconds'})
@@ -305,7 +292,7 @@ if __name__ == '__main__':
                'signal'  : 'det_dtc',
                'monitor' : 'I02',
                'seconds' : 'Seconds',
-               'norm'    : 'mon_sec'}
+               'norm'    : 'mon'}
         
         out_root = os.path.join(_curDir, 'data_reduction_example1')
         out_date = '{0:04d}-{1:02d}-{2:02d}'.format(*time.localtime())
@@ -331,7 +318,7 @@ if __name__ == '__main__':
                                                  owrt=True,
                                                  retall=True,
                                                  show_results=True, **kwd)
-    if 0:
+    if 1:
         #you can see the _out.spec file with PyMca
         print(colorstr('=== opening PyMca  ==='))
         from PyMca5.PyMcaGui import PyMcaMain

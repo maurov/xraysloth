@@ -1,17 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-r"""
-plots related to dthetaxz
-"""
-
-__author__ = "Mauro Rovezzi"
-__email__ = "mauro.rovezzi@gmail.com"
-__credits__ = ""
-__license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2011-2015"
-
+"""plots related to dthetaxz"""
 import sys, os
 import numpy as np
 import numpy.ma as ma
@@ -21,8 +11,8 @@ from matplotlib import gridspec
 from matplotlib import cm
 from matplotlib.ticker import MaxNLocator, AutoLocator, MultipleLocator
 
-from dthetaxz import dThetaXZ, mapCase2Num, mapNum2Case, getMeshMasked, getDthetaDats, writeScanDats
-from specfiledata import SpecfileData
+from .dthetaxz import dThetaXZ, mapCase2Num, mapNum2Case, getMeshMasked, getDthetaDats, writeScanDats
+from ..io.specfile_reader import SpecfileData
 
 def plotEffScatt(xx, zz, wrc=1.25E-4,\
                  cases=['Johann', 'Johansson', 'Spherical plate', 'Wittry'], casesLabels=None,\

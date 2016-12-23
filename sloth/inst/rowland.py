@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """Rowland circle geometry
-=======================
+==========================
 
 Units here:
 
@@ -90,9 +90,9 @@ AZ0 = 1e-4 # minimum Z step (mm) considered as 0
 
 ### UTILITIES ###
 def cs_h(c, R):
-    r"""
-    Height of the circular segment, given its radius R and chord length c
-    See: [http://en.wikipedia.org/wiki/Circular_segment]
+    """Height of the circular segment, given its radius R and chord
+    length c See: [http://en.wikipedia.org/wiki/Circular_segment]
+
     """
     if c >= 2*R:
         print('WARNING: the chord is greater than the diameter!')
@@ -102,15 +102,15 @@ def cs_h(c, R):
         return R - math.sqrt( R**2 - (c**2/4) )
 
 def acenx(n, asx=25., agx=5.):
-    """n-th analyser center (starting from 0!) in x, given its size
-    (asx) and gap between two (agx) in mm
+    """n-th analyser center (starting from 0!) in x, given its size (asx)
+    and gap between two (agx) in mm
 
     """
     return (asx + agx) * n
 
 def det_pos_rotated(dxyz, drot=35.):
-    """return the detector positions in a rotated reference system
-    with the origin at the sample
+    """return the detector positions in a rotated reference system with
+    the origin at the sample
 
     Parameters
     ----------
@@ -145,6 +145,7 @@ class RowlandCircle(object):
         """
         Parameters
         ----------
+        
         Rm : float, 500.
 
              radius of the Rowland circle (meridional radius) in [mm]
@@ -695,8 +696,7 @@ class RowlandCircle(object):
 
             
 class RcVert(RowlandCircle):
-    """Rowland circle vertical frame: sample-detector on XZ plane along Z
-axis
+    """Rowland circle vertical frame: sample-detector on XZ plane along Z axis
 
     """
 
