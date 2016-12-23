@@ -7,8 +7,8 @@ import sys
 # from __init__ import _libDir
 # sys.path.append(_libDir)
 
-from sloth.xray.xdata import ELEMENTS, SHELLS, LINES_DICT, LINES_K, LINES_L, LINES_M, LINES, TRANSITIONS
-from sloth.xray.xdata import ene_res, fluo_width, find_line, mapLine2Trans
+from sloth.utils.xdata import ELEMENTS, SHELLS, LINES_DICT, LINES_K, LINES_L, LINES_M, LINES, TRANSITIONS
+from sloth.utils.xdata import ene_res, fluo_width, find_line, mapLine2Trans
 
 ### TESTS/EXAMPLES
 def testEresLinesKLM(emin, emax):
