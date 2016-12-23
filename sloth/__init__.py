@@ -20,7 +20,16 @@ import os, sys
 _libDir = os.path.dirname(os.path.realpath(__file__))
 #sys.path.append(_libDir)
 
-#TODO
+__pkgs__ = ['sloth',
+            'sloth.test', #test suite
+            'sloth.io', #input-output
+            'sloth.gui', #graphical user interface widgets
+            'sloth.math', #math&friends
+            'sloth.raytracing' #ray tracing
+            #'sloth.rixs' #rixs
+            ]
+
+
 #__all__ = ['a', 'b', 'c']
 
 if __name__ == '__main__':

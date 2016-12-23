@@ -20,14 +20,6 @@ TODO
   with flipped helicity)
 
 """
-
-__author__ = "Mauro Rovezzi"
-__email__ = "mauro.rovezzi@gmail.com"
-__credits__ = "Matt Newville"
-__license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2011-2015"
-
 import os, sys
 import numpy as np
 from scipy.interpolate import interp1d
@@ -36,7 +28,7 @@ from scipy.ndimage import map_coordinates
 # to grid X,Y,Z column data
 HAS_GRIDXYZ = False
 try:
-    from gridxyz import gridxyz
+    from ..math.gridxyz import gridxyz
     HAS_GRIDXYZ = True
 except:
     pass
@@ -92,7 +84,7 @@ else:
 # specfiledatawriter
 HAS_SFDW = False
 try:
-    from specfiledatawriter import SpecfileDataWriter
+    from .specfile_write import SpecfileDataWriter
     HAS_SFDW = True
 except ImportError:
     pass

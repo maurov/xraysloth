@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Tests/Examples for SpecfileData and SpecfileDataWriter
 
@@ -8,18 +7,19 @@ TODO
 ====
 - spefiledatawriter examples
 """
+# Fix Python 2.x
+try: input = raw_input
+except NameError: pass
 
-__author__ = "Mauro Rovezzi"
-__email__ = "mauro.rovezzi@gmail.com"
-__license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2011-2015"
+import os, sys
+# from __init__ import _libDir
+# sys.path.append(_libDir)
+_curDir = os.path.dirname(os.path.realpath(__file__))
 
-import sys
-from __init__ import _libDir
-sys.path.append(_libDir)
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 
-from specfiledata import SpecfileData
+from sloth.io.specfile_reader import SpecfileData
 
 ### TESTS ###
 def test01():
@@ -36,20 +36,17 @@ def test01():
     for norm in [None, "area", "max", "max-min", "sum"]:
         x, y, motors, infos = t.get_scan(scan, cntx=counter, csig=signal, cmon=monitor, csec=seconds, norm=norm)
         print("Read scan {0} with normalization {1}".format(scan, norm))
-        import matplotlib.pyplot as plt
         plt.ion()
         plt.figure(num=test01.__doc__)
         plt.plot(x, y)
         plt.xlabel(infos["xlabel"])
         plt.ylabel(infos["ylabel"])
         plt.show()
-        raw_input("Press Enter to close the plot window and continue...")
+        input("Press Enter to close the plot window and continue...")
         plt.close()
 
 def test02(nlevels):
     """ test get_map method """
-    import matplotlib.pyplot as plt
-    import matplotlib.cm as cm
     fname = os.path.join(_curDir, 'specfiledata_tests.dat')
     rngstr = '5:70'
     counter = 'arr_hdh_ene'
@@ -74,7 +71,7 @@ def test02(nlevels):
     cax = ax.contourf(ex, et, ezz, nlevels, cmap=cm.Paired_r)
     cbar = fig.colorbar(cax)
     plt.show()
-    raw_input("Press Enter to close the plot and continue...")
+    input("Press Enter to close the plot and continue...")
     plt.close()
 
 def test03():
@@ -98,7 +95,7 @@ def test03():
         plt.xlabel(counter)
         plt.ylabel("merged with norm {0}".format(norm))
         plt.show()
-        raw_input("Press Enter to continue...")
+        input("Press Enter to continue...")
         plt.close()
 
 if __name__ == '__main__':
