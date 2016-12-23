@@ -1,17 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 braggutils: utilities around the Bragg's law ($ n \lambda = 2 d sin \theta $)
 """
-
-__author__ = "Mauro Rovezzi"
-__email__ = "mauro.rovezzi@gmail.com"
-__credits__ = ""
-__license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2011-2015"
-
 import numpy as np
 
 try:
@@ -36,20 +27,19 @@ DEBUG = True
 
 ### UTILS ###
 def ev2wlen(energy):
-    r""" convert photon energy (E, eV) to wavelength ($\lambda$, \AA$^{-1}$)"""
+    """convert photon energy (E, eV) to wavelength ($\lambda$, \AA$^{-1}$)"""
     return ( ( HC ) / energy ) * 1e10
 
 def wlen2ev(wlen):
-    r""" convert photon wavelength ($\lambda$, \AA$^{-1}$) to energy (E, eV)"""
+    """convert photon wavelength ($\lambda$, \AA$^{-1}$) to energy (E, eV)"""
     return ( ( HC ) / wlen ) * 1e10
 
 def bragg_ev(d, theta, n=1):
-    r""" return the Bragg energy (eV) for a given d-spacing (\AA) and angle
- (deg)"""
+    """return the Bragg energy (eV) for a given d-spacing (\AA) and angle (deg)"""
     return wlen2ev(( 2 * d * np.sin(np.deg2rad(theta)) ) / n)
 
 def theta_b(wlen, d, n=1):
-    r""" return the Bragg angle, $\theta_{B}$, (deg) for a given wavelength
+    """return the Bragg angle, $\theta_{B}$, (deg) for a given wavelength
     (\AA$^{-1}$) and d-spacing (\AA)"""
     if not (d == 0):
         try:
@@ -60,19 +50,18 @@ def theta_b(wlen, d, n=1):
         return 0
 
 def bragg_th(d, ene, n=1):
-    r""" return the Bragg angle, $\theta_{B}$, (deg) for a given energy (eV)
- and d-spacing (\AA)"""
+    """return the Bragg angle, $\theta_{B}$, (deg) for a given energy (eV) and d-spacing (\AA)"""
     return theta_b(ev2wlen(ene), d, n=n)
 
 def cotdeg(theta):
-    r""" return the cotangent (= cos/sin) of theta given in degrees"""
+    """return the cotangent (= cos/sin) of theta given in degrees"""
     dtheta = np.deg2rad(theta)
     return np.cos(dtheta) / np.sin(dtheta)
 
 def de_bragg(theta, dth):
-    r""" energy resolution $\frac{\Delta E}{E}$ from Bragg's law
-    $|\frac{\Delta E}{E}| = |\frac{\Delta \theta}{\theta} = \Delta
-    \theta \cot(\theta)|$
+    """energy resolution $\frac{\Delta E}{E}$ from derivative of Bragg's law
+    
+    $|\frac{\Delta E}{E}| = |\frac{\Delta \theta}{\theta} = \Delta \theta \cot(\theta)|$
     """
     return dth * cotdeg(theta)
 
@@ -138,8 +127,7 @@ def d_triclinic(a, b, c, alpha, beta, gamma, hkl, **kws):
     return sqrt1over(d2m)
 
 def findhkl(energy, thetamin=65., crystal='all'):
-    """
-    findhkl: for a given energy (eV) finds the Si and Ge reflections
+    """findhkl: for a given energy (eV) finds the Si and Ge reflections
     with relative Bragg angle
 
     Usage

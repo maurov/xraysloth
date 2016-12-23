@@ -79,7 +79,7 @@ __year__ = "2011-2016"
 import sys, os, math
 import numpy as np
 
-from rotmatrix import rotate
+from .math.rotmatrix import rotate
 
 DEBUG = 1
 
