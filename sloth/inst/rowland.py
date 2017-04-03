@@ -71,17 +71,14 @@ TODO
 
 __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
-__credits__ = ""
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2011-2016"
 
 import sys, os, math
 import numpy as np
 
-from .math.rotmatrix import rotate
+from ..math.rotmatrix import rotate
 
-DEBUG = 1
+DEBUG = 0
 
 ### GLOBAL VARIABLES ###
 HC = 1.2398418743309972e-06 # eV * m
@@ -120,19 +117,25 @@ def det_pos_rotated(dxyz, drot=35.):
            (detector assumed on the YZ plane)
 
     drot : float [35.]
-           angle of rotation, counter-clock-wise, around Y axis
+           angle of rotation, counter-clock-wise, around X axis
+
+    Return
+    ------
+
+    [dpar, dper] : numpy array of floats
+               
 
     """
-    dx, dz = dxyz[1], dxyz[2]
-    dr = math.sqrt(dx**2 + dz**2)
-    if dx == 0.:
+    dx, dy, dz = dxyz[0], dxyz[1], dxyz[2]
+    dr = math.sqrt(dy**2 + dz**2)
+    if dy == 0.:
         alpha = math.pi/2. - math.radians(drot)
     else:
-        alpha = math.atan(dz/dx) - math.radians(drot)
-    if DEBUG: print('alpha is {0} deg'.format(math.degrees(alpha)))
+        alpha = math.atan(dz/dy) - math.radians(drot)
+    if DEBUG: print('DEBUG(det_pos_rotated): alpha is {0} deg'.format(math.degrees(alpha)))
     dpar = dr * math.cos(alpha)
     dper = dr * math.sin(alpha)
-    return dpar, dper
+    return np.array([dpar, dper])
     
 ### CLASS ###
 class RowlandCircle(object):

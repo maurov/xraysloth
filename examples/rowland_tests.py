@@ -2,14 +2,20 @@
 # -*- coding: utf-8 -*-
 
 """
-Tests/Examples for rowland
+Tests/Examples for sloth.inst.rowland (generic tests)
+
+See also
+--------
+
+- rowland_sagittal_tests
+- rowland_detector_tests
+
+
 """
 
 __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2014--2015"
 
 import os, sys
 import math
@@ -18,10 +24,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 ### SLOTH ###
-from __init__ import _libDir
-sys.path.append(_libDir)
-from rowland import cs_h, acenx, det_pos_rotated, RcHoriz, RcVert
-from genericutils import colorstr
+try:
+    from sloth import __version__ as sloth_version
+    from sloth.inst.rowland import cs_h, acenx, RcHoriz, RcVert
+    from sloth.utils.genericutils import colorstr
+    from sloth.utils.bragg import d_cubic, d_hexagonal
+except:
+    raise ImportError('sloth is not installed (required version >= 0.2.0)')
 
 RS_MIN = 157.915
 RS_MAX = 1012.252
@@ -31,7 +40,6 @@ GE_ALAT = 5.6579060 # Ang at 25C
 SIO2_A = 4.913 # beta-quartz, hexagonal
 SIO2_C = 5.405
 
-from bragg import d_cubic, d_hexagonal
 dSi111 = d_cubic(SI_ALAT, (1,1,1))
 dGe111 = d_cubic(GE_ALAT, (1,1,1))
 dSi220 = d_cubic(SI_ALAT, (2,2,0))
@@ -83,25 +91,6 @@ def testAzOff(eDelta, Rm=500., theta0=35, d=dSi111):
     t = RcHoriz(Rm=Rm, theta0=theta0, d=d)
     return t.get_az_off(eDelta)
 
-def testDetMove(Rm=510):
-    """test detector position in two ref frames"""
-    ths = np.linspace(35., 85., 51)
-    dres = {'th' : [],
-            'dx' : [],
-            'dz' : [],
-            'dpar' : [],
-            'dper' : []}
-    for th in ths:
-        r = RcHoriz(Rm, theta0=th, showInfos=False)
-        d0 = r.get_det_pos()
-        d1 = det_pos_rotated(d0, drot=35.)
-        dres['th'].append(th)
-        dres['dx'].append(d0[1])
-        dres['dz'].append(d0[2])
-        dres['dpar'].append(d1[0])
-        dres['dper'].append(d1[1])
-    return dres
-    
 def testSagFocus(d=dSi111):
     """not finished yet!"""
     #first get the minimum position
@@ -192,7 +181,6 @@ if __name__ == "__main__":
     #testSagOff(250., 35., 150., aL=12.)
     #dres = testChiOpt()
     #testAzOff(0.5)
-    #dres = testDetMove()
     #testMiscutOff1Ana(500., 65., 36.)
     #t0 = testSagFocus()
     #t1 = testFrictionPrototype(240., 65.)

@@ -2,14 +2,12 @@
 # -*- coding: utf-8 -*-
 
 """
-Tests/Examples for rowland sagittal focusing
+Tests/Examples for sloth.inst.rowland (sagittal focusing part)
 """
 
 __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2015-2016"
 
 import os, sys
 import math
@@ -35,15 +33,16 @@ from matplotlib.ticker import MaxNLocator, AutoLocator, MultipleLocator
 rcParams['axes.color_cycle'] = colors
 
 ### SLOTH ###
-from __init__ import _libDir
-sys.path.append(_libDir)
-from rowland import RcHoriz
-from genericutils import colorstr
-from geometry3D import (circle_3p, point_on_plane_projection)
+try:
+    from sloth import __version__ as sloth_version
+    from sloth.inst.rowland import RcHoriz
+    from sloth.utils.bragg import d_cubic
+    from sloth.math.geometry3D import (circle_3p, point_on_plane_projection)
+except:
+    raise ImportError('sloth is not installed (required version >= 0.2.0)')
 
 epsilon = 1.E-10 # Default epsilon for equality testing of points and vectors
 
-from bragg import d_cubic
 SI_ALAT = 5.431065 # Ang at 25C
 dSi111 = d_cubic(SI_ALAT, (1,1,1))
 
@@ -667,7 +666,7 @@ class TestSagittalFocusing(object):
 if __name__ == "__main__":
     plt.close('all')
     plt.ion()
-    if 1:
+    if 0:
         #read data and init objects from 3 measurement sessions
         fn1 = '2015-06-18-all_points.dat'
         fn2 = '2016-02-29-all_points.dat'
