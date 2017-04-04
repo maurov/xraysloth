@@ -49,17 +49,24 @@ def testDetMove(Rm=510):
         dres['dper'].append(d1[1])
     return dres
 
-def fig2DetMove(thTot, figName='spectroTravelYZ', drot=35.,
-                figSize=(6,6), figDpi=150, replace=True,
+def fig2DetMove(thTot, thStops=None, figName='spectroTravelYZ',
+                drot=35., figSize=(6,6), figDpi=150, replace=True,
                 plotLegend=True, plotGrid=True, figTitle=None,
-                xMajTicks=100, xMinTicks=10, yMajTicks=100, yMinTicks=10,
-                figSaveName=None):
+                xMajTicks=100, xMinTicks=10, yMajTicks=100,
+                yMinTicks=10, figSaveName=None):
     """figure showing detector trajectories in two reference systems:
     
     1) global [Y,Z]
     2) local [dpar,dper]
 
     the local reference system is rotated counter clock-wise around X by drot (deg)
+
+    Parameters
+    ----------
+
+    thTot : full angular range for calculating the detector positions, deg
+
+    thStops : list of angles where to show a stop indicator
 
     """
     
@@ -70,12 +77,13 @@ def fig2DetMove(thTot, figName='spectroTravelYZ', drot=35.,
     fig, (top, bot) = plt.subplots(num=figName, nrows=2, ncols=1, figsize=figSize, dpi=figDpi)
 
     #plot setup
-    radii =  [490.,   500.,               510.,   240.,    250.,              260.]
-    rmasks = [1,      1,                  1,      1,       1,                 1] 
-    labels = [None,   '1000 $\pm$ 20 mm', None,   None,    '500 $\pm$ 20 mm', None]
-    lcs =    ['blue', 'blue',             'blue', 'green', 'green',           'green']
-    lss =    ['--',   '-',                '--',   '--',    '-',               '--']
-    alphas = [0.5,    None,               0.5,    0.5,     None,              0.5]
+    radii =    [490.,   500.,               510.,   240.,    250.,              260.]
+    rmasks =   [1,      1,                  1,      1,       1,                 1]
+    rthstops = [0,      1,                  0,      0,       1,                 0] 
+    labels =   [None,   '1000 $\pm$ 20 mm', None,   None,    '500 $\pm$ 20 mm', None]
+    lcs =      ['blue', 'blue',             'blue', 'green', 'green',           'green']
+    lss =      ['--',   '-',                '--',   '--',    '-',               '--']
+    alphas =   [0.5,    None,               0.5,    0.5,     None,              0.5]
 
     #detector scan
     for irm, rm in enumerate(radii):
@@ -94,11 +102,23 @@ def fig2DetMove(thTot, figName='spectroTravelYZ', drot=35.,
             zD[ith] = dpos[2]
             dyD[ith] = dpos2[0]
             dzD[ith] = dpos2[1]
-        top.plot(yD, zD, lw=2, color=lcs[irm], ls=lss[irm],
-                 alpha=alphas[irm], label=labels[irm])
-        bot.plot(dyD, dzD, lw=2, color=lcs[irm], ls=lss[irm],
-                 alpha=alphas[irm], label=labels[irm])
-        
+        top.plot(yD, zD, lw=2, color=lcs[irm], ls=lss[irm], alpha=alphas[irm], label=labels[irm])
+        bot.plot(dyD, dzD, lw=2, color=lcs[irm], ls=lss[irm], alpha=alphas[irm], label=labels[irm])
+
+
+    #th stops indicators (vertical line)
+    if thStops is not None:
+        for irm, rm in enumerate(radii):
+            if not rthstops[irm]:
+                continue
+            r = RcHoriz(Rm=rm, showInfos=False)
+            for th in thStops:
+                r.set_theta0(th)
+                dpos = r.get_det_pos()
+                dpos2 = det_pos_rotated(dpos, drot=drot)
+                top.vlines(x=dpos[1], ymin=dpos[2]-yMajTicks, ymax=dpos[2]+yMajTicks, linewidth=2, color=lcs[irm], alpha=0.5)
+                bot.vlines(x=dpos2[0], ymin=dpos2[1]-yMajTicks, ymax=dpos2[1]+yMajTicks, linewidth=2, color=lcs[irm], alpha=0.5)
+            
     if figTitle is None:
         figTitle = r'Detector travel in {0}-{1} deg range'.format(int(thTot[-1]), int(thTot[0]))
 
@@ -132,15 +152,19 @@ def fig2DetMove(thTot, figName='spectroTravelYZ', drot=35.,
 if __name__ == "__main__":
     plt.close('all')
 
-    if 0:
+    if 1:
+        print("Detector positions continous plot with theta stops")
         thMin = 35
         thMax = 85
         thPts = 1000
         thTot = np.linspace(thMin, thMax, thPts) #better linspace includes limits
-        #thSteps(thTot, eStep=0.05, eScan=50.)
-        fig = fig2DetMove(thTot)
-
-    if 1:
+        thStops = np.arange(40, 85, 5)
+        figOut = None
+        figOut = 'spectrotravel_20170404'
+        figTitle = 'Detector travel {0}--{1} deg (stops every 5 deg)'.format(thMin, thMax)
+        fig = fig2DetMove(thTot, thStops=thStops, figTitle=figTitle, figSaveName=figOut)
+    if 0:
+        print("Detector positions plot with theta intevals")
         thsEnds = [35., 40., 45., 50., 55., 60., 65., 70., 75., 80., 85.]
         thsStarts = [34.4283, 39.2352, 44.0020, 48.7192, 53.3720,
                      57.9369, 62.3748, 66.6179, 70.5431, 73.9200, 76.3397]
@@ -154,8 +178,6 @@ if __name__ == "__main__":
         #figOut = None
         figOut = 'spectrotravel_20170403'
         fig = fig2DetMove(thsTot, figTitle='Detector travel in 50 eV scans', figSaveName=figOut)
-        
-        
     if 0:
         dres = testDetMove()
 
