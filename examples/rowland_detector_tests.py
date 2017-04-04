@@ -152,7 +152,7 @@ def fig2DetMove(thTot, thStops=None, figName='spectroTravelYZ',
 if __name__ == "__main__":
     plt.close('all')
 
-    if 1:
+    if 0:
         print("Detector positions continous plot with theta stops")
         thMin = 35
         thMax = 85
@@ -160,10 +160,10 @@ if __name__ == "__main__":
         thTot = np.linspace(thMin, thMax, thPts) #better linspace includes limits
         thStops = np.arange(40, 85, 5)
         figOut = None
-        figOut = 'spectrotravel_20170404'
+        #figOut = 'spectrotravel_20170404'
         figTitle = 'Detector travel {0}--{1} deg (stops every 5 deg)'.format(thMin, thMax)
         fig = fig2DetMove(thTot, thStops=thStops, figTitle=figTitle, figSaveName=figOut)
-    if 0:
+    if 1:
         print("Detector positions plot with theta intevals")
         thsEnds = [35., 40., 45., 50., 55., 60., 65., 70., 75., 80., 85.]
         thsStarts = [34.4283, 39.2352, 44.0020, 48.7192, 53.3720,
@@ -175,8 +175,8 @@ if __name__ == "__main__":
             n = np.zeros_like(lsp)
             n *= np.nan
             thsTot = np.append(thsTot, n)
-        #figOut = None
-        figOut = 'spectrotravel_20170403'
+        figOut = None
+        #figOut = 'spectrotravel_20170403'
         fig = fig2DetMove(thsTot, figTitle='Detector travel in 50 eV scans', figSaveName=figOut)
     if 0:
         dres = testDetMove()
