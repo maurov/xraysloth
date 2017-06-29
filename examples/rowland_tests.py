@@ -4,12 +4,12 @@
 """
 Tests/Examples for sloth.inst.rowland (generic tests)
 
-See also
---------
+See also more specific tests (older first)
+------------------------------------------
 
-- rowland_sagittal_tests
-- rowland_detector_tests
-
+- rowland_sagittal_tests (data evaluation sagittal prototype)
+- rowland_detector_tests (figures showing detector movements)
+- rowland_pantograph_tests (pantograph control movements)
 
 """
 
