@@ -78,6 +78,11 @@ import numpy as np
 
 from ..math.rotmatrix import rotate
 
+try:
+    xrange
+except NameError:
+    xrange = range
+
 DEBUG = 0
 
 ### GLOBAL VARIABLES ###
