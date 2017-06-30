@@ -191,10 +191,18 @@ def testPantograph2017(Rm, theta0, d=dSi111,\
     rc = RcHoriz(Rm=Rm, theta0=theta0, d=d,\
                  aW=aW, aWext=aWext, rSext=rSext, aL=aL,\
                  showInfos=showInfos)
-    c5 = rc.get_chi2(5.)
-    c4 = rc.get_chi2(4.)
-    c3 = rc.get_chi2(3.)
-    print("INFO: chi5 is {0:.4f}".format(c5))
+
+    #TOO: to include in get_bender_pos
+    
+    #map 3 pivot points positions
+    _c2 = [rc.get_chi2(_n) for _n in xrange( int(aN-2), int(aN+1) )]
+    dchi = _c2[2]-_c2[0]
+    if rc.showInfos:
+        print('INFO: == CHI ==')
+        print('INFO: \chi{0:.0f} = {1:.5f}'.format(aN, _c2[2]))
+        print('INFO: \Delta\chi{0}{1} = {2:.5f} deg'.format(aN, aN-2, dchi))
+    _p = [rc.get_sag_off(rc.get_axoff(_cn), retAll=True) for _cn in _c2]
+
 
 if __name__ == "__main__":
     #plt.close('all')
