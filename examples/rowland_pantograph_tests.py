@@ -35,11 +35,52 @@ SI_ALAT = 5.431065 # Ang at 25C
 dSi111 = d_cubic(SI_ALAT, (1,1,1))
 dSi220 = d_cubic(SI_ALAT, (2,2,0))
 
-### TESTS ###
+### TESTS FOR THE PANTOGRAPH PROTOTYPE (A.K.A. FRICTION PROTOTYPE) ###
 def testFrictionPrototype(Rm, theta0, d=dSi111):
-    """implemented in get_bender_pos and get_bender_mot methods"""
+    """implemented in get_bender_pos and get_bender_mot methods in sloth 0.2.0
+
+    Pantograph parameters (sloth 0.2.0)
+    -----------------------------------
+
+        aW : float, 0.
+
+             crystal analyser optical width
+                
+        aWext : float, 0.
+
+                crystal analyser extended width (NOTE: this width is
+                used in self.get_chi2, that is, the width to get two
+                adjacent analysers touching)
+
+        rSext : float, 0.
+
+                sagittal radius offset where aWext is referred to,
+                that is, aWext condition is given for Rs+rSext
+        
+        aL : float, 0.
+
+             distance of analyser center from the chi rotation
+             (affects => Chi, SagOff)
+
+    
+        bender : tuple of floats, (0., 0., 0.) corresponds to
+                 (length_arm0_mm, length_arm1_mm, angle_between_arms_deg)
+
+        actuator : tuple of floats, (0., 0.) corresponts to
+                   (axoff_actuator_mm, length_actuator_arm_mm)
+
+    here:
+
+    bender = (bender_arm0, bender_arm, bender_angle)
+    actuator = (act_axoff, act_dist)
+
+    ref 3D CAD: ``RowlandSketchPrototype-v1512``
+
+    """
     # get pivot points positions
-    t = RcHoriz(Rm=Rm, theta0=theta0, d=d, aW=25., aWext=32, rSext=10., aL=97., showInfos=False)
+    t = RcHoriz(Rm=Rm, theta0=theta0, d=d,\
+                aW=25., aWext=32, rSext=10., aL=97.,\
+                showInfos=False)
     bender_arm0 = 40. #arm to anchor p5 to actuator
     bender_arm = 60. #arm bender to the trapezoids, mm
     bender_angle = 100. #deg
@@ -85,19 +126,79 @@ def testFrictionPrototype(Rm, theta0, d=dSi111):
     # WORKS!!!!!
     return t
 
-def testFrictionPrototypeInMethod(Rm, theta0, d=dSi111):
-    """as previous test but with the method implemented in the class"""
+def testFrictionPrototypeInMethod(Rm, theta0, d=dSi111,\
+                                  aW=25., aWext=32, rSext=20., aL=97.,\
+                                  bender=(40., 60., 100.), actuator=(269., 135.),\
+                                  showInfos=True):
+    """as testFrictionPrototype implemented in sloth 0.2.0"""
+    if not (sloth_version == '0.2.0'):
+        print('This test works only with sloth 0.2.0')
+        return 0
     t = RcHoriz(Rm=Rm, theta0=theta0, d=d,\
-                aW=25., aWext=32, rSext=10., aL=97.,\
-                bender=(40., 60., 100.), actuator=(269., 135.),\
-                showInfos=False)
-    mot_sagoff = t.get_bender_mot(t.get_bender_pos())
+                aW=aW, aWext=aWext, rSext=rSext, aL=aL,\
+                bender=bender, actuator=actuator,\
+                showInfos=showInfos)
+    mot_sagoff = t.get_bender_mot(t.get_bender_pos(aN=5))
     print('Actuator position = {0} (in method)'.format(mot_sagoff))
-    t0 = testFrictionPrototype(Rm, theta0)
     return t
+
+### TESTS FOR THE PANTOGRAPH VERSION 2017 ###
+def testPantograph2017(Rm, theta0, d=dSi111,\
+                       aW=25., aWext=32, rSext=20., aL=107.,\
+                       bender=(0., 60., 0.), actuator=(),\
+                       showInfos=True):
+    """implemented in get_bender_pos and get_bender_mot methods in sloth 0.2.1
+
+    Pantograph parameters (sloth 0.2.1)
+    -----------------------------------
+    
+        aW : float, 0.
+
+             crystal analyser optical width
+                
+        aWext : float, 0.
+
+                crystal analyser extended width (NOTE: this width is
+                used in self.get_chi2, that is, the width to get two
+                adjacent analysers touching)
+
+        rSext : float, 0.
+
+                sagittal radius offset where aWext is referred to,
+                that is, aWext condition is given for Rs+rSext
+        
+        aL : float, 0.
+
+             distance of analyser center from the chi rotation
+             (affects => Chi, SagOff)
+
+    
+        bender : tuple of floats, (0., 0., 0.) corresponds to
+                 (length_arm0_mm, length_arm1_mm, angle_between_arms_deg)
+
+        actuator : tuple of floats, (0., 0.) corresponts to
+                   (axoff_actuator_mm, length_actuator_arm_mm)
+
+    here:
+
+    bender = (bender_arm0, bender_arm, bender_angle)
+    actuator = (act_axoff, act_dist)
+
+    ref 3D CAD: ``RowlandSketchPrototype-v1706``
+
+    """
+    #init rc + bender
+    rc = RcHoriz(Rm=Rm, theta0=theta0, d=d,\
+                 aW=aW, aWext=aWext, rSext=rSext, aL=aL,\
+                 showInfos=showInfos)
+    c5 = rc.get_chi2(5.)
+    c4 = rc.get_chi2(4.)
+    c3 = rc.get_chi2(3.)
+    print("INFO: chi5 is {0:.4f}".format(c5))
 
 if __name__ == "__main__":
     #plt.close('all')
-    t1 = testFrictionPrototype(240., 65.)
-    t2 = testFrictionPrototypeInMethod(240., 65.)
+    #t1 = testFrictionPrototype(240., 65.)
+    t2 = testFrictionPrototypeInMethod(250., 75.)
+    #t3 = testPantograph2017(240., 80.)
     pass

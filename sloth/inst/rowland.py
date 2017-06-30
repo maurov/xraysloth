@@ -25,16 +25,17 @@ Table of variables and conventions
 
 .. note::
 
-   in the sagittal plane local reference system, everything is
-   referred to the central analyser at (0,0) facing to the
-   sample. This is a 2D reference system because all analysers are
-   sitting on this plane. The coordinates are (aXoff,
-   SagOff). ``aXoff`` is positive on the right of the central
-   analyser. ``SagOff`` is positive toward the sample.
+   The sagittal plane local reference system is a 2D coordinate
+   system. All analysers are sitting/sliding on this plane. The origin
+   is located at the central analyser axis at "aL" parametric distance
+   from the central analyser surface (away from the sample). The
+   coordinates are (aXoff, SagOff). ``aXoff`` is positive on the right
+   of the central analyser when looking at the sample. ``SagOff`` is
+   positive toward the sample.
 
 .. note::
 
-   the following code has been tested with a 3D CAD model built using
+   The following code has been tested with a 3D CAD model built using
    SolidWorks: ``RowlandSketchPrototype-v1512``
 
 .. note ::
@@ -159,7 +160,7 @@ class RowlandCircle(object):
              radius of the Rowland circle (meridional radius) in [mm]
              
         theta0 : float, 0.
-                 Bragg angle for the center [deg]
+                 Bragg angle for the central Rowland circle [deg]
         
         alpha : float, 0.
 
@@ -444,7 +445,7 @@ class RowlandCircle(object):
         -----------
         
         The local sagittal cartesian coordinate system is assumed: the
-        origin is at the pivot point of the centre analyser, the
+        origin is at the pivot point of the central analyser, the
         abscissa is pointing toward the center of the sagittal circle
         and the ordinate is pointing on the right side when looking in
         the abscissa direction. In the following is given the solution
@@ -585,7 +586,7 @@ class RowlandCircle(object):
         # return tS + tPS, tS - tPS
 
     def get_bender_pos(self, aN=5, bender=None, Rs=None, aL=None, rSext=None):
-        """get the position (aXoff, SagOff) of the bender point"""
+        """get the position (aXoff, SagOff) of the bender point (B)"""
         if aN < 3:
             print('ERROR: this method works only for aN>=3')
             return (0., 0.)
@@ -595,13 +596,14 @@ class RowlandCircle(object):
         if rSext is None: rSext = self.rSext
 
         #map 3 pivot points positions
-        _Rc2 = Rs + rSext
-        _c2 = [self.get_chi2(_n, Rs=_Rc2) for _n in xrange( int(aN-2), int(aN+1) )]
+        _c2 = [self.get_chi2(_n) for _n in xrange( int(aN-2), int(aN+1) )]
         dchi = _c2[2]-_c2[0]
         if self.showInfos:
-            print('INFO: \Delta \chi {0}-{1} = {2:.5f} deg'.format(aN+1, aN-2, dchi))
+            print('INFO: == CHI ==')
+            print('INFO: \chi{0:.0f} = {1:.5f}'.format(aN, _c2[2]))
+            print('INFO: \Delta\chi{0}{1} = {2:.5f} deg'.format(aN, aN-2, dchi))
         _p = [self.get_sag_off(self.get_axoff(_cn), retAll=True) for _cn in _c2]
-
+            
         #find the angle between the last pivot point _p[-1] and the bender point (B)
         #we use for this the position of the end point of bender[1] (C)
         _R = Rs + aL
@@ -615,10 +617,13 @@ class RowlandCircle(object):
             pc = self.get_sag_off(sc, retAll=True)
             rb = math.acos( (_p[2][1]-pc[1]) / bender[1])
             rc = math.pi - math.radians(bender[2]) - rb
-            if self.showInfos:
-                print('INFO: Angle last pivot point and bender = {0:.6f} deg'.format(math.degrees(rc)))
             pb_axoff = _p[2][1] + bender[0] * math.cos(rc)
             pb_sagoff = _p[2][2] - bender[0] * math.sin(rc)
+            if self.showInfos:
+                print('INFO: angle last pivot point and bender = {0:.6f} deg'.format(math.degrees(rc)))
+                print('INFO: bender point (B) coordinates (local sagittal reference)')
+                print('INFO: aXoff={0:.5f}, SagOff={1:.5f}'.format(pb_axoff, pb_sagoff)) 
+
             return (pb_axoff, pb_sagoff)
         except:
             print('ERROR with bender arm position')
