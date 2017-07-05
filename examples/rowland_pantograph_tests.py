@@ -127,7 +127,7 @@ def testFrictionPrototype(Rm, theta0, d=dSi111):
     return t
 
 def testFrictionPrototypeInMethod(Rm, theta0, d=dSi111,\
-                                  aW=25., aWext=32, rSext=20., aL=97.,\
+                                  aW=25., aWext=32, rSext=10., aL=97.,\
                                   bender=(40., 60., 100.), actuator=(269., 135.),\
                                   showInfos=True):
     """as testFrictionPrototype implemented in sloth 0.2.0"""
@@ -139,7 +139,7 @@ def testFrictionPrototypeInMethod(Rm, theta0, d=dSi111,\
                 bender=bender, actuator=actuator,\
                 showInfos=showInfos)
     mot_sagoff = t.get_bender_mot(t.get_bender_pos(aN=5))
-    print('Actuator position = {0} (in method)'.format(mot_sagoff))
+    print('INFO: Actuator position = {0} (in method)'.format(mot_sagoff))
     return t
 
 ### TESTS FOR THE PANTOGRAPH VERSION 2017 ###
@@ -207,6 +207,6 @@ def testPantograph2017(Rm, theta0, d=dSi111,\
 if __name__ == "__main__":
     #plt.close('all')
     #t1 = testFrictionPrototype(240., 65.)
-    t2 = testFrictionPrototypeInMethod(250., 75.)
+    t2 = testFrictionPrototypeInMethod(250., 35.)
     #t3 = testPantograph2017(240., 80.)
     pass

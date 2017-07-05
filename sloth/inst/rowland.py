@@ -395,19 +395,27 @@ class RowlandCircle(object):
             return rchi
 
     def get_chi2(self, aN=1., aWext=None, Rs=None, rSext=None, inDeg=True):
-        """get \chi angle in sagittal focusing using Thales's theorem
-        (touching/connected analysers)
+        """get \chi angle in sagittal focusing using touching/connected analysers
+
+        Description
+        -----------
+        
+        Using the extended radius Rsp=Rs+rSext, can be calculated as
+        aN times the chi/2 of the first analyser given by:
+        
+        \chi/2 = \atan((aWext/2)/Rsp)
 
         Parameters
         ----------
         aN : float, 1.
              n-th analyser (0 is the central one)
+
         """
         if aWext is None: aWext = self.aWext
         if Rs is None: Rs = self.Rs
         if rSext is None: rSext = self.rSext
         Rsp = Rs + rSext
-        rchi = ( 2 * math.atan( aWext / (2 * Rsp) ) ) * aN
+        rchi = ( 2 * math.atan((aWext/2)/Rsp) ) * aN
         if (inDeg is True):
             return math.degrees(rchi)
         else:
