@@ -603,7 +603,7 @@ class RowlandCircle(object):
         if aL is None: aL = self.aL
         if rSext is None: rSext = self.rSext
 
-        #map 3 pivot points positions
+        #map last 3 pivot points positions
         _c2 = [self.get_chi2(_n) for _n in xrange( int(aN-2), int(aN+1) )]
         dchi = _c2[2]-_c2[0]
         if self.showInfos:
