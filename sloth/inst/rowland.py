@@ -66,6 +66,7 @@ ID26specVII.m
 TODO
 ----
 
+- all the bender-related things should go only in RcHoriz!!!
 - check the full thing formulas when a miscut is given (alpha != 0)
 
 """
@@ -604,29 +605,30 @@ class RowlandCircle(object):
         if rSext is None: rSext = self.rSext
 
         #map last 3 pivot points positions
-        _c2 = [self.get_chi2(_n) for _n in xrange( int(aN-2), int(aN+1) )]
+        _c2 = [self.get_chi2(_n) for _n in xrange( int(aN-2), int(aN+1) )] #CHIs
         dchi = _c2[2]-_c2[0]
         if self.showInfos:
             print('INFO: == CHI ==')
             print('INFO: \chi{0:.0f} = {1:.5f}'.format(aN, _c2[2]))
             print('INFO: \Delta\chi{0}{1} = {2:.5f} deg'.format(aN, aN-2, dchi))
-        _p = [self.get_sag_off(self.get_axoff(_cn), retAll=True) for _cn in _c2]
+        _p = [self.get_sag_off(self.get_axoff(_cn), retAll=True) for _cn in _c2] #SagOffs
             
         #find the angle between the last pivot point _p[-1] and the bender point (B)
         #we use for this the position of the end point of bender[1] (C)
         _R = Rs + aL
         rdch = math.radians(dchi/2.)
-        h = _R * (1 - math.cos(rdch)) #chord pivots 0 and -2
-        chalf = _R * math.sin(rdch)
+        h = _R * (1 - math.cos(rdch)) #chord between pivots 0 and -2
+        chalf = _R * math.sin(rdch) #half the chord length
         try:
             ra = math.acos(chalf/bender[1])
-            dc = bender[1] * math.sin(ra) - h
-            sc = self.get_axoff(_c2[1], Rs=Rs+dc)
-            pc = self.get_sag_off(sc, retAll=True)
-            rb = math.acos( (_p[2][1]-pc[1]) / bender[1])
+            dc = bender[1] * math.sin(ra) - h #aperture of the pantograph along radius
+            sc = self.get_axoff(_c2[1], Rs=Rs+dc) #aXoff_point_C
+            #pc = self.get_sag_off(sc, retAll=True)
+            axlp = _p[2][1] #aXoff last pivot point
+            rb = math.acos( (axlp-sc) / bender[1])
             rc = math.pi - math.radians(bender[2]) - rb
-            pb_axoff = _p[2][1] + bender[0] * math.cos(rc)
-            pb_sagoff = _p[2][2] - bender[0] * math.sin(rc)
+            pb_axoff = axlp + bender[0] * math.cos(rc) #aXoff_bender_point(B)
+            pb_sagoff = axlp - bender[0] * math.sin(rc) #SagOff_bender_point(B)
             if self.showInfos:
                 print('INFO: angle last pivot point and bender = {0:.6f} deg'.format(math.degrees(rc)))
                 print('INFO: bender point (B) coordinates (local sagittal reference)')

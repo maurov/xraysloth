@@ -144,7 +144,7 @@ def testFrictionPrototypeInMethod(Rm, theta0, d=dSi111,\
 
 ### TESTS FOR THE PANTOGRAPH VERSION 2017 ###
 def testPantograph2017(Rm, theta0, d=dSi111,\
-                       aW=25., aWext=32, rSext=20., aL=107.,\
+                       aW=25., aWext=32, rSext=10., aL=97.,\
                        bender=(0., 60., 0.), actuator=(),\
                        showInfos=True):
     """implemented in get_bender_pos and get_bender_mot methods in sloth 0.2.1
@@ -207,6 +207,30 @@ def testPantograph2017(Rm, theta0, d=dSi111,\
 if __name__ == "__main__":
     #plt.close('all')
     #t1 = testFrictionPrototype(240., 65.)
-    t2 = testFrictionPrototypeInMethod(250., 35.)
+    t = testFrictionPrototypeInMethod(250., 35.)
     #t3 = testPantograph2017(240., 80.)
-    pass
+
+    #to move in testPantograph2017
+    #def get_bender_pos(self, aN=5, bender=None, Rs=None, aL=None, rSext=None)
+
+    aN = 5
+    #map last 3 pivot points positions
+    _c2 = [t.get_chi2(_n) for _n in range( int(aN-2), int(aN+1) )] #CHIs
+    dchi = _c2[2]-_c2[0]
+    _p = [t.get_sag_off(t.get_axoff(_cn), retAll=True) for _cn in _c2] #SagOffs
+    
+    #find the angle between the last pivot point _p[-1] and the bender point (B)
+    #we use for this the position of the end point of bender[1] (C)
+    _R = t.Rs + t.aL
+    rdch = math.radians(dchi/2.)
+    h = _R * (1 - math.cos(rdch)) #chord pivots 0 and -2
+    chalf = _R * math.sin(rdch)
+
+    ra = math.acos(chalf/t.bender[1])
+    dc = t.bender[1] * math.sin(ra) - h
+    sc = t.get_axoff(_c2[1], Rs=t.Rs+dc)
+    #pc = t.get_sag_off(sc, retAll=True)
+    rb = math.acos( (_p[2][1]-sc) / t.bender[1])
+    rc = math.pi - math.radians(t.bender[2]) - rb
+    pb_axoff = _p[2][1] + t.bender[0] * math.cos(rc)
+    pb_sagoff = _p[2][2] - t.bender[0] * math.sin(rc)
