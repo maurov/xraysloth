@@ -150,8 +150,8 @@ class RowlandCircle(object):
 
     def __init__(self, Rm=500., theta0=0., alpha=0., d=None,\
                  aW=0., aWext=0., rSext=0., aL=0.,\
-                 bender=(0., 0., 0.), actuator=(0., 0.),\
-                 inCircle=False, useCm=False, showInfos=True):
+                 bender_version=None, bender=(0., 0., 0.), actuator=(0., 0.),\
+                 inCircle=False, useCm=False, showInfos=True, **kws):
         """
         Parameters
         ----------
@@ -196,8 +196,15 @@ class RowlandCircle(object):
              distance of analyser center from the chi rotation
              (affects => Chi, SagOff)
 
+        bender_version : string, None
+                         defines the bender tuple keyword argument
+                         see -> self.get_bender_pos()
+        
         bender : tuple of floats, (0., 0., 0.) corresponds to
+                 if (bender_version is None) or (bender_version == 0):
                  (length_arm0_mm, length_arm1_mm, angle_between_arms_deg)
+                 if (bender_version == 1):
+                 (length_arm0_mm, length_arm1_mm, length_anchor_actuator_mm)
 
         actuator : tuple of floats, (0., 0.) corresponts to
                    (axoff_actuator_mm, length_actuator_arm_mm)
