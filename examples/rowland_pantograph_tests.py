@@ -200,23 +200,17 @@ def testPantograph2017(Rm, theta0, d=dSi111,\
                  bender=bender, actuator=actuator,
                  showInfos=showInfos)
 
-    #TODO: to include in get_bender_pos
-    
-    #map 3 pivot points positions
-    _c2 = [rc.get_chi2(_n) for _n in xrange( int(aN-2), int(aN+1) )]
-    dchi = _c2[2]-_c2[0]
-    if rc.showInfos:
-        print('INFO: == CHI ==')
-        print('INFO: \chi{0:.0f} = {1:.5f}'.format(aN, _c2[2]))
-        print('INFO: \Delta\chi{0}{1} = {2:.5f} deg'.format(aN, aN-2, dchi))
-    _p = [rc.get_sag_off(rc.get_axoff(_cn), retAll=True) for _cn in _c2]
 
+    
+
+    return rc
+    
 
 if __name__ == "__main__":
     #plt.close('all')
     #t1 = testFrictionPrototype(240., 65.)
     #t = testFrictionPrototypeInMethod(250., 35.)
-    t = testPantograph2017(240., 80.)
+    t = testPantograph2017(250., 35.)
 
     #to move in testPantograph2017
     #def get_bender_pos(self, aN=5, bender=None, Rs=None, aL=None, rSext=None)
@@ -235,6 +229,12 @@ if __name__ == "__main__":
     chalf = _R * math.sin(rdch)
 
     ra = math.acos(chalf/t.bender[1])
+    dc = t.bender[1] * math.sin(ra) - h
+    print("aperture of the pantograph, dc = {0}".format(dc))
 
-    print("aperture of the pantograph, ra = {0}".format(ra))
-
+    #coordinates of point B (pb) of the bender (anchor point with actuator[1])
+    adc = math.asin((dc/2)/t.bender[0]) #angle opposite to dc
+    pdc = t.bender[0]*math.cos(adc)
+    pb_rs = t.Rs+t.aL+dc/2 #WRONG!
+    pb_chi = math.degrees(math.atan(pdc/pb_rs))+_c2[-1]
+    pb_ax = pb_rs*math.sin(math.radians(pb_qchi)) #aXoff_point_C
