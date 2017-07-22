@@ -238,6 +238,10 @@ def testPantograph2017(Rm, theta0, d=dSi111,\
     print("Test bender point:")
     print("(here) at ({0:.5f}, {1:.5f})".format(pb_axoff, pb_sagoff))
     print("(in method) at ({0:.5f}, {1:.5f})".format(pb_in[0], pb_in[1]))
+
+    act_mot_pos = rc.get_bender_mot(pb_in)
+    
+    print("Actuator motor position (in local sagittal reference): {0:.5f}".format(act_mot_pos))
     
     return rc
     
