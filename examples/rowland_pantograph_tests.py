@@ -129,6 +129,7 @@ def testFrictionPrototype(Rm, theta0, d=dSi111):
 def testFrictionPrototypeInMethod(Rm, theta0, d=dSi111,\
                                   aW=25., aWext=32, rSext=10., aL=97.,\
                                   bender=(40., 60., 100.), actuator=(269., 135.),\
+                                  bender_version=0,
                                   showInfos=True):
     """as testFrictionPrototype implemented in sloth 0.2.0"""
     if not (sloth_version == '0.2.0'):
@@ -137,6 +138,7 @@ def testFrictionPrototypeInMethod(Rm, theta0, d=dSi111,\
     t = RcHoriz(Rm=Rm, theta0=theta0, d=d,\
                 aW=aW, aWext=aWext, rSext=rSext, aL=aL,\
                 bender=bender, actuator=actuator,\
+                bender_version=bender_version,\
                 showInfos=showInfos)
     mot_sagoff = t.get_bender_mot(t.get_bender_pos(aN=5))
     print('INFO: Actuator position = {0} (in method)'.format(mot_sagoff))
@@ -210,7 +212,7 @@ if __name__ == "__main__":
     #plt.close('all')
     #t1 = testFrictionPrototype(240., 65.)
     #t = testFrictionPrototypeInMethod(250., 35.)
-    t = testPantograph2017(250., 35.)
+    t = testPantograph2017(250., 85.)
 
     #to move in testPantograph2017
     #def get_bender_pos(self, aN=5, bender=None, Rs=None, aL=None, rSext=None)
@@ -226,15 +228,20 @@ if __name__ == "__main__":
     _R = t.Rs + t.aL
     rdch = math.radians(dchi/2.)
     h = _R * (1 - math.cos(rdch)) #chord pivots 0 and -2
-    chalf = _R * math.sin(rdch)
+    chalf = _R * math.sin(rdch) #from circular segment formula
 
     ra = math.acos(chalf/t.bender[1])
     dc = t.bender[1] * math.sin(ra) - h
     print("aperture of the pantograph, dc = {0}".format(dc))
 
-    #coordinates of point B (pb) of the bender (anchor point with actuator[1])
-    adc = math.asin((dc/2)/t.bender[0]) #angle opposite to dc
+    #find coordinates of point B (pb) of the bender (anchor point with actuator[1])
+    #find coordinates of point C (pc) of the
+
+    
+    adc = math.asin((dc/2)/t.bender[0]) #angle opposite to dc -> OK
     pdc = t.bender[0]*math.cos(adc)
+    pb_ang = math.atan(pdc/(t.Rs+t.aL+dc/2)) #angle between last analyzer and point B
+    pb_chi = pb_ang + t.get_chi2(aN, inDeg=False) #radians
     pb_rs = t.Rs+t.aL+dc/2 #WRONG!
     pb_chi = math.degrees(math.atan(pdc/pb_rs))+_c2[-1]
-    pb_ax = pb_rs*math.sin(math.radians(pb_qchi)) #aXoff_point_C
+    pb_ax = pb_rs*math.sin(math.radians(pb_chi)) #aXoff_point_C

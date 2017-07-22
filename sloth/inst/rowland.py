@@ -66,6 +66,7 @@ ID26specVII.m
 TODO
 ----
 
+- implement bender_version (currently is the old bender) move current from examples
 - all the bender-related things should go only in RcHoriz!!!
 - check the full thing formulas when a miscut is given (alpha != 0)
 
