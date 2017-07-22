@@ -13,7 +13,7 @@ Naming
 from __future__ import absolute_import, print_function, division
 
 __author__ = "Mauro Rovezzi"
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 import os, sys
 _libDir = os.path.dirname(os.path.realpath(__file__))

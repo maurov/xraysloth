@@ -66,7 +66,6 @@ ID26specVII.m
 TODO
 ----
 
-- implement bender_version (currently is the old bender) move current from examples
 - all the bender-related things should go only in RcHoriz!!!
 - check the full thing formulas when a miscut is given (alpha != 0)
 
@@ -238,6 +237,7 @@ class RowlandCircle(object):
         self.rSext
         self.bender
         self.actuator
+        self.bender_version
         self.showInfos
 
         """
@@ -251,6 +251,8 @@ class RowlandCircle(object):
         self.rSext = rSext
         self.bender = bender
         self.actuator = actuator
+        if bender_version is None: bender_version = 0
+        self.bender_version = bender_version
         self.aL = aL
         self.Rs = 0.
         self.d = d
@@ -602,7 +604,7 @@ class RowlandCircle(object):
         #     print('Pivot side ({0}): +/- {1}'.format(pivotSide, tPS))
         # return tS + tPS, tS - tPS
 
-    def get_bender_pos(self, aN=5, bender=None, Rs=None, aL=None, rSext=None):
+    def get_bender_pos(self, aN=5, bender=None, Rs=None, aL=None, rSext=None, bender_version=None):
         """get the position (aXoff, SagOff) of the bender point (B)"""
         if aN < 3:
             print('ERROR: this method works only for aN>=3')
@@ -611,6 +613,7 @@ class RowlandCircle(object):
         if Rs is None: Rs = self.Rs
         if aL is None: aL = self.aL
         if rSext is None: rSext = self.rSext
+        if bender_version is None: bender_version = self.bender_version
 
         #map last 3 pivot points positions
         _c2 = [self.get_chi2(_n) for _n in xrange( int(aN-2), int(aN+1) )] #CHIs
@@ -626,10 +629,11 @@ class RowlandCircle(object):
         _R = Rs + aL
         rdch = math.radians(dchi/2.)
         h = _R * (1 - math.cos(rdch)) #chord between pivots 0 and -2
-        chalf = _R * math.sin(rdch) #half the chord length
-        try:
-            ra = math.acos(chalf/bender[1])
-            dc = bender[1] * math.sin(ra) - h #aperture of the pantograph along radius
+        chalf = _R * math.sin(rdch) #half the chord length from circular segment formula
+        #find coordinates of point B (pb) of the bender (anchor point with actuator[1])
+        ra = math.acos(chalf/bender[1])
+        dc = bender[1] * math.sin(ra) - h #aperture of the pantograph along radius
+        if bender_version == 0:
             sc = self.get_axoff(_c2[1], Rs=Rs+dc) #aXoff_point_C
             #pc = self.get_sag_off(sc, retAll=True)
             axlp = _p[2][1] #aXoff last pivot point
@@ -637,19 +641,29 @@ class RowlandCircle(object):
             rc = math.pi - math.radians(bender[2]) - rb
             pb_axoff = axlp + bender[0] * math.cos(rc) #aXoff_bender_point(B)
             pb_sagoff = axlp - bender[0] * math.sin(rc) #SagOff_bender_point(B)
-            if self.showInfos:
-                print('INFO: angle last pivot point and bender = {0:.6f} deg'.format(math.degrees(rc)))
+        elif bender_version == 1:
+            adc = math.asin( (dc/2) / bender[0] ) #angle opposite to dc
+            pdc = bender[0] * math.cos(adc) #perpendicular to dc
+            pb_ang = math.atan(pdc / (Rs + aL + dc/2)) #angle between last analyzer and point B
+            pb_h = _R * (1 - math.cos(pb_ang)) #chord for the anchoring point
+            pb_chalf = _R * math.sin(pb_ang) #from circular segment formula
+            pb_ra = math.acos(pb_chalf / bender[0])
+            pb_dc = bender[0] * math.sin(pb_ra) - pb_h
+            pb_chi = pb_ang + self.get_chi2(aN, inDeg=False) #radians
+            pb_rs = Rs + aL + pb_dc
+            pb_axoff = pb_rs * math.sin(pb_chi)
+            pb_sagoff = _R - (pb_rs * math.cos(pb_chi))
+            print(pb_axoff, pb_sagoff)
+        else:
+            raise NameError("ERROR with bender_version")
+        if self.showInfos:
                 print('INFO: bender point (B) coordinates (local sagittal reference)')
                 print('INFO: aXoff={0:.5f}, SagOff={1:.5f}'.format(pb_axoff, pb_sagoff)) 
+        return (pb_axoff, pb_sagoff)
 
-            return (pb_axoff, pb_sagoff)
-        except:
-            print('ERROR with bender arm position')
-            return (0., 0.)
-
-    def get_bender_mot(self, bender_pos, actuator=None):
+    def get_bender_mot(self, bender_pos, actuator=None, bender_version=None):
         """get the motor position of the bender, given its point
-        position (B) and the actuator specifications
+        position (B) and the actuator specifications, plus the version of the mechanics
 
         Parameters
         ----------
@@ -659,10 +673,20 @@ class RowlandCircle(object):
         actuator : tuple of floats, None
                    (axoff_actuator_mm, length_actuator_mm)
 
+        bender_version : version of the mechanics
+                         0 -> prototype
+                         1 -> pantograph 2017
+
         """
         if actuator is None: actuator = self.actuator
+        if bender_version is None:  bender_version = self.bender_version
         try:
-            rd = math.asin( (actuator[0] - bender_pos[0]) / actuator[1] )
+            if bender_version == 0:
+                rd = math.asin( (actuator[0] - bender_pos[0]) / actuator[1] )
+            elif bender_version == 1:
+                rd = math.asin((actuator[0] - self.bender[2] - bender_pos[0]) / actuator[1])
+            else:
+                raise NameError("ERROR with bender_version")
             mot_sagoff = actuator[1] * math.cos(rd) + bender_pos[1]
             return mot_sagoff
         except:

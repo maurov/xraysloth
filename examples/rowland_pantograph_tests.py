@@ -202,9 +202,43 @@ def testPantograph2017(Rm, theta0, d=dSi111,\
                  bender=bender, actuator=actuator,
                  showInfos=showInfos)
 
-
+    ### START TEST ###
+    aN = 5
+    #map last 3 pivot points positions
+    _c2 = [rc.get_chi2(_n) for _n in range( int(aN-2), int(aN+1) )] #CHIs
+    dchi = _c2[2]-_c2[0]
+    _p = [rc.get_sag_off(rc.get_axoff(_cn), retAll=True) for _cn in _c2] #SagOffs
     
+    #find the angle between the last pivot point _p[-1] and the bender point (B)
+    #we use for this the position of the end point of bender[1] (C)
+    _R = rc.Rs + rc.aL
+    rdch = math.radians(dchi/2.)
+    h = _R * (1 - math.cos(rdch)) #chord pivots 0 and -2
+    chalf = _R * math.sin(rdch) #from circular segment formula
+    ra = math.acos(chalf/rc.bender[1])
+    dc = rc.bender[1] * math.sin(ra) - h #aperture of the pantograph
 
+    #find coordinates of point B (pb) of the bender (anchor point with actuator[1])
+    adc = math.asin((dc/2)/rc.bender[0]) #angle opposite to dc -> OK
+    pdc = rc.bender[0]*math.cos(adc)
+    pb_ang = math.atan(pdc/(rc.Rs+rc.aL+dc/2)) #angle between last analyzer and point B
+    pb_h = _R * (1 - math.cos(pb_ang)) #chord 
+    pb_chalf = _R * math.sin(pb_ang) #from circular segment formula
+    pb_ra = math.acos(pb_chalf/rc.bender[0])
+    pb_dc = rc.bender[0] * math.sin(pb_ra) - pb_h
+    pb_chi = pb_ang + rc.get_chi2(aN, inDeg=False) #radians
+    pb_rs = rc.Rs + rc.aL + pb_dc
+    pb_axoff = pb_rs * math.sin(pb_chi)
+    pb_sagoff = _R - (pb_rs * math.cos(pb_chi))
+    ### END TEST ###
+
+    ### AS IMPLEMENTED ###
+    pb_in = rc.get_bender_pos(aN=5)
+    
+    print("Test bender point:")
+    print("(here) at ({0:.5f}, {1:.5f})".format(pb_axoff, pb_sagoff))
+    print("(in method) at ({0:.5f}, {1:.5f})".format(pb_in[0], pb_in[1]))
+    
     return rc
     
 
@@ -212,36 +246,4 @@ if __name__ == "__main__":
     #plt.close('all')
     #t1 = testFrictionPrototype(240., 65.)
     #t = testFrictionPrototypeInMethod(250., 35.)
-    t = testPantograph2017(250., 85.)
-
-    #to move in testPantograph2017
-    #def get_bender_pos(self, aN=5, bender=None, Rs=None, aL=None, rSext=None)
-
-    aN = 5
-    #map last 3 pivot points positions
-    _c2 = [t.get_chi2(_n) for _n in range( int(aN-2), int(aN+1) )] #CHIs
-    dchi = _c2[2]-_c2[0]
-    _p = [t.get_sag_off(t.get_axoff(_cn), retAll=True) for _cn in _c2] #SagOffs
-    
-    #find the angle between the last pivot point _p[-1] and the bender point (B)
-    #we use for this the position of the end point of bender[1] (C)
-    _R = t.Rs + t.aL
-    rdch = math.radians(dchi/2.)
-    h = _R * (1 - math.cos(rdch)) #chord pivots 0 and -2
-    chalf = _R * math.sin(rdch) #from circular segment formula
-
-    ra = math.acos(chalf/t.bender[1])
-    dc = t.bender[1] * math.sin(ra) - h
-    print("aperture of the pantograph, dc = {0}".format(dc))
-
-    #find coordinates of point B (pb) of the bender (anchor point with actuator[1])
-    #find coordinates of point C (pc) of the
-
-    
-    adc = math.asin((dc/2)/t.bender[0]) #angle opposite to dc -> OK
-    pdc = t.bender[0]*math.cos(adc)
-    pb_ang = math.atan(pdc/(t.Rs+t.aL+dc/2)) #angle between last analyzer and point B
-    pb_chi = pb_ang + t.get_chi2(aN, inDeg=False) #radians
-    pb_rs = t.Rs+t.aL+dc/2 #WRONG!
-    pb_chi = math.degrees(math.atan(pdc/pb_rs))+_c2[-1]
-    pb_ax = pb_rs*math.sin(math.radians(pb_chi)) #aXoff_point_C
+    t = testPantograph2017(240., 35.)
