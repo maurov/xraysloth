@@ -25,16 +25,17 @@ Table of variables and conventions
 
 .. note::
 
-   in the sagittal plane local reference system, everything is
-   referred to the central analyser at (0,0) facing to the
-   sample. This is a 2D reference system because all analysers are
-   sitting on this plane. The coordinates are (aXoff,
-   SagOff). ``aXoff`` is positive on the right of the central
-   analyser. ``SagOff`` is positive toward the sample.
+   The sagittal plane local reference system is a 2D coordinate
+   system. All analysers are sitting/sliding on this plane. The origin
+   is located at the central analyser axis at "aL" parametric distance
+   from the central analyser surface (away from the sample). The
+   coordinates are (aXoff, SagOff). ``aXoff`` is positive on the right
+   of the central analyser when looking at the sample. ``SagOff`` is
+   positive toward the sample.
 
 .. note::
 
-   the following code has been tested with a 3D CAD model built using
+   The following code has been tested with a 3D CAD model built using
    SolidWorks: ``RowlandSketchPrototype-v1512``
 
 .. note ::
@@ -65,6 +66,7 @@ ID26specVII.m
 TODO
 ----
 
+- all the bender-related things should go only in RcHoriz!!!
 - check the full thing formulas when a miscut is given (alpha != 0)
 
 """
@@ -77,6 +79,11 @@ import sys, os, math
 import numpy as np
 
 from ..math.rotmatrix import rotate
+
+try:
+    xrange
+except NameError:
+    xrange = range
 
 DEBUG = 0
 
@@ -143,8 +150,8 @@ class RowlandCircle(object):
 
     def __init__(self, Rm=500., theta0=0., alpha=0., d=None,\
                  aW=0., aWext=0., rSext=0., aL=0.,\
-                 bender=(0., 0., 0.), actuator=(0., 0.),\
-                 inCircle=False, useCm=False, showInfos=True):
+                 bender_version=None, bender=(0., 0., 0.), actuator=(0., 0.),\
+                 inCircle=False, useCm=False, showInfos=True, **kws):
         """
         Parameters
         ----------
@@ -154,7 +161,7 @@ class RowlandCircle(object):
              radius of the Rowland circle (meridional radius) in [mm]
              
         theta0 : float, 0.
-                 Bragg angle for the center [deg]
+                 Bragg angle for the central Rowland circle [deg]
         
         alpha : float, 0.
 
@@ -189,8 +196,15 @@ class RowlandCircle(object):
              distance of analyser center from the chi rotation
              (affects => Chi, SagOff)
 
+        bender_version : string, None
+                         defines the bender tuple keyword argument
+                         see -> self.get_bender_pos()
+        
         bender : tuple of floats, (0., 0., 0.) corresponds to
+                 if (bender_version is None) or (bender_version == 0):
                  (length_arm0_mm, length_arm1_mm, angle_between_arms_deg)
+                 if (bender_version == 1):
+                 (length_arm0_mm, length_arm1_mm, length_anchor_actuator_mm)
 
         actuator : tuple of floats, (0., 0.) corresponts to
                    (axoff_actuator_mm, length_actuator_arm_mm)
@@ -223,6 +237,7 @@ class RowlandCircle(object):
         self.rSext
         self.bender
         self.actuator
+        self.bender_version
         self.showInfos
 
         """
@@ -236,6 +251,8 @@ class RowlandCircle(object):
         self.rSext = rSext
         self.bender = bender
         self.actuator = actuator
+        if bender_version is None: bender_version = 0
+        self.bender_version = bender_version
         self.aL = aL
         self.Rs = 0.
         self.d = d
@@ -389,19 +406,27 @@ class RowlandCircle(object):
             return rchi
 
     def get_chi2(self, aN=1., aWext=None, Rs=None, rSext=None, inDeg=True):
-        """get \chi angle in sagittal focusing using Thales's theorem
-        (touching/connected analysers)
+        """get \chi angle in sagittal focusing using touching/connected analysers
+
+        Description
+        -----------
+        
+        Using the extended radius Rsp=Rs+rSext, can be calculated as
+        aN times the chi/2 of the first analyser given by:
+        
+        \chi/2 = \atan((aWext/2)/Rsp)
 
         Parameters
         ----------
         aN : float, 1.
              n-th analyser (0 is the central one)
+
         """
         if aWext is None: aWext = self.aWext
         if Rs is None: Rs = self.Rs
         if rSext is None: rSext = self.rSext
         Rsp = Rs + rSext
-        rchi = ( 2 * math.atan( aWext / (2 * Rsp) ) ) * aN
+        rchi = ( 2 * math.atan((aWext/2)/Rsp) ) * aN
         if (inDeg is True):
             return math.degrees(rchi)
         else:
@@ -439,7 +464,7 @@ class RowlandCircle(object):
         -----------
         
         The local sagittal cartesian coordinate system is assumed: the
-        origin is at the pivot point of the centre analyser, the
+        origin is at the pivot point of the central analyser, the
         abscissa is pointing toward the center of the sagittal circle
         and the ordinate is pointing on the right side when looking in
         the abscissa direction. In the following is given the solution
@@ -579,8 +604,8 @@ class RowlandCircle(object):
         #     print('Pivot side ({0}): +/- {1}'.format(pivotSide, tPS))
         # return tS + tPS, tS - tPS
 
-    def get_bender_pos(self, aN=5, bender=None, Rs=None, aL=None, rSext=None):
-        """get the position (aXoff, SagOff) of the bender point"""
+    def get_bender_pos(self, aN=5, bender=None, Rs=None, aL=None, rSext=None, bender_version=None):
+        """get the position (aXoff, SagOff) of the bender point (B)"""
         if aN < 3:
             print('ERROR: this method works only for aN>=3')
             return (0., 0.)
@@ -588,40 +613,57 @@ class RowlandCircle(object):
         if Rs is None: Rs = self.Rs
         if aL is None: aL = self.aL
         if rSext is None: rSext = self.rSext
+        if bender_version is None: bender_version = self.bender_version
 
-        #map 3 pivot points positions
-        _Rc2 = Rs + rSext
-        _c2 = [self.get_chi2(_n, Rs=_Rc2) for _n in xrange( int(aN-2), int(aN+1) )]
+        #map last 3 pivot points positions
+        _c2 = [self.get_chi2(_n) for _n in xrange( int(aN-2), int(aN+1) )] #CHIs
         dchi = _c2[2]-_c2[0]
         if self.showInfos:
-            print('INFO: \Delta \chi {0}-{1} = {2:.5f} deg'.format(aN+1, aN-2, dchi))
-        _p = [self.get_sag_off(self.get_axoff(_cn), retAll=True) for _cn in _c2]
-
+            print('INFO: == CHI ==')
+            print('INFO: \chi{0:.0f} = {1:.5f}'.format(aN, _c2[2]))
+            print('INFO: \Delta\chi{0}{1} = {2:.5f} deg'.format(aN, aN-2, dchi))
+        _p = [self.get_sag_off(self.get_axoff(_cn), retAll=True) for _cn in _c2] #SagOffs
+            
         #find the angle between the last pivot point _p[-1] and the bender point (B)
         #we use for this the position of the end point of bender[1] (C)
         _R = Rs + aL
         rdch = math.radians(dchi/2.)
-        h = _R * (1 - math.cos(rdch)) #chord pivots 0 and -2
-        chalf = _R * math.sin(rdch)
-        try:
-            ra = math.acos(chalf/bender[1])
-            dc = bender[1] * math.sin(ra) - h
-            sc = self.get_axoff(_c2[1], Rs=Rs+dc)
-            pc = self.get_sag_off(sc, retAll=True)
-            rb = math.acos( (_p[2][1]-pc[1]) / bender[1])
+        h = _R * (1 - math.cos(rdch)) #chord between pivots 0 and -2
+        chalf = _R * math.sin(rdch) #half the chord length from circular segment formula
+        #find coordinates of point B (pb) of the bender (anchor point with actuator[1])
+        ra = math.acos(chalf/bender[1])
+        dc = bender[1] * math.sin(ra) - h #aperture of the pantograph along radius
+        if bender_version == 0:
+            sc = self.get_axoff(_c2[1], Rs=Rs+dc) #aXoff_point_C
+            #pc = self.get_sag_off(sc, retAll=True)
+            axlp = _p[2][1] #aXoff last pivot point
+            rb = math.acos( (axlp-sc) / bender[1])
             rc = math.pi - math.radians(bender[2]) - rb
-            if self.showInfos:
-                print('INFO: Angle last pivot point and bender = {0:.6f} deg'.format(math.degrees(rc)))
-            pb_axoff = _p[2][1] + bender[0] * math.cos(rc)
-            pb_sagoff = _p[2][2] - bender[0] * math.sin(rc)
-            return (pb_axoff, pb_sagoff)
-        except:
-            print('ERROR with bender arm position')
-            return (0., 0.)
+            pb_axoff = axlp + bender[0] * math.cos(rc) #aXoff_bender_point(B)
+            pb_sagoff = axlp - bender[0] * math.sin(rc) #SagOff_bender_point(B)
+        elif bender_version == 1:
+            adc = math.asin( (dc/2) / bender[0] ) #angle opposite to dc
+            pdc = bender[0] * math.cos(adc) #perpendicular to dc
+            pb_ang = math.atan(pdc / (Rs + aL + dc/2)) #angle between last analyzer and point B
+            pb_h = _R * (1 - math.cos(pb_ang)) #chord for the anchoring point
+            pb_chalf = _R * math.sin(pb_ang) #from circular segment formula
+            pb_ra = math.acos(pb_chalf / bender[0])
+            pb_dc = bender[0] * math.sin(pb_ra) - pb_h
+            pb_chi = pb_ang + self.get_chi2(aN, inDeg=False) #radians
+            pb_rs = Rs + aL + pb_dc
+            pb_axoff = pb_rs * math.sin(pb_chi)
+            pb_sagoff = _R - (pb_rs * math.cos(pb_chi))
+            print(pb_axoff, pb_sagoff)
+        else:
+            raise NameError("ERROR with bender_version")
+        if self.showInfos:
+                print('INFO: bender point (B) coordinates (local sagittal reference)')
+                print('INFO: aXoff={0:.5f}, SagOff={1:.5f}'.format(pb_axoff, pb_sagoff)) 
+        return (pb_axoff, pb_sagoff)
 
-    def get_bender_mot(self, bender_pos, actuator=None):
+    def get_bender_mot(self, bender_pos, actuator=None, bender_version=None):
         """get the motor position of the bender, given its point
-        position (B) and the actuator specifications
+        position (B) and the actuator specifications, plus the version of the mechanics
 
         Parameters
         ----------
@@ -631,10 +673,20 @@ class RowlandCircle(object):
         actuator : tuple of floats, None
                    (axoff_actuator_mm, length_actuator_mm)
 
+        bender_version : version of the mechanics
+                         0 -> prototype
+                         1 -> pantograph 2017
+
         """
         if actuator is None: actuator = self.actuator
+        if bender_version is None:  bender_version = self.bender_version
         try:
-            rd = math.asin( (actuator[0] - bender_pos[0]) / actuator[1] )
+            if bender_version == 0:
+                rd = math.asin( (actuator[0] - bender_pos[0]) / actuator[1] )
+            elif bender_version == 1:
+                rd = math.asin((actuator[0] - self.bender[2] - bender_pos[0]) / actuator[1])
+            else:
+                raise NameError("ERROR with bender_version")
             mot_sagoff = actuator[1] * math.cos(rd) + bender_pos[1]
             return mot_sagoff
         except:
