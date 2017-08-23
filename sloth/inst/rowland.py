@@ -134,7 +134,7 @@ def det_pos_rotated(dxyz, drot=35., doffsets=[0,0]):
 
     [dy, dz] : numpy array of floats
                absolute positions of the detector stages
-               NOTE: the sign may depend on the definition of the origin
+               NOTE: the (dy, dz) sign here is given as the convention setted during the commissioning in Aug 2017
 
     """
     x, y, z = dxyz[0], dxyz[1], dxyz[2]
@@ -148,7 +148,7 @@ def det_pos_rotated(dxyz, drot=35., doffsets=[0,0]):
     dper = dr * math.sin(alpha)
     #insert offset of the detector origin
     dy = dpar - doffsets[0]
-    dz = doffsets[1] - dper
+    dz = -(doffsets[1] - dper)
     
     return np.array([dy, dz])
     
