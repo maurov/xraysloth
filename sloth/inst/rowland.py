@@ -112,7 +112,7 @@ def acenx(n, asx=25., agx=5.):
     """
     return (asx + agx) * n
 
-def det_pos_rotated(dxyz, drot=35.):
+def det_pos_rotated(dxyz, drot=35., doffsets=[0,0]):
     """return the detector positions in a rotated reference system with
     the origin at the sample
 
@@ -126,23 +126,31 @@ def det_pos_rotated(dxyz, drot=35.):
     drot : float [35.]
            angle of rotation, counter-clock-wise, around X axis
 
+    doffsets : numpy array of floats [0, 0]
+               [Y, Z] offsets of the detector reference system origin
+
     Return
     ------
 
-    [dpar, dper] : numpy array of floats
-               
+    [dy, dz] : numpy array of floats
+               absolute positions of the detector stages
+               NOTE: the (dy, dz) sign here is given as the convention setted during the commissioning in Aug 2017
 
     """
-    dx, dy, dz = dxyz[0], dxyz[1], dxyz[2]
-    dr = math.sqrt(dy**2 + dz**2)
-    if dy == 0.:
+    x, y, z = dxyz[0], dxyz[1], dxyz[2]
+    dr = math.sqrt(y**2 + z**2)
+    if y == 0.:
         alpha = math.pi/2. - math.radians(drot)
     else:
-        alpha = math.atan(dz/dy) - math.radians(drot)
+        alpha = math.atan(z/y) - math.radians(drot)
     if DEBUG: print('DEBUG(det_pos_rotated): alpha is {0} deg'.format(math.degrees(alpha)))
     dpar = dr * math.cos(alpha)
     dper = dr * math.sin(alpha)
-    return np.array([dpar, dper])
+    #insert offset of the detector origin
+    dy = dpar - doffsets[0]
+    dz = -(doffsets[1] - dper)
+    
+    return np.array([dy, dz])
     
 ### CLASS ###
 class RowlandCircle(object):
