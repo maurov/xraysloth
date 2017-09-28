@@ -31,8 +31,6 @@ __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
 __credits__ = "Thomas Vincent (ESRF)"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2015"
 
 import os, sys
 import copy
@@ -49,8 +47,16 @@ from PyMca5.PyMcaIO import EdfFile
 from PyMca5.PyMcaGui import PyMcaQt as qt
 from PyMca5.PyMcaGui.plotting import MaskImageWidget, ImageView
 
+### SILX imports
+HAS_SILX = False
+try:
+    from silx.gui.plot.StackView import StackViewMainWindow
+    HAS_SILX = True
+except:
+    pass
+
 ### local imports
-from specfiledata import SpecfileData
+from .specfile_reader import SpecfileData
 
 ### UTIL CLASS ###
 class RadarViewWithOverlay(ImageView.RadarView):
