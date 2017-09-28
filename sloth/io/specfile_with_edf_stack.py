@@ -318,6 +318,13 @@ class SpecWithEdfStack(SpecfileData):
     def set_roi_rect(self, xmin, xmax, ymin, ymax):
         """rectangular region of interest"""
         return self.slice_stack(ymin, ymax, xmin, xmax)
+
+    def plot_stack(self):
+        """plot the whole stack of images using StackViewMainWindow from silx"""
+        if HAS_SILX == False:
+            print("ERROR(plot_stack): silx not installed!")
+            return
+        self.sv = StackViewMainWindow()
         
     def plot_image(self, idx, cmap_min=0, cmap_max=10, show_pixels=False):
         """show given image index"""
