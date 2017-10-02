@@ -42,11 +42,6 @@ import matplotlib.pyplot as plt
 from matplotlib import cm, animation
 from matplotlib import gridspec
 
-### PyMca5 imports
-from PyMca5.PyMcaIO import EdfFile
-from PyMca5.PyMcaGui import PyMcaQt as qt
-from PyMca5.PyMcaGui.plotting import MaskImageWidget, ImageView
-
 ### SILX imports
 HAS_SILX = False
 try:
@@ -54,6 +49,12 @@ try:
     HAS_SILX = True
 except:
     pass
+
+### PyMca5 imports
+from PyMca5.PyMcaIO import EdfFile
+from PyMca5.PyMcaGui import PyMcaQt as qt
+from PyMca5.PyMcaGui.plotting import MaskImageWidget, ImageView
+
 
 ### local imports
 from .specfile_reader import SpecfileData
@@ -319,12 +320,16 @@ class SpecWithEdfStack(SpecfileData):
         """rectangular region of interest"""
         return self.slice_stack(ymin, ymax, xmin, xmax)
 
-    def plot_stack(self):
+    def plot_stack(self, cmap_min=0, cmap_max=10):
         """plot the whole stack of images using StackViewMainWindow from silx"""
         if HAS_SILX == False:
             print("ERROR(plot_stack): silx not installed!")
             return
         self.sv = StackViewMainWindow()
+        self.sv.setColormap("viridis", autoscale=False, vmin=cmap_min, vmax=cmap_max)
+        self.sv.setStack(np.array(self.imgs))
+        self.sv.setLabels(["imgs", "TODO_img_xlabel", "TODO_img_ylabel"])
+        self.sv.show()
         
     def plot_image(self, idx, cmap_min=0, cmap_max=10, show_pixels=False):
         """show given image index"""

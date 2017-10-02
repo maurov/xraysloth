@@ -28,8 +28,6 @@ __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
 __credits__ = ""
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2015"
 
 import os, sys
 import numpy as np
@@ -40,7 +38,7 @@ from matplotlib import cm, animation
 from matplotlib import gridspec
 
 ### local imports
-from specfiledata import SpecfileData, _check_scans
+from .specfile_reader import SpecfileData, _check_scans
 
 class SpecfileDataCollector(object):
     """wrapper"""
