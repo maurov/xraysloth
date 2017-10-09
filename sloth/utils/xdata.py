@@ -16,15 +16,13 @@ __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
 __credits__ = ""
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__organization__ = "European Synchrotron Radiation Facility"
-__owner__ = "Mauro Rovezzi"
-__year__ = "2011--2015"
 
 import os, sys, math
 import numpy as np
 
 HAS_XRAYLIB = False
 HAS_LARCH = False
+#_LARCH = None
 HAS_PYMCA5 = False
 
 try:
@@ -34,13 +32,25 @@ except ImportError:
     pass
 
 try:
-    from larch import use_plugin_path
-    use_plugin_path('xray')
-    from xraydb import xrayDB
+    #from larch import Interpreter
+    #_LARCH = Interpreter() #init larch session
+    from larch_plugins.xray.xraydb import xrayDB
+    xdb = xrayDB()
     HAS_LARCH = True
 except:
     pass
+
+def _larch_error(ret=None):
+    """print a missing larch error message and return 'ret'"""
+    print("ERROR: Larch not found")
+    return ret
+
+def _xraylib_error(ret=None):
+    """print a missing xraylib error message and return 'ret'"""
+    print("ERROR: Xraylib not found")
+    return ret
     
+
 #GLOBAL VARIABLES
 ELEMENTS = ('H', 'He',\
             'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne',\
@@ -53,7 +63,8 @@ ELEMENTS = ('H', 'He',\
             'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg',\
             'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn',\
             'Fr', 'Ra', 'Ac', 'Th', 'Pa', 'U', 'Np', 'Pu', 'Am')
-# SHELLS
+
+# SHELLS / EDGES
 # K = 1 (s)
 # L = 2 (s, p)
 # M = 3 (s, p, d)
@@ -128,7 +139,7 @@ LINES2TRANS = {'KA1' : (0, 0, 3),
                'MA2' : (25, 8, 14)}
 
 def mapLine2Trans(line):
-    """ returns a tuple of strings mapping the transitions for a given line """
+    """returns a tuple of strings mapping the transitions for a given line"""
     try:
         idx = LINES2TRANS[line]
         return (LINES[idx[0]], TRANSITIONS[idx[0]], SHELLS[idx[1]], SHELLS[idx[2]])
@@ -273,22 +284,89 @@ def fluo_width(elem=None, line=None, herfd=False, showInfos=True):
         return 0
 
 ### LARCH-BASED FUNCTIONS ###
-def _core_width(element=None, edge=None):
-    """returns core hole width for a given element and edge
 
-    See 'core_width' in Larch
-    """
-    if ((element is None) or (edge is None)):
-        print('ERROR: element or edge not given, returning 0')
-        return 0
-    else:
-        if HAS_LARCH:
-            xdb = xrayDB()
-            return xdb.corehole_width(element=element, edge=edge)
-        else:
-            print('ERROR: Larch not found, returning 0')
-            return 0
-    
+#xdb.function()
+#--------------------------------------------------------------------------------
+#function 	     : description
+#--------------------:-----------------------------------------------------------
+#atomic_number()     : atomic number from symbol
+#atomic_symbol()     : atomic symbol from number
+#atomic_mass() 	     : atomic mass
+#atomic_density()    : atomic density (for pure element)
+#xray_edge() 	     : xray edge data for a particular element and edge
+#xray_line() 	     : xray emission line data for an element and line
+#xray_edges() 	     : dictionary of all X-ray edges data for an element
+#xray_lines() 	     : dictionary of all X-ray emission line data for an element
+#fluo_yield() 	     : fluorescence yield and weighted line energy
+#core_width() 	     : core level width for an element and edge
+#                      (Keski-Rahkonen and Krause)
+#mu_elam() 	     : absorption cross-section
+#coherent_xsec()     : coherent cross-section
+#incoherent_xsec()   : incoherent cross-section
+#f0() 	             : elastic scattering factor (Waasmaier and Kirfel)
+#f0_ions() 	     : list of valid “ions” for f0() (Waasmaier and Kirfel)
+#chantler_energies() : energies of tabulation for Chantler data (Chantler)
+#f1_chantler()       : f’ anomalous factor (Chantler)
+#f2_chantler()       : f” anomalous factor (Chantler)
+#mu_chantler()       : absorption cross-section (Chantler)
+#xray_delta_beta()   : anomalous components of the index of refraction for a material
+#f1f2_cl()           : f’ and f” anomalous factors (Cromer and Liberman)
+
+#Table of X-ray Edge / Core electronic levels
+# +-----+-----------------+-----+-----------------+-----+-----------------+
+# |Name |electronic level |Name |electronic level |Name |electronic level |
+# +=====+=================+=====+=================+=====+=================+
+# | K   |    1s           | N7  |    4f7/2        | O3  |     5p3/2       |
+# +-----+-----------------+-----+-----------------+-----+-----------------+
+# | L3  |    2p3/2        | N6  |    4f5/2        | O2  |     5p1/2       |
+# +-----+-----------------+-----+-----------------+-----+-----------------+
+# | L2  |    2p1/2        | N5  |    4d5/2        | O1  |     5s          |
+# +-----+-----------------+-----+-----------------+-----+-----------------+
+# | L1  |    2s           | N4  |    4d3/2        | P3  |     6p3/2       |
+# +-----+-----------------+-----+-----------------+-----+-----------------+
+# | M5  |    3d5/2        | N3  |    4p3/2        | P2  |     6p1/2       |
+# +-----+-----------------+-----+-----------------+-----+-----------------+
+# | M4  |    3d3/2        | N2  |    4p1/2        | P1  |     6s          |
+# +-----+-----------------+-----+-----------------+-----+-----------------+
+# | M3  |    3p3/2        | N1  |    4s           |     |                 |
+# +-----+-----------------+-----+-----------------+-----+-----------------+
+# | M2  |    3p1/2        |     |                 |     |                 |
+# +-----+-----------------+-----+-----------------+-----+-----------------+
+# | M1  |    3s           |     |                 |     |                 |
+# +-----+-----------------+-----+-----------------+-----+-----------------+
+
+#Table of X-ray emission line names and the corresponding Siegbahn and IUPAC notations
+# +--------+---------------------+--------+-----+----------+----------+
+# | Name   | Siegbahn            | IUPAC  | Name| Siegbahn | IUPAC    |
+# +========+=====================+========+=====+==========+==========+
+# | Ka1    | K\alpha_1           | K-L3   | Lb4 | L\beta_4 | L1-M2    |
+# +--------+---------------------+--------+-----+----------+----------+
+# | Ka2    | K\alpha_2           | K-L2   | Lb5 | L\beta_5 | L3-O4,5  |
+# +--------+---------------------+--------+-----+----------+----------+
+# | Ka3    | K\alpha_3           | K-L1   | Lb6 | L\beta_6 | L3-N1    |
+# +--------+---------------------+--------+-----+----------+----------+
+# | Kb1    | K\beta_1            | K-M3   | Lg1 | L\gamma_1| L2-N4    |
+# +--------+---------------------+--------+-----+----------+----------+
+# | Kb2    | K\beta_2            | K-N2,3 | Lg2 | L\gamma_2| L1-N2    |
+# +--------+---------------------+--------+-----+----------+----------+
+# | Kb3    | K\beta_3            | K-M2   | Lg3 | L\gamma_3| L1-N3    |
+# +--------+---------------------+--------+-----+----------+----------+
+# | Kb4    | K\beta_2            | K-N4,5 | Lg6 | L\gamma_6| L2-O4    |
+# +--------+---------------------+--------+-----+----------+----------+
+# | Kb5    | K\beta_3            | K-M4,5 | Ll  | Ll       | L3-M1    |
+# +--------+---------------------+--------+-----+----------+----------+
+# | La1    | L\alpha_1           | L3-M5  | Ln  | L\nu     | L2-M1    |
+# +--------+---------------------+--------+-----+----------+----------+
+# | La2    | L\alpha_1           | L3-M4  | Ma  | M\alpha  | M5-N6,7  |
+# +--------+---------------------+--------+-----+----------+----------+
+# | Lb1    | L\beta_1            | L2-M4  | Mb  | M\beta   | M4-N6    |
+# +--------+---------------------+--------+-----+----------+----------+
+# | Lb2,15 | L\beta_2,L\beta_{15}| L3-N4,5| Mg  | M\gamma  | M3-N5    |
+# +--------+---------------------+--------+-----+----------+----------+
+# | Lb3    | L\beta_3            | L1-M3  | Mz  | M\zeta   | M4,5-N6,7|
+# +--------+---------------------+--------+-----+----------+----------+
+
+
 if __name__ == '__main__':
     # see tests/examples in xdata_tests.py
     pass
