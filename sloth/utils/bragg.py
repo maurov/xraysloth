@@ -49,7 +49,7 @@ def theta_b(wlen, d, n=1):
     else:
         return 0
 
-def bragg_th(d, ene, n=1):
+def bragg_th(ene, d, n=1):
     """return the Bragg angle, $\theta_{B}$, (deg) for a given energy (eV) and d-spacing (\AA)"""
     return theta_b(ev2wlen(ene), d, n=n)
 
@@ -126,13 +126,13 @@ def d_triclinic(a, b, c, alpha, beta, gamma, hkl, **kws):
             + 2 * h * l * a * b**2 * c * ( cosralpha * cosrgamma - cosrbeta ) )
     return sqrt1over(d2m)
 
-def findhkl(energy, thetamin=65., crystal='all'):
+def findhkl(energy, thetamin=65., crystal='all', retAll=False):
     """findhkl: for a given energy (eV) finds the Si and Ge reflections
     with relative Bragg angle
 
     Usage
     =====
-    findhkl(energy, thetamin, crystal)
+    findhkl(energy, thetamin, crystal, return_flag)
     
     energy (eV) [required]
     thetamin (deg) [optional, default: 65 deg]
@@ -140,12 +140,14 @@ def findhkl(energy, thetamin=65., crystal='all'):
 
     Output
     ======
-    String: "Crystal(hkl), Bragg angle"
-
+    String: "Crystal(hkl), Bragg angle (deg)"
+    
+    if retAll: ("crystal", h, k, l, bragg_angle_deg)
     """
     if energy is None:
         print(findhkl.__doc__)
 
+    retDat = [("#crystal", "h", "k", "l", "bragg_deg")] 
     import itertools
     def _find_theta(crystal, alat):
         def _structure_factor(idx):
@@ -163,6 +165,8 @@ def findhkl(energy, thetamin=65., crystal='all'):
                     theta = theta_b(ev2wlen(energy), d_cubic(alat, x))
                     if (theta >= thetamin):
                         print('{0}({1} {2} {3}), {4} {5:2.2f}'.format(crystal, x[0], x[1], x[2], 'Bragg', theta))
+                        if retAll: retDat.append((crystal, x[0], x[1], x[2], theta))
+                            
         ###
         _structure_factor(reversed(range(1, HKL_MAX, 2))) # all permutations of odd (h,k,l)
         _structure_factor(reversed(range(0, HKL_MAX, 2))) # all permutations of even (h,k,l)
