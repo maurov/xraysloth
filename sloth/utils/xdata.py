@@ -40,6 +40,7 @@ try:
 except:
     pass
 
+#ERROR MESSAGES
 def _larch_error(ret=None):
     """print a missing larch error message and return 'ret'"""
     print("ERROR: Larch not found")
@@ -150,9 +151,7 @@ def mapLine2Trans(line):
 ### XRAYLIB-BASED FUNCTIONS ###
 def find_edge(emin, emax, shells=None):
     """ return the edge energy in a given energy range [emin,emax] (eV)"""
-    if HAS_XRAYLIB is False:
-        print('ERROR: xraylib required')
-        return 0
+    if HAS_XRAYLIB is False: _xraylib_error(0)
     if shells is None:
         shells = SHELLS
     for el in ELEMENTS:
@@ -185,9 +184,7 @@ def find_line(emin, emax, elements=None, lines=None, outDict=False):
     -------
     None, prints to screen the results (unless outDict given)
     """
-    if HAS_XRAYLIB is False:
-        print('ERROR: xraylib required')
-        return 0
+    if HAS_XRAYLIB is False: _xraylib_error(0)
     if lines is None:
         lines = LINES
     if elements is None:
@@ -222,9 +219,7 @@ def find_line(emin, emax, elements=None, lines=None, outDict=False):
                 
 def ene_res(emin, emax, shells=['K']):
     """ used in spectro.py """
-    if HAS_XRAYLIB is False:
-        print('ERROR: xraylib required')
-        return 0
+    if HAS_XRAYLIB is False: _xraylib_error(0)
     s = {}
     s['el'] = []
     s['en'] = []
@@ -259,9 +254,7 @@ def fluo_width(elem=None, line=None, herfd=False, showInfos=True):
     herfd=True: 1/(math.sqrt(lw_xas**2 + lw_xes**2))
 
     """
-    if HAS_XRAYLIB is False:
-        print('ERROR: xraylib required')
-        return 0
+    if HAS_XRAYLIB is False: _xraylib_error(0)
     if ((elem is None) or (line is None)):
         print('ERROR: element or edge not given, returning 0')
         return 0
