@@ -32,6 +32,7 @@ except ImportError:
     pass
 
 try:
+    import larch
     #from larch import Interpreter
     #_LARCH = Interpreter() #init larch session
     from larch_plugins.xray.xraydb import xrayDB
