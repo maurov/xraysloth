@@ -1,12 +1,10 @@
 Sloth: slowly evolving utilities for x-ray spectroscopists
 ==========================================================
 
-.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.167068.svg
-   :target: https://doi.org/10.5281/zenodo.167068
-
 .. _Numpy : http://www.numpy.org
 .. _Matplotlib : http://matplotlib.org
 .. _PyMca : https://github.com/vasole/pymca
+.. _SILX : https://github.com/silx-kit/silx
 .. _Larch : https://github.com/xraypy/xraylarch
 .. _XrayLib : https://github.com/tschoonj/xraylib/wiki
 .. _XOP : http://ftp.esrf.eu/pub/scisoft/xop2.3/
@@ -22,14 +20,25 @@ This repository contains (simple) utilities for x-ray spectroscopists,
 oriented to x-ray optics and data reduction/analysis for XAS/XES/RIXS
 techniques.
 
-The utilities can be installed the standard way ::
-
-  python setup.py install --user
-
 **NOTE** These scripts perform as a partial random snapshot of daily
 research in x-ray instrumentation and still-to-implement ideas (mainly
 due to lack of time). Feel free to use/hack them and do not hesitate
 to drop me a line if you find them useful.
+
+If you use this code in a scientific work, please cite it using the
+following DOI at Zenodo:
+
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.821221.svg
+   :target: https://doi.org/10.5281/zenodo.821221
+
+The utilities can be installed the standard way ::
+
+  python setup.py install --user
+
+For developers, the best is to fork this repository and install with
+symbolic links ::
+
+  pip install -e . 
 
 Documentation will reside in the ``doc`` directory at a certain
 point. Meanwhile, the best is to read directly the ``__doc__`` strings
@@ -55,13 +64,14 @@ The following Python modules are required to fully run the scripts:
 * Numpy_
 * Matplotlib_
 * PyMca_
+* SILX_
 * Larch_
+* XrayLib_
 * XOP_
 * SHADOW3_
 * XRT_
-* XrayLib_
 
-**NOTE** Numpy, Matplotlib and PyMca are used widely and are
+**NOTE** Numpy, Matplotlib and PyMca/SILX are used widely and are
 mandatory. The other modules are recommended, not mandatory. They are
 used only partially in some scripts and may result not required
 depending on your specific application.
@@ -69,9 +79,7 @@ depending on your specific application.
 Notes on installing requirements
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Most of the required Python libraries can be easily installed via
-``pip``. My personal workflow consists in an XUbuntu virtual machine,
-Python 3.5, Qt5 installed system-wide and all required modules
-installed in a virtual environment. This is described `here
-<https://github.com/maurov/software-notes>`. For OASYS and friends
-`here <https://github.com/srio/oasys-installation-scripts>`.
+All the required Python libraries (and more!) can be easily installed
+via `conda <https://conda.io/docs/>` on any platform. My personal
+workflow is described `setup_conda_envs.sh
+<https://github.com/maurov/software-notes/blob/master/setup_conda_envs.sh>`.
