@@ -17,8 +17,7 @@ __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
 __credits__ = ""
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2014-2016"
+__year__ = "2014-2018"
 
 import sys, os
 import subprocess
@@ -29,7 +28,7 @@ from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
 
 #sloth
-from peakfit import fit_splitpvoigt, fit_results
+from sloth.fit.peakfit import fit_splitpvoigt, fit_results
 
 # check XOP is correctly installed and define DIFFPAT_EXEC
 HAS_XOP = False
