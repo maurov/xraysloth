@@ -38,7 +38,6 @@ __author__ = "Mauro Rovezzi"
 __credits__ = "Luca Rebuffi"
 __email__ = "mauro.rovezzi@gmail.com"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__organization__ = "European Synchrotron Radiation Facility"
 __year__ = "2014-2016"
 
 import sys, os, copy, math
@@ -65,12 +64,12 @@ except:
 _pardir = os.path.realpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.pardir))
 DATA_DIR = os.path.join(_pardir, 'xop', 'data')
 
-from rowland import RcHoriz
-from shadow_sources import GeoSource
-from shadow_oes import PlaneCrystal, SphericalCrystal
-from shadow_screens import SwScreen
-from shadow_plotter import ShadowPlotter as sp
-from shadow_plotter import SwPlot
+from sloth.inst.rowland import RcHoriz
+from sloth.raytracing.shadowoui_sources import GeoSource
+from sloth.raytracing.shadow_optical_elements import PlaneCrystal, SphericalCrystal
+from sloth.raytracing.shadow_screens import SwScreen
+from sloth.raytracing.shadow_plotter import ShadowPlotter as sp
+from sloth.raytracing.shadow_plotter import SwPlot
 
 # ---------------------------------------------------------------#
 # SwSpectro1 (see also ShadowSpectro1 below)
