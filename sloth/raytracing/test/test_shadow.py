@@ -6,6 +6,7 @@ import os
 import math
 import unittest
 from sloth.utils.bragg import (bragg_th, bragg_ev)
+from sloth.fit.peakfit import fit_splitpvoigt
 
 HAS_SHADOW = False
 try:
@@ -156,7 +157,7 @@ def run_test_sbca_si555():
                                cone_max=0.11, ph1=9981, ph2=9984, iwrite=0)
     plot_footprint()
     plot_image(beam)
-    plot_energy_histo(beam, xrange=(-0.5, 0.5), yrange=(-0.5, 0.5), nbins=101)
+    plot_energy_histo(beam)
     
 ### unittest ###
 class TestShadow(unittest.TestCase):
