@@ -25,11 +25,10 @@ research in x-ray instrumentation and still-to-implement ideas (mainly
 due to lack of time). Feel free to use/hack them and do not hesitate
 to drop me a line if you find them useful.
 
-If you use this code in a scientific work, please cite it using the
-following DOI at Zenodo:
+Installation
+------------
 
-.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.821221.svg
-   :target: https://doi.org/10.5281/zenodo.821221
+Currently, only installation from source is available.
 
 The utilities can be installed the standard way ::
 
@@ -40,24 +39,8 @@ symbolic links ::
 
   pip install -e . 
 
-Documentation will reside in the ``doc`` directory at a certain
-point. Meanwhile, the best is to read directly the ``__doc__`` strings
-in the source code. The Python files sometimes have a test/example
-included in the ``__main__`` block or referring to the ``examples``
-directory where each script has its own examples/tests. Unit tests are
-in progress and will reside in ``sloth.test``.
-
-The functionality of the scripts can be easily converted to Larch_
-plugins in order to have access via the Domain Specific Language (DSL)
-of Larch. If you need it, just drop me a line! Some functions are
-already exposed to Larch.  To load the plugins into Larch is described
-`here <http://xraypy.github.io/xraylarch/devel/index.html#plugins>`_.
-
-To report bugs, enhancements or comments, please use the `Issues
-<https://github.com/maurov/xraysloth/issues>`_
-
 Requirements
-------------
+............
 
 The following Python modules are required to fully run the scripts:
 
@@ -80,6 +63,40 @@ Notes on installing requirements
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 All the required Python libraries (and more!) can be easily installed
-via `conda <https://conda.io/docs/>` on any platform. My personal
+via `conda <https://conda.io/docs/>`_ on any platform. My personal
 workflow is described `setup_conda_envs.sh
-<https://github.com/maurov/software-notes/blob/master/setup_conda_envs.sh>`.
+<https://github.com/maurov/software-notes/blob/master/setup_conda_envs.sh>`_.
+
+Usage
+-----
+
+Full documentation will reside in the ``doc`` directory at a certain
+point. Meanwhile, the best is to read directly the ``__doc__`` strings
+in the source code. The Python files sometimes have a test/example
+included in the ``__main__`` block or referring to the ``examples``
+directory where each script has its own examples/tests. Unit tests are
+in progress and will reside in ``sloth.test``.
+
+The functionality of the scripts can be easily converted to Larch_
+plugins in order to have access via the Domain Specific Language (DSL)
+of Larch. If you need it, just drop me a line! Some functions are
+already exposed to Larch.  To load the plugins into Larch is described
+`here <http://xraypy.github.io/xraylarch/devel/index.html#plugins>`_.
+
+To report bugs, enhancements or comments, please use the `Issues
+<https://github.com/maurov/xraysloth/issues>`_
+
+Citation
+--------
+
+Please cite this work using the following DOI at Zenodo:
+
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.821221.svg
+   :target: https://doi.org/10.5281/zenodo.821221
+
+
+License
+-------
+
+This is an open source software released under the terms of `BSD-3
+license <https://opensource.org/licenses/BSD-3-Clause>`_

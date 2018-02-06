@@ -8,9 +8,13 @@ Welcome to Sloth's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Full contents - hidden:
+   :hidden:
 
+   changelog.rst
 
+:doc:`changelog`
+     List of changes
 
 Indices and tables
 ==================
