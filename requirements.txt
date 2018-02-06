@@ -1,0 +1,14 @@
+# List ALL dependencies of sloth
+# Requires pip >= 8.0
+
+numpy >= 1.7
+scipy >= 0.16
+matplotlib >= 1.4.3
+h5py >= 2.2
+ipython
+qtconsole
+PyMca5 >= 5.1
+silx >= 0.6.1
+xraylib >= 3.3.0
+shadow3
+lmfit >= 0.9.7
