@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Test suite for sloth.raytracing - shadow part"""
 
-import os
+import os, sys
 import math
 import unittest
 from sloth.utils.bragg import (bragg_th, bragg_ev)
@@ -14,7 +14,7 @@ try:
     Shadow.ShadowTools.plt.ion()
     HAS_SHADOW = True
 except:
-    print(sys.exc_info()[1])
+    print("WARNING: {0}\n => this test will probably fail!".format(sys.exc_info()[1]))
     pass
 
 CURDIR = os.path.dirname(os.path.realpath(__file__))
@@ -44,6 +44,10 @@ def sbca_si555(nrays=500000, rmirr=50., theta0=75., cone_max=0.11,
     f_angle : write angle.XX (0=No, 1=Yes) [0]
 
     """
+    if (HAS_SHADOW is False):
+        print("ERROR: Shadow not found")
+        return (None, None, None)
+    
     p = rmirr*math.sin(math.radians(theta0))
 
     si_d111 = 3.13562683
@@ -151,6 +155,9 @@ def plot_image(beam, return_tkt=False, **h2args):
 
 
 def run_test_sbca_si555():
+    if (HAS_SHADOW is False):
+        print("ERROR: Shadow not found")
+        return None
     print("MANUAL TEST FOR CHECKING IF SHADOW WORKS CORRECTLY")
     print("it is recommended to run this in an empty directory as it generates temporary files")
     beam, src, oe = sbca_si555(nrays=500000, rmirr=50., theta0=82.,\
