@@ -19,12 +19,13 @@ _curDir = os.path.dirname(os.path.realpath(__file__))
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
-from sloth.io.specfile_reader import SpecfileData
+#from sloth.io.specfile_reader import SpecfileData
+import larch
+from larch_plugins.io.specfile_reader import SpecfileData
 
 ### TESTS ###
 def test01():
     """ test get_scan method """
-    fname = os.path.join(_curDir, 'specfiledata_tests.dat')
     signal = 'zap_det_dtc'
     monitor = 'arr_I02sum'
     seconds = 'arr_seconds'
@@ -47,7 +48,6 @@ def test01():
 
 def test02(nlevels):
     """ test get_map method """
-    fname = os.path.join(_curDir, 'specfiledata_tests.dat')
     rngstr = '5:70'
     counter = 'arr_hdh_ene'
     motor = 'Spec.Energy'
@@ -76,7 +76,6 @@ def test02(nlevels):
 
 def test03():
     """ test get_mrg method """
-    fname = os.path.join(_curDir, 'specfiledata_tests.dat')
     signal = 'zap_det_dtc'
     monitor = 'arr_I02sum'
     seconds = 'arr_seconds'
@@ -99,7 +98,22 @@ def test03():
         plt.close()
 
 if __name__ == '__main__':
-    #test01()
-    #test02(100)
-    #test03()
+    fname = os.path.join(_curDir, 'specfiledata_tests.dat')
+    if 0:
+        signal = 'zap_det_dtc'
+        monitor = 'arr_I02sum'
+        seconds = 'arr_seconds'
+        counter = 'arr_hdh_ene'
+        motor = 'Spec.Energy'
+        motor_counter = 'arr_xes_en'
+        scan = 3
+        t = SpecfileData(fname)
+        x, y, motors, infos = t.get_scan(scan, cntx=counter,\
+                                         csig=signal, cmon=monitor,\
+                                         csec=seconds, norm=None)
+
+    if 1:
+        test01()
+        test02(100)
+        test03()
     pass
