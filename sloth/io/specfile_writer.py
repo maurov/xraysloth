@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-Simple data export tool in SPEC_ format
+"""Simple data export tool in SPEC_ format
+==========================================
 
 .. _SPEC: http://www.certif.com/content/spec/
 
@@ -23,6 +23,12 @@ import sys, os
 import time
 
 DEBUG = False
+HAS_SPECFILE = False
+try:
+    from silx.io import specfilewrapper as specfile
+    HAS_SPECFILE = True
+except ImportError:
+    pass
 
 class SpecfileDataWriter(object):
     """Specfile data format is defined here:
@@ -35,31 +41,12 @@ class SpecfileDataWriter(object):
         self.scanOnly = False
         if os.path.isfile(self.fn) and os.access(self.fn, os.R_OK):
             if DEBUG: print('WARNING: {0} exists'.format(self.fn))
-            HAS_SPECFILE = False
-            HAS_PYMCA5 = False
-            # PyMca5 branch
-            try:
-                from PyMca5.PyMcaIO import specfilewrapper as specfile
-                HAS_SPECFILE = True
-                HAS_PYMCA5 = True
-            except ImportError:
-                # PyMca 4.7 branch
-                try:
-                    from PyMca import specfilewrapper as specfile
-                    HAS_SPECFILE = True
-                except ImportError:
-                    try:
-                        from PyMca import specfile
-                        HAS_SPECFILE = True
-                    except ImportError:
-                        if DEBUG: print("WARNING: no 'specfile' -> scanOnly mode is {0}".format(self.scanOnly))
-                        pass
             if HAS_SPECFILE:
                 try:
                     sf = specfile.Specfile(self.fn)
                     self.scanStart = sf.scanno()
                     self.scanOnly = True
-                    if DEBUG: print('scanStart = {0}'.format(self.scanStart))
+                    if DEBUG: print('INFO: scanStart = {0}'.format(self.scanStart))
                 except:
                     pass
         if owrt:
