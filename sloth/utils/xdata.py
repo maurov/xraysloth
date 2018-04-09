@@ -41,6 +41,8 @@ try:
 except:
     pass
 
+from .bragg import bragg_th
+
 #ERROR MESSAGES
 def _larch_error(ret=None):
     """print a missing larch error message and return 'ret'"""
@@ -183,7 +185,7 @@ def find_line(emin, emax, elements=None, lines=None, outDict=False):
 
     Returns
     -------
-    None, prints to screen the results (unless outDict given)
+    None, prints to screen the results (unless outDict boolean given)
     """
     if HAS_XRAYLIB is False: _xraylib_error(0)
     if lines is None:
@@ -276,6 +278,26 @@ def fluo_width(elem=None, line=None, herfd=False, showInfos=True):
             return lw_xas + lw_xes
     except:
         return 0
+
+def get_bragg(element, line, dspacing, retAll=False):
+    """return the Bragg angle for a given element/line and crystal d-spacing"""
+    if HAS_XRAYLIB is False: _xraylib_error(0)
+    el_n = xl.SymbolToAtomicNumber(element)
+    try:
+        line_ene = xl.LineEnergy(el_n, getattr(xl, line+'_LINE'))*1000
+    except:
+        print("ERROR: check the given line name!")
+        return 0
+    try:
+        theta = bragg_th(line_ene, dspacing)
+    except:
+        theta = '-'
+        pass
+    if retAll:
+        return (element, line, line_ene, theta)
+    else:
+        return theta
+    
 
 ### LARCH-BASED FUNCTIONS ###
 
