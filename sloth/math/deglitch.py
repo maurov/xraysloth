@@ -1,10 +1,18 @@
-"""Deglitch utility"""
+"""Deglitch utilities"""
 
 import numpy as np
-import pandas as pd
 
-def remove_spikes(x_data, y_spiky_data, threshold=3):
-    # convert data to pandas DataFrame
+HAS_PANDAS = False
+try:
+    import pandas as pd
+    HAS_PANDAS = True
+except:
+    pass
+
+def remove_spikes(x_data, y_spiky_data, threshold=0):
+    """remove spikes using pandas"""
+    if (not HAS_PANDAS):
+        return np.zeros_like(y_spiky_data)
     df = pd.DataFrame(y_spiky_data);
     df['filtered'] = pd.rolling_median(df, window=3, center=True).fillna(method='bfill').fillna(method='ffill')
     diff = df['filtered'].as_matrix()-y_spiky_data
