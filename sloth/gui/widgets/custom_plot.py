@@ -19,7 +19,7 @@ from __future__ import absolute_import, division, unicode_literals
 from collections import OrderedDict as odict
 
 from silx.gui import qt
-from silx.gui.plot import PlotWindow
+from silx.gui.plot import Plot1D
 from silx.gui.plot.backends.BackendMatplotlib import BackendMatplotlibQt
 
 
@@ -67,11 +67,14 @@ class customBackendMatplotlibQt(BackendMatplotlibQt):
         self.postRedisplay()
 
 
-class customPlotWidget(PlotWindow):
+class customPlotWidget(Plot1D):
     def __init__(self, *args):
-        super(customPlotWidget, self).__init__(
-            logScale=False, grid=True, yInverted=False,
-            roi=False, mask=False, print_=False, backend=customBackendMatplotlibQt)
+        
+        # super(customPlotWidget, self).__init__(
+        #     logScale=False, grid=True, yInverted=False,
+        #     roi=False, mask=False, print_=False, backend=customBackendMatplotlibQt)
+        
+        super(customPlotWidget, self).__init__(backend=customBackendMatplotlibQt)
 
         self.setActiveCurveHandling(False)
         self.setGraphGrid('both')

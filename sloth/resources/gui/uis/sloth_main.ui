@@ -10,6 +10,12 @@
     <height>855</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>1094</width>
+    <height>855</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>Sloth MainWindow</string>
   </property>
@@ -30,12 +36,22 @@
     <layout class="QVBoxLayout" name="tabLayout">
      <item>
       <widget class="QTabWidget" name="tabWidget">
-       <property name="currentIndex">
-        <number>0</number>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
        </property>
-       <widget class="QWidget" name="tabLoadData">
+       <property name="currentIndex">
+        <number>1</number>
+       </property>
+       <widget class="QWidget" name="tabData1D">
+        <attribute name="icon">
+         <iconset>
+          <normaloff>../icons/line_chart.svg</normaloff>../icons/line_chart.svg</iconset>
+        </attribute>
         <attribute name="title">
-         <string>Load Data</string>
+         <string>Data 1D</string>
         </attribute>
         <widget class="QWidget" name="horizontalLayoutWidget">
          <property name="geometry">
@@ -56,7 +72,7 @@
              <enum>QFrame::Sunken</enum>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="pageSpec">
              <property name="geometry">
@@ -123,10 +139,72 @@
          <layout class="QHBoxLayout" name="plotLayout"/>
         </widget>
        </widget>
-       <widget class="QWidget" name="tabStep2">
-        <attribute name="title">
-         <string>Step2</string>
+       <widget class="QWidget" name="tabData2D">
+        <attribute name="icon">
+         <iconset>
+          <normaloff>../icons/contour_chart.svg</normaloff>../icons/contour_chart.svg</iconset>
         </attribute>
+        <attribute name="title">
+         <string>Data 2D</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tabRaytracing">
+        <attribute name="title">
+         <string>Raytracing</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tabRowland">
+        <attribute name="title">
+         <string>Rowland</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tabPeriodicTable">
+        <attribute name="icon">
+         <iconset>
+          <normaloff>../icons/periodic_table.svg</normaloff>../icons/periodic_table.svg</iconset>
+        </attribute>
+        <attribute name="title">
+         <string>Periodic Table</string>
+        </attribute>
+        <widget class="QWidget" name="verticalLayoutWidget_3">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>1081</width>
+           <height>441</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="periodicTableLayout">
+          <property name="leftMargin">
+           <number>5</number>
+          </property>
+          <property name="topMargin">
+           <number>5</number>
+          </property>
+          <property name="rightMargin">
+           <number>5</number>
+          </property>
+          <property name="bottomMargin">
+           <number>5</number>
+          </property>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="verticalLayoutWidget_4">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>449</y>
+           <width>1081</width>
+           <height>141</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QListView" name="periodicTableView"/>
+          </item>
+         </layout>
+        </widget>
        </widget>
       </widget>
      </item>
