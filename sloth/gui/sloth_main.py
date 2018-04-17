@@ -22,14 +22,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from silx.gui import qt
-from silx.gui.console import IPythonWidget
+from silx.gui.widgets.PeriodicTable import PeriodicTable
 
 import sloth
 _resourcesPath = os.path.join(os.path.split(sloth.__file__)[0], 'resources')
 
 from .widgets.custom_console import customIPythonWidget
 from .widgets.custom_plot import customPlotWidget
-
 from .models.list_model import PaletteListModel
 
 class SlothMainWindow(qt.QMainWindow):
@@ -40,19 +39,15 @@ class SlothMainWindow(qt.QMainWindow):
         qt.loadUi(uiPath, baseinstance=self, package='sloth.gui')
         logoPath = os.path.join(_resourcesPath, 'logo', 'xraysloth_logo_03.svg')
         self.setWindowTitle('Sloth {0}'.format(sloth.__version__))
-        #self.setWindowIcon(qt.QIcon(logoPath)
+        self.setWindowIcon(qt.QIcon(logoPath))
         self.aboutDialog = AboutDialog()
         self.actionAbout.triggered.connect(self.openAboutDialog)
-        
 
         #EXIT with C-q
         self.actionExit = qt.QAction(('E&xit'), self)
         self.actionExit.setShortcut(qt.QKeySequence("Ctrl+Q"))
         self.addAction(self.actionExit)
         self.actionExit.triggered.connect(self.confirmClose)
-
-
-
         
         #CONSOLE WIDGET
         self.consoleWidget = customIPythonWidget()
@@ -67,6 +62,13 @@ class SlothMainWindow(qt.QMainWindow):
         self.plotWidget = customPlotWidget()
         self.plotLayout.addWidget(self.plotWidget)
         self.consoleWidget.pushVariables({'pw' : self.plotWidget})
+
+
+        #PERIODIC TABLE
+        self.periodicTable = PeriodicTable(selectable=True)
+        self.periodicTableLayout.addWidget(self.periodicTable)
+        self.consoleWidget.pushVariables({'pt' : self.periodicTable})
+        
         
         self._fname = None
 
@@ -93,7 +95,7 @@ class SlothMainWindow(qt.QMainWindow):
 
     def confirmClose(self):
         msg = qt.QMessageBox(self)
-        msg.setIcon(qt.QMessageBox.Critical)
+        msg.setIcon(qt.QMessageBox.Question)
         msg.setText("You requested closing the application. Is this really what you want?")
         msg.setInformativeText("ALL NOT SAVED DATA WILL BE LOST")
         msg.setWindowTitle("Exit application?")
