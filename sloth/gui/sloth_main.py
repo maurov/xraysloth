@@ -24,11 +24,14 @@ import matplotlib.pyplot as plt
 from silx.gui import qt
 from silx.gui.widgets.PeriodicTable import PeriodicTable
 
+import xraylib as xl
+
 import sloth
 _resourcesPath = os.path.join(os.path.split(sloth.__file__)[0], 'resources')
+from sloth import _slothKit
 
-from .widgets.custom_console import customIPythonWidget
-from .widgets.custom_plot import customPlotWidget
+from .widgets.console import customIPythonWidget
+from .widgets.plot1D import customPlotWidget
 from .models.list_model import PaletteListModel
 
 class SlothMainWindow(qt.QMainWindow):
@@ -52,23 +55,40 @@ class SlothMainWindow(qt.QMainWindow):
         #CONSOLE WIDGET
         self.consoleWidget = customIPythonWidget()
         self.consoleLayout.addWidget(self.consoleWidget)
-        self.consoleWidget.pushVariables({'os'   : os,
-                                          'sys'  : sys,
-                                          'np'   : np,
-                                          'math' : math,
-                                          'plt'  : plt})
 
+        _pushDict = {'os'   : os,
+                     'sys'  : sys,
+                     'qt'   : qt,
+                     'np'   : np,
+                     'math' : math,
+                     'plt'  : plt,
+                     'xl'   : xl}
+        self.consoleWidget.pushVariables(_pushDict)
+        
+        _pushInfos = ['os, sys, math',
+                      'np : Numpy',
+                      'plt : matplotlib.pyplot',
+                      'qt : Qt from SILX',
+                      'xl : xraylib']
+        for info in _pushInfos:
+            self.tabInfoListWidget.addItem(info)
+
+        self.consoleWidget.pushVariables(_slothKit)
+        for _key in _slothKit.keys():
+            self.slothInfoListWidget.addItem(_key)
+            
         #PLOT WIDGET
         self.plotWidget = customPlotWidget()
         self.plotLayout.addWidget(self.plotWidget)
-        self.consoleWidget.pushVariables({'pw' : self.plotWidget})
-
+        self.consoleWidget.pushVariables({'p1d' : self.plotWidget})
+        self.tabInfoListWidget.addItem('p1d : SILX plot1d widget')
 
         #PERIODIC TABLE
         self.periodicTable = PeriodicTable(selectable=True)
         self.periodicTableLayout.addWidget(self.periodicTable)
         self.consoleWidget.pushVariables({'pt' : self.periodicTable})
-        
+        self.tabInfoListWidget.addItem('pt : SILX periodic table widget')
+        self.periodicTable.sigElementClicked.connect(self.click_table)
         
         self._fname = None
 
@@ -84,6 +104,10 @@ class SlothMainWindow(qt.QMainWindow):
 
         self.listViewData.setModel(model)
 
+    def click_table(self, element):
+        self.ptInfoListWidget.addItem(element.name)
+
+        
     def openAboutDialog(self):
         self.aboutDialog.show()
 

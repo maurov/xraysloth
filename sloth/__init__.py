@@ -10,7 +10,7 @@ Naming
 * functions underscore_separated _or_ lowerUpper
 
 """
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, print_function, division, unicode_literals
 
 __author__ = "Mauro Rovezzi"
 __version__ = "0.3.0"
@@ -36,6 +36,23 @@ __pkgs__ = ['sloth',
             ]
 
 #__all__ = ['a', 'b', 'c']
+from sloth.utils.bragg import (SI_ALAT, GE_ALAT,\
+                               ev2wlen, wlen2ev, bragg_ev, theta_b,\
+                               d_cubic,\
+                               findhkl)
+
+from sloth.fit.peakfit import fit_splitpvoigt, fit_results
+
+_slothKit = {'SI_ALAT'         : SI_ALAT,
+             'GE_ALAT'         : GE_ALAT,
+             'ev2wlen'         : ev2wlen,
+             'wlen2ev'         : wlen2ev,
+             'bragg_ev'        : bragg_ev,
+             'theta_b'         : theta_b,
+             'd_cubic'         : d_cubic,
+             'findhkl'         : findhkl,
+             'fit_splitpvoigt' : fit_splitpvoigt,
+             'fit_results'     : fit_results}
 
 if __name__ == '__main__':
     pass

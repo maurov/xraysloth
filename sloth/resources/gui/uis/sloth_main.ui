@@ -28,9 +28,9 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>9</y>
+      <y>-1</y>
       <width>1091</width>
-      <height>621</height>
+      <height>631</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="tabLayout">
@@ -43,7 +43,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="tabData1D">
         <attribute name="icon">
@@ -86,19 +86,6 @@
              <attribute name="label">
               <string>Spec file settings</string>
              </attribute>
-             <widget class="QPushButton" name="loadButton">
-              <property name="geometry">
-               <rect>
-                <x>170</x>
-                <y>150</y>
-                <width>79</width>
-                <height>25</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>loadSpec</string>
-              </property>
-             </widget>
             </widget>
             <widget class="QWidget" name="pageLoadedData">
              <property name="geometry">
@@ -130,7 +117,7 @@
         <widget class="QWidget" name="horizontalLayoutWidget_2">
          <property name="geometry">
           <rect>
-           <x>389</x>
+           <x>390</x>
            <y>10</y>
            <width>691</width>
            <height>571</height>
@@ -195,13 +182,28 @@
           <rect>
            <x>0</x>
            <y>449</y>
-           <width>1081</width>
+           <width>521</width>
            <height>141</height>
           </rect>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
+         <layout class="QVBoxLayout" name="periodicTableInfoLayout">
           <item>
-           <widget class="QListView" name="periodicTableView"/>
+           <widget class="QListWidget" name="ptInfoListWidget"/>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="verticalLayoutWidget_5">
+         <property name="geometry">
+          <rect>
+           <x>530</x>
+           <y>449</y>
+           <width>551</width>
+           <height>141</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QListWidget" name="listWidget_2"/>
           </item>
          </layout>
         </widget>
@@ -215,11 +217,96 @@
      <rect>
       <x>0</x>
       <y>639</y>
-      <width>1091</width>
+      <width>621</width>
       <height>171</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="consoleLayout"/>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget_3">
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>639</y>
+      <width>461</width>
+      <height>171</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="consoleInfoLayout">
+     <item>
+      <widget class="QTabWidget" name="infoTabWidget">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="tabInfoConsole">
+        <attribute name="title">
+         <string>Console Infos</string>
+        </attribute>
+        <widget class="QListWidget" name="tabInfoListWidget">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>20</y>
+           <width>231</width>
+           <height>121</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QListWidget" name="slothInfoListWidget">
+         <property name="geometry">
+          <rect>
+           <x>240</x>
+           <y>20</y>
+           <width>211</width>
+           <height>121</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>231</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Loaded namespaces:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_2">
+         <property name="geometry">
+          <rect>
+           <x>238</x>
+           <y>0</y>
+           <width>211</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Loaded Sloth modules/functions:</string>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="tabInfo2">
+        <attribute name="title">
+         <string>Other Infos</string>
+        </attribute>
+        <widget class="QListView" name="tabInfo2ListView">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>481</width>
+           <height>141</height>
+          </rect>
+         </property>
+        </widget>
+       </widget>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
