@@ -5,6 +5,7 @@ braggutils: utilities around the Bragg's law ($ n \lambda = 2 d sin \theta $)
 """
 
 import numpy as np
+import warnings
 
 try:
     import scipy.constants.codata as const
@@ -44,7 +45,9 @@ def theta_b(wlen, d, n=1):
     (\AA$^{-1}$) and d-spacing (\AA)"""
     if not (d == 0):
         try:
-            return np.rad2deg( np.arcsin( ( ( wlen * n ) / ( 2 * d ) ) ) )
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                return np.rad2deg( np.arcsin( ( ( wlen * n ) / ( 2 * d ) ) ) )
         except:
             return 0
     else:
@@ -163,7 +166,10 @@ def findhkl(energy, thetamin=65., crystal='all', retAll=False):
                 if (x[0]%2 == 0 and x[1]%2 == 0 and x[2]%2 == 0) and not ((x[0]+x[1]+x[2])%4 == 0):
                     pass
                 else:
-                    theta = theta_b(ev2wlen(energy), d_cubic(alat, x))
+                    try:
+                        theta = theta_b(ev2wlen(energy), d_cubic(alat, x))
+                    except:
+                        continue
                     if (theta >= thetamin):
                         print('{0}({1} {2} {3}), {4} {5:2.2f}'.format(crystal, x[0], x[1], x[2], 'Bragg', theta))
                         if retAll: retDat.append((crystal, x[0], x[1], x[2], theta))
