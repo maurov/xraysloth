@@ -24,15 +24,15 @@ import matplotlib.pyplot as plt
 from silx.gui import qt
 from silx.gui.widgets.PeriodicTable import PeriodicTable
 
-import xraylib as xl
-
 import sloth
-_resourcesPath = os.path.join(os.path.split(sloth.__file__)[0], 'resources')
-from sloth import _slothKit
+from sloth import (HAS_XRAYLIB, HAS_LARCH, _resourcesPath,\
+                   _pushDict, _pushInfos, _slothKit)
 
 from .widgets.console import customIPythonWidget
 from .widgets.plot1D import customPlotWidget
 from .models.list_model import PaletteListModel
+
+#_resourcesPath = os.path.join(os.path.split(sloth.__file__)[0], 'resources')
 
 class SlothMainWindow(qt.QMainWindow):
 
@@ -55,24 +55,9 @@ class SlothMainWindow(qt.QMainWindow):
         #CONSOLE WIDGET
         self.consoleWidget = customIPythonWidget()
         self.consoleLayout.addWidget(self.consoleWidget)
-
-        _pushDict = {'os'   : os,
-                     'sys'  : sys,
-                     'qt'   : qt,
-                     'np'   : np,
-                     'math' : math,
-                     'plt'  : plt,
-                     'xl'   : xl}
         self.consoleWidget.pushVariables(_pushDict)
-        
-        _pushInfos = ['os, sys, math',
-                      'np : Numpy',
-                      'plt : matplotlib.pyplot',
-                      'qt : Qt from SILX',
-                      'xl : xraylib']
         for info in _pushInfos:
             self.tabInfoListWidget.addItem(info)
-
         self.consoleWidget.pushVariables(_slothKit)
         for _key in _slothKit.keys():
             self.slothInfoListWidget.addItem(_key)
@@ -84,7 +69,7 @@ class SlothMainWindow(qt.QMainWindow):
         self.tabInfoListWidget.addItem('p1d : SILX plot1d widget')
 
         #PERIODIC TABLE
-        self.periodicTable = PeriodicTable(selectable=True)
+        self.periodicTable = PeriodicTable(selectable=False)
         self.periodicTableLayout.addWidget(self.periodicTable)
         self.consoleWidget.pushVariables({'pt' : self.periodicTable})
         self.tabInfoListWidget.addItem('pt : SILX periodic table widget')

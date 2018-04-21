@@ -20,28 +20,23 @@ __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 import os, sys, math
 import numpy as np
 
-HAS_XRAYLIB = False
-HAS_LARCH = False
-#_LARCH = None
-HAS_PYMCA5 = False
-
+HAS_XRAYDB = False
 try:
     import xraylib as xl
     HAS_XRAYLIB = True
 except ImportError:
     pass
 
+HAS_LARCH = False
 try:
     import larch
-    #from larch import Interpreter
-    #_LARCH = Interpreter() #init larch session
-    from larch_plugins.xray.xraydb import xrayDB
-    xdb = xrayDB()
+    from larch import Interpreter
+    _larch = Interpreter() #init larch session
+    from larch_plugins.xray.xraydb_plugin import get_xraydb
+    xdb = get_xraydb(_larch)
     HAS_LARCH = True
 except:
     pass
-
-from .bragg import bragg_th
 
 #ERROR MESSAGES
 def _larch_error(ret=None):
@@ -54,7 +49,6 @@ def _xraylib_error(ret=None):
     print("ERROR: Xraylib not found")
     return ret
     
-
 #GLOBAL VARIABLES
 ELEMENTS = ('H', 'He',\
             'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne',\
@@ -278,27 +272,18 @@ def fluo_width(elem=None, line=None, herfd=False, showInfos=True):
             return lw_xas + lw_xes
     except:
         return 0
-
-def get_bragg(element, line, dspacing, retAll=False):
-    """return the Bragg angle for a given element/line and crystal d-spacing"""
+   
+def xray_line(element, line):
+    """return the energy in eV for a given element/line"""
     if HAS_XRAYLIB is False: _xraylib_error(0)
     el_n = xl.SymbolToAtomicNumber(element)
     try:
         line_ene = xl.LineEnergy(el_n, getattr(xl, line+'_LINE'))*1000
+        return line_ene
     except:
         print("ERROR: check the given line name!")
         return 0
-    try:
-        theta = bragg_th(line_ene, dspacing)
-    except:
-        theta = '-'
-        pass
-    if retAll:
-        return (element, line, line_ene, theta)
-    else:
-        return theta
     
-
 ### LARCH-BASED FUNCTIONS ###
 
 #xdb.function()
