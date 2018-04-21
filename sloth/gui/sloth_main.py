@@ -47,10 +47,16 @@ class SlothMainWindow(qt.QMainWindow):
         self.actionAbout.triggered.connect(self.openAboutDialog)
 
         #EXIT with C-q
-        self.actionExit = qt.QAction(('E&xit'), self)
+        #self.actionExit = qt.QAction(('E&xit'), self)
         self.actionExit.setShortcut(qt.QKeySequence("Ctrl+Q"))
-        self.addAction(self.actionExit)
+        #self.addAction(self.actionExit)
         self.actionExit.triggered.connect(self.confirmClose)
+
+        #OPEN with C-o
+        #self.actionOpen = qt.QAction(('Open'), self)
+        self.actionOpen.setShortcut(qt.QKeySequence("Ctrl+O"))
+        #self.addAction(self.actionOpen)
+        self.actionOpen.triggered.connect(self.selectFile)
         
         #CONSOLE WIDGET
         self.consoleWidget = customIPythonWidget()
@@ -74,9 +80,16 @@ class SlothMainWindow(qt.QMainWindow):
         self.consoleWidget.pushVariables({'pt' : self.periodicTable})
         self.tabInfoListWidget.addItem('pt : SILX periodic table widget')
         self.periodicTable.sigElementClicked.connect(self.click_table)
-        
-        self._fname = None
 
+
+        #Load single dataset
+        self._fnames = []
+        self._fname = None
+        self.buttonSelectFname.clicked.connect(self.selectFile)
+
+
+        #Loaded data
+        
         red   = qt.QColor(255,0,0)
         green = qt.QColor(0,255,0)
         blue  = qt.QColor(0,0,255)
@@ -96,11 +109,13 @@ class SlothMainWindow(qt.QMainWindow):
     def openAboutDialog(self):
         self.aboutDialog.show()
 
-    def on_actionOpen_triggered(self):
+    def selectFile(self):
         fname = qt.QFileDialog.getOpenFileName()
+        self._fname = fname[0]
+        self.lineSelectedFname.setText(self._fname)
         if fname:
-            self._fname = fname
-            print('loaded filename: {0}'.format(self._fname))
+            self._fnames.append(fname[0])
+            self.consoleWidget.pushVariables({'fnames' : self._fnames})
 
     def confirmClose(self):
         msg = qt.QMessageBox(self)
