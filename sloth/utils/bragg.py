@@ -17,6 +17,9 @@ except:
     HAS_CODATA = False
     HC = 1.2398418743309972e-06 # eV * m
 
+
+from .xdata import xray_line
+
 ### GLOBAL VARIABLES ###
 HKL_MAX = 30 # maximum number of hkl index considered
 SI_ALAT = 5.431065 # Ang at 25C
@@ -47,15 +50,31 @@ def theta_b(wlen, d, n=1):
         try:
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                return np.rad2deg( np.arcsin( ( ( wlen * n ) / ( 2 * d ) ) ) )
+                _thb = np.rad2deg( np.arcsin( ( ( wlen * n ) / ( 2 * d ) ) ) )
+            return _thb
         except:
             return 0
     else:
         return 0
 
 def bragg_th(ene, d, n=1):
-    """return the Bragg angle, $\theta_{B}$, (deg) for a given energy (eV) and d-spacing (\AA)"""
+    """return the Bragg angle, $\theta_{B}$, (deg) for a given energy (eV)
+    and d-spacing (\AA)"""
     return theta_b(ev2wlen(ene), d, n=n)
+
+
+def xray_bragg(element, line, dspacing, retAll=False):
+    """return the Bragg angle for a given element/line and crystal d-spacing"""
+    line_ene = xray_line(element, line)
+    try:
+        theta = bragg_th(line_ene, dspacing)
+    except:
+        theta = '-'
+        pass
+    if retAll:
+        return (element, line, line_ene, theta)
+    else:
+        return theta
 
 def cotdeg(theta):
     """return the cotangent (= cos/sin) of theta given in degrees"""
@@ -130,7 +149,7 @@ def d_triclinic(a, b, c, alpha, beta, gamma, hkl, **kws):
             + 2 * h * l * a * b**2 * c * ( cosralpha * cosrgamma - cosrbeta ) )
     return sqrt1over(d2m)
 
-def findhkl(energy, thetamin=65., crystal='all', retAll=False):
+def findhkl(energy=None, thetamin=65., crystal='all', retAll=False):
     """findhkl: for a given energy (eV) finds the Si and Ge reflections
     with relative Bragg angle
 
@@ -150,6 +169,8 @@ def findhkl(energy, thetamin=65., crystal='all', retAll=False):
     """
     if energy is None:
         print(findhkl.__doc__)
+
+    
 
     retDat = [("#crystal", "h", "k", "l", "bragg_deg")] 
     import itertools
