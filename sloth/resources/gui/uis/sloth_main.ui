@@ -68,9 +68,6 @@
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
-            <property name="frameShadow">
-             <enum>QFrame::Sunken</enum>
-            </property>
             <property name="currentIndex">
              <number>0</number>
             </property>
@@ -84,8 +81,211 @@
               </rect>
              </property>
              <attribute name="label">
-              <string>Spec file settings</string>
+              <string>Load 1D dataset</string>
              </attribute>
+             <widget class="QToolBox" name="toolboxLoad1D">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>80</y>
+                <width>371</width>
+                <height>451</height>
+               </rect>
+              </property>
+              <property name="currentIndex">
+               <number>0</number>
+              </property>
+              <widget class="QWidget" name="pageSpecfileDataSettings">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>371</width>
+                 <height>393</height>
+                </rect>
+               </property>
+               <attribute name="label">
+                <string>SpecfileData settings</string>
+               </attribute>
+               <widget class="QWidget" name="">
+                <property name="geometry">
+                 <rect>
+                  <x>20</x>
+                  <y>40</y>
+                  <width>315</width>
+                  <height>54</height>
+                 </rect>
+                </property>
+                <layout class="QGridLayout" name="gridLayout">
+                 <item row="1" column="1">
+                  <widget class="QPushButton" name="pushButton">
+                   <property name="text">
+                    <string>Plot</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2" colspan="2">
+                  <widget class="QPushButton" name="pushButton_2">
+                   <property name="text">
+                    <string>Load</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QLabel" name="label_8">
+                   <property name="text">
+                    <string>Label</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QComboBox" name="comboBox_4"/>
+                 </item>
+                 <item row="0" column="3">
+                  <widget class="QLineEdit" name="lineEdit"/>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_7">
+                   <property name="text">
+                    <string>scan</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="">
+                <property name="geometry">
+                 <rect>
+                  <x>10</x>
+                  <y>0</y>
+                  <width>359</width>
+                  <height>23</height>
+                 </rect>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_3">
+                 <item>
+                  <widget class="QLabel" name="label_4">
+                   <property name="text">
+                    <string>cntx</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="comboBox"/>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_5">
+                   <property name="text">
+                    <string>csig</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="comboBox_2"/>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_6">
+                   <property name="text">
+                    <string>cmon</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="comboBox_3"/>
+                 </item>
+                </layout>
+               </widget>
+               <zorder>label_4</zorder>
+               <zorder>label_5</zorder>
+               <zorder>label_6</zorder>
+               <zorder>comboBox</zorder>
+               <zorder>comboBox_2</zorder>
+               <zorder>comboBox_3</zorder>
+               <zorder>label_7</zorder>
+               <zorder>comboBox_4</zorder>
+               <zorder>label_8</zorder>
+               <zorder>lineEdit</zorder>
+               <zorder>pushButton</zorder>
+               <zorder>pushButton_2</zorder>
+               <zorder></zorder>
+               <zorder>label_7</zorder>
+              </widget>
+              <widget class="QWidget" name="pageNumpyTxtSettings">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>371</width>
+                 <height>393</height>
+                </rect>
+               </property>
+               <attribute name="label">
+                <string>Numpy.loadtxt settings</string>
+               </attribute>
+              </widget>
+             </widget>
+             <widget class="QWidget" name="">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>371</width>
+                <height>41</height>
+               </rect>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout">
+               <item>
+                <widget class="QLabel" name="label_3">
+                 <property name="text">
+                  <string>File</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="lineSelectedFname"/>
+               </item>
+               <item>
+                <widget class="QPushButton" name="buttonSelectFname">
+                 <property name="text">
+                  <string>...</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>40</y>
+                <width>371</width>
+                <height>27</height>
+               </rect>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <item>
+                <widget class="QPushButton" name="pushLoadSpefileData">
+                 <property name="text">
+                  <string>SpecfileData</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushLoadNumpyTxt">
+                 <property name="text">
+                  <string>Numpy.loadtxt</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+             <zorder>listFnameWidget</zorder>
+             <zorder>label_3</zorder>
+             <zorder>buttonSelectFname</zorder>
+             <zorder>listFnameWidget</zorder>
+             <zorder>pushLoadSpefileData</zorder>
+             <zorder>pushLoadNumpyTxt</zorder>
+             <zorder>toolboxLoad1D</zorder>
             </widget>
             <widget class="QWidget" name="pageLoadedData">
              <property name="geometry">
@@ -337,7 +537,10 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen">
    <property name="text">
-    <string>Open</string>
+    <string>Open (C-o)</string>
+   </property>
+   <property name="toolTip">
+    <string>Graphically select a file</string>
    </property>
   </action>
   <action name="actionExit">
