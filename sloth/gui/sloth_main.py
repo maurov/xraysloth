@@ -30,8 +30,10 @@ from sloth import (HAS_XRAYLIB, HAS_LARCH, _resourcesPath,\
 
 from .widgets.console import customIPythonWidget
 from .widgets.plot1D import customPlotWidget
-from .models.list_model import PaletteListModel
 
+#from .models.list_model import PaletteListModel
+
+    
 #_resourcesPath = os.path.join(os.path.split(sloth.__file__)[0], 'resources')
 
 class SlothMainWindow(qt.QMainWindow):
@@ -97,10 +99,9 @@ class SlothMainWindow(qt.QMainWindow):
         rowCount = 4
         columnCount = 6
    
-        model = PaletteListModel([red, green, blue])
-        model.insertRows(0, 5)
-
-        self.listViewData.setModel(model)
+        #model = PaletteListModel([red, green, blue])
+        #model.insertRows(0, 5)
+        #self.listViewData.setModel(model)
 
     def click_table(self, element):
         self.ptInfoListWidget.addItem(element.name)
