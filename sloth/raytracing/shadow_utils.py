@@ -21,6 +21,11 @@ except:
     pass
 
 from sloth.fit.peakfit import fit_splitpvoigt
+from sloth.inst.rowland import RcHoriz, RcVert
+
+###############
+### SOURCES ###
+###############
 
 def get_src_hdiv(oe_xhw, oe_ydist):
     """get source horizontal divergence
@@ -63,6 +68,49 @@ def merge_beams(beams):
         beam_mrg.rays = np.append(beam_mrg.rays, beam.rays, axis=0)
     return beam_mrg
 
+######################
+### ROWLAND CIRCLE ###
+######################
+
+def get_moverc(Rm, theta0, chi, geom='vertical'):
+    """get optical element movement
+
+    .. note:: optical element local coordinate system is used
+
+    :param Rm: radius of the Rowland circle in mm
+    :param theta0: incidence angle in deg (= Bragg angle)
+    :param chi: sagittal angle in deg
+                (= rotation on the sagittal plane around the sample-detector axis)
+    :param geom: Rowland geometry
+                 'vertical' or 'horizontal' -> generic
+                 'TEXS' -> pantograph (Rovezzi et al.)
+    :returns: [OFFX, OFFY, OFFZ, X_ROT, Y_ROT, Z_ROT]
+    :rtype: list of floats
+    
+    """
+    offx, offy, offz, xrot, yrot, zrot = 0, 0, 0, 0, 0, 0
+    if 'vert' in geom.lower():
+        rc = RcVert(Rm, theta0, showInfos=False)
+    elif 'hor' in geom.lower():
+        rc = RcHoriz(Rm, theta0, showInfos=False)
+    elif 'TEXS' in geom.upper():
+        rc = RcHoriz(Rm, theta0, aW=25., aWext=32, rSext=10., aL=97.,\
+                     bender_version=1, bender=(40., 60., 28.),\
+                     actuator=(300, 120), showInfos=False)
+    else:
+        print("ERROR: geometry not known")
+        return [offx, offy, offz, xrot, yrot, zrot]
+    apos0 = rc.get_ana_pos(0)
+    apos1 = rc.get_ana_pos(chi)
+    aoff = apos1 - apos0
+    #
+    offx = aoff[0]
+    offy = aoff[2]
+    offz = -1*aoff[1]
+    yrot = chi
+    #
+    return [offx, offy, offz, xrot, yrot, zrot]
+        
 #############
 ### PLOTS ###
 #############
