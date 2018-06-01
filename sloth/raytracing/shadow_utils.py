@@ -45,6 +45,25 @@ def get_src_vdiv(oe_yhw, oe_ydist, oe_th):
     return math.atan(_h/_d)
 
 #############
+### BEAMS ###
+#############
+
+def merge_beams(beams):
+    """merge a list of beams
+
+    :param beams: list of Shadow.Beam() instances
+    :returns: merged beams
+    :rtype: Shadow.Beam()
+
+    """
+    beam_mrg = Shadow.Beam()
+    beam_mrg.rays = beams[0].rays
+    for ibeam, beam in enumerate(beams):
+        if ibeam == 0: continue
+        beam_mrg.rays = np.append(beam_mrg.rays, beam.rays, axis=0)
+    return beam_mrg
+
+#############
 ### PLOTS ###
 #############
 
