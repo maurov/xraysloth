@@ -6,7 +6,9 @@ import os, sys
 import math
 import unittest
 from sloth.utils.bragg import (bragg_th, bragg_ev)
-from sloth.fit.peakfit import fit_splitpvoigt
+
+from sloth.raytracing.shadow_utils import (plot_energy_histo,
+                                           plot_footprint, plot_image)
 
 HAS_SHADOW = False
 try:
@@ -118,41 +120,6 @@ def sbca_si555(nrays=500000, rmirr=50., theta0=75., cone_max=0.11,
     print('INFO: => p[q] = {0:.4f} cm , ene0 = {1:.3f}'.format(p, ene0))
         
     return (beam, src, oe)
-
-#utility plots
-def plot_energy_histo(beam, fit=False, return_tkt=False):
-    """plot rays energy distribution weighted by intensity"""
-    tkt = Shadow.ShadowTools.histo1(beam, 11, ref=23, nbins=101)
-    if fit:
-        x = tkt['bin_path']
-        y = tkt['histogram_path']
-        fit = fit_splitpvoigt(x,y)
-    if return_tkt: return tkt
-
-def plot_footprint(return_tkt=False, **h2args):
-    """plot lost rays on the optical element to check correct overfill"""
-    #avoid duplicate kwargs
-    _popnolost = h2args.pop('nolost', None)
-    _popref = h2args.pop('ref', None)
-    _poptitle = h2args.pop('title', None)
-    try:
-        tkt = Shadow.ShadowTools.plotxy('mirr.01', 2, 1, nolost=2, ref=0,\
-                                        title='Footprint', **h2args)
-    except:
-        print('ERROR: probably "mirr.XX" file does not exist!')
-        tkt = 0
-    if return_tkt: return tkt
-    
-def plot_image(beam, return_tkt=False, **h2args):
-    """plot image at the detector weighted by intensity"""
-    #avoid duplicate kwargs
-    _popnolost = h2args.pop('nolost', None)
-    _popref = h2args.pop('ref', None)
-    _popcalcw = h2args.pop('calculate_widths', None)
-    tkt = Shadow.ShadowTools.plotxy(beam, 1, 3, ref=23, nolost=1,\
-                                    calculate_widths=2, **h2args)
-    if return_tkt: return tkt
-
 
 def run_test_sbca_si555():
     if (HAS_SHADOW is False):
