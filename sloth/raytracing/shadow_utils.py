@@ -14,6 +14,7 @@ import numpy as np
 HAS_SHADOW = False
 try:
     import Shadow
+    from Shadow import ShadowLibExtensions
     Shadow.ShadowTools.plt.ion()
     HAS_SHADOW = True
 except:
@@ -52,6 +53,22 @@ def get_src_vdiv(oe_yhw, oe_ydist, oe_th):
 ### BEAMS ###
 #############
 
+def get_beam_from_file(bin_fname):
+    """get Shadow.Beam() from SHADOW binary file
+
+    :param bin_fname: SHADOW binary file (e.g. `mirr.01`)
+    :returns: beam
+    :rtype: Shadow.Beam() instance
+
+    """
+    beam = ShadowLibExtensions.Beam()
+    try:
+        beam.load(bin_fname)
+    except:
+        print('ERROR: get_beam_from_file cannot load {0}'.format(bin_fname))
+        beam = None
+    return beam
+        
 def merge_beams(beams):
     """merge a list of beams
 
