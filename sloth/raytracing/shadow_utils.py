@@ -17,7 +17,6 @@ try:
     Shadow.ShadowTools.plt.ion()
     HAS_SHADOW = True
 except:
-    print("WARNING: {0}\n => this test will probably fail!".format(sys.exc_info()[1]))
     pass
 
 from sloth.fit.peakfit import fit_splitpvoigt
@@ -81,9 +80,7 @@ def get_moverc(Rm, theta0, chi, geom='vertical'):
     :param theta0: incidence angle in deg (= Bragg angle)
     :param chi: sagittal angle in deg
                 (= rotation on the sagittal plane around the sample-detector axis)
-    :param geom: Rowland geometry
-                 'vertical' or 'horizontal' -> generic
-                 'TEXS' -> pantograph (Rovezzi et al.)
+    :param geom: Rowland geometry, 'vertical' or 'horizontal'
     :returns: [OFFX, OFFY, OFFZ, X_ROT, Y_ROT, Z_ROT]
     :rtype: list of floats
     
@@ -93,10 +90,6 @@ def get_moverc(Rm, theta0, chi, geom='vertical'):
         rc = RcVert(Rm, theta0, showInfos=False)
     elif 'hor' in geom.lower():
         rc = RcHoriz(Rm, theta0, showInfos=False)
-    elif 'TEXS' in geom.upper():
-        rc = RcHoriz(Rm, theta0, aW=25., aWext=32, rSext=10., aL=97.,\
-                     bender_version=1, bender=(40., 60., 28.),\
-                     actuator=(300, 120), showInfos=False)
     else:
         print("ERROR: geometry not known")
         return [offx, offy, offz, xrot, yrot, zrot]
@@ -110,7 +103,25 @@ def get_moverc(Rm, theta0, chi, geom='vertical'):
     yrot = chi
     #
     return [offx, offy, offz, xrot, yrot, zrot]
-        
+
+def get_chi_TEXS(Rm, theta0):
+    """get chi angles (deg) for TEXS spectrometer (Rovezzi et al.)
+
+    :param Rm: radius of the Rowland circle in mm
+    :param theta0: incidence angle in deg (= Bragg angle)
+    :returns: [chi0, chi1, chi2, chi3, chi4, chi5]
+    :rtype: list of floats
+
+    """
+    rc = RcHoriz(Rm, theta0, aW=25., aWext=32, rSext=10., aL=97.,
+                 bender_version=1, bender=(40., 60., 28.),
+                 actuator=(300, 120), showInfos=False)
+    chis = []
+    for ana in [0, 1, 2, 3, 4, 5]:
+        chi = rc.get_chi2(ana)
+        chis.append(chi)
+    return chis
+
 #############
 ### PLOTS ###
 #############
@@ -122,7 +133,7 @@ def plot_close_all():
     """
     Shadow.ShadowTools.plt.close('all')
 
-def plot_energy_histo(beam, fit=False, return_tkt=False):
+def plot_energy_histo(beam, fit=False, return_tkt=False, **h1args):
     """plot rays energy distribution weighted by intensity
 
     :param beam: Shadow.Beam() instance
@@ -130,7 +141,7 @@ def plot_energy_histo(beam, fit=False, return_tkt=False):
     :param return_tkt: boolean if return Matplotlib ticket
 
     """
-    tkt = Shadow.ShadowTools.histo1(beam, 11, ref=23, nbins=101)
+    tkt = Shadow.ShadowTools.histo1(beam, 11, ref=23, **h1args)
     if fit:
         x = tkt['bin_path']
         y = tkt['histogram_path']
