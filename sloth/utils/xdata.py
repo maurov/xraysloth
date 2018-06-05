@@ -19,6 +19,7 @@ __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 
 import os, sys, math
 import numpy as np
+import logging
 
 HAS_XRAYDB = False
 try:
@@ -48,7 +49,9 @@ def _xraylib_error(ret=None):
     """print a missing xraylib error message and return 'ret'"""
     print("ERROR: Xraylib not found")
     return ret
-    
+
+_logger = logging.getLogger(__name__)
+
 #GLOBAL VARIABLES
 ELEMENTS = ('H', 'He',\
             'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne',\
@@ -273,16 +276,35 @@ def fluo_width(elem=None, line=None, herfd=False, showInfos=True):
     except:
         return 0
    
-def xray_line(element, line):
-    """return the energy in eV for a given element/line"""
-    if HAS_XRAYLIB is False: _xraylib_error(0)
+def xray_line(element, line=None, initial_level=None):
+    """get the energy in eV for a given element/line or level
+
+    :param element: string
+    :param line: string, Siegbahn notation, e.g. 'KA1' [None]
+    :param initial_level: string, initial core level, e.g. 'K' [None]
+    :returns: dictionary {'line' : [], 'ene' : []}
+    
+    """
     el_n = xl.SymbolToAtomicNumber(element)
-    try:
-        line_ene = xl.LineEnergy(el_n, getattr(xl, line+'_LINE'))*1000
-        return line_ene
-    except:
-        print("ERROR: check the given line name!")
-        return 0
+    outdict = {'line' : [],
+               'ene' : []}
+    if HAS_XRAYLIB is False: _xraylib_error(0)
+    if (line is None) and (initial_level is not None):
+        try:
+            lines = [line for line in LINES if initial_level in line]
+        except:
+            _logger.error('initial_level is wrong')
+    else:
+        lines = [line]
+    for _line in lines:
+        try:
+            line_ene = xl.LineEnergy(el_n, getattr(xl, _line+'_LINE'))*1000
+            outdict['line'].append(_line)
+            outdict['ene'].append(line_ene)
+        except:
+            _logger.error("line is wrong")
+            continue
+    return outdict
     
 ### LARCH-BASED FUNCTIONS ###
 
