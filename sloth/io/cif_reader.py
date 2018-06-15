@@ -88,6 +88,10 @@ class CIFReader(object):
         except:
             return None
 
+    def get_all_keys(self):
+        """all subkeys"""
+        return self.cf[self.key].keys()
+        
     def get_label(self):
         """label"""
         return self.get_subkey('_chemical_name_common')
