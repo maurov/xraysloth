@@ -12,6 +12,8 @@ import math
 import numpy as np
 from scipy.interpolate import splrep, sproot, splev
 
+from silx.gui.plot.StackView import StackViewMainWindow
+
 HAS_SHADOW = False
 try:
     import Shadow
@@ -29,6 +31,7 @@ _logger = logging.getLogger(__name__)
 ############
 ### MATH ###
 ############
+
 def fwhm_spl(x, y, threshold=0.5, k=10):
     """Determine full-with-half-maximum of a peaked set of points, x and y.
 
@@ -346,6 +349,30 @@ def plot_image(beam, return_tkt=False, **h2args):
                                     calculate_widths=2, **h2args)
     if return_tkt: return tkt
 
+def plot_fpstack(fps):
+    """plot a stack of footprints using silx.gui.plot.StackViewMainWindow
+
+    Parameters
+    ==========
+
+    fps : list of histo2 instances
+
+    Returns
+    =======
+
+    none, show window
+
+    """
+    fpStack = np.array([i['histogram'] for i in fps])
+    sv = StackViewMainWindow()
+    sv.setWindowTitle('footprints')
+    sv.setColormap('viridis')
+    sv.setStack(fpStack)
+    sv.show()
+
+
+
+    
 ####################
 ### HISTO2 HACKS ###
 ####################
