@@ -7,9 +7,12 @@
 
 """
 
-import sys, os
+import sys, os, logging
 import math
 import numpy as np
+from scipy.interpolate import splrep, sproot, splev
+
+from silx.gui.plot.StackView import StackViewMainWindow
 
 HAS_SHADOW = False
 try:
@@ -22,6 +25,154 @@ except:
 
 from sloth.fit.peakfit import fit_splitpvoigt
 from sloth.inst.rowland import RcHoriz, RcVert
+
+_logger = logging.getLogger(__name__)
+
+############
+### MATH ###
+############
+
+def fwhm_spl(x, y, threshold=0.5, k=10):
+    """Determine full-with-half-maximum of a peaked set of points, x and y.
+
+    Assumes that there is only one peak present in the datasset. The
+    function uses a spline interpolation of order k.
+
+    .. note: code taken from StackOverFlow (TODO: put link!!!)
+    
+    Parameters
+    ==========
+
+    x, y : arrays of floats
+        dataset
+
+    threshold : float
+        at which level to get the full-width, half-maximum by default [0.5]
+
+    k : int
+       order of spline
+    
+    Returns
+    =======
+
+    fw : float
+        full-width-at-threshold/half_maximum
+
+    """
+
+    class MultiplePeaks(Exception): pass
+    class NoPeaksFound(Exception): pass
+
+    half_max = np.amax(y) * threshold
+    s = splrep(x, y - half_max)
+    roots = sproot(s)
+
+    if len(roots) > 2:
+        #raise MultiplePeaks("The dataset appears to have multiple peaks, and thus the FWHM can't be determined.")
+        return 0
+    elif len(roots) < 2:
+        #raise NoPeaksFound("No proper peaks were found in the data set; likely the dataset is flat (e.g. all zeros).")
+        return 0
+    else:
+        return abs(roots[1] - roots[0])
+
+def fwhm_cross(x, y, threshold=0.5):
+    """Determine full-with-half-maximum of a peaked set of points X,Y.
+
+    (alternative method)
+    
+    .. note: code taken from StackOverFlow (TODO: put link!!!)
+
+    Parameters
+    ==========
+
+    x, y : arrays of floats
+        dataset
+
+    threshold : float
+        at which level to get the full-width, half-maximum by default [0.5]
+
+    Returns
+    =======
+
+    fw : float
+        full-width-at-threshold/half_maximum
+
+    """
+    half_max = max(y) * threshold
+    #find when function crosses line half_max (when sign of diff flips)
+    #take the 'derivative' of signum(half_max - y[])
+    d = np.sign(half_max - np.array(y[0:-1])) - np.sign(half_max - np.array(y[1:]))
+    #plot(x,d) #if you are interested
+    #find the left and right most indexes
+    left_idx = np.where(d > 0)[0]
+    right_idx = np.where(d < 0)[-1]
+    return x[right_idx] - x[left_idx] #return the difference (full width)
+
+def fwhm_bin(x, y, threshold=0.5):
+    """Determine full-width-at-threshold (default: half-maximum)
+
+    Parameters
+    ==========
+
+    x, y : arrays of floats
+        dataset
+
+    threshold : float
+        at which level to get the full-width, half-maximum by default [0.5]
+
+    Returns
+    =======
+
+    fw : float
+        full-width-at-threshold/half_maximum
+
+    """
+    tt = np.where(y>=max(y)*threshold)
+    if y[tt].size > 1:
+        binSize = x[1] - x[0]
+        fw = binSize * (tt[0][-1] - tt[0][0])
+    else:
+        fw = 0
+    return fw
+
+def fwhm(x, y, method='all', **kwargs):
+    """get full-width-at-threshold for a x,y dataset
+
+    Parameters
+    ==========
+
+    x, y : arrays of floats
+        dataset
+
+    method : string
+       which method to use:
+       - 'spl'   -> .. seealso:: :func:`fwhm_spl`
+       - 'cross' -> .. seealso:: :func:`fwhm_cross`
+       - 'bin'   -> .. seealso:: :func:`fwhm_bin`
+       - 'all'   -> all previous, returns a list [default]
+    
+    threshold : float
+        at which level to get the full-width, half-maximum by default [0.5]
+
+    Returns
+    =======
+
+    fw : float or list of floats
+        full-width-at-threshold/half_maximum
+        if method='all' returns [fwhm_bin, fwhm_cross, fwhm_spl]
+    """
+    methods = ('spl', 'cross', 'bin', 'all')
+    if not method in methods:
+        _logger.warning('given method not understood!')
+        return 0
+    _spl = fwhm_spl(x, y, **kwargs)
+    _bin = fwhm_bin(x, y, **kwargs)
+    _cross = fwhm_cross(x, y, **kwargs)
+    if method == 'spl': return _spl
+    if method == 'spl': return _bin
+    if method == 'spl': return _cross
+    if method == 'all': return [_bin, _cross, _spl]
 
 ###############
 ### SOURCES ###
@@ -198,6 +349,30 @@ def plot_image(beam, return_tkt=False, **h2args):
                                     calculate_widths=2, **h2args)
     if return_tkt: return tkt
 
+def plot_fpstack(fps):
+    """plot a stack of footprints using silx.gui.plot.StackViewMainWindow
+
+    Parameters
+    ==========
+
+    fps : list of histo2 instances
+
+    Returns
+    =======
+
+    none, show window
+
+    """
+    fpStack = np.array([i['histogram'] for i in fps])
+    sv = StackViewMainWindow()
+    sv.setWindowTitle('footprints')
+    sv.setColormap('viridis')
+    sv.setStack(fpStack)
+    sv.show()
+
+
+
+    
 ####################
 ### HISTO2 HACKS ###
 ####################
