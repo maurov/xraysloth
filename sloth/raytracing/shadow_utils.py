@@ -166,13 +166,13 @@ def fwhm(x, y, method='all', **kwargs):
     if not method in methods:
         _logger.warning('given method not understood!')
         return 0
-    _spl = fwhm_spl(x, y, **kwargs)
-    _bin = fwhm_bin(x, y, **kwargs)
+    _spl = fwhm_spl(x, y, **kwargs)[0]
+    _bin = fwhm_bin(x, y, **kwargs)[0]
     _cross = fwhm_cross(x, y, **kwargs)
-    if method == 'spl': return _spl
-    if method == 'spl': return _bin
-    if method == 'spl': return _cross
-    if method == 'all': return [_bin, _cross, _spl]
+    if method == 'spl'  : return _spl
+    if method == 'bin'  : return _bin
+    if method == 'cross': return _cross
+    if method == 'all'  : return [_bin, _cross, _spl]
 
 ###############
 ### SOURCES ###
