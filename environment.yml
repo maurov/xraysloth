@@ -1,0 +1,31 @@
+#conda env create -f environment.yml
+name: sloth-env
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - qt
+  - pyqt=5
+  - python=3.6
+  - numpy
+  - matplotlib
+  - scipy
+  - pandas
+  - jupyter
+  - h5py
+  - sqlalchemy
+  - ipywidgets
+  #conda-forge
+  - xraylib
+  - peakutils
+  - lmfit
+  - asteval
+  - psutil
+  - pytest
+  - pip:
+    - hdf5plugin
+    - fisx
+    - silx
+    - pymca
+    - fabio
+    - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl
