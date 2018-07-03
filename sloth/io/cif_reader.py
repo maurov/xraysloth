@@ -260,7 +260,8 @@ def readCifFile(cifFile):
     
 if __name__ == '__main__':
     mycif = 'LaFeSi_small.cif' #TODO: put an example CIF file in resources
-    if 1:
+    mylabel = mycif.split('.')[0]
+    if 0:
         c = CIFReader()
         c.read_cif(mycif)
         print('Label: {0}'.format(c.get_label()))
@@ -271,14 +272,14 @@ if __name__ == '__main__':
     if 0:
         ### NOT WORKING ###
         lfs = readCifFile(mycif)
-    if 1:
+    if 0:
         #from ASE
         from ase import io
         ats = io.read(mycif)
     if 1:
         #http://pymatgen.org/_modules/pymatgen/cli/feff_input_generation.html#main
         from pymatgen.io.feff.sets import (FEFFDictSet, MPXANESSet, MPEXAFSSet)
-        from pymatgen.io.vasp import *
+        from pymatgen.io.feff.inputs import (get_atom_map, get_absorbing_atom_symbol_index)
         from pymatgen.io.cif import CifParser
 
         r = CifParser(mycif)
@@ -288,17 +289,36 @@ if __name__ == '__main__':
         else:
             calc_set = MPXANESSet
 
-        abs_at = 'Fe'
+
+        myexa = {'EDGE': 'K',
+                 'S02': 0.01,
+                 'CONTROL': '1 1 1 1 1 1',
+                 'PRINT': '1 0 0 0 0 0',
+                 'EXCHANGE' : 0,
+                 'SCF': '4.5 0 30 .2 1',
+                 'RPATH': 8,
+                 'EXAFS': 20,
+                 'NLEG' : 4,
+                 'SIG2' : 0.005,
+                 'COREHOLE': 'FSR'}
+
+        abs_el = 'Fe'
+        abs_at = 5
+        
         struct = r.get_structures()[0]
         _edge = 'K'
-        _radius = 8.
+        _radius = 8.5
         _comm = 'Feff from CIF file with pymatgen'
 
-        pmg = calc_set(abs_at, struct, edge=_edge, radius=_radius)
-        #pmg.write_input()
-        
-        #feffd = pmg.all_input()
+        pmg = calc_set(abs_at, struct, edge=_edge, radius=_radius,\
+                       user_tag_settings=myexa)
 
-
+        out_dir = '{0}_{1}'.format(mylabel, 'test') 
+        pmg.write_input(output_dir=out_dir)
         
+        feff = pmg.all_input()
+        ats = pmg.atoms.get_lines()
+                       
+    #EOF                   
     pass
+                       
