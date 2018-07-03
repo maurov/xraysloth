@@ -369,7 +369,7 @@ def plot_fpstack(fps):
     Returns
     =======
 
-    none, show window
+    sv : class:`StackViewMainWindow`
 
     """
     fpStack = np.array([i['histogram'] for i in fps])
@@ -378,6 +378,7 @@ def plot_fpstack(fps):
     sv.setColormap('viridis')
     sv.setStack(fpStack)
     sv.show()
+    return sv
 
 ####################
 ### HISTO2 HACKS ###
