@@ -47,7 +47,7 @@ from sloth.utils.xdata import (ELEMENTS, SHELLS, LINES_DICT, LINES,\
 from sloth.fit.peakfit import fit_splitpvoigt, fit_results
 
 __author__ = "Mauro Rovezzi"
-__version__ = "0.3.0"
+__version__ = "0.3.0-dev"
 
 _libDir = os.path.dirname(os.path.realpath(__file__))
 

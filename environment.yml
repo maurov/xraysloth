@@ -6,26 +6,49 @@ channels:
 dependencies:
   - qt
   - pyqt=5
+  #- wxpython
   - python=3.6
   - numpy
-  - matplotlib
   - scipy
-  - pandas
+  - matplotlib
+  - pillow
+  - six
+  - bottlechest
+  - ipython
+  - ipykernel
   - jupyter
-  - h5py
-  - sqlalchemy
   - ipywidgets
+  - pyzmq
+  - pandas
+  - pyyaml
+  - h5py
+  - pytz
+  - python-dateutil
+  - requests
+  - termcolor
+  - nose
+  - swig
+  - dill
+  - scikit-learn
+  - pyparsing
+  - sqlalchemy
+  - sphinx
+  - sphinxcontrib
   #conda-forge
   - xraylib
+  #- ase
   - peakutils
   - lmfit
   - asteval
   - psutil
   - pytest
+  - uncertainties
   - pip:
+    - PyCifRW
     - hdf5plugin
     - fisx
     - silx
-    - pymca
-    - fabio
+    #- PyMca5
+    #- fabio
+    #- pyFAI
     - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl
