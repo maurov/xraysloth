@@ -19,29 +19,25 @@ __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 
 import os, sys, math
 import numpy as np
+import logging
 
-HAS_XRAYLIB = False
-HAS_LARCH = False
-#_LARCH = None
-HAS_PYMCA5 = False
-
+HAS_XRAYDB = False
 try:
     import xraylib as xl
     HAS_XRAYLIB = True
 except ImportError:
     pass
 
+HAS_LARCH = False
 try:
     import larch
-    #from larch import Interpreter
-    #_LARCH = Interpreter() #init larch session
-    from larch_plugins.xray.xraydb import xrayDB
-    xdb = xrayDB()
+    from larch import Interpreter
+    _larch = Interpreter() #init larch session
+    from larch_plugins.xray.xraydb_plugin import get_xraydb
+    xdb = get_xraydb(_larch)
     HAS_LARCH = True
 except:
     pass
-
-from .bragg import bragg_th
 
 #ERROR MESSAGES
 def _larch_error(ret=None):
@@ -53,7 +49,8 @@ def _xraylib_error(ret=None):
     """print a missing xraylib error message and return 'ret'"""
     print("ERROR: Xraylib not found")
     return ret
-    
+
+_logger = logging.getLogger(__name__)
 
 #GLOBAL VARIABLES
 ELEMENTS = ('H', 'He',\
@@ -278,27 +275,37 @@ def fluo_width(elem=None, line=None, herfd=False, showInfos=True):
             return lw_xas + lw_xes
     except:
         return 0
+   
+def xray_line(element, line=None, initial_level=None):
+    """get the energy in eV for a given element/line or level
 
-def get_bragg(element, line, dspacing, retAll=False):
-    """return the Bragg angle for a given element/line and crystal d-spacing"""
-    if HAS_XRAYLIB is False: _xraylib_error(0)
-    el_n = xl.SymbolToAtomicNumber(element)
-    try:
-        line_ene = xl.LineEnergy(el_n, getattr(xl, line+'_LINE'))*1000
-    except:
-        print("ERROR: check the given line name!")
-        return 0
-    try:
-        theta = bragg_th(line_ene, dspacing)
-    except:
-        theta = '-'
-        pass
-    if retAll:
-        return (element, line, line_ene, theta)
-    else:
-        return theta
+    :param element: string
+    :param line: string, Siegbahn notation, e.g. 'KA1' [None]
+    :param initial_level: string, initial core level, e.g. 'K' [None]
+    :returns: dictionary {'line' : [], 'ene' : []}
     
-
+    """
+    el_n = xl.SymbolToAtomicNumber(element)
+    outdict = {'line' : [],
+               'ene' : []}
+    if HAS_XRAYLIB is False: _xraylib_error(0)
+    if (line is None) and (initial_level is not None):
+        try:
+            lines = [line for line in LINES if initial_level in line]
+        except:
+            _logger.error('initial_level is wrong')
+    else:
+        lines = [line]
+    for _line in lines:
+        try:
+            line_ene = xl.LineEnergy(el_n, getattr(xl, _line+'_LINE'))*1000
+            outdict['line'].append(_line)
+            outdict['ene'].append(line_ene)
+        except:
+            _logger.error("line is wrong")
+            continue
+    return outdict
+    
 ### LARCH-BASED FUNCTIONS ###
 
 #xdb.function()

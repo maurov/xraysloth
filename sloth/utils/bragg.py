@@ -5,6 +5,7 @@ braggutils: utilities around the Bragg's law ($ n \lambda = 2 d sin \theta $)
 """
 
 import numpy as np
+import warnings
 
 try:
     import scipy.constants.codata as const
@@ -15,6 +16,9 @@ try:
 except:
     HAS_CODATA = False
     HC = 1.2398418743309972e-06 # eV * m
+
+
+from .xdata import xray_line
 
 ### GLOBAL VARIABLES ###
 HKL_MAX = 30 # maximum number of hkl index considered
@@ -44,15 +48,33 @@ def theta_b(wlen, d, n=1):
     (\AA$^{-1}$) and d-spacing (\AA)"""
     if not (d == 0):
         try:
-            return np.rad2deg( np.arcsin( ( ( wlen * n ) / ( 2 * d ) ) ) )
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                _thb = np.rad2deg( np.arcsin( ( ( wlen * n ) / ( 2 * d ) ) ) )
+            return _thb
         except:
             return 0
     else:
         return 0
 
 def bragg_th(ene, d, n=1):
-    """return the Bragg angle, $\theta_{B}$, (deg) for a given energy (eV) and d-spacing (\AA)"""
+    """return the Bragg angle, $\theta_{B}$, (deg) for a given energy (eV)
+    and d-spacing (\AA)"""
     return theta_b(ev2wlen(ene), d, n=n)
+
+
+def xray_bragg(element, line, dspacing, retAll=False):
+    """return the Bragg angle for a given element/line and crystal d-spacing"""
+    line_ene = xray_line(element, line)
+    try:
+        theta = bragg_th(line_ene, dspacing)
+    except:
+        theta = '-'
+        pass
+    if retAll:
+        return (element, line, line_ene, theta)
+    else:
+        return theta
 
 def cotdeg(theta):
     """return the cotangent (= cos/sin) of theta given in degrees"""
@@ -127,7 +149,7 @@ def d_triclinic(a, b, c, alpha, beta, gamma, hkl, **kws):
             + 2 * h * l * a * b**2 * c * ( cosralpha * cosrgamma - cosrbeta ) )
     return sqrt1over(d2m)
 
-def findhkl(energy, thetamin=65., crystal='all', retAll=False):
+def findhkl(energy=None, thetamin=65., crystal='all', retAll=False):
     """findhkl: for a given energy (eV) finds the Si and Ge reflections
     with relative Bragg angle
 
@@ -148,6 +170,8 @@ def findhkl(energy, thetamin=65., crystal='all', retAll=False):
     if energy is None:
         print(findhkl.__doc__)
 
+    
+
     retDat = [("#crystal", "h", "k", "l", "bragg_deg")] 
     import itertools
     def _find_theta(crystal, alat):
@@ -163,7 +187,10 @@ def findhkl(energy, thetamin=65., crystal='all', retAll=False):
                 if (x[0]%2 == 0 and x[1]%2 == 0 and x[2]%2 == 0) and not ((x[0]+x[1]+x[2])%4 == 0):
                     pass
                 else:
-                    theta = theta_b(ev2wlen(energy), d_cubic(alat, x))
+                    try:
+                        theta = theta_b(ev2wlen(energy), d_cubic(alat, x))
+                    except:
+                        continue
                     if (theta >= thetamin):
                         print('{0}({1} {2} {3}), {4} {5:2.2f}'.format(crystal, x[0], x[1], x[2], 'Bragg', theta))
                         if retAll: retDat.append((crystal, x[0], x[1], x[2], theta))

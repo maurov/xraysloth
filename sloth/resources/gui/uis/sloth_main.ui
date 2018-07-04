@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1094</width>
+    <height>855</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1094</width>
+    <height>855</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Sloth MainWindow</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../../logo/xraysloth_logo_03.svg</normaloff>../../logo/xraysloth_logo_03.svg</iconset>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QWidget" name="verticalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>-1</y>
+      <width>1091</width>
+      <height>631</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="tabLayout">
+     <item>
+      <widget class="QTabWidget" name="tabWidget">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="tabData1D">
+        <attribute name="icon">
+         <iconset>
+          <normaloff>../icons/line_chart.svg</normaloff>../icons/line_chart.svg</iconset>
+        </attribute>
+        <attribute name="title">
+         <string>Data 1D</string>
+        </attribute>
+        <widget class="QWidget" name="horizontalLayoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>-1</x>
+           <y>-1</y>
+           <width>381</width>
+           <height>591</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="toolboxLayout">
+          <item>
+           <widget class="QToolBox" name="toolbox1">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="currentIndex">
+             <number>0</number>
+            </property>
+            <widget class="QWidget" name="pageSpec">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>379</width>
+               <height>531</height>
+              </rect>
+             </property>
+             <attribute name="label">
+              <string>Load 1D dataset</string>
+             </attribute>
+             <widget class="QToolBox" name="toolboxLoad1D">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>80</y>
+                <width>371</width>
+                <height>451</height>
+               </rect>
+              </property>
+              <property name="currentIndex">
+               <number>0</number>
+              </property>
+              <widget class="QWidget" name="pageSpecfileDataSettings">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>371</width>
+                 <height>393</height>
+                </rect>
+               </property>
+               <attribute name="label">
+                <string>SpecfileData settings</string>
+               </attribute>
+               <widget class="QWidget" name="">
+                <property name="geometry">
+                 <rect>
+                  <x>20</x>
+                  <y>40</y>
+                  <width>315</width>
+                  <height>54</height>
+                 </rect>
+                </property>
+                <layout class="QGridLayout" name="gridLayout">
+                 <item row="1" column="1">
+                  <widget class="QPushButton" name="pushButton">
+                   <property name="text">
+                    <string>Plot</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2" colspan="2">
+                  <widget class="QPushButton" name="pushButton_2">
+                   <property name="text">
+                    <string>Load</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QLabel" name="label_8">
+                   <property name="text">
+                    <string>Label</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QComboBox" name="comboBox_4"/>
+                 </item>
+                 <item row="0" column="3">
+                  <widget class="QLineEdit" name="lineEdit"/>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_7">
+                   <property name="text">
+                    <string>scan</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="">
+                <property name="geometry">
+                 <rect>
+                  <x>10</x>
+                  <y>0</y>
+                  <width>359</width>
+                  <height>23</height>
+                 </rect>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_3">
+                 <item>
+                  <widget class="QLabel" name="label_4">
+                   <property name="text">
+                    <string>cntx</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="comboBox"/>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_5">
+                   <property name="text">
+                    <string>csig</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="comboBox_2"/>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_6">
+                   <property name="text">
+                    <string>cmon</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="comboBox_3"/>
+                 </item>
+                </layout>
+               </widget>
+               <zorder>label_4</zorder>
+               <zorder>label_5</zorder>
+               <zorder>label_6</zorder>
+               <zorder>comboBox</zorder>
+               <zorder>comboBox_2</zorder>
+               <zorder>comboBox_3</zorder>
+               <zorder>label_7</zorder>
+               <zorder>comboBox_4</zorder>
+               <zorder>label_8</zorder>
+               <zorder>lineEdit</zorder>
+               <zorder>pushButton</zorder>
+               <zorder>pushButton_2</zorder>
+               <zorder></zorder>
+               <zorder>label_7</zorder>
+              </widget>
+              <widget class="QWidget" name="pageNumpyTxtSettings">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>371</width>
+                 <height>393</height>
+                </rect>
+               </property>
+               <attribute name="label">
+                <string>Numpy.loadtxt settings</string>
+               </attribute>
+              </widget>
+             </widget>
+             <widget class="QWidget" name="">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>371</width>
+                <height>41</height>
+               </rect>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout">
+               <item>
+                <widget class="QLabel" name="label_3">
+                 <property name="text">
+                  <string>File</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="lineSelectedFname"/>
+               </item>
+               <item>
+                <widget class="QPushButton" name="buttonSelectFname">
+                 <property name="text">
+                  <string>...</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>40</y>
+                <width>371</width>
+                <height>27</height>
+               </rect>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <item>
+                <widget class="QPushButton" name="pushLoadSpefileData">
+                 <property name="text">
+                  <string>SpecfileData</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushLoadNumpyTxt">
+                 <property name="text">
+                  <string>Numpy.loadtxt</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+             <zorder>listFnameWidget</zorder>
+             <zorder>label_3</zorder>
+             <zorder>buttonSelectFname</zorder>
+             <zorder>listFnameWidget</zorder>
+             <zorder>pushLoadSpefileData</zorder>
+             <zorder>pushLoadNumpyTxt</zorder>
+             <zorder>toolboxLoad1D</zorder>
+            </widget>
+            <widget class="QWidget" name="pageLoadedData">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>379</width>
+               <height>531</height>
+              </rect>
+             </property>
+             <attribute name="label">
+              <string>Loaded Data</string>
+             </attribute>
+             <widget class="QListView" name="listViewData">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>371</width>
+                <height>521</height>
+               </rect>
+              </property>
+             </widget>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="horizontalLayoutWidget_2">
+         <property name="geometry">
+          <rect>
+           <x>390</x>
+           <y>10</y>
+           <width>691</width>
+           <height>571</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="plotLayout"/>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="tabData2D">
+        <attribute name="icon">
+         <iconset>
+          <normaloff>../icons/contour_chart.svg</normaloff>../icons/contour_chart.svg</iconset>
+        </attribute>
+        <attribute name="title">
+         <string>Data 2D</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tabRaytracing">
+        <attribute name="title">
+         <string>Raytracing</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tabRowland">
+        <attribute name="title">
+         <string>Rowland</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tabPeriodicTable">
+        <attribute name="icon">
+         <iconset>
+          <normaloff>../icons/periodic_table.svg</normaloff>../icons/periodic_table.svg</iconset>
+        </attribute>
+        <attribute name="title">
+         <string>Periodic Table</string>
+        </attribute>
+        <widget class="QWidget" name="verticalLayoutWidget_3">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>1081</width>
+           <height>441</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="periodicTableLayout">
+          <property name="leftMargin">
+           <number>5</number>
+          </property>
+          <property name="topMargin">
+           <number>5</number>
+          </property>
+          <property name="rightMargin">
+           <number>5</number>
+          </property>
+          <property name="bottomMargin">
+           <number>5</number>
+          </property>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="verticalLayoutWidget_4">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>449</y>
+           <width>521</width>
+           <height>141</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="periodicTableInfoLayout">
+          <item>
+           <widget class="QListWidget" name="ptInfoListWidget"/>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="verticalLayoutWidget_5">
+         <property name="geometry">
+          <rect>
+           <x>530</x>
+           <y>449</y>
+           <width>551</width>
+           <height>141</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QListWidget" name="listWidget_2"/>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>639</y>
+      <width>621</width>
+      <height>171</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="consoleLayout"/>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget_3">
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>639</y>
+      <width>461</width>
+      <height>171</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="consoleInfoLayout">
+     <item>
+      <widget class="QTabWidget" name="infoTabWidget">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="tabInfoConsole">
+        <attribute name="title">
+         <string>Console Infos</string>
+        </attribute>
+        <widget class="QListWidget" name="tabInfoListWidget">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>20</y>
+           <width>231</width>
+           <height>121</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QListWidget" name="slothInfoListWidget">
+         <property name="geometry">
+          <rect>
+           <x>240</x>
+           <y>20</y>
+           <width>211</width>
+           <height>121</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>231</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Loaded namespaces:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_2">
+         <property name="geometry">
+          <rect>
+           <x>238</x>
+           <y>0</y>
+           <width>211</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Loaded Sloth modules/functions:</string>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="tabInfo2">
+        <attribute name="title">
+         <string>Other Infos</string>
+        </attribute>
+        <widget class="QListView" name="tabInfo2ListView">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>481</width>
+           <height>141</height>
+          </rect>
+         </property>
+        </widget>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1094</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuAbout"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open (C-o)</string>
+   </property>
+   <property name="toolTip">
+    <string>Graphically select a file</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit (C-q)</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

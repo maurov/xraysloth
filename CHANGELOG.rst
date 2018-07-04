@@ -3,16 +3,38 @@
 Change Log
 ==========
 
+v.0.3.0 (dev)
+-------------
+
+*for_sloth_0.3 branch (not released/tagged yet)*
+
+New features
+''''''''''''
+
+* :mod:`sloth.gui.sloth_main`
+
+  * initial GUI layout (mainly an IPython embedded shell).
+
+* :mod:`sloth.raytracing.shadow_utils`
+
+  * utilities for running SHADOW3 simulations (specific cases).
+
+Bug fixes
+'''''''''
+
+* :class:`sloth.inst.rowland.RcVert` -> bug in `chi` calculation.
+
+
 v.0.2.1 (current)
 -----------------
 
-*Not released yet*
+*master branch (not released/tagged yet)*
 
-* `sloth.inst`
+* :mod:`sloth.inst`
 
    * TEXS pantograph final version.
 
-* `sloth.raytracing`
+* :mod:`sloth.raytracing`
 
   * Added `shadow3` test with a real SBCA to carefully check its installation.
 

@@ -790,7 +790,7 @@ class RcVert(RowlandCircle):
         vDet = np.array([0, 0, zDet])
         return self.get_pos(vDet)
 
-    def get_ana_pos(self, aXoff=0.):
+    def get_ana_pos(self, chi=0.):
         """analyser XYZ center position for a given chi
 
         Parameters
