@@ -166,16 +166,18 @@ def fwhm(x, y, method='all', **kwargs):
     if not method in methods:
         _logger.warning('given method not understood!')
         return 0
-    _bin = fwhm_bin(x, y, **kwargs)
     try:
-        _spl = fwhm_spl(x, y, **kwargs)
+        _spl = fwhm_spl(x, y, **kwargs)[0]
     except:
         _spl = 0
     try:
-        _cross = max(fwhm_cross(x, y, **kwargs))
+        _bin = fwhm_bin(x, y, **kwargs)
+    except:
+        _bin = 0
+    try:
+        _cross = fwhm_cross(x, y, **kwargs)[0]
     except:
         _cross = 0
-
     if method == 'spl'  : return _spl
     if method == 'bin'  : return _bin
     if method == 'cross': return _cross
@@ -377,9 +379,6 @@ def plot_fpstack(fps):
     sv.setStack(fpStack)
     sv.show()
 
-
-
-    
 ####################
 ### HISTO2 HACKS ###
 ####################
