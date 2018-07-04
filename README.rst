@@ -67,10 +67,14 @@ via `conda <https://conda.io/docs/>`_ on any platform. My personal
 workflow is described `setup_conda_envs.sh
 <https://github.com/maurov/software-notes/blob/master/setup_conda_envs.sh>`_.
 
-A dedicated Conda environment called `sloth-env` can be automagically installed by::
+A dedicated Conda environment called `sloth-env` can be automagically
+installed by::
 
   conda env create -f environment.yml
 
+Or run directly in Binder
+
+.. image:: https://mybinder.org/badge.svg :target: https://mybinder.org/v2/gh/maurov/xraysloth/master
 
 Usage
 -----
