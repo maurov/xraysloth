@@ -369,7 +369,11 @@ def plot_fpstack(fps):
     Returns
     =======
 
+<<<<<<< HEAD
     none, show window
+=======
+    sv : class:`StackViewMainWindow`
+>>>>>>> for_sloth_0.3
 
     """
     fpStack = np.array([i['histogram'] for i in fps])
@@ -378,6 +382,10 @@ def plot_fpstack(fps):
     sv.setColormap('viridis')
     sv.setStack(fpStack)
     sv.show()
+<<<<<<< HEAD
+=======
+    return sv
+>>>>>>> for_sloth_0.3
 
 ####################
 ### HISTO2 HACKS ###
