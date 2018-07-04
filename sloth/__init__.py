@@ -17,7 +17,12 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
-from silx.gui import qt
+HAS_SILX_QT = False
+try:
+    from silx.gui import qt
+    HAS_SILX_QT = True
+except:
+    pass
 
 HAS_XRAYLIB = False
 try:
@@ -55,14 +60,17 @@ _resourcesPath = os.path.join(_libDir, 'resources')
 
 _pushDict = {'os'   : os,
              'sys'  : sys,
-             'qt'   : qt,
-             'np'   : np,
              'math' : math,
+             'np'   : np,
              'plt'  : plt}
 _pushInfos = ['os, sys, math',
               'np : Numpy',
-              'plt : matplotlib.pyplot',
-              'qt : Qt from SILX']
+              'plt : matplotlib.pyplot']
+
+if HAS_SILX_QT:
+    _pushDict.update({'qt'   : qt})
+    _pushInfos.append('qt : Qt from SILX')
+
 if HAS_XRAYLIB:
     _pushDict.update({'xl'   : xl})
     _pushInfos.append('xl : XrayLib')
@@ -70,10 +78,9 @@ if HAS_XRAYLIB:
 if HAS_LARCH:
     _pushDict.update({'larch'   : larch,
                       '_larch'  : _larch})
-    _pushInfos.append('larch : Larch')
+    _pushInfos.append('larch : Larch lib')
     _pushInfos.append('_larch : Larch interpreter')
     
-
 _slothKit = {'SI_ALAT'         : SI_ALAT,
              'GE_ALAT'         : GE_ALAT,
              'ELEMENTS'        : ELEMENTS,
