@@ -59,7 +59,6 @@ def fwhm_spl(x, y, threshold=0.5, k=10):
         full-width-at-threshold/half_maximum
 
     """
-
     class MultiplePeaks(Exception): pass
     class NoPeaksFound(Exception): pass
 
@@ -68,11 +67,9 @@ def fwhm_spl(x, y, threshold=0.5, k=10):
     roots = sproot(s)
 
     if len(roots) > 2:
-        #raise MultiplePeaks("The dataset appears to have multiple peaks, and thus the FWHM can't be determined.")
-        return 0
+        raise MultiplePeaks("The dataset appears to have multiple peaks, and thus the FWHM can't be determined.")
     elif len(roots) < 2:
-        #raise NoPeaksFound("No proper peaks were found in the data set; likely the dataset is flat (e.g. all zeros).")
-        return 0
+        raise NoPeaksFound("No proper peaks were found in the data set; likely the dataset is flat (e.g. all zeros).")
     else:
         return abs(roots[1] - roots[0])
 
