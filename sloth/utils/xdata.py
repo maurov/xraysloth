@@ -52,7 +52,31 @@ def _xraylib_error(ret=None):
 
 _logger = logging.getLogger(__name__)
 
-#GLOBAL VARIABLES
+
+#SIGMA <-> FWHM
+F2S = 2*math.sqrt(2*math.log(2))
+
+def fwhm2sigma(fwhm):
+    """get sigma from FWHM"""
+    return fwhm/F2S
+
+def sigma2fwhm(sigma):
+    """get FWHM from sigma"""
+    return sigma*F2S
+
+def lorentzian(x, amplitude=1.0, center=0.0, sigma=1.0):
+    """Return a 1-dimensional Lorentzian function.
+    
+    lorentzian(x, amplitude, center, sigma) = (amplitude/(1 +
+    ((1.0*x-center)/sigma)**2)) / (pi*sigma)
+
+    """
+    return (amplitude/(1 + ((1.0*x-center)/sigma)**2)) / (pi*sigma)
+
+##########################
+### ELEMENTS AND LINES ###
+##########################
+
 ELEMENTS = ('H', 'He',\
             'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne',\
             'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar',\
@@ -148,7 +172,21 @@ def mapLine2Trans(line):
         print('ERROR: line {0} not in the list; returning 0'.format(line))
         return 0
 
+###############################
 ### XRAYLIB-BASED FUNCTIONS ###
+###############################
+
+def get_element(elem):
+    """get a tuple for element name and number"""
+    if type(elem) is str:
+        elem_z = xl.SymbolToAtomicNumber(elem)
+        elem_str = elem
+    else:
+        elem_z = elem
+        elem_str = xl.AtomicNumberToSymbol(elem)
+    return (elem_str, elem_z)
+    
+
 def find_edge(emin, emax, shells=None):
     """ return the edge energy in a given energy range [emin,emax] (eV)"""
     if HAS_XRAYLIB is False: _xraylib_error(0)
@@ -258,24 +296,55 @@ def fluo_width(elem=None, line=None, herfd=False, showInfos=True):
     if ((elem is None) or (line is None)):
         print('ERROR: element or edge not given, returning 0')
         return 0
-    if type(elem) is str:
-        elem_z = xl.SymbolToAtomicNumber(elem)
-        elem_str = elem
-    else:
-        elem_z = elem
-        elem_str = xl.AtomicNumberToSymbol(elem)
+    elm = get_element(elem)
     ln = mapLine2Trans(line)
     try:
-        lw_xas = xl.AtomicLevelWidth(elem_z, getattr(xl, ln[2]+'_SHELL'))*1000
-        lw_xes = xl.AtomicLevelWidth(elem_z, getattr(xl, ln[3]+'_SHELL'))*1000
-        if showInfos: print('{0} {1} (={2}): XAS={3:.2f} eV, XES={4:.2f} eV'.format(elem_str, line, ln[1], lw_xas, lw_xes))
+        lw_xas = xl.AtomicLevelWidth(elm[1], getattr(xl, ln[2]+'_SHELL'))*1000
+        lw_xes = xl.AtomicLevelWidth(elm[1], getattr(xl, ln[3]+'_SHELL'))*1000
+        if showInfos:
+            print('{0} {1} (={2}): XAS={3:.2f} eV, XES={4:.2f} eV'.format(elm[0], line, ln[1], lw_xas, lw_xes))
         if herfd is True:
             return 1./(math.sqrt(lw_xas**2 + lw_xes**2))
         else:
             return lw_xas + lw_xes
     except:
         return 0
-   
+
+def fluo_amplitude(elem, line, excitation=10000., barn_unit=False):
+    """get the fluorescence cross section for given element/line
+
+    Parameters
+    ==========
+
+    elem : string or number
+           element
+    
+    line : string
+           emission line Siegban (e.g. 'LA1') or IUPAC (e.g. 'L3M5')
+
+    excitation : float [10000.]
+                 excitation energy in eV
+
+    barn_unit : boolean [False]
+
+    Returns
+    =======
+
+    fluo_amp (in 'cm2/g' or 'barn/atom' if barn_unit is True)
+
+    """
+    el_n = get_element(elem)[1]
+    if barn_unit:
+        CSfluo = xl.CSb_FluorLine_Kissel_Cascade
+    else:
+        CSfluo = xl.CS_FluorLine_Kissel_Cascade
+    try:
+        fluo_amp = CSfluo(el_n, getattr(xl, line+'_LINE'), excitation/1000.)
+    except:
+        _logger.error("line is wrong")
+        fluo_amp = 0
+    return fluo_amp
+    
 def xray_line(element, line=None, initial_level=None):
     """get the energy in eV for a given element/line or level
 
