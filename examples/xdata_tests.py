@@ -16,8 +16,10 @@ from sloth.utils.xdata import (ene_res, fluo_width, find_line, mapLine2Trans,\
 
 ### TESTS/EXAMPLES
 def testEresLinesKLM(emin, emax):
-    """ returns a list of the average energy resolution for K, L and M
-    lines for the elements in the given energy range """
+    """returns a list of the average energy resolution for K, L and M
+    lines for the elements in the given energy range
+
+    """
     k = ene_res(emin, emax, shells=['K'])
     l1 = ene_res(emin, emax, shells=['L1'])
     l2 = ene_res(emin, emax, shells=['L2'])

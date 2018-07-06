@@ -46,18 +46,18 @@ try:
 except:
     pass
 
+_logger = logging.getLogger(__name__)
+
 #ERROR MESSAGES
 def _larch_error(ret=None):
     """print a missing larch error message and return 'ret'"""
-    print("ERROR: Larch not found")
+    _logger.error("Larch not found")
     return ret
 
 def _xraylib_error(ret=None):
     """print a missing xraylib error message and return 'ret'"""
-    print("ERROR: Xraylib not found")
+    _logger.error("Xraylib not found")
     return ret
-
-_logger = logging.getLogger(__name__)
 
 #SIGMA <-> FWHM
 F2S = 2*math.sqrt(2*math.log(2))
@@ -175,7 +175,7 @@ def mapLine2Trans(line):
         idx = LINES2TRANS[line]
         return (LINES[idx[0]], TRANSITIONS[idx[0]], SHELLS[idx[1]], SHELLS[idx[2]])
     except:
-        print('ERROR: line {0} not in the list; returning 0'.format(line))
+        _logger.error('line {0} not in the list; returning 0'.format(line))
         return 0
 
 ###############################
@@ -192,9 +192,8 @@ def get_element(elem):
         elem_str = xl.AtomicNumberToSymbol(elem)
     return (elem_str, elem_z)
     
-
 def find_edge(emin, emax, shells=None):
-    """ return the edge energy in a given energy range [emin,emax] (eV)"""
+    """return the edge energy in a given energy range [emin, emax] (eV)"""
     if HAS_XRAYLIB is False: _xraylib_error(0)
     if shells is None:
         shells = SHELLS
@@ -205,17 +204,20 @@ def find_edge(emin, emax, shells=None):
                 print('{0} \t {1} \t {2:>.2f} eV'.format(el, sh, edge))
 
 def find_line(emin, emax, elements=None, lines=None, outDict=False):
-    """ return the line energy in a given energy range [emin,emax] (eV)
+    """return the line energy in a given energy range [emin,emax] (eV)
 
     Parameters
-    ----------
+    ==========
 
     emin, emax : float
                  [minimum, maximum] energy range (eV)
+    
     elements : list of str
-               list of elements, [ELEMENTS (all)] 
+               list of elements, [ELEMENTS (all)]
+    
     lines : list of str
             list of lines, [LINES (all)]
+    
     outDict : boolean, False
               returns a dictionary instead of printing to screen with keywords:
               _out['el'] : element symbol, list of strs
@@ -225,8 +227,10 @@ def find_line(emin, emax, elements=None, lines=None, outDict=False):
               _out['w']  : width eV, list of floats
 
     Returns
-    -------
+    =======
+    
     None, prints to screen the results (unless outDict boolean given)
+
     """
     if HAS_XRAYLIB is False: _xraylib_error(0)
     if lines is None:
@@ -259,7 +263,7 @@ def find_line(emin, emax, elements=None, lines=None, outDict=False):
         return _out
     else:
         for eln, el, ln, line, w in zip(_out['eln'], _out['el'], _out['ln'], _out['en'], _out['w']):
-            print('{0} \t {1} \t {2} \t {3:>.2f} \t {4:>.2f}'.format(eln, el, ln, line, w))
+            print('{eln} \t {el} \t {ln} \t {line:>.2f} \t {w:>.2f}'.format(**_out))
                 
 def ene_res(emin, emax, shells=['K']):
     """ used in spectro.py """
@@ -412,15 +416,15 @@ def fluo_spectrum(elem, line, xwidth=3, xstep=0.05,\
     xmax = cen + xwidth*fwhm
     xfluo = np.arange(xmin, xmax, xstep)
     yfluo = lorentzian(xfluo, amplitude=amp, center=cen, sigma=sig)
-    info = {'elem'  : el[0],
-            'elemZ' : el[1],
-            'line'  : line,
-            'excit' : exc,
+    info = {'el'    : el[0],
+            'eln'   : el[1],
+            'ln'    : line,
+            'exc'   : exc,
             'cen'   : cen,
             'fwhm'  : fwhm,
             'amp'   : amp,
             'yunit' : yunit}
-    legend = '{elem} {line}'.format(**info)
+    legend = '{eln} {ln}'.format(**info)
     if showInfos:
         print('Lorentzian => cen: {cen:.3f} eV, amp: {amp:.3f} {yunit}, fwhm: {fwhm:.3f} eV'.format(**info))
     if plot and HAS_SILX:
