@@ -21,6 +21,13 @@ import os, sys, math
 import numpy as np
 import logging
 
+HAS_SILX = False
+try:
+    from silx.gui.plot import Plot1D
+    HAS_SILX = True
+except:
+    pass
+
 HAS_XRAYDB = False
 try:
     import xraylib as xl
@@ -70,7 +77,7 @@ def lorentzian(x, amplitude=1.0, center=0.0, sigma=1.0):
     ((1.0*x-center)/sigma)**2)) / (pi*sigma)
 
     """
-    return (amplitude/(1 + ((1.0*x-center)/sigma)**2)) / (pi*sigma)
+    return (amplitude/(1 + ((1.0*x-center)/sigma)**2)) / (math.pi*sigma)
 
 ##########################
 ### ELEMENTS AND LINES ###
@@ -309,7 +316,7 @@ def fluo_width(elem=None, line=None, herfd=False, showInfos=True):
     except:
         return 0
 
-def fluo_amplitude(elem, line, excitation=10000., barn_unit=False):
+def fluo_amplitude(elem, line, excitation=None, barn_unit=False):
     """get the fluorescence cross section for given element/line
 
     Parameters
@@ -321,7 +328,7 @@ def fluo_amplitude(elem, line, excitation=10000., barn_unit=False):
     line : string
            emission line Siegban (e.g. 'LA1') or IUPAC (e.g. 'L3M5')
 
-    excitation : float [10000.]
+    excitation : float [None]
                  excitation energy in eV
 
     barn_unit : boolean [False]
@@ -332,17 +339,97 @@ def fluo_amplitude(elem, line, excitation=10000., barn_unit=False):
     fluo_amp (in 'cm2/g' or 'barn/atom' if barn_unit is True)
 
     """
+    if excitation is None:
+        _logger.warning("excitation energy not given, using 10 keV")
+        excitation = 10000.
+    #guess if eV or keV
+    if excitation >= 200.:
+        excitation /= 1000
+    else:
+        _logger.warning("excitation energy given in keV")
     el_n = get_element(elem)[1]
     if barn_unit:
         CSfluo = xl.CSb_FluorLine_Kissel_Cascade
     else:
         CSfluo = xl.CS_FluorLine_Kissel_Cascade
     try:
-        fluo_amp = CSfluo(el_n, getattr(xl, line+'_LINE'), excitation/1000.)
+        fluo_amp = CSfluo(el_n, getattr(xl, line+'_LINE'), excitation)
     except:
         _logger.error("line is wrong")
         fluo_amp = 0
     return fluo_amp
+
+def fluo_spectrum(elem, line, xwidth=3, xstep=0.05,\
+                  plot=False, showInfos=True, **kws):
+    """generate a fluorescence spectrum for a given element/line
+
+    .. note:: it generates a Lorentzian function with the following parameters:
+              - center: emission energy (eV)
+              - sigma: from FWHM of sum of atomic levels widths (XAS+XES)
+              - amplitude: CS_FuorLine_Kissel_Cascade
+              - xmin, xmax: center -+ xwidth*fwhm
+
+    Parameters
+    ==========
+
+    elem : string or int
+
+    line : string
+           emission line Siegban (e.g. 'LA1') or IUPAC (e.g. 'L3M5')
+
+    xwidth : int or float [3]
+             multiplication factor to establish xmin, xmax (= center -+ xwidth*fwhm)
+
+    xstep : float [0.05]
+            energy step in eV
+
+    showInfos : boolean [True]
+                print the `info` dict
+    
+    plot : boolean [False]
+           plot the line before returning it
+
+    **kws : keyword arguments for :func:`fluo_width`, :func:`fluo_amplitude`
+
+    Returns
+    =======
+
+    xfluo, yfluo, info : XY arrays of floats, dictionary
+
+    """
+    el = get_element(elem)
+    exc = kws.get('excitation', 10000.)
+    bu = kws.get('barn_unit', False)
+    if bu is True:
+        yunit = 'barn/atom'
+    else:
+        yunit = 'cm2/g'
+    fwhm = fluo_width(elem, line, showInfos=showInfos)
+    sig = fwhm2sigma(fwhm)
+    amp = fluo_amplitude(el[1], line, excitation=exc, barn_unit=bu)
+    cen = xl.LineEnergy(el[1], getattr(xl, line+'_LINE'))*1000
+    xmin = cen - xwidth*fwhm
+    xmax = cen + xwidth*fwhm
+    xfluo = np.arange(xmin, xmax, xstep)
+    yfluo = lorentzian(xfluo, amplitude=amp, center=cen, sigma=sig)
+    info = {'elem'  : el[0],
+            'elemZ' : el[1],
+            'line'  : line,
+            'excit' : exc,
+            'cen'   : cen,
+            'fwhm'  : fwhm,
+            'amp'   : amp,
+            'yunit' : yunit}
+    legend = '{elem} {line}'.format(**info)
+    if showInfos:
+        print('Lorentzian => cen: {cen:.3f} eV, amp: {amp:.3f} {yunit}, fwhm: {fwhm:.3f} eV'.format(**info))
+    if plot and HAS_SILX:
+        p1 = Plot1D()
+        p1.addCurve(xfluo, yfluo, legend=legend, replace=True,\
+                    xlabel='energy (eV)', ylabel='intensity ({0})'.format(yunit))
+        p1.show()
+        input('PRESS ENTER to close the plot window and return')
+    return xfluo, yfluo, info
     
 def xray_line(element, line=None, initial_level=None):
     """get the energy in eV for a given element/line or level
