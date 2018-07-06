@@ -6,7 +6,7 @@ Change Log
 v.0.3.0 (dev)
 -------------
 
-*for_sloth_0.3 branch (not released/tagged yet)*
+*master branch (not released/tagged yet)*
 
 New features
 ''''''''''''
@@ -25,10 +25,8 @@ Bug fixes
 * :class:`sloth.inst.rowland.RcVert` -> bug in `chi` calculation.
 
 
-v.0.2.1 (current)
------------------
-
-*master branch (not released/tagged yet)*
+v.0.2.1 (2018-07-04)
+--------------------
 
 * :mod:`sloth.inst`
 

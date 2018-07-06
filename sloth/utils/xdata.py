@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-Simple utility to retrieve x-ray data from external libraries/databases
+"""Simple utility to retrieve X-ray data from external
+libraries/databases
 
-Available x-ray libraries/dbs
-==============================
+Available libraries/dbs
+=======================
 
 * `xraylib <https://github.com/tschoonj/xraylib>`_
 * ``xraydb_plugin.py`` in `Larch <https://github.com/xraypy/xraylarch>`_
@@ -51,7 +51,6 @@ def _xraylib_error(ret=None):
     return ret
 
 _logger = logging.getLogger(__name__)
-
 
 #SIGMA <-> FWHM
 F2S = 2*math.sqrt(2*math.log(2))
@@ -374,8 +373,10 @@ def xray_line(element, line=None, initial_level=None):
             _logger.error("line is wrong")
             continue
     return outdict
-    
+
+#############################
 ### LARCH-BASED FUNCTIONS ###
+#############################
 
 #xdb.function()
 #--------------------------------------------------------------------------------

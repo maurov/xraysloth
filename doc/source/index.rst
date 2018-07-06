@@ -16,6 +16,7 @@ techniques.
    :hidden:
 
    changelog.rst
+   todo.rst
 
 :doc:`changelog`
      List of changes
