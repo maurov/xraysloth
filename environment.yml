@@ -36,7 +36,6 @@ dependencies:
   - sphinxcontrib
   #conda-forge
   - xraylib
-  - silx
   #- ase
   - peakutils
   - lmfit
@@ -47,7 +46,8 @@ dependencies:
   - pip:
     - PyCifRW
     - hdf5plugin
-    #- fisx
+    - fisx
+    - silx
     #- PyMca5
     #- fabio
     #- pyFAI
