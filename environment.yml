@@ -2,26 +2,31 @@
 name: sloth-env
 channels:
   - defaults
-  - conda-forge
+  #- conda-forge
+  #- GSECARS
+  #- nexpy
 dependencies:
+  - python=3.6
   - qt
   - pyqt=5
-  #- wxpython
-  - python=3.6
   - numpy
   - scipy
   - matplotlib
+  - h5py
+  - scikit-learn
+  - scikit-image
   - pillow
+  - traitlets
   - six
   - bottlechest
   - ipython
   - ipykernel
   - jupyter
   - ipywidgets
+  - ipympl
   - pyzmq
   - pandas
   - pyyaml
-  - h5py
   - pytz
   - python-dateutil
   - requests
@@ -29,26 +34,33 @@ dependencies:
   - nose
   - swig
   - dill
-  - scikit-learn
   - pyparsing
   - sqlalchemy
   - sphinx
   - sphinxcontrib
-  #conda-forge
-  - xraylib
-  #- ase
-  - peakutils
-  - lmfit
-  - asteval
-  - psutil
-  - pytest
-  - uncertainties
+  ###
+  - conda-forge::xraylib
+  - conda-forge::ase
+  - conda-forge::psutil
+  - conda-forge::pytest
+  - conda-forge::uncertainties
+  ###
+  - GSECARS::peakutils
+  - GSECARS::asteval
+  - GSECARS::pyfai
+  - GSECARS::lmfit
+  - GSECARS::wxpython
+  - GSECARS::wxmplot
+  - GSECARS::wxutils
+  - GSECARS::pycifrw
+  - GSECARS::xraylarch
+  ###
+  - nexpy::nexusformat
+  ###
   - pip:
-    - PyCifRW
     - hdf5plugin
     - fisx
     - silx
     #- PyMca5
     #- fabio
-    #- pyFAI
     - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl
