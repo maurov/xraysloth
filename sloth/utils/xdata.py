@@ -184,12 +184,18 @@ def mapLine2Trans(line):
 
 def get_element(elem):
     """get a tuple for element name and number"""
-    if type(elem) is str:
+    if (type(elem) is str) and (elem in ELEMENTS):
         elem_z = xl.SymbolToAtomicNumber(elem)
+        if elem_z == 0:
+            raise NameError("unknown element name")
         elem_str = elem
-    else:
-        elem_z = elem
+    elif (type(elem) is int):
         elem_str = xl.AtomicNumberToSymbol(elem)
+        if elem_str is None:
+            raise NameError("element Z out of range")
+        elem_z = elem
+    else:
+        raise NameError("check element argument")
     return (elem_str, elem_z)
     
 def find_edge(emin, emax, shells=None):
@@ -345,9 +351,9 @@ def fluo_amplitude(elem, line, excitation=None, barn_unit=False):
     """
     if excitation is None:
         _logger.warning("excitation energy not given, using 10 keV")
-        excitation = 10000.
+        excitation = 10.
     #guess if eV or keV
-    if excitation >= 200.:
+    elif excitation >= 200.:
         excitation /= 1000
     else:
         _logger.warning("excitation energy given in keV")
@@ -362,6 +368,36 @@ def fluo_amplitude(elem, line, excitation=None, barn_unit=False):
         _logger.error("line is wrong")
         fluo_amp = 0
     return fluo_amp
+
+def xray_line(element, line=None, initial_level=None):
+    """get the energy in eV for a given element/line or level
+
+    :param element: string
+    :param line: string, Siegbahn notation, e.g. 'KA1' [None]
+    :param initial_level: string, initial core level, e.g. 'K' [None]
+    :returns: dictionary {'line' : [], 'ene' : []}
+    
+    """
+    el_n = xl.SymbolToAtomicNumber(element)
+    outdict = {'line' : [],
+               'ene' : []}
+    if HAS_XRAYLIB is False: _xraylib_error(0)
+    if (line is None) and (initial_level is not None):
+        try:
+            lines = [line for line in LINES if initial_level in line]
+        except:
+            _logger.error('initial_level is wrong')
+    else:
+        lines = [line]
+    for _line in lines:
+        try:
+            line_ene = xl.LineEnergy(el_n, getattr(xl, _line+'_LINE'))*1000
+            outdict['line'].append(_line)
+            outdict['ene'].append(line_ene)
+        except:
+            _logger.error("line is wrong")
+            continue
+    return outdict
 
 def fluo_spectrum(elem, line, xwidth=3, xstep=0.05,\
                   plot=False, showInfos=True, **kws):
@@ -409,9 +445,11 @@ def fluo_spectrum(elem, line, xwidth=3, xstep=0.05,\
     else:
         yunit = 'cm2/g'
     fwhm = fluo_width(elem, line, showInfos=showInfos)
-    sig = fwhm2sigma(fwhm)
     amp = fluo_amplitude(el[1], line, excitation=exc, barn_unit=bu)
     cen = xl.LineEnergy(el[1], getattr(xl, line+'_LINE'))*1000
+    if (fwhm == 0) or (amp == 0) or (cen == 0):
+        raise NameError('no line found')
+    sig = fwhm2sigma(fwhm)
     xmin = cen - xwidth*fwhm
     xmax = cen + xwidth*fwhm
     xfluo = np.arange(xmin, xmax, xstep)
@@ -435,35 +473,56 @@ def fluo_spectrum(elem, line, xwidth=3, xstep=0.05,\
         input('PRESS ENTER to close the plot window and return')
     return xfluo, yfluo, info
     
-def xray_line(element, line=None, initial_level=None):
-    """get the energy in eV for a given element/line or level
+def fluo_lines(elem, lines, **fluokws):
+    """generate the emission spectrum of a given element and list of lines
 
-    :param element: string
-    :param line: string, Siegbahn notation, e.g. 'KA1' [None]
-    :param initial_level: string, initial core level, e.g. 'K' [None]
-    :returns: dictionary {'line' : [], 'ene' : []}
-    
+    Parameters
+    ==========
+
+    elem : string or int
+
+    lines : list of strings
+            emission lines as Siegban (e.g. 'LA1') or IUPAC (e.g. 'L3M5')
+
+    **fluokws : keyword arguments for :func:`fluo_spectrum`
+
+    Returns
+    =======
+
+    xcom, ycom : arrays of floats
+                 energy/intensity of the whole spectrum
+
     """
-    el_n = xl.SymbolToAtomicNumber(element)
-    outdict = {'line' : [],
-               'ene' : []}
-    if HAS_XRAYLIB is False: _xraylib_error(0)
-    if (line is None) and (initial_level is not None):
+    plot = fluokws.get('plot', False)
+    xstep = fluokws.get('xstep', 0.05)
+    fluokws.update({'plot': False})
+    xi, yi, ii = [], [], []
+    for ln in lines:
         try:
-            lines = [line for line in LINES if initial_level in line]
+            x, y, i = fluo_spectrum(elem, ln, **fluokws)
+            xi.append(x)
+            yi.append(y)
+            ii.append(i)
         except:
-            _logger.error('initial_level is wrong')
-    else:
-        lines = [line]
-    for _line in lines:
-        try:
-            line_ene = xl.LineEnergy(el_n, getattr(xl, _line+'_LINE'))*1000
-            outdict['line'].append(_line)
-            outdict['ene'].append(line_ene)
-        except:
-            _logger.error("line is wrong")
-            continue
-    return outdict
+            print("INFO: no line found for {0}-{1}".format(elem, ln))
+    xmin = min([x.min() for x in xi])
+    xmax = max([x.max() for x in xi])
+    xcom = np.arange(xmin, xmax, xstep)
+    ycom = np.zeros_like(xcom)
+    for x, y in zip(xi, yi):
+        yinterp = np.interp(xcom, x, y)
+        ycom += yinterp
+
+    if plot and HAS_SILX:
+        p = Plot1D()
+        p.addCurve(xcom, ycom, legend='sum', color='black', replace=True,\
+                   xlabel='energy (eV)', ylabel='intensity')
+        for x, y, i in zip(xi, yi, ii):
+            p.addCurve(x ,y, legend=i['ln'], replace=False,)
+        p.show()
+        
+    return xcom, ycom
+
 
 #############################
 ### LARCH-BASED FUNCTIONS ###
