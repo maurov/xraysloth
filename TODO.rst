@@ -16,15 +16,26 @@ modules. No particular priority order is given.
 
 * :mod:`sloth.utils.xdata`
 
-  * make a single API for both `xraylib` and `larch` backends.
+  - make a single API for both `xraylib` and `larch` backends.
 
 
 * :mod:`sloth.gui.sloth_main`
 
-  * load data workflow.
-  * 2D plots
-  * Rowland circle
-  * ...
+  - load data workflow.
+  - 2D plots
+  - Rowland circle
+  - ...
+
+* :mod:`sloth.utils.genericutils`
+
+  - restructure/refresh/collect sparse pieces of code elsewhere
+
+* :mod:`sloth.utils.pymca`
+
+  * class:`myPyMcaMain`
+
+    - add method to change configuration on the fly without clicking
+
   
 Refactoring
 -----------
