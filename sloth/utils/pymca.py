@@ -50,7 +50,8 @@ class myPyMcaMain(PyMcaMain.PyMcaMain):
         if fload is not None: self.openFile(fload)
         self.show()
 
-    def openFile(self, fload):
+    def loadFile(self, fload):
+        """load a file in the sourceWidget"""
         self.sourceWidget.sourceSelector.openFile(fload)
 
 

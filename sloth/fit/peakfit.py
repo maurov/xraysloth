@@ -1,35 +1,130 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Simple peak fitting utility based on PyMca_
+"""Simple peak fitting utility
+==============================
+
+Current fitting backends: PyMca_ or SILX_
 
 .. _PyMca: https://github.com/vasole/pymca
-
-TODO
-----
-- [] move the functions to a Specfit object
+.. _SILX: https://github.com/silx-kit/silx
 
 """
 import sys, os
 import numpy as np
+
+HAS_SILX = False
+try:
+    from silx.math.fit.functions import sum_gauss
+    from silx.math.fit import fittheories, bgtheories
+    from silx.math.fit.fitmanager import FitManager
+    HAS_SILX = True
+except NameError:
+    pass
 
 HAS_PYMCA = False
 HAS_PYMCA5 = False
 try:
     from PyMca5.PyMcaMath.fitting import Specfit, SpecfitFunctions
     HAS_PYMCA5 = True
-except:
+except NameError:
     try:
         from PyMca import Specfit, SpecfitFunctions
         HAS_PYMCA = True
-    except:
+    except NameError:
         pass
 
-try:
-    IN_IPYTHON = __IPYTHON__
-except:
-    IN_IPYTHON = False
+from sloth.utils.genericutils import run_from_ipython
+IN_IPYTHON = run_from_ipython()
 
+##################
+### SILX BASED ###
+##################
+
+def fit_silx(x, y, theory=None, bkg=None):
+    """fit a peak with using silx library
+
+    Parameters
+    ==========
+
+    x, y: data 1D arrays
+
+    theory : string [None]
+             available theories: 
+             +---------------------+
+             | Gaussians           | 
+             | Lorentz             | 
+             | Area Gaussians      | 
+             | Area Lorentz        | 
+             | Pseudo-Voigt Line   | 
+             | Area Pseudo-Voigt   | 
+             | Split Gaussian      | 
+             | Split Lorentz       | 
+             | Split Pseudo-Voigt  | 
+             | Step Down           | 
+             | Step Up             | 
+             | Slit                | 
+             | Atan                | 
+             | Hypermet            | 
+             | Degree 2 Polynomial | 
+             | Degree 3 Polynomial | 
+             | Degree 4 Polynomial | 
+             | Degree 5 Polynomial | 
+             +---------------------+
+    
+    bkg : string [None]
+          available bkg theories:
+          +---------------------+
+          | No Background       | 
+          | Constant            | 
+          | Linear              | 
+          | Strip               | 
+          | Snip                | 
+          | Degree 2 Polynomial | 
+          | Degree 3 Polynomial | 
+          | Degree 4 Polynomial | 
+          | Degree 5 Polynomial | 
+          +---------------------+
+
+    Returns
+    =======
+
+    yfit : fit array like x
+    
+    """
+    fit = FitManager()
+    fit.loadtheories(fittheories)
+    fit.loadbgtheories(bgtheories)
+    fit.setdata(x=x, y=y)
+    yfit = np.zeros_like(x)
+    _kwerror = False
+    if (theory is None):
+        print('fit theory not given! choose one of the following:')
+        print('\n'.join(map(str, fit.theories.keys())))
+        _kwerror = True
+    if (bkg is None):
+        print('fit background not given! choose one of the following:')
+        print('\n'.join(map(str, fit.bgtheories.keys())))
+        _kwerror = True
+    if _kwerror:
+        return yfit
+    fit.settheory(theory)
+    fit.setbackground(bkg)
+    try:
+        fit.estimate()
+        fit.runfit()
+        yfit = fit.gendata()
+    except:
+        print('ERROR: fit_slit FAILED!!!')
+
+    #print('FWHM: {0}'.format(fwhm(x,yfit,method='bin')))
+    return yfit
+
+
+###################
+### PYMCA BASED ###
+###################
+    
 def fit_splitpvoigt(x, y, dy=False,\
                     theory='Split Pseudo-Voigt', bkg='Constant',\
                     conf=None, npeaks=1,\
