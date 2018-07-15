@@ -42,7 +42,14 @@ modules. No particular priority order is given.
 
     - add method to change configuration on the fly without clicking
 
-  
+* :mod:`sloth.math.deglitch`
+
+  - document/improve :func:`remove_spikes`, get rid of Pandas
+
+* :mod:`sloth.raytracing.shadow_jscyl`
+
+  - move from `wippy`
+    
 Refactoring
 -----------
 

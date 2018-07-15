@@ -96,7 +96,7 @@ def fit_silx(x, y, theory=None, bkg=None):
     fit.loadtheories(fittheories)
     fit.loadbgtheories(bgtheories)
     fit.setdata(x=x, y=y)
-    yfit = np.zeros_like(x)
+    yfit = y
     _kwerror = False
     if (theory is None):
         print('fit theory not given! choose one of the following:')
@@ -115,7 +115,7 @@ def fit_silx(x, y, theory=None, bkg=None):
         fit.runfit()
         yfit = fit.gendata()
     except:
-        print('ERROR: fit_slit FAILED!!!')
+        print('ERROR: fit_silx FAILED!!!')
 
     #print('FWHM: {0}'.format(fwhm(x,yfit,method='bin')))
     return yfit
