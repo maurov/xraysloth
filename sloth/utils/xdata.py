@@ -259,11 +259,12 @@ def find_line(emin, emax, elements=None, lines=None, outDict=False):
                 continue
             if ((line >= emin) and (line <= emax)):
                 w = fluo_width(elem=el, line=ln)
-                _out['el'].append(el)
-                _out['eln'].append(eln)
-                _out['ln'].append(ln) 
-                _out['en'].append(line)
-                _out['w'].append(w)
+                if not w == 0:
+                    _out['el'].append(el)
+                    _out['eln'].append(eln)
+                    _out['ln'].append(ln) 
+                    _out['en'].append(line)
+                    _out['w'].append(w)
     # returns
     if outDict:
         return _out

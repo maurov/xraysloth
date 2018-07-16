@@ -28,8 +28,8 @@ import sloth
 from sloth import (HAS_XRAYLIB, HAS_LARCH, _resourcesPath,\
                    _pushDict, _pushInfos, _slothKit)
 
-from .widgets.console import customIPythonWidget
-from .widgets.plot1D import customPlotWidget
+from sloth.gui.widgets.console import customIPythonWidget
+from sloth.gui.widgets.plot1D import customPlotWidget
 
 #from .models.list_model import PaletteListModel
 
