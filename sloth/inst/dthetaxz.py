@@ -237,16 +237,31 @@ def dThetaXZ(x, z, thetab, case=None):
     return A1 * x**2 + A2 * x**3 + A3 * z**2 + A4 * x * z**2
 
 def getMeshMasked(mask='circular', r1p=1000., cryst_x=50., cryst_z=10., csteps=1000j):
-    """ returns two 2D masked arrays representing a (flat) grid of the crystal surface
+    """returns two 2D masked arrays representing a (flat) grid of the
+    crystal surface
     
     Parameters
     ----------
-    mask    : 'circular' or 'rectangular'
-    r1p     : bending radius of the crystal planes in mm [1000.]
-    cryst_x : radius of circular analyzer in mm
-              (for rectangular mask, this is half side in meridional/dispersive x-direction) [50.]
-    cryst_z : half side in sagittal/focusing z-direction of the rectangular analyzer in mm [10.]
+    mask : str, 'circular'
+           shape of the mask: 'circular' or 'rectangular'
+    
+    r1p : float, [1000.]
+    
+          bending radius of the crystal planes in mm
+
+    cryst_x : float, [50.]
+              radius of circular analyzer in mm
+    
+              (for rectangular mask, this is half side in
+              meridional/dispersive x-direction)
+
+    cryst_z : float [10.]
+
+              half side in sagittal/focusing z-direction of the
+              rectangular analyzer in mm
+
     csteps  : grid steps (given as imaginary number!) [1000j]
+
     """
     zmin, zmax =  -1*cryst_x/r1p, cryst_x/r1p
     xmin, xmax = -1.*cryst_x/r1p, cryst_x/r1p

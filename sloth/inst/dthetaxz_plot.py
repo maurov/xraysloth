@@ -15,12 +15,15 @@ from .dthetaxz import dThetaXZ, mapCase2Num, mapNum2Case, getMeshMasked, getDthe
 from ..io.specfile_reader import SpecfileData
 
 def plotEffScatt(xx, zz, wrc=1.25E-4,\
-                 cases=['Johann', 'Johansson', 'Spherical plate', 'Wittry'], casesLabels=None,\
+                 cases=['Johann', 'Johansson', 'Spherical plate', 'Wittry'],\
+                 casesLabels=None,\
                  angles=[15, 45, 75], xyFigHalfRange=None, xyTicks=0.1,\
-                 xlabel=r'x, mer. (R$_{m}^{\prime}$)', ylabel=r'z, sag. (R$_{m}^{\prime}$)',\
+                 xlabel=r'x, mer. (R$_{m}^{\prime}$)',\
+                 ylabel=r'z, sag. (R$_{m}^{\prime}$)',\
                  figName='fig1', xyFigSize=(10*150, 6*150), figDpi=150, fontSize=8,\
                  nlevels=15, colSpan=2, xylab=(0.025, 0.97), ylabshift=-0.3,\
-                 plotMask=True, plotVert=False, absWrc=False, cbarShow=True, cbarTicks=2.5E-5):
+                 plotMask=True, plotVert=False, absWrc=False, cbarShow=True,\
+                 cbarTicks=2.5E-5):
     """plots the effective scattering angle given a masked array
     
     Parameters
@@ -163,9 +166,11 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
                 gsplt.set_xlabel(xlabel)
             if gsy == 0:
                 gsplt.set_ylabel(ylabel)
-                gsplt.annotate(r'{0}$^\circ$'.format(th),\
-                               horizontalalignment='center', verticalalignment='center',
-                               fontsize=fontSize+2, bbox=dict(boxstyle="round4", fc="w"),
+                gsplt.annotate(r'{0}$^\circ$'.format(th),
+                               horizontalalignment='center',
+                               verticalalignment='center',
+                               fontsize=fontSize+2,
+                               bbox=dict(boxstyle="round4", fc="w"),
                                xy=(xlab, ylab), xycoords='figure fraction')
                 ylab += ylabshift
     # colorbar
@@ -181,7 +186,7 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
 def plotScanThetaFile(fname, scans, signal='eres', xlims=None, ylims=None, ylog=True,
                       yscale=1, caseScale='Js', plotDeeShells=True, showLegend=True,
                       figName='fig1', figSize=(5,5), figDpi=150, fontSize=10):
-    """ plot 1D $\theta_{B}$ scans from SPEC file
+    """plot 1D $\theta_{B}$ scans from SPEC file
     
     Parameters
     ----------
@@ -258,7 +263,8 @@ def plotScanThetaFile(fname, scans, signal='eres', xlims=None, ylims=None, ylog=
     #gsplt.yaxis.set_minor_locator(MultipleLocator(0.25E-4))
     gsplt.grid(True, color='gray', lw=1, alpha=0.5)
     if showLegend:
-        gsplt.legend(loc=2, ncol=1, mode="expand", borderaxespad=0., numpoints=1, fancybox=True)
+        gsplt.legend(loc=2, ncol=1, mode="expand", borderaxespad=0.,
+                     numpoints=1, fancybox=True)
     plt.tight_layout()
     plt.show()
 
