@@ -23,7 +23,7 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
                  figName='fig1', xyFigSize=(10*150, 6*150), figDpi=150, fontSize=8,\
                  nlevels=15, colSpan=2, xylab=(0.025, 0.97), ylabshift=-0.3,\
                  plotMask=True, plotVert=False, absWrc=False, cbarShow=True,\
-                 cbarTicks=2.5E-5):
+                 cbarTicks=2.5E-5, figCmap=cm.RdYlGn):
     """plots the effective scattering angle given a masked array
     
     Parameters
@@ -118,7 +118,7 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
         _xx = xx
         _zz = zz
     extent = (_xx.min(), _xx.max(), _zz.min(), _zz.max())
-    norm = cm.colors.Normalize(vmin=-2*wrc, vmax=2*wrc)
+    norm = cm.colors.Normalize(vmin=-2*wrc, vmax=2*wrc) #NOT WORKING (NOT USED)!!!
     levels = np.linspace(-wrc, wrc, nlevels)
     fig = plt.figure(num=figName, figsize=(xyFigSize[0]/figDpi, xyFigSize[1]/figDpi), dpi=figDpi)
     gs = gridspec.GridSpec(len(angles), colSpan*len(cases)+1) #3x3+1 grid +1 is for the colorbar
@@ -148,7 +148,9 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
             else:
                 _xxplot = _xx
                 _zzplot = _zz
-            cntf = gsplt.contourf(_xxplot, _zzplot, mdth, levels, cmap=cm.get_cmap(cm.RdYlGn, len(levels)-1), norm=norm)
+            #cntf = gsplt.contourf(_xxplot, _zzplot, mdth, levels, cmap=cm.get_cmap(figCmap, len(levels)-1), norm=norm)
+            cntf = gsplt.contourf(_xxplot, _zzplot, mdth, levels, cmap=cm.get_cmap(figCmap, len(levels)-1))
+            #cntf = gsplt.contourf(_xxplot, _zzplot, mdth, levels, cmap=figCmap)
             #gsplt.imshow(_zzplot, origin='lower', extent=extent, cmap=cm.RdBu, norm=norm)
             # gsplt.xaxis.set_major_locator(MaxNLocator(4))
             # gsplt.xaxis.set_minor_locator(MaxNLocator(5))
