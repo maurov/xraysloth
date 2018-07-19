@@ -56,4 +56,5 @@ class myPyMcaMain(PyMcaMain.PyMcaMain):
 
 
 if __name__ == '__main__':
-    app = qt.QApplication(sys.argv)
+    #app = qt.QApplication(sys.argv)
+    pass

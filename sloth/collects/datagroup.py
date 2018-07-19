@@ -6,16 +6,33 @@
 (=groups in Larch, =generic Python class)
 
 """
-import os, sys
+import os, sys, copy, pickle
 import numpy as np
+
 from datetime import datetime
 from collections import deque
 import glob
 from scipy.interpolate import interp1d
 
+HAS_DILL = False
+try:
+    import dill
+    HAS_DILL = True
+except:
+    pass
+
+#file access write access mode
+if sys.version < '3.0':
+    write_access = 'w'
+    read_access = 'r'
+else:
+    write_access = 'wb'
+    read_access = 'rb'
+
 # Larch
 HAS_LARCH = False
 try:
+    import larch
     from larch import use_plugin_path, Group
     # load Larch Plugins
     use_plugin_path('io')
@@ -335,7 +352,13 @@ class EvalData(object):
             self.linfs[ilab]['flag'] = newflag
             print("{0} -> {1}".format(oldflag, newflag))
 
-
+    def show_label(self, infd):
+        """show label"""
+        print(infd['label'])
+            
+    def get_labels(self):
+        """labels"""
+        return map(self.show_label, self.linfs)
 
 if __name__ == '__main__':
     pass

@@ -10,6 +10,7 @@ TODO
 - collect all bits and pieces here
 
 """
+import sys, os
 import numpy as np
 
 #-> FILES
