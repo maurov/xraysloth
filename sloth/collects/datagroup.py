@@ -1,16 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""DataGroup: generic container for data objects (=groups in Larch, =generic Python class)
+"""DataGroup: generic container for data objects
+================================================
 
-TODO
-----
-- [] REFACTOR THE WHOLE THING!!!
-- [] move self.getkwsd() to the respective data objects
-- [] move 1D parts to datagroup1D
-- [] use map() instead of for loops...
-- [] use update() for kwsd: see https://github.com/xraypy/xraylarch/issues/66#issuecomment-30948135
-- [] control multiple plot windows ('win' keyword argument) when
-     plotting with PyMca
+(=groups in Larch, =generic Python class)
 
 """
 import os, sys
@@ -49,27 +42,14 @@ except ImportError:
 from ..io.specfile_reader import _str2rng as str2rng
 from ..io.specfile_reader import spec_getmap2group, spec_getmrg2group
 
+#backward compatibility -> to be removed
+from sloth.utils.genericutils import get_fnames as _getfnames
+from sloth.math.normalization import norm1D as _norm
+
 ### GLOBAL VARIABLES ###
 MODNAME = '_contrib'
 DEBUG = 0
 
-def _getfnames(grepstr, rpath=os.getcwd(), substr1=None):
-    """get a list of filenames
-
-    Arguments
-    ---------
-    grepstr : pattern according to the rules used by the Unix shell
-    
-    Keyword arguments
-    -----------------
-    rpath : [os.getcwd()] root path
-    substr1 : [None] if given, search first level of subdirs
-    
-    """
-    if substr1 is not None:
-        return glob.glob(os.path.join(rpath, substr1, grepstr))
-    else:
-        return glob.glob(os.path.join(rpath, grepstr))
 
 def _getefermi(fn):
     """get the Fermi level energy from a FDMNES out file"""
@@ -83,51 +63,6 @@ def _getefermi(fn):
     if DEBUG: print('Calculated Fermi level: {0}'.format(ef))
     return ef
 
-def _norm(y, norm=None, **kws):
-    """collection of simple normalization methods
-
-    Parameters
-    ==========
-    y : array of float, to normalize
-    norm : string, available options
-           "max"     -> y / np.max(y)
-           "max-min" -> (y - np.min(y)) / (np.max(y) - np.min(y))
-           "area"    -> (y - np.min(y)) / np.trapz(y, x=kws.get('x'))
-           "sum"     ->  (y - np.min(y)) / np.sum(y)
-           "larch"   -> TODO!!!
-
-    Returns
-    =======
-    ynorm : array of float
-
-    """
-    if norm == "max":
-        return y / np.max(y)
-    elif norm == "max-min":
-        return (y - np.min(y)) / (np.max(y) - np.min(y))
-    elif norm == "area":
-        try:
-            return (y - np.min(y)) / np.trapz(y, x=kws.get('x'))
-        except:
-            return (y - np.min(y)) / np.trapz(y)
-    elif norm == "sum":
-        return (y - np.min(y)) / np.sum(y)
-    elif norm == "larch":
-        print("TODO!")
-        return y
-        # try:
-        #     d = DataGroupXanes()
-        #     d.gs.append(Group(_larch=d._larch))
-        #     d.gs[-1].x = kws.get('x')
-        #     d.gs[-1].y = y
-        #     d.norxafs(d.gs[-1], xattr='x', yattr='y', outattr='flat', **kws)
-        #     return d.gs[-1].flat
-        # except:
-        #     print('ERROR: Larch normalization failed')
-        #     return y
-    else:
-        print("WARNING: normalization method not known")
-        return y
 
 ### CLASS ###
 class DataGroup(object):
@@ -357,6 +292,50 @@ def datagroup(kwsd=None, _larch=None):
    
 def registerLarchPlugin():
     return (MODNAME, {'datagroup': datagroup})
+
+####################
+### PICKLE-BASED ###
+####################
+
+class EvalData(object):
+
+    def __init__(self, lcols=None, ldats=None, linfs=None, **kws):
+        """set attributes"""
+        self.lcols = lcols
+        self.ldats = ldats
+        self.linfs = linfs
+
+    def save_data(self, fname_pickle):
+        """pickle dump evaluation results to file"""
+        self.fname_pickle = fname_pickle
+        with open(fname_pickle, write_access) as f:
+            pickle.dump(self, f)
+        print('INFO: data saved to\n.... {0}'.format(fname_pickle))
+
+    def load_data(self, fname_pickle):
+        """pickle load evaluation results from file"""
+        with open(fname_pickle, read_access) as f:
+            self = pickle.load(f)
+            print('INFO: data loaded from\n.... {0}'.format(fname_pickle))
+        return self
+
+    def overwrite_labels(self, new_labels):
+        """overwrites data labels"""
+        print("INFO: overwriting data labels")
+        for ilab, newlab in enumerate(new_labels):
+            oldlab = self.linfs[ilab]['label']
+            self.linfs[ilab]['label'] = newlab
+            print("{0} -> {1}".format(oldlab, newlab))
+
+    def overwrite_flags(self, new_flags):
+        """overwrites data flags"""
+        print("INFO: overwriting data flags")
+        for ilab, newflag in enumerate(new_flags):
+            oldflag = self.linfs[ilab]['flag']
+            self.linfs[ilab]['flag'] = newflag
+            print("{0} -> {1}".format(oldflag, newflag))
+
+
 
 if __name__ == '__main__':
     pass

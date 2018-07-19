@@ -47,7 +47,7 @@ class myPyMcaMain(PyMcaMain.PyMcaMain):
 
         #self.conf = self.getConfig()
 
-        if fload is not None: self.openFile(fload)
+        if fload is not None: self.loadFile(fload)
         self.show()
 
     def loadFile(self, fload):

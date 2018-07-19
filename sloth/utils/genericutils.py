@@ -12,6 +12,10 @@ TODO
 """
 import numpy as np
 
+#-> FILES
+import glob, subprocess
+
+
 __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@gmail.com"
 __credits__ = ""
@@ -59,7 +63,7 @@ def colorstr(instr, color='green', on_color=None, attrs=['bold']):
         return instr
 
 #############
-### Files ###
+### FILES ###
 #############
 
 def cp_replace(grepfns, grepstr, rplstr, splitstr='_'):
@@ -77,8 +81,6 @@ def cp_replace(grepfns, grepstr, rplstr, splitstr='_'):
     splitstr : string, '_'
                string used as separator
     """
-    import glob
-    import subprocess
     fns = glob.glob(grepfns)
     for fn in fns:
         _fn2 = [w.replace(grepstr, rplstr) for w in fn.split(splitstr)]
@@ -86,8 +88,27 @@ def cp_replace(grepfns, grepstr, rplstr, splitstr='_'):
         subprocess.call('cp {0} {1}'.format(fn, fn2), shell=True)
         print(fn2)
 
+def get_fnames(grepstr, rpath=os.getcwd(), substr1=None):
+    """get a list of filenames
+
+    Arguments
+    ---------
+    grepstr : pattern according to the rules used by the Unix shell
+    
+    Keyword arguments
+    -----------------
+    rpath : [os.getcwd()] root path
+    substr1 : [None] if given, search first level of subdirs
+    
+    """
+    if substr1 is not None:
+        return glob.glob(os.path.join(rpath, substr1, grepstr))
+    else:
+        return glob.glob(os.path.join(rpath, grepstr))
+
+        
 #############
-### Numpy ###
+### NUMPY ###
 #############
 
 def imin(arr, check=False):
