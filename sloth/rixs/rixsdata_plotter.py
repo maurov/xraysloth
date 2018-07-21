@@ -3,23 +3,8 @@
 
 """
 RixsDataPlotter : Matplotlib-based plotter for RIXS planes
-
-TODO (Update: 2013-11-27)
--------------------------
-- [] make possible more than one data set in the same figure
-     controlled by the 'replace' variable
-- [] RixsDataPlotter should inherit directly from RixsData class !
-- [] remove the model/controller from the plot method (view):
-     e.g. move in a separate method the line cuts
-- [] interactive cuts with mouse selection
-
+==========================================================
 """
-
-__author__ = "Mauro Rovezzi"
-__email__ = "mauro.rovezzi@gmail.com"
-__license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-__organization__ = "European Synchrotron Radiation Facility"
-__year__ = "2011-2015"
 
 import sys, os, copy
 import matplotlib.pyplot as plt

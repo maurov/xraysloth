@@ -63,10 +63,24 @@ modules. No particular priority order is given.
 * :mod:`sloth.math.normalization`
 
   - [ ] :func:`norm1D` add XANES normalization with Larch
+
+* :mod:`sloth.rixs.rixdata`
+
+  - [ ] move self.getkwsd() to ConfigParser
+  
+* :mod:`sloth.rixs.rixdata_plotter`
+    
+  - [ ] make possible more than one data set in the same figure
+        controlled by the 'replace' variable
+  - [ ] RixsDataPlotter should inherit directly from RixsData class !
+  - [ ] remove the model/controller from the plot method (view):
+        e.g. move in a separate method the line cuts
+  - [ ] interactive cuts with mouse selection
+
   
 Refactoring
 -----------
 
 * :mod:`sloth.raytracing`
 
-  * revise the whole thing... currently a mess!
+  - [ ] revise the whole thing... currently a mess!

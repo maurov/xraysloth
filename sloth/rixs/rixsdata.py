@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 
 """Resonant Inelastic X-ray Scattering (RIXS) data objects (2D maps)
+====================================================================
 
 TODO
 ----
-- move self.getkwsd() to ConfigParser
+
 
 """
 
@@ -80,8 +81,8 @@ class RixsData(object):
                           'norm' : None,
                           'xystep' : 0.02},
                 'grid' : {'xystep' : 0.02,
-                          'method' : 'nn',
-                          'lib' : 'matplotlib'},
+                          'method' : 'cubic',
+                          'lib'    : 'scipy'},
                 'plot' : {'replace' : True,
                           'figname' : 'RixsPlotter',
                           'figsize' : (5,5),
