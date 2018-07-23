@@ -24,6 +24,16 @@ Bug fixes
 
 * :class:`sloth.inst.rowland.RcVert` -> bug in `chi` calculation.
 
+Broken backward compatibility
+'''''''''''''''''''''''''''''
+
+* :mod:`sloth.collect`
+
+  - `DataGroup` objects and derivative have methods with `_`
+    (e.g. `self.getkwsd` -> `self.get_kwsd`)
+
+
+
 
 v.0.2.1 (2018-07-04)
 --------------------

@@ -4,10 +4,6 @@
 """Resonant Inelastic X-ray Scattering (RIXS) data objects (2D maps)
 ====================================================================
 
-TODO
-----
-
-
 """
 
 from __future__ import print_function, division
@@ -17,9 +13,48 @@ import numpy as np
 from matplotlib import cm
 
 # Larch & friends
+from ..collects.datagroup2D import DataGroup2D
 from ..math.gridxyz import gridxyz
 from ..io.specfile_reader import _str2rng as str2rng
 from ..io.specfile_reader import SpecfileData
+
+
+class DataGroupRixs(DataGroup2D):
+    """DataGroup for RIXS planes"""
+    def __init__(self, kwsd=None, _larch=None):
+        super(DataGroupRixs, self).__init__(self, kwsd=kwsd, _larch=_larch)
+
+    def getspecmap(self, fname, scans, scanlab=None, **kws):
+        """ 2D map from a list of scans read from SPEC data files"""
+        cntx = kws.get('cntx', self.kwsd['spec']['cntx'])
+        cnty = kws.get('cnty', self.kwsd['spec']['cnty'])
+        csig = kws.get('csig', self.kwsd['spec']['csig'])
+        cmon = kws.get('cmon', self.kwsd['spec']['cmon'])
+        csec = kws.get('csec', self.kwsd['spec']['csec'])
+        norm = kws.get('norm', self.kwsd['spec']['norm'])
+        xystep = kws.get('xystep', self.kwsd['spec']['xystep'])
+        g = spec_getmap2group(fname, scans=scans,
+                              cntx=cntx,
+                              cnty=cnty,
+                              csig=csig,
+                              cmon=cmon,
+                              csec=csec,
+                              xystep=xystep,
+                              norm=norm,
+                              _larch=self._larch)
+        g.label = str(scanlab)
+        return g
+
+    def plotmap(self, imap, **kws):
+        """plot for 2D map (e.g. RIXS plane)
+
+        imap : index in gs list
+
+        """
+        p = RixsDataPlotter(self.gs[imap])
+        p.plot()
+        return
+
 
 class RixsData(object):
     """RIXS plane object"""

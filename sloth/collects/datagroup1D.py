@@ -1,15 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""DataGroup1D: work with 1D data sets (scans)
-
-TODO
-----
-- [] REFACTOR THE WHOLE THING!!!
-- [] MOVE TECHNIQUE-BASED DATAGROUPS TO "sloth.technique"!!!
-- [] mksum
-- [] plotxy: self.pw.setGeometry(700, 50, 900, 900), use config!
-- []
+"""DataGroup1D: work with 1D data sets (line scans)
+===================================================
 
 """
 ### IMPORTS ###
@@ -20,10 +13,12 @@ from datetime import datetime
 # Larch
 HAS_LARCH = False
 try:
+    import larch
     from larch import use_plugin_path, Group
     # Larch Plugins
     use_plugin_path('io')
     from columnfile import _read_ascii
+    from larch_plugins.io import write_ascii
     use_plugin_path('wx')
     from plotter import _plot, _scatterplot, _plot_text
     use_plugin_path('math')
@@ -72,11 +67,17 @@ class DataGroup1D(DataGroup):
                            _larch=self._larch)
 
     def write_ascii_xy(self, fname, g, xattr='x', yattr='y', label=None):
-        """write a two-columns ascii file to fname using xattr and yattr of a
-given group
+        """write a two-columns ascii file
 
+        Parameters
+        ==========
+
+        fname : str
+                output file name
+
+        xattr, yattr: str
+                      attributes to use as X/Y columns to write
         """
-        from larch_plugins.io import write_ascii
         _x = getattr(self.gs[g], xattr)
         _y = getattr(self.gs[g], yattr)
         if label is None:

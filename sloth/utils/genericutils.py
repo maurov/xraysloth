@@ -107,7 +107,18 @@ def get_fnames(grepstr, rpath=os.getcwd(), substr1=None):
     else:
         return glob.glob(os.path.join(rpath, grepstr))
 
-        
+def get_efermi(fn):
+    """get the Fermi level energy from a FDMNES out file"""
+    try:
+        f = open(fn)
+    except:
+        return 0
+    l = f.readline()
+    f.close()
+    ef = float(l.split()[6])
+    if DEBUG: print('Calculated Fermi level: {0}'.format(ef))
+    return ef
+
 #############
 ### NUMPY ###
 #############

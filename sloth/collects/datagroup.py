@@ -60,25 +60,12 @@ from ..io.specfile_reader import _str2rng as str2rng
 from ..io.specfile_reader import spec_getmap2group, spec_getmrg2group
 
 #backward compatibility -> to be removed
-from sloth.utils.genericutils import get_fnames as _getfnames
+from sloth.utils.genericutils import get_fnames
 from sloth.math.normalization import norm1D as _norm
 
 ### GLOBAL VARIABLES ###
 MODNAME = '_contrib'
 DEBUG = 0
-
-
-def _getefermi(fn):
-    """get the Fermi level energy from a FDMNES out file"""
-    try:
-        f = open(fn)
-    except:
-        return 0
-    l = f.readline()
-    f.close()
-    ef = float(l.split()[6])
-    if DEBUG: print('Calculated Fermi level: {0}'.format(ef))
-    return ef
 
 
 ### CLASS ###
@@ -102,9 +89,9 @@ class DataGroup(object):
         if kwsd is not None:
             self.kwsd = kwsd
         else:
-            self.kwsd = self.getkwsd()
+            self.kwsd = self.get_kwsd()
 
-    def getigfromlabel(self, grepstr):
+    def get_ig_from_label(self, grepstr):
         """return a list of indexes where 'grepstr' is in
         self.gs.label"""
         igs = []
@@ -114,15 +101,15 @@ class DataGroup(object):
         igs.reverse()
         return igs
 
-    def getfnames(self, grepstr, rpath=os.getcwd(), substr1=None):
-        return _getfnames(grepstr, rpath=rpath, substr1=substr1)
+    def get_fnames(self, grepstr, rpath=os.getcwd(), substr1=None):
+        return get_fnames(grepstr, rpath=rpath, substr1=substr1)
 
     def selector(self, sel):
         """initialize a selected list of objects, self.gs_sel"""
         if sel == '*':
             self.sel = range(len(self.gs))
         elif type(sel) is str:
-            self.sel = self.getigfromlabel(sel)
+            self.sel = self.get_ig_from_label(sel)
         elif type(sel) is list:
             self.sel = sel
         else:
@@ -159,7 +146,7 @@ class DataGroup(object):
             if (selrng[0] < selrng[1]): selrng.reverse()
             _dlist(selrng)
         elif type(selrng) is str:
-            _dlist(self.getigfromlabel(selrng))
+            _dlist(self.get_ig_from_label(selrng))
         elif type(selrng) is int:
             _dlist([selrng])
         else:
@@ -206,7 +193,7 @@ class DataGroup(object):
             except AttributeError:
                 print("Attribute {0} does not exist in group {1}".format(attr1, _g.label))
         
-    def getkwsd(self):
+    def get_kwsd(self):
         """return a dictionary with default keyword arguments"""
         # globally setted kws:
         # self.sel = '*'
@@ -315,6 +302,7 @@ def registerLarchPlugin():
 ####################
 
 class EvalData(object):
+    """.. warning:: this is a temporary object -> DO NOT USE IN PRODCTION!"""
 
     def __init__(self, lcols=None, ldats=None, linfs=None, **kws):
         """set attributes"""

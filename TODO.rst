@@ -60,6 +60,11 @@ modules. No particular priority order is given.
   - [ ] control multiple plot windows ('win' keyword argument) when plotting
   - [ ] plotting with SILX instead of PyMca
 
+* :mod:`sloth.collects.datagroup1D`
+    
+  - [ ] mksum
+  - [ ] plotxy: self.pw.setGeometry(700, 50, 900, 900), use config!
+
 * :mod:`sloth.math.normalization`
 
   - [ ] :func:`norm1D` add XANES normalization with Larch
