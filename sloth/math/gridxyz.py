@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Utilities to work with 2D grids and interpolation
+=================================================
 """
 from __future__ import division, print_function
 
@@ -36,8 +37,10 @@ def gridxyz(xcol, ycol, zcol, xystep=None, lib='scipy', method='cubic'):
         xystep = 0.05
         warnings.warn("'xystep' not given: using a default value of {0}".format(xystep))
     #create the XY meshgrid and interpolate the Z on the grid
-    xgrid = np.linspace(xcol.min(), xcol.max(), (xcol.max()-xcol.min())/xystep)
-    ygrid = np.linspace(ycol.min(), ycol.max(), (ycol.max()-ycol.min())/xystep)
+    nxpoints = int((xcol.max()-xcol.min())/xystep)
+    nypoints = int((ycol.max()-ycol.min())/xystep)
+    xgrid = np.linspace(xcol.min(), xcol.max(), num=nxpoints)
+    ygrid = np.linspace(ycol.min(), ycol.max(), num=nypoints)
     xx, yy = np.meshgrid(xgrid, ygrid)
     if ('matplotlib' in lib.lower()):
         try:

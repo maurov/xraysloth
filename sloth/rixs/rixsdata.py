@@ -10,6 +10,9 @@ from __future__ import print_function, division
 
 import os, sys
 import numpy as np
+
+from scipy.interpolate import griddata
+
 from matplotlib import cm
 
 # Larch & friends
@@ -63,14 +66,14 @@ class RixsData(object):
         """initialize with keyword arguments dictionaries"""
         
         if kwsd is None:
-            kwsd = self.getkwsd()
+            kwsd = self.get_kwsd()
         self.kwsd = kwsd
         if label is None:
             label = 'rd{0}'.format(hex(id(self)))
         self.label = label
 
-    def getkwsd(self):
-        """ return a dictionary of dictionaries with keywords arguments:
+    def get_kwsd(self):
+        """return a dictionary of dictionaries with keywords arguments:
         
         kwsd['exp']['expdir'] : main working directory (experiment directory)
         ...........['datdir'] : directory where the raw data (e.g. SPEC data) are stored
@@ -243,18 +246,48 @@ class RixsData(object):
             self.xcol, self.ycol = _x, _y
         self.etcol = self.xcol-self.ycol # energy transfer
 
-    def crop(self, x1, y1, x2, y2, **kws):
-        """crop the plane in given range (x1, y1) -> (x2, y2)"""
-        xystep = kws.get('xystep', self.kwsd['spec']['xystep'])
-        from matplotlib.mlab import griddata
-        self.xcrop = np.arange(x1, x2, xystep)
-        self.ycrop = np.arange(y1, y2, xystep)
+    def crop(self, x1, y1, x2, y2, yet=False, **kws):
+        """crop the plane in a given range
+
+        Parameters
+        ==========
+        
+        x1, y1, x2, y2 : floats
+                         X/Y initial and new coordinates
+
+        yet : boolean, False
+              defines if the Y coordinates are given in emission or
+              energy transfer
+
+        """
+        _xystep = kws.get('xystep', self.kwsd['grid']['xystep'])
+        _method = kws.get('method', self.kwsd['grid']['method'])
+
+        _nxpts = int((x2-x1)/_xystep)
+        self.xcrop = np.linspace(x1, x2, num=_nxpts)
+        
+        if yet:
+            _netpts = int((y2-y1)/_xystep)
+            _ymin = x1-y2
+            _ymax = x2-y1
+            _nypts = int((_ymax-_ymin)/_xystep)
+            self.etcrop = np.linspace(y1, y2, num=_netpts)
+            self.ycrop = np.linspace(_ymin, _ymax, num=_nypts)
+        else:
+            _nypts = int((y2-y1)/_xystep)
+            _etmin = x1-y1
+            _etmax = x2-y2
+            _netpts = int((_etmax-_etmin)/_xystep)
+            self.etcrop = np.linspace(_etmin, _etmax, num=_netpts)
+            self.ycrop = np.linspace(y1, y2, num=_nypts)
+            
         _xx, _yy = np.meshgrid(self.xcrop, self.ycrop)
-        self.excrop = np.arange(x1, x2, xystep)
-        self.etcrop = np.arange(x2-y2, x1-y1, xystep)
-        _exx, _et = np.meshgrid(self.excrop, self.etcrop)
-        self.zzcrop = griddata(self.xcol, self.ycol, self.zcol, _xx, _yy)
-        self.ezzcrop = griddata(self.xcol, self.etcol, self.zcol, _exx, _et)
+        _exx, _et = np.meshgrid(self.xcrop, self.etcrop)
+        
+        self.zzcrop = griddata((self.xcol, self.ycol), self.zcol, (_xx, _yy), method=_method)
+
+        self.ezzcrop = griddata((self.xcol, self.etcol), self.zcol, (_exx, _et), method=_method)
+
         return
 
     def norm(self, zz):

@@ -14,9 +14,11 @@ try:
 except:
     pass
 
-def remove_spikes(x, y, window=3, threshold=3):
+def remove_spikes(y, window=3, threshold=3):
     """remove spikes using pandas
 
+    taken from `https://ocefpaf.github.io/python4oceanographers/blog/2015/03/16/outlier_detection/`_
+    
     .. note:: this will not work in pandas > 0.17 one could simply do
               `df.rolling(3, center=True).median()`; also
               df.as_matrix() is deprecated, use df.values instead
@@ -24,7 +26,7 @@ def remove_spikes(x, y, window=3, threshold=3):
     Parameters
     ==========
 
-    x, y : data arrays
+    y : data array
 
     window : int, [3]
              window in rolling
@@ -44,7 +46,7 @@ def remove_spikes(x, y, window=3, threshold=3):
         return ynew
     df = pd.DataFrame(y)
     try:
-        yf = pd.rolling_median(df, window=3, center=True).fillna(method='bfill').fillna(method='ffill')
+        yf = pd.rolling_median(df, window=window, center=True).fillna(method='bfill').fillna(method='ffill')
         diff = yf.as_matrix()-y
         mean = diff.mean()
         sigma = (y - mean)**2
@@ -52,5 +54,12 @@ def remove_spikes(x, y, window=3, threshold=3):
         ynew = np.where(abs(diff) > threshold * sigma, yf.as_matrix(), y)
     except:
         yf = df.rolling(window, center=True).median().fillna(method='bfill').fillna(method='ffill')
-        ynew = np.array(yf.values).reshape(len(x))
+
+        diff = yf.values-y
+        mean = diff.mean()
+        sigma = (y - mean)**2
+        sigma = np.sqrt(sigma.sum()/float(len(sigma)))
+        ynew = np.where(abs(diff) > threshold * sigma, yf.values, y)
+        
+        #ynew = np.array(yf.values).reshape(len(x))
     return ynew

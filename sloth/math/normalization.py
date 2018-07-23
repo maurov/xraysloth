@@ -4,6 +4,7 @@
 ========================
 
 """
+import numpy as np
 
 def norm1D(y, norm=None, **kws):
     """collection of simple normalization methods

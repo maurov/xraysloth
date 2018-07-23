@@ -33,17 +33,18 @@ else:
 HAS_LARCH = False
 try:
     import larch
-    from larch import use_plugin_path, Group
-    # load Larch Plugins
-    use_plugin_path('io')
-    from columnfile import _read_ascii
-    use_plugin_path('wx')
-    from plotter import _plot, _scatterplot, _plot_text
-    use_plugin_path('math')
-    from mathutils import _interp
-    use_plugin_path('xafs')
-    from xafsft import xftf, xftr, xftf_prep, xftf_fast, xftr_fast, ftwindow
-    from pre_edge import pre_edge
+    from larch import Group, Interpreter
+    #from larch import use_plugin_path, Group
+    ## load Larch Plugins
+    #use_plugin_path('io')
+    #from columnfile import _read_ascii
+    #use_plugin_path('wx')
+    #from plotter import _plot, _scatterplot, _plot_text
+    #use_plugin_path('math')
+    #from mathutils import _interp
+    #use_plugin_path('xafs')
+    #from xafsft import xftf, xftr, xftf_prep, xftf_fast, xftr_fast, ftwindow
+    #from pre_edge import pre_edge
     HAS_LARCH = True
 except ImportError:
     pass
@@ -75,7 +76,6 @@ class DataGroup(object):
     def __init__(self, kwsd=None, _larch=None):
         if _larch is None:
             if HAS_LARCH:
-                from larch import Interpreter
                 self._larch = Interpreter()
                 self._inlarch = False
             else:
