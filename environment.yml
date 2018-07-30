@@ -2,9 +2,7 @@
 name: sloth-env
 channels:
   - defaults
-  #- conda-forge
-  #- GSECARS
-  #- nexpy
+  #NOTE: specific channels are given per-package, not here!
 dependencies:
   - python=3.6
   - qt
@@ -39,6 +37,7 @@ dependencies:
   - sphinx
   - sphinxcontrib
   ###
+  - conda-forge::silx=0.8.0
   - conda-forge::xraylib
   - conda-forge::ase
   - conda-forge::psutil
@@ -55,14 +54,18 @@ dependencies:
   - GSECARS::pycifrw
   - GSECARS::xraylarch
   ###
+  #- diffpy:diffpy.structure #conflicts!
+  ###
   - nexpy::nexusformat
   ###
   - pip:
     - hdf5plugin
-    - fisx
-    - silx
-    - PyMca5
+    #- fisx
+    #- PyMca5
+    #- silx
     #- fabio
+    #- diffpy.structure #py2.7 only!!!
     - palettable
+
     ### pip wheels
     - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl
