@@ -14,7 +14,7 @@ from __future__ import (absolute_import, print_function, division,
                         unicode_literals)
 
 ### NAMESPACES => _pushDict / _pushInfos ###
-import os, sys
+import os, sys, warnings
 import math
 import numpy as np
 import matplotlib.pyplot as plt
@@ -75,19 +75,20 @@ except:
     pass
 
 HAS_LARCH = False
-#currently too sloth to load!!! -> TODO
-#try:
-#    import larch
-#    from larch import Interpreter
-#    _larch = Interpreter()
-#    HAS_LARCH = True
-#    _pushDict.update({'larch'   : larch,
-#                      '_larch'  : _larch})
-#    _pushInfos.extend(['larch : Larch lib',
-#                       '_larch : Larch interpreter'])
-#except:
-#    pass
-#
+try:
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        import larch
+    from larch import Interpreter
+    _larch = Interpreter(with_plugins=False)
+    HAS_LARCH = True
+   _pushDict.update({'larch'   : larch,
+                     '_larch'  : _larch})
+   _pushInfos.extend(['larch : Larch lib',
+                      '_larch : Larch interpreter'])
+except:
+   pass
+
 
 ### SLOTH KIT => _slothKit ###
 _slothKit = {}

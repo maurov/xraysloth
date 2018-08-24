@@ -136,7 +136,7 @@ class AboutDialog(qt.QDialog):
         qt.loadUi(uiPath, baseinstance=self, package='sloth.gui')
         self.nameLabel.setText('Sloth {0}'.format(sloth.__version__))
             
-def main():
+def sloth_main_gui_app():
     app = qt.QApplication(sys.argv)
     app.setStyle("plastique")
     appli = SlothMainWindow()
@@ -144,4 +144,4 @@ def main():
     sys.exit(app.exec_())
             
 if __name__ == '__main__':
-    main()
+    sloth_main_gui_app()
