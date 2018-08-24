@@ -113,7 +113,7 @@ try:
     from sloth.utils.xdata import (ELEMENTS, SHELLS, LINES_DICT,
                                    LINES, LINES_K, LINES_L, LINES_M,
                                    TRANSITIONS, TRANS_DICT, TRANS_K,
-                                   TRANS_L, TRANS_M, xray_line)
+                                   TRANS_L, TRANS_M, xray_line, xray_edge)
     _slothKit.update({'ELEMENTS'        : ELEMENTS,
                       'SHELLS'          : SHELLS,
                       'LINES_DICT'      : LINES_DICT,
@@ -127,8 +127,7 @@ try:
                       'TRANS_L'         : TRANS_L,
                       'TRANS_M'         : TRANS_M,
                       'xray_line'       : xray_line,
-                      'fit_splitpvoigt' : fit_splitpvoigt,
-                      'fit_results'     : fit_results})
+                      'xray_edge'       : xray_edge})
 except:
     pass
 

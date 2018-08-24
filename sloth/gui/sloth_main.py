@@ -40,7 +40,7 @@ class SlothMainWindow(qt.QMainWindow):
 
     def __init__(self, parent=None):
         super(SlothMainWindow, self).__init__(parent)
-        uiPath = os.path.join(_resourcesPath, 'gui', 'uis', 'sloth_main.ui')
+        uiPath = os.path.join(_resourcesPath, 'gui', 'uis', 'sloth_main_common.ui')
         qt.loadUi(uiPath, baseinstance=self, package='sloth.gui')
         logoPath = os.path.join(_resourcesPath, 'logo', 'xraysloth_logo_03.svg')
         self.setWindowTitle('Sloth {0}'.format(sloth.__version__))
@@ -70,34 +70,34 @@ class SlothMainWindow(qt.QMainWindow):
         for _key in _slothKit.keys():
             self.slothInfoListWidget.addItem(_key)
             
-        #PLOT WIDGET
-        self.plotWidget = customPlotWidget()
-        self.plotLayout.addWidget(self.plotWidget)
-        self.consoleWidget.pushVariables({'p1d' : self.plotWidget})
-        self.tabInfoListWidget.addItem('p1d : SILX plot1d widget')
+        # #PLOT WIDGET
+        # self.plotWidget = customPlotWidget()
+        # self.plotLayout.addWidget(self.plotWidget)
+        # self.consoleWidget.pushVariables({'p1d' : self.plotWidget})
+        # self.tabInfoListWidget.addItem('p1d : SILX plot1d widget')
 
-        #PERIODIC TABLE
-        self.periodicTable = PeriodicTable(selectable=False)
-        self.periodicTableLayout.addWidget(self.periodicTable)
-        self.consoleWidget.pushVariables({'pt' : self.periodicTable})
-        self.tabInfoListWidget.addItem('pt : SILX periodic table widget')
-        self.periodicTable.sigElementClicked.connect(self.click_table)
-
-
-        #Load single dataset
-        self._fnames = []
-        self._fname = None
-        self.buttonSelectFname.clicked.connect(self.selectFile)
+        # #PERIODIC TABLE
+        # self.periodicTable = PeriodicTable(selectable=False)
+        # self.periodicTableLayout.addWidget(self.periodicTable)
+        # self.consoleWidget.pushVariables({'pt' : self.periodicTable})
+        # self.tabInfoListWidget.addItem('pt : SILX periodic table widget')
+        # self.periodicTable.sigElementClicked.connect(self.click_table)
 
 
-        #Loaded data
+        # #Load single dataset
+        # self._fnames = []
+        # self._fname = None
+        # self.buttonSelectFname.clicked.connect(self.selectFile)
+
+
+        # #Loaded data
         
-        red   = qt.QColor(255,0,0)
-        green = qt.QColor(0,255,0)
-        blue  = qt.QColor(0,0,255)
+        # red   = qt.QColor(255,0,0)
+        # green = qt.QColor(0,255,0)
+        # blue  = qt.QColor(0,0,255)
 
-        rowCount = 4
-        columnCount = 6
+        # rowCount = 4
+        # columnCount = 6
    
         #model = PaletteListModel([red, green, blue])
         #model.insertRows(0, 5)
