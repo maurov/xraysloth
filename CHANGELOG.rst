@@ -13,12 +13,16 @@ New features
 
 * :mod:`sloth.gui.sloth_main`
 
-  * initial GUI layout (mainly an IPython embedded shell).
+  - initial GUI layout (mainly an IPython embedded shell).
 
 * :mod:`sloth.raytracing.shadow_utils`
 
-  * utilities for running SHADOW3 simulations (specific cases).
+  - utilities for running SHADOW3 simulations (specific cases).
 
+* :mod:`sloth.utils.xdata`
+
+  - :func:`xray_edge` + cleaning output of :func:`xray_line`
+  
 Bug fixes
 '''''''''
 
@@ -26,8 +30,8 @@ Bug fixes
 
 * :mod:`sloth.__init__`
 
-  - [X] re-enable larch imports in :var:`_slothKit` (currently
-        disabled because loading seems too slow!!!)
+  - re-enable larch imports in :var:`_slothKit` (currently disabled
+    because loading seems too slow!!!)
 
 Broken backward compatibility
 '''''''''''''''''''''''''''''

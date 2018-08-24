@@ -373,16 +373,17 @@ def fluo_amplitude(elem, line, excitation=None, barn_unit=False):
 def xray_line(element, line=None, initial_level=None):
     """get the energy in eV for a given element/line or level
 
-    :param element: string
+    :param element: string or number
     :param line: string, Siegbahn notation, e.g. 'KA1' [None]
     :param initial_level: string, initial core level, e.g. 'K' [None]
-    :returns: dictionary {'line' : [], 'ene' : []}
+    :returns: dictionary {'line' : [], 'ene' : []} or a number
     
     """
-    el_n = xl.SymbolToAtomicNumber(element)
+    if HAS_XRAYLIB is False: _xraylib_error(0)
+    el_n = get_element(element)[1]
     outdict = {'line' : [],
                'ene' : []}
-    if HAS_XRAYLIB is False: _xraylib_error(0)
+    _retNum = False
     if (line is None) and (initial_level is not None):
         try:
             lines = [line for line in LINES if initial_level in line]
@@ -390,6 +391,7 @@ def xray_line(element, line=None, initial_level=None):
             _logger.error('initial_level is wrong')
     else:
         lines = [line]
+        _retNum = True
     for _line in lines:
         try:
             line_ene = xl.LineEnergy(el_n, getattr(xl, _line+'_LINE'))*1000
@@ -398,7 +400,43 @@ def xray_line(element, line=None, initial_level=None):
         except:
             _logger.error("line is wrong")
             continue
-    return outdict
+    if _retNum:
+        return outdict['ene'][0]
+    else:
+        return outdict
+
+def xray_edge(element, initial_level=None):
+    """get the energy edge in eV for a given element
+
+    :param element: string or number
+    :param initial_level: string, initial core level, e.g. 'K' or list [None]
+    :returns: dictionary {'edge' : [], 'ene' : []} or a number
+    
+    """
+    if HAS_XRAYLIB is False: _xraylib_error(0)
+    el_n = get_element(element)[1]
+    outdict = {'edge' : [],
+               'ene' : []}
+    _retNum = False
+    if initial_level is None:
+        initial_level = SHELLS
+    if (type(initial_level) == str):
+        initial_level = [initial_level, ]
+        _retNum = True
+    else:
+        _logger.error('initial_level is wrong')
+    for _level in initial_level:
+        try:
+            edge_ene = xl.EdgeEnergy(el_n, getattr(xl, _level+'_SHELL'))*1000
+            outdict['edge'].append(_level)
+            outdict['ene'].append(edge_ene)
+        except:
+            _logger.warning("{0} {1} edge unknown".format(get_element(element)[0], _level))
+            continue
+    if _retNum:
+        return outdict['ene'][0]
+    else:
+        return outdict
 
 def fluo_spectrum(elem, line, xwidth=3, xstep=0.05,\
                   plot=False, showInfos=True, **kws):
