@@ -1,0 +1,10 @@
+#!/usr/bin/env python
+"""
+Sloth main GUI
+"""
+import os, sys
+import sloth
+from sloth.gui.sloth_main import sloth_main_gui_app
+
+sloth_main_gui_app()
+

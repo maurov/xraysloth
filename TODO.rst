@@ -11,11 +11,6 @@ issues and self-assign them, but it is definitively overkill.
 Bug fixes
 ---------
 
-* :mod:`sloth.__init__`
-
-  - [ ] re-enable larch imports in :var:`_slothKit` (currently
-        disabled because loading seems too slow!!!)
-
 New features
 ------------
 

@@ -82,13 +82,12 @@ try:
     from larch import Interpreter
     _larch = Interpreter(with_plugins=False)
     HAS_LARCH = True
-   _pushDict.update({'larch'   : larch,
-                     '_larch'  : _larch})
-   _pushInfos.extend(['larch : Larch lib',
-                      '_larch : Larch interpreter'])
+    _pushDict.update({'larch'   : larch,
+                      '_larch'  : _larch})
+    _pushInfos.extend(['larch : Larch lib',
+                       '_larch : Larch interpreter'])
 except:
-   pass
-
+    pass
 
 ### SLOTH KIT => _slothKit ###
 _slothKit = {}

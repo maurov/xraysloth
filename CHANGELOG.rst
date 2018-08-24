@@ -24,6 +24,11 @@ Bug fixes
 
 * :class:`sloth.inst.rowland.RcVert` -> bug in `chi` calculation.
 
+* :mod:`sloth.__init__`
+
+  - [X] re-enable larch imports in :var:`_slothKit` (currently
+        disabled because loading seems too slow!!!)
+
 Broken backward compatibility
 '''''''''''''''''''''''''''''
 

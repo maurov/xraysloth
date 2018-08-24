@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os, sys
+import os, sys, platform, shutil
+from glob import glob
 
 try:
     from setuptools import setup
@@ -9,25 +10,67 @@ except ImportError:
     from distutils.core import setup
 
 import sloth
-    
+
+###
+isdir = os.path.isdir
+pjoin = os.path.join
+psplit = os.path.split
+pexists = os.path.exists
+
+## determine OS/platform ###
+nbits = platform.architecture()[0].replace('bit', '')
+uname  = 'linux'
+libfmt = 'lib%s.so'
+bindir = 'bin'
+pyexe = pjoin(bindir, 'python')
+
+if os.name == 'nt':
+    uname  = 'win'
+    libfmt = '%s.dll'
+    bindir = 'Scripts'
+    pyexe = 'python.exe'
+elif sys.platform == 'darwin':
+    uname  = 'darwin'
+    libfmt = 'lib%s.dylib'
+uname = "%s%s" % (uname, nbits)
+
 def get_readme():
+    """README.rst -> long description"""
     _dir = os.path.dirname(os.path.abspath(__file__))
     with open(os.path.join(_dir, 'README.rst'), 'r') as f:
         long_description = f.read()
     return long_description
 
-def main():
+def _install_scripts(_setup):
+    """scripts to install besides the normal python modules"""
+    scripts  =  glob('bin/*')
+    if not uname.startswith('win'):
+        scripts = [s for s in scripts if not s.endswith('.bat')]
+        
+    scriptdir = pjoin(sys.exec_prefix, bindir)
+    install_prefix = _setup.get_command_obj('install').root
+    if install_prefix is not None:
+        scriptdir = pjoin(install_prefix, scriptdir)
+
+    for src in scripts:
+        _, fname = psplit(src)
+        dest = pjoin(scriptdir, fname)
+        shutil.copy(src, dest)
+        os.chmod(dest, 493) # mode=755
+   
+def main(install_scripts=True):
     """The main entry point."""
     kwargs = dict(
-        name='sloth',
-        version=sloth.__version__,
-        packages=sloth.__pkgs__,
-        description='some utilities for x-ray spectroscopists',
-        long_description=get_readme(),
-        license='BSD',
-        author='Mauro Rovezzi',
-        author_email='first_name DOT last_name AT gmail DOT com',
-        url='https://github.com/maurov/sloth',
+        name = 'sloth',
+        version = sloth.__version__,
+        packages = sloth.__pkgs__,
+        description = 'some utilities for x-ray spectroscopists',
+        long_description = get_readme(),
+        license      = 'BSD',
+        author       = 'Mauro Rovezzi',
+        author_email = 'mauro.rovezzi@gmail.com',
+        url          = 'https://github.com/maurov/sloth',
+        download_url = 'https://github.com/maurov/sloth',
         classifiers=['Development Status :: 1 - Planning',
                      'License :: OSI Approved :: BSD',
                      'Operating System :: OS Independent',
@@ -38,7 +81,10 @@ def main():
                      'Intended Audience :: Science/Research',
         ])
 
-    setup(**kwargs)
+    _setup = setup(**kwargs)
+
+    if install_scripts:
+        _install_scripts(_setup)
 
 if __name__ == '__main__':
     main()
