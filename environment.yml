@@ -1,3 +1,4 @@
+#Python environment for: https://github.com/maurov/xraysloth
 #conda env create -f environment.yml
 name: sloth-env
 channels:
@@ -5,8 +6,14 @@ channels:
   #NOTE: specific channels are given per-package, not here!
 dependencies:
   - python=3.6
+  #- cython              #unstable/errors
+  #- gcc                 #unstable/errors
+  #- anaconda            #unstable/messy
+  #- pyopengl            #unstable/selected hardware
+  #- pyopengl-accelerate #unstable/selected hardware
   - qt
   - pyqt=5
+  - wxpython=4
   - numpy
   - scipy
   - matplotlib
@@ -36,36 +43,51 @@ dependencies:
   - sqlalchemy
   - sphinx
   - sphinxcontrib
-  ###
+  - natsort
+  #- spyder
+  - patchelf #required in xraylarch: setup.py(fix_linux_dylibs)
+  
+  ### CONDA-FORGE ###
   - conda-forge::silx=0.8.0
   - conda-forge::xraylib
   - conda-forge::ase
+  - conda-forge::peakutils
+  - conda-forge::lmfit
+  - conda-forge::asteval
   - conda-forge::psutil
   - conda-forge::pytest
   - conda-forge::uncertainties
+  - conda-forge::pycifrw
+  #- conda-forge::orange3 #*conflicts with OASYS1* /:test:`orange-canvas -l 4`
+
   ###
-  - GSECARS::peakutils
-  - GSECARS::asteval
-  - GSECARS::pyfai
-  - GSECARS::lmfit
-  - GSECARS::wxpython
-  - GSECARS::wxmplot
-  - GSECARS::wxutils
-  - GSECARS::pycifrw
-  - GSECARS::xraylarch
+  #- GSECARS::xraylarch #force deps
+
   ###
-  #- diffpy:diffpy.structure #conflicts!
+  #- diffpy::diffpy.structure #conflicts!/py2.7 only!!!
+
   ###
   - nexpy::nexusformat
+
   ###
+  #- matsci::pymatgen #unstable/messy
+
+  ### PIP ###
   - pip:
     - hdf5plugin
+    - wxmplot
+    - wxutils
     #- fisx
-    #- PyMca5
+    - PyMca5
     #- silx
     #- fabio
-    #- diffpy.structure #py2.7 only!!!
+    #- oasys-canvas-core  #OASYS kit 
+    #- oasys-widget-core  #OASYS kit 
+    #- oasys1		  #OASYS kit 
+    #- srxraylib	  #OASYS kit 
+    #- syned		  #OASYS kit 
+    #- wofry		  #OASYS kit 
     - palettable
 
-    ### pip wheels
+    ### PIP WHEELS ###
     - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl

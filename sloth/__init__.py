@@ -13,8 +13,13 @@ Naming
 from __future__ import (absolute_import, print_function, division,
                         unicode_literals)
 
+### filter annoying numpy<1.8 warnings ###
+import warnings
+warnings.filterwarnings("ignore", message="numpy.dtype size changed")
+warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
+
 ### NAMESPACES => _pushDict / _pushInfos ###
-import os, sys, warnings
+import os, sys
 import math
 import numpy as np
 import matplotlib.pyplot as plt
