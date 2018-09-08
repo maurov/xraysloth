@@ -1,11 +1,9 @@
 #Python environment for: https://github.com/maurov/xraysloth
 #conda env create -f environment.yml
 name: sloth-env
-
 channels:
   - defaults
   #NOTE: specific channels are given per-package, not here!
-  
 dependencies:
   - python=3.6
   - qt
@@ -14,6 +12,7 @@ dependencies:
   - numpy
   - scipy
   - matplotlib
+  - pandas
   - h5py
   - scikit-learn
   - scikit-image
@@ -27,7 +26,6 @@ dependencies:
   - ipywidgets
   - ipympl
   - pyzmq
-  - pandas
   - pyyaml
   - pytz
   - python-dateutil
@@ -43,7 +41,6 @@ dependencies:
   - natsort
   #- spyder
   - patchelf #required in xraylarch: setup.py(fix_linux_dylibs)
-  
   ### CONDA-FORGE ###
   - conda-forge::silx=0.8.0
   - conda-forge::xraylib
@@ -56,21 +53,16 @@ dependencies:
   - conda-forge::uncertainties
   - conda-forge::pycifrw
   #- conda-forge::orange3 #*conflicts with OASYS1* /:test:`orange-canvas -l 4`
-
   ###
   - GSECARS::wxmplot
   - GSECARS::wxutils
   #- GSECARS::xraylarch #WARNING: it will force ALL deps
-
   ###
   #- diffpy::diffpy.structure #conflicts!/py2.7 only!!!
-
   ###
   - nexpy::nexusformat
-
   ###
   #- matsci::pymatgen #unstable/messy
-
   ### PIP ###
   - pip:
     - hdf5plugin
@@ -85,13 +77,12 @@ dependencies:
     #- syned		  #OASYS kit 
     #- wofry		  #OASYS kit 
     - palettable
-
     ### PIP WHEELS ###
     - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl
-
-disallow:
-  - cython              #unstable/errors
-  - gcc                 #unstable/errors
-  - anaconda            #unstable/messy
-  - pyopengl            #unstable/selected hardware
-  - pyopengl-accelerate #unstable/selected hardware
+  ### DISALLOWED PKGS ###
+  - disallow:
+    - cython              #unstable/errors
+    - gcc                 #unstable/errors
+    - anaconda            #unstable/messy
+    - pyopengl            #unstable/selected hardware
+    - pyopengl-accelerate #unstable/selected hardware
