@@ -4,13 +4,14 @@ name: sloth-env
 channels:
   - defaults
   #NOTE: specific channels are given per-package, not here!
+disallow:
+  - cython              #unstable/errors
+  - gcc                 #unstable/errors
+  - anaconda            #unstable/messy
+  - pyopengl            #unstable/selected hardware
+  - pyopengl-accelerate #unstable/selected hardware
 dependencies:
   - python=3.6
-  #- cython              #unstable/errors
-  #- gcc                 #unstable/errors
-  #- anaconda            #unstable/messy
-  #- pyopengl            #unstable/selected hardware
-  #- pyopengl-accelerate #unstable/selected hardware
   - qt
   - pyqt=5
   - wxpython=4
