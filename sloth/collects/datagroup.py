@@ -5,6 +5,15 @@
 
 (=groups in Larch, =generic Python class)
 
+- DataGroup
+  - DataGroup1D
+    - DataGroupXanes
+    - DataGroupExafs
+    - DataGroupXes
+    - DataGroupPeak
+  - DataGroup2D
+    - DataGroupRixs
+
 """
 import os, sys, copy, pickle
 import numpy as np
@@ -65,7 +74,7 @@ from sloth.utils.genericutils import get_fnames
 from sloth.math.normalization import norm1D as _norm
 
 ### GLOBAL VARIABLES ###
-MODNAME = '_contrib'
+MODNAME = '_datagroup'
 DEBUG = 0
 
 
@@ -297,9 +306,9 @@ def datagroup(kwsd=None, _larch=None):
 def registerLarchPlugin():
     return (MODNAME, {'datagroup': datagroup})
 
-####################
-### PICKLE-BASED ###
-####################
+###############################################
+### PICKLE-BASED // TEMPORARY DO NOT USE!!! ###
+###############################################
 
 class EvalData(object):
     """.. warning:: this is a temporary object -> DO NOT USE IN PRODCTION!"""

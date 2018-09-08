@@ -36,16 +36,12 @@ __pkgs__ = ['sloth',
             'sloth.test',       #test suite (main)
             'sloth.utils',      #utilities (generic)
             'sloth.math',       #math&friends
-            'sloth.collects',   #data containers
+            'sloth.collects',   #data containers (1D, 2D, EXA, XAN, XES, RIXS)
             'sloth.fit',        #fit utilities
             'sloth.gui',        #graphical user interface widgets
             'sloth.io',         #input-output
             'sloth.inst',       #instrumentation
             'sloth.raytracing', #ray tracing (shadow)
-            'sloth.exafs',      #exafs analysis tools
-            'sloth.xanes',      #xanes analysis tools
-            'sloth.rixs',       #rixs analysis tools
-            'sloth.xes'         #xes analysis tools
             ]
 
 _pushDict = OrderedDict()

@@ -4,7 +4,8 @@
 """DataGroup2D: work with 2D data sets (planes/maps/images)
 ===========================================================
 
-.. note:: see also :mod:`sloth.rixs.rixdata`
+- DataGroup
+  - DataGroup2D
 
 """
 from .datagroup import DataGroup
