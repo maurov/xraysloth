@@ -52,7 +52,7 @@ dependencies:
   - conda-forge::xraylib
   - conda-forge::ase
   - conda-forge::peakutils
-  - conda-forge::lmfit
+  - conda-forge::lmfit=0.9.11
   - conda-forge::asteval
   - conda-forge::psutil
   - conda-forge::pytest
@@ -63,7 +63,7 @@ dependencies:
   ###
   - GSECARS::wxmplot
   - GSECARS::wxutils
-  - GSECARS::xraylarch #WARNING: it will force ALL deps
+  #- GSECARS::xraylarch #WARNING: it will force ALL deps
 
   ###
   #- diffpy::diffpy.structure #conflicts!/py2.7 only!!!
@@ -79,7 +79,7 @@ dependencies:
     - hdf5plugin
     - fisx
     - PyMca5
-    #- silx
+    #- silx  #from conda-forge
     #- fabio
     #- oasys-canvas-core  #OASYS kit 
     #- oasys-widget-core  #OASYS kit 
