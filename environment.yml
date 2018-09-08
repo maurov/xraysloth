@@ -79,8 +79,8 @@ dependencies:
     - palettable
     ### PIP WHEELS ###
     - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl
-  ### DISALLOWED PKGS ###
-  - disallow:
+### DISALLOWED PKGS ###
+disallow:
     - cython              #unstable/errors
     - gcc                 #unstable/errors
     - anaconda            #unstable/messy
