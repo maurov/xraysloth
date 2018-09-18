@@ -18,11 +18,16 @@ techniques.
    changelog.rst
    todo.rst
 
+   
 :doc:`changelog`
-     List of changes
+   List of changes.
 
-Indices and tables
-==================
+:doc:`todo`
+   List of things to do (ideas, bugs, plans).
+
+     
+Indices
+-------
 
 * :ref:`genindex`
 * :ref:`modindex`

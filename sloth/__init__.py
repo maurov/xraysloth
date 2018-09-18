@@ -21,8 +21,6 @@ warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
 ### NAMESPACES => _pushDict / _pushInfos ###
 import os, sys
 import math
-import numpy as np
-import matplotlib.pyplot as plt
 from collections import OrderedDict
 
 __author__ = "Mauro Rovezzi"
@@ -49,20 +47,33 @@ _pushInfos = []
 
 _pushDict.update({'os'   : os,
                   'sys'  : sys,
-                  'math' : math,
-                  'np'   : np,
-                  'plt'  : plt})
+                  'math' : math})
+_pushInfos.extend(['os', 'sys', 'math'])
+                   
+HAS_NUMPY = False
+try:
+    import numpy as np
+    HAS_NUMPY = True
+    _pushDict.update({'np'   : np})
+    _pushInfos.extend(['np : Numpy'])
+except:
+    pass
 
-_pushInfos.extend(['os', 'sys', 'math',
-                   'np : Numpy',
-                   'plt : matplotlib.pyplot'])
+HAS_MATPLOTLIB = False
+try:
+    import matplotlib.pyplot as plt
+    HAS_MATPLOTLIB = True
+    _pushDict.update({'plt'  : plt})
+    _pushInfos.extend(['plt : matplotlib.pyplot'])
+except:
+    pass
 
 HAS_SILX_QT = False
 try:
     from silx.gui import qt
     HAS_SILX_QT = True
-    _pushDict.update({'qt'   : qt})
-    _pushInfos.append('qt : Qt from SILX')
+    _pushDict.update({'qt': qt})
+    _pushInfos.append('qt : silx.gui.qt')
 except:
     pass
 
@@ -70,8 +81,8 @@ HAS_XRAYLIB = False
 try:
     import xraylib as xl
     HAS_XRAYLIB = True
-    _pushDict.update({'xl'   : xl})
-    _pushInfos.append('xl : XrayLib')
+    _pushDict.update({'xl': xl})
+    _pushInfos.append('xl : xraylib')
 except:
     pass
 
@@ -81,12 +92,12 @@ try:
         warnings.simplefilter("ignore")
         import larch
     from larch import Interpreter
-    _larch = Interpreter(with_plugins=False)
+    _lar = Interpreter(with_plugins=False)
     HAS_LARCH = True
-    _pushDict.update({'larch'   : larch,
-                      '_larch'  : _larch})
-    _pushInfos.extend(['larch : Larch lib',
-                       '_larch : Larch interpreter'])
+    _pushDict.update({'larch' : larch,
+                      '_lar'  : _lar})
+    _pushInfos.extend(['larch : larch',
+                       '_lar : larch.Interpreter'])
 except:
     pass
 

@@ -17,6 +17,14 @@ New features
 Here well defined tasks ready for implementation, grouped by
 modules. No particular priority order is given.
 
+* :mod:`sloth`
+
+  - [ ] clean imports
+
+* :mod:`sloth.utils.genericutils`
+
+  - [ ] clean imports
+
 * :mod:`sloth.utils.xdata`
 
   - [ ] make a single API for both `xraylib` and `larch` backends.
