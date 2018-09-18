@@ -23,8 +23,19 @@
    :members:
 
 :mod:`sloth.math.normalization`: normalization schemes
-------------------------------------------------
+------------------------------------------------------
 
-.. automodule:: sloth.math.convolution1D
+.. automodule:: sloth.math.normalization
    :members:
 
+:mod:`sloth.math.geometry3D`: simple 3D geometry
+------------------------------------------------
+
+.. automodule:: sloth.math.geometry3D
+   :members:
+
+:mod:`sloth.math.deglitch`: data deglich (=remove spikes)
+---------------------------------------------------------
+
+.. automodule:: sloth.math.deglitch
+   :members:
