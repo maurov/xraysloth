@@ -46,9 +46,7 @@ extensions = ['sphinx.ext.mathjax',
               'sphinx.ext.coverage',
               'sphinx.ext.mathjax',
               'sphinx.ext.viewcode',
-              'sphinx.ext.doctest',
-              'sphinxext-archive',
-              'nbsphinx']
+              'sphinx.ext.doctest']
 
 autodoc_member_order = 'bysource'
 suppress_warnings = ["app.add_node"]
