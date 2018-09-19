@@ -5,12 +5,13 @@
 
 - DataGroup
   - DataGroup1D
-    - DataGroupExafs
+    - DataGroupXanes
+      - DataGroupExafs
 """
 from .datagroup import MODNAME
-from .datagroup1D import DataGroup1D
+from .datagroup_xan import DataGroupXanes
 
-class DataGroupExafs(DataGroup1D):
+class DataGroupExafs(DataGroupXanes):
     """DataGroup for EXAFS scans"""
     def __init__(self, kwsd=None, _larch=None):
         super(DataGroupExafs, self).__init__(kwsd=kwsd, _larch=_larch)

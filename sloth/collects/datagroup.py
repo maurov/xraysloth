@@ -8,7 +8,7 @@
 - DataGroup
   - DataGroup1D
     - DataGroupXanes
-    - DataGroupExafs
+      - DataGroupExafs
     - DataGroupXes
     - DataGroupPeak
   - DataGroup2D

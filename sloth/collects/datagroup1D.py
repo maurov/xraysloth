@@ -33,7 +33,6 @@ except ImportError:
     
 from ..io.specfile_reader import _str2rng as str2rng
 from ..io.specfile_reader import spec_getmap2group, spec_getmrg2group
-from ..rixs.rixsdata_plotter import RixsDataPlotter
 from .datagroup import DataGroup, _norm, MODNAME
 
 # PyMca
