@@ -4,85 +4,74 @@ name: sloth-env
 channels:
   - defaults
   #NOTE: specific channels are given per-package, not here!
-### DISALLOWED PKGS ###
-#disallow: #does not work YML file... only in condarc???
-#    - cython              #unstable/errors
-#    - gcc                 #unstable/errors
-#    - anaconda            #unstable/messy
-#    - pyopengl            #unstable/selected hardware
-#    - pyopengl-accelerate #unstable/selected hardware
 dependencies:
   - python=3.6
-#  - qt
-#  - pyqt=5
-#  - wxpython=4
+  - qt
+  - pyqt=5
+  - wxpython=4
   - numpy
   - scipy
   - matplotlib
-#  - pandas
-#  - h5py
-#  - scikit-learn
-#  - scikit-image
-#  - pillow
-#  - traitlets
-#  - six
-#  - bottlechest
-#  - ipython
-#  - ipykernel
-#  - jupyter
-#  - ipywidgets
-#  - ipympl
-#  - pyzmq
-#  - pyyaml
-#  - pytz
-#  - python-dateutil
-#  - requests
-#  - termcolor
-#  - nose
-#  - swig
-#  - dill
-#  - pyparsing
-#  - sqlalchemy
-#  - sphinx
-#  - sphinxcontrib
-#  - natsort
-#  - spyder
-#  - patchelf #required in xraylarch: setup.py(fix_linux_dylibs)
+  - pandas
+  - h5py
+  - scikit-learn
+  - scikit-image
+  - pillow
+  - traitlets
+  - six
+  - bottlechest
+  - ipython
+  - ipykernel
+  - jupyter
+  - ipywidgets
+  - ipympl
+  - pyzmq
+  - pyyaml
+  - pytz
+  - python-dateutil
+  - requests
+  - termcolor
+  - nose
+  - swig
+  - dill
+  - pyparsing
+  - sqlalchemy
+  - sphinx
+  - sphinxcontrib
+  - natsort
+  - spyder
+  - patchelf #required in xraylarch: setup.py(fix_linux_dylibs)
   ### CONDA-FORGE ###
   - conda-forge::silx=0.8.0
   - conda-forge::xraylib
-#  - conda-forge::ase
-#  - conda-forge::peakutils
-#  - conda-forge::lmfit=0.9.11
-#  - conda-forge::asteval
-#  - conda-forge::psutil
-#  - conda-forge::pytest
-#  - conda-forge::uncertainties
-#  - conda-forge::pycifrw
-#  - conda-forge::orange3 #*conflicts with OASYS1* /:test:`orange-canvas -l 4`
+  - conda-forge::ase
+  - conda-forge::peakutils
+  - conda-forge::lmfit=0.9.11
+  - conda-forge::asteval
+  - conda-forge::psutil
+  - conda-forge::pytest
+  - conda-forge::uncertainties
+  - conda-forge::pycifrw
+  #- conda-forge::orange3 #*conflicts with OASYS1* /:test:`orange-canvas -l 4`
   ###
-#  - GSECARS::wxmplot
-#  - GSECARS::wxutils
-#  - GSECARS::xraylarch #WARNING: it will force ALL deps
+  - GSECARS::wxmplot
+  - GSECARS::wxutils
+  #- GSECARS::xraylarch #WARNING: it will force ALL deps
   ###
-# - diffpy::diffpy.structure #conflicts!/py2.7 only!!!
-  ###
-# - nexpy::nexusformat
-  ###
-# - matsci::pymatgen #unstable/messy
+  - nexpy::nexusformat
   ### PIP ###
   - pip:
     - hdf5plugin
     - fisx
     - PyMca5
-#   - silx  #from conda-forge
-#   - fabio
-#   - oasys-canvas-core  #OASYS kit 
-#   - oasys-widget-core  #OASYS kit 
-#   - oasys1		  #OASYS kit 
-#   - srxraylib	  #OASYS kit 
-#   - syned		  #OASYS kit 
-#   - wofry		  #OASYS kit 
-#   - palettable
+    - palettable
+    #- silx  #from conda-forge
+    #- fabio
+    #- oasys-canvas-core  #OASYS kit 
+    #- oasys-widget-core  #OASYS kit 
+    #- oasys1		  #OASYS kit 
+    #- srxraylib	  #OASYS kit 
+    #- syned		  #OASYS kit 
+    #- wofry		  #OASYS kit 
     ### PIP WHEELS ###
-#    - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl
+    - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl

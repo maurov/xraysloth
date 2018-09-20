@@ -8,5 +8,9 @@ python:
   version: 3.6
   setup_py_install: true
 
-conda:
-  file: environment.yml
+
+#Too slow -> impossible to build -> use requirements_file
+#conda:
+#  file: environment.yml
+
+requirements_file: docs/source/requirements_docs.txt
