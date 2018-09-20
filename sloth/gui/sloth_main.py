@@ -121,12 +121,13 @@ class SlothMainWindow(qt.QMainWindow):
     def confirmClose(self):
         msg = qt.QMessageBox(self)
         msg.setIcon(qt.QMessageBox.Question)
-        msg.setText("You requested closing the application. Is this really what you want?")
+        msg.setText("Really close the application?")
         msg.setInformativeText("ALL NOT SAVED DATA WILL BE LOST")
         msg.setWindowTitle("Exit application?")
         msg.setStandardButtons(qt.QMessageBox.Ok | qt.QMessageBox.Cancel)
         if msg.exec_() == qt.QMessageBox.Ok:
             self.close()
+            qt.QApplication.closeAllWindows()
 
 class AboutDialog(qt.QDialog):
 

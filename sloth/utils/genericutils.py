@@ -193,11 +193,11 @@ def qt_create_window(window_class):
     Credits: http://cyrille.rossant.net/making-pyqt4-pyside-and-ipython-work-together/
 
     """
-    from PyQt4 import QtCore, QtGui
+    from silx.gui import qt
     app_created = False
-    app = QtCore.QCoreApplication.instance()
+    app = qt.QCoreApplication.instance()
     if app is None:
-        app = QtGui.QApplication(sys.argv)
+        app = qt.QApplication(sys.argv)
         app_created = True
     app.references = set()
     window = window_class()
@@ -209,17 +209,16 @@ def qt_create_window(window_class):
 
 def qt_close_all_windows():
     """close all qt windows!!!"""
-    from PyMca5.PyMcaGui import PyMcaQt as qt
+    from silx.gui import qt
     qt.QApplication.closeAllWindows()
     
-def qt5_get_version():
-    from PyQt5.QtCore import QT_VERSION_STR
-    from PyQt5.Qt import PYQT_VERSION_STR
+def qt_get_version():
+    from silx.gui import qt
     from sip import SIP_VERSION_STR
 
-    print("Qt version:", QT_VERSION_STR)
+    print("Qt version:", qt.QT_VERSION_STR)
     print("SIP version:", SIP_VERSION_STR)
-    print("PyQt version:", PYQT_VERSION_STR)
+    print("PyQt version:", qt.PYQT_VERSION_STR)
 
     
 if __name__ == '__main__':
