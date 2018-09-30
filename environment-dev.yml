@@ -1,0 +1,85 @@
+#Python environment for: https://github.com/maurov/xraysloth
+#conda env create -f environment.yml
+name: sloth-dev
+channels:
+  - defaults
+  #NOTE: specific channels are given per-package, not here!
+dependencies:
+  - python=3.6
+  - cython>0.21.1
+  - pyopengl
+  - qt
+  - pyqt=5
+  - wxpython>=4.0.1
+  - six>=1.10
+  - scipy>=0.17
+  - numpy>=1.10
+  - matplotlib>=2.0
+  - qtconsole
+  - pillow>=3.4
+  - python-dateutil
+  - h5py>=2.4
+  - mako
+  - setuptools
+  - wheel
+  - pyyaml
+  - pandas
+  - scikit-learn>=0.18
+  - scikit-image
+  - sqlalchemy>=0.9
+  - traitlets
+  - requests>=2.1
+  - bottlechest
+  - ipython
+  - ipykernel
+  - jupyter
+  - ipywidgets
+  - ipympl
+  - pyzmq
+  - pytz
+  - termcolor
+  - nose
+  - swig
+  - dill
+  - pyparsing
+  - sphinx
+  - sphinxcontrib
+  - natsort
+  - spyder
+  - patchelf #required in xraylarch: setup.py(fix_linux_dylibs)
+  ### CONDA-FORGE ###
+  - conda-forge::pyopencl
+  - conda-forge::fabio>=0.7
+  - conda-forge::nbsphinx
+  - conda-forge::pyinstaller
+  - conda-forge::silx=0.8.0
+  - conda-forge::xraylib
+  - conda-forge::ase
+  - conda-forge::peakutils>=1.0.0
+  - conda-forge::lmfit>=0.9.11
+  - conda-forge::asteval>=0.9.12
+  - conda-forge::psutil
+  - conda-forge::pytest
+  - conda-forge::uncertainties
+  - conda-forge::pycifrw
+  #- conda-forge::orange3 #*conflicts with OASYS1* /:test:`orange-canvas -l 4`
+  ###
+  - GSECARS::wxmplot>=0.9.30
+  - GSECARS::wxutils
+  - GSECARS::xraylarch #WARNING: it will force ALL deps
+  ###
+  #- nexpy::nexusformat
+  ### PIP ###
+  - pip:
+    - hdf5plugin
+    - fisx
+    - PyMca5
+    - palettable
+    #- oasys-canvas-core  #OASYS kit 
+    #- oasys-widget-core  #OASYS kit 
+    #- oasys1		  #OASYS kit 
+    #- srxraylib	  #OASYS kit 
+    #- syned		  #OASYS kit 
+    #- wofry		  #OASYS kit 
+    ### PIP WHEELS ###
+    - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl
