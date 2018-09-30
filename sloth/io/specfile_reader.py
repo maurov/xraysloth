@@ -1,98 +1,72 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""SpecfileData object to work with SPEC files from Certified
-Scientific Software (http://www.certif.com/)
+"""SpecfileData object to read data in SPEC_ format
+===================================================
+
+.. _SPEC: http://www.certif.com/content/spec
 
 Requirements
-============
-- specfilewrapper from PyMca distribution (http://pymca.sourceforge.net/)
-
-Related
-=======
-- specfiledatawriter (https://github.com/maurov/xraysloth)
+------------
+- silx (http://www.silx.org/doc/silx/dev/modules/io/specfilewrapper.html)
 
 TODO
-====
+----
 - _pymca_average() : use faster scipy.interpolate.interp1d
 - implement a 2D normalization in get_map
 - implement the case of dichroic measurements (two consecutive scans
   with flipped helicity)
-
 """
+
+__author__ = ["Mauro Rovezzi", "Matt Newville"]
+__version__ = "0.2.2 (sloth)"
+
 import os, sys
 import numpy as np
 from scipy.interpolate import interp1d
 from scipy.ndimage import map_coordinates
 
-# to grid X,Y,Z column data
+# to grid X,Y,Z columnar data
 HAS_GRIDXYZ = False
 try:
+    #from larch_plugins.math.gridxyz import gridxyz
     from ..math.gridxyz import gridxyz
     HAS_GRIDXYZ = True
 except:
     pass
 
-# PyMca5 or PyMca (4.7 branch)
-HAS_PYMCA5 = False
 HAS_SPECFILE = False
 try:
-    from PyMca5.PyMcaIO import specfilewrapper as specfile
-    HAS_PYMCA5 = True
+    from silx.io import specfilewrapper as specfile
     HAS_SPECFILE = True
-except ImportError:
-    try:
-        from PyMca import specfilewrapper as specfile
-        HAS_SPECFILE = True
-    except ImportError:
-        try:
-            from PyMca import specfile
-            HAS_SPECFILE = True
-        except ImportError:
-            pass
-
-# SimpleMath from PyMca
-HAS_SIMPLEMATH = False
-if HAS_PYMCA5:
-    try:
-        from PyMca5.PyMcaMath import SimpleMath
-        HAS_SIMPLEMATH = True
-    except ImportError:
-        pass
-else:
-    try:
-        from PyMca import SimpleMath
-        HAS_SIMPLEMATH = True
-    except ImportError:
-        pass
-
-# SG module from PyMca
-HAS_SGMODULE = False
-if HAS_PYMCA5:
-    try:
-        from PyMca5.PyMcaMath import SGModule
-        HAS_SGMODULE = True
-    except ImportError:
-        pass
-else:
-    try:
-        from PyMca import SGModule
-        HAS_SGMODULE = True
-    except ImportError:
-        pass
-
-# specfiledatawriter
-HAS_SFDW = False
-try:
-    from .specfile_write import SpecfileDataWriter
-    HAS_SFDW = True
 except ImportError:
     pass
 
-### ==================================================================
-### UTILITIES (the class is below!)
-### ==================================================================
+# SimpleMath from PyMca5
+HAS_SIMPLEMATH = False
+try:
+   from PyMca5.PyMcaMath import SimpleMath
+   HAS_SIMPLEMATH = True
+except ImportError:
+   pass
 
+# SG module from PyMca5
+HAS_SGMODULE = False
+try:
+   from PyMca5.PyMcaMath import SGModule
+   HAS_SGMODULE = True
+except ImportError:
+   pass
+
+# specfile_writer
+HAS_SFDW = False
+try:
+    from .specfile_writer import SpecfileDataWriter
+    HAS_SFDW = True
+except (ValueError, ImportError):
+    pass
+
+### UTILITIES (the class is below!)
 def _str2rng(rngstr, keeporder=True, rebin=None):
     """simple utility to convert a generic string representing a compact
     list of scans to a sorted list of integers
@@ -136,7 +110,7 @@ def _str2rng(rngstr, keeporder=True, rebin=None):
             _rngout = _rngout[::int(rebin)]
         except:
             raise NameError("Wrong rebin={0}".format(int(rebin)))
-    
+
     def uniquify(seq):
         # Order preserving uniquifier by Dave Kirby
         seen = set()
@@ -189,7 +163,7 @@ def _checkScans(scans):
     """compatibility layer"""
     print("DEPRECATED: use '_check_scans' instead")
     return _check_scans(scans)
-        
+
 def _check_scans(scans):
     """simple checker for scans input"""
     if scans is None:
@@ -243,6 +217,7 @@ def _pymca_average(xdats, zdats):
     """
     if HAS_SIMPLEMATH:
         sm = SimpleMath.SimpleMath()
+        print("Merging data...")
         return sm.average(xdats, zdats)
     else:
         raise NameError("SimpleMath is not available -- this operation cannot be performed!")
@@ -261,7 +236,7 @@ def _pymca_SG(ydat, npoints=3, degree=1, order=0):
             1 means that filter results in smoothing the first
               derivative of function.
             and so on ...
-   
+
     Returns
     -------
     ys : smoothed array
@@ -279,7 +254,7 @@ def savitzky_golay(y, window_size, order, deriv=0):
     from data.  It has the advantage of preserving the original shape
     and features of the signal better than other types of filtering
     approaches, such as moving averages techhniques.
-    
+
     Parameters
     ----------
     y : array_like, shape (N,)
@@ -318,7 +293,7 @@ def savitzky_golay(y, window_size, order, deriv=0):
     plt.plot(t, ysg, 'r', label='Filtered signal')
     plt.legend()
     plt.show()
-    
+
     References
     ----------
     .. [1] A. Savitzky, M. J. E. Golay, Smoothing and Differentiation
@@ -356,7 +331,7 @@ def savitzky_golay(y, window_size, order, deriv=0):
 ### ==================================================================
 class SpecfileData(object):
     """SpecfileData object"""
-    
+
     def __init__(self, fname=None, cntx=1, cnty=None, csig=None,
                  cmon=None, csec=None, norm=None, verbosity=0):
         """reads the given specfile
@@ -379,7 +354,7 @@ class SpecfileData(object):
                'sum' -> (z-min(z)/sum(z)
 
         verbosity : level of verbosity [int, 0]
-        
+
         Returns
         -------
         None, sets attributes.
@@ -432,7 +407,7 @@ class SpecfileData(object):
                'max-min' -> (z-min(z))/(max(z)-min(z))
                'area' -> (z-min(z))/trapz(z, x)
                'sum' -> (z-min(z)/sum(z)
- 
+
         Returns
         -------
         scan_datx : 1D array with x data (scanned axis)
@@ -444,7 +419,7 @@ class SpecfileData(object):
         """
         if HAS_SPECFILE is False:
             raise NameError("Specfile not available!")
-        
+
         #get keywords arguments
         cntx = kws.get('cntx', self.cntx)
         cnty = kws.get('cnty', self.cnty)
@@ -466,7 +441,12 @@ class SpecfileData(object):
         #NOTE: here impossible to catch an exception, if the next
         #fails, specfile will directly call sys.exit! the try: except
         #did not work!
-        self.sd = self.sf.select(str(scan)) #sd = specfile data
+        _scanstr = str(scan)
+        if ('.' in _scanstr):
+            _scansel = _scanstr
+        else:
+            _scansel = '{0}.1'.format(_scanstr)
+        self.sd = self.sf.select(_scansel) #sd = specfile data
 
         #the case cntx is not given, the first counter is taken by default
         if cntx == 1:
@@ -475,7 +455,7 @@ class SpecfileData(object):
             _cntx = cntx
 
         ## x-axis
-        scan_datx = self.sd.datacol(_cntx)
+        scan_datx = self.sd.data_column_by_name(_cntx)
         _xlabel = 'x'
         _xscale = 1.0
         if scnt is None:
@@ -488,7 +468,7 @@ class SpecfileData(object):
                     _xscale = 1000.0
                     _xlabel = "energy, eV"
                 else:
-                    scan_datx = self.sd.datacol(cntx)
+                    scan_datx = self.sd.data_column_by_name(cntx)
                     _xscale = 1.0
                     _xlabel = "energy, keV"
         else:
@@ -496,7 +476,7 @@ class SpecfileData(object):
 
         ## z-axis (start with the signal)
         # data signal
-        datasig = self.sd.datacol(csig)
+        datasig = self.sd.data_column_by_name(csig)
         # data monitor
         if cmon is None:
             datamon = np.ones_like(datasig)
@@ -504,13 +484,13 @@ class SpecfileData(object):
         elif (('int' in str(type(cmon))) or ('float' in str(type(cmon))) ):
                # the case we want to divide by a constant value
                datamon = _mot2array(cmon, datasig)
-               labmon = str(cmon) 
+               labmon = str(cmon)
         else:
-            datamon = self.sd.datacol(cmon)
+            datamon = self.sd.data_column_by_name(cmon)
             labmon = str(cmon)
         # data cps
         if csec is not None:
-            scan_datz = ( ( datasig / datamon ) * np.mean(datamon) ) / self.sd.datacol(csec)
+            scan_datz = ( ( datasig / datamon ) * np.mean(datamon) ) / self.sd.data_column_by_name(csec)
             _zlabel = "((signal/{0})*mean({0}))/seconds".format(labmon)
         else:
             scan_datz = (datasig / datamon)
@@ -617,7 +597,7 @@ class SpecfileData(object):
         ----------
         scans : string or list of scans to load [None]; the format of the
                 string is intended to be parsed by '_str2rng()'
-        
+
         motinfo : boolean [True] returns also motors and scaninfo
                   dictionaries (see self.get_scan())
 
@@ -652,6 +632,7 @@ class SpecfileData(object):
             if motinfo:
                 mdats.append(_m)
                 idats.append(_i)
+            print("Loading scan {0}...".format(scan))
             _ct += 1
         if motinfo:
             return xdats, zdats, mdats, idats
@@ -680,14 +661,14 @@ class SpecfileData(object):
         """
         #check inputs - some already checked in get_scan()/get_scans()
         nscans = _check_scans(scans)
-        
+
         actions = ['single', 'average', 'sum', 'join']
         if not action in actions:
             raise NameError("'action={0}' not in known actions {1}".format(actions))
 
         # moved to get_scans
         xdats, zdats = self.get_scans(scans=nscans, motinfo=False, **kws)
-        
+
         # override 'action' keyword if it is only one scan
         if len(nscans) == 1:
             action = 'single'
@@ -696,7 +677,7 @@ class SpecfileData(object):
             if self.verbosity > 0: print("INFO: merging data...")
             return _pymca_average(xdats, zdats)
         elif action == 'sum':
-            return _numpy_sum_list(xdats, zdats)    
+            return _numpy_sum_list(xdats, zdats)
         elif action == 'join':
             return np.concatenate(xdats, axis=0), np.concatenate(zdats, axis=0)
         elif action == 'single':
@@ -804,19 +785,19 @@ class SpecfileData(object):
             return zcts_corr * secs
         else:
             return zcts_corr
-    
+
     def get_filter(self, ydats, method='scipySG', **kws):
         """get filtered data using a list of ydats and given method
 
         Parameters
         ----------
         ydats : list of 1D arrays
-        
+
         method : 'scipySG' -> Savitsky Golay filter from Scipy
                               (see savitzky_golay())
                  'pymcaSG' -> Savitsky Golay filter from PyMca
                               (see _pymca_SG())
-        
+
         Returns
         -------
         ysdats : list of 1D smoothed arrays
@@ -872,8 +853,8 @@ class SpecfileData(object):
             fout.wScan(['Energy', '{0}'.format(i['zlabel'])], [x, y],
                        title='{0}'.format(self.sd.command()),
                        motpos=self.sd.allmotorpos())
-        
-           
+
+
 ### LARCH ###
 def _specfiledata_getdoc(method):
     """to get the docstring of method inside a class"""
@@ -946,7 +927,7 @@ def str2rng_larch(rngstr, keeporder=True, _larch=None):
 str2rng_larch.__doc__ = _str2rng.__doc__
 
 def registerLarchPlugin():
-    if HAS_PYMCA:
+    if HAS_SPECFILE:
         return ('_io', {'read_specfile_scan': spec_getscan2group,
                         'read_specfile_map' : spec_getmap2group,
                         'read_specfile_mrg' : spec_getmrg2group,
@@ -956,7 +937,7 @@ def registerLarchPlugin():
         return ('_io', {})
 
 if __name__ == '__main__':
-    """test/examples in examples/specfiledata_test.py"""
+    """ test/examples in examples/specfiledata_test.py """
     #test01()
     #test02(100)
     #test03
