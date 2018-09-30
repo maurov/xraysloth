@@ -64,7 +64,7 @@ Notes on installing requirements
 
 All the required Python libraries (and more!) can be easily installed
 via `conda <https://conda.io/docs/>`_ on any platform. My personal
-workflow is described `setup_conda_envs.sh
+workflow is described (_in detail_) `setup_conda_envs.sh
 <https://github.com/maurov/software-notes/blob/master/setup_conda_envs.sh>`_.
 
 A dedicated Conda environment called `sloth-env` can be automagically
@@ -72,11 +72,31 @@ installed by::
 
   conda env create -f environment.yml
 
-Or run directly in Binder
+All this, with few Linux shell lines::
+
+  cd; mkdir local; cd local
+  wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+  bash Miniconda3-latest-Linux-x86_64.sh
+  #[yes] accept the license
+  #put it in /home/your_home_directory/local/conda (or somewhere else)
+  #[no] DO NOT ADD TO PATH
+  source conda/bin/activate base
+  conda install -y git
+  #(if behind a proxy) git config --global http.proxy HOST:PORT
+  git clone https://github.com/maurov/xraysloth.git
+  cd xraysloth
+  conda env create -f environment.yml
+  conda deactivate
+  source ../conda/bin/activate sloth-env
+  python setup.py install
+  #ENJOY!
+
+Or run directly in Binder (*experimental!!!*)
 
 .. image:: https://mybinder.org/badge.svg
    :target: https://mybinder.org/v2/gh/maurov/xraysloth/master
 
+      
 Usage
 -----
 
