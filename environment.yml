@@ -66,17 +66,15 @@ dependencies:
   ###
   - GSECARS::wxmplot>=0.9.30
   - GSECARS::wxutils
-  #- GSECARS::xraylarch #WARNING: it will force ALL deps
+  - GSECARS::xraylarch #WARNING: it will force ALL deps
   ###
-  - nexpy::nexusformat
+  #- nexpy::nexusformat
   ### PIP ###
   - pip:
     - hdf5plugin
     - fisx
     - PyMca5
     - palettable
-    #- silx  #from conda-forge
-    #- fabio
     #- oasys-canvas-core  #OASYS kit 
     #- oasys-widget-core  #OASYS kit 
     #- oasys1		  #OASYS kit 
