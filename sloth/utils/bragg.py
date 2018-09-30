@@ -39,6 +39,35 @@ def wlen2ev(wlen):
     """convert photon wavelength ($\lambda$, \AA$^{-1}$) to energy (E, eV)"""
     return ( ( HC ) / wlen ) * 1e10
 
+def kev2wlen(energy):
+    """convert photon energy (E, keV) to wavelength ($\lambda$, \AA$^{-1}$)"""
+    try:
+        return (HC/energy)*1e7
+    except:
+        return 0
+
+def wlen2kev(wlen):
+    """convert photon wavelength ($\lambda$, \AA$^{-1}$) to energy (E, keV)"""
+    try:
+        return (HC/wlen)*1e7
+    except:
+        return 0
+
+def kev2ang(ene, d=0, deg=True):
+    """energy (keV) to Bragg angle (deg/rad) for given d-spacing (\AA)"""
+    if d==0:
+        print("ERROR kev2deg: d-spacing is 0")
+        return 0
+    else:
+        _ang = math.asin((kev2wlen(ene))/(2*d))
+        if (deg is True): _ang = math.degrees(_ang)
+        return _ang
+    
+def ang2kev(theta, d=0, deg=True):
+    """Bragg angle (deg/rad) to energy (keV) for given d-spacing (\AA)"""
+    if (deg is True): theta=math.radians(theta)
+    return wlen2kev(2*d*math.sin(theta))
+
 def bragg_ev(d, theta, n=1):
     """return the Bragg energy (eV) for a given d-spacing (\AA) and angle (deg)"""
     return wlen2ev(( 2 * d * np.sin(np.deg2rad(theta)) ) / n)
@@ -148,6 +177,18 @@ def d_triclinic(a, b, c, alpha, beta, gamma, hkl, **kws):
             + 2 * k * l * a**2 * b * c * ( cosrbeta * cosrgamma  - cosralpha ) \
             + 2 * h * l * a * b**2 * c * ( cosralpha * cosrgamma - cosrbeta ) )
     return sqrt1over(d2m)
+
+def get_dspacing(mat, hkl):
+    """get d-spacing for Si or Ge and given reflection (hkl)"""
+    if mat == 'Si':
+        dspacing = d_cubic(SI_ALAT, hkl)
+    elif mat == 'Ge':
+        dspacing = d_cubic(GE_ALAT, hkl)
+    else:
+        print("ERROR get_dspacing: available materials -> 'Si' 'Ge'")
+        dspacing = 0
+    return dspacing
+
 
 def findhkl(energy=None, thetamin=65., crystal='all', retAll=False):
     """findhkl: for a given energy (eV) finds the Si and Ge reflections
