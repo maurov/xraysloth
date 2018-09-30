@@ -6,19 +6,29 @@ channels:
   #NOTE: specific channels are given per-package, not here!
 dependencies:
   - python=3.6
+  - cython>0.21.1
+  - pyopengl
   - qt
   - pyqt=5
-  - wxpython=4
-  - numpy
-  - scipy
-  - matplotlib
+  - wxpython>=4.0.1
+  - six>=1.10
+  - scipy>=0.17
+  - numpy>=1.10
+  - matplotlib>=2.0
+  - qtconsole
+  - pillow>=3.4
+  - python-dateutil
+  - h5py>=2.4
+  - mako
+  - setuptools
+  - wheel
+  - pyyaml
   - pandas
-  - h5py
-  - scikit-learn
+  - scikit-learn>=0.18
   - scikit-image
-  - pillow
+  - sqlalchemy>=0.9
   - traitlets
-  - six
+  - requests>=2.1
   - bottlechest
   - ipython
   - ipykernel
@@ -26,35 +36,35 @@ dependencies:
   - ipywidgets
   - ipympl
   - pyzmq
-  - pyyaml
   - pytz
-  - python-dateutil
-  - requests
   - termcolor
   - nose
   - swig
   - dill
   - pyparsing
-  - sqlalchemy
   - sphinx
   - sphinxcontrib
   - natsort
   - spyder
   - patchelf #required in xraylarch: setup.py(fix_linux_dylibs)
   ### CONDA-FORGE ###
+  - conda-forge::pyopencl
+  - conda-forge::fabio>=0.7
+  - conda-forge::nbsphinx
+  - conda-forge::pyinstaller
   - conda-forge::silx=0.8.0
   - conda-forge::xraylib
   - conda-forge::ase
-  - conda-forge::peakutils
-  - conda-forge::lmfit=0.9.11
-  - conda-forge::asteval
+  - conda-forge::peakutils>=1.0.0
+  - conda-forge::lmfit>=0.9.11
+  - conda-forge::asteval>=0.9.12
   - conda-forge::psutil
   - conda-forge::pytest
   - conda-forge::uncertainties
   - conda-forge::pycifrw
   #- conda-forge::orange3 #*conflicts with OASYS1* /:test:`orange-canvas -l 4`
   ###
-  - GSECARS::wxmplot
+  - GSECARS::wxmplot>=0.9.30
   - GSECARS::wxutils
   #- GSECARS::xraylarch #WARNING: it will force ALL deps
   ###
