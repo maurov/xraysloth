@@ -11,6 +11,12 @@ v.0.3.0 (dev)
 New features
 ''''''''''''
 
+* :mod:`sloth.inst.spectro14`
+
+  - simple geometry calculations of the FAME-UHD (BM16 at ESRF) X-ray
+    emission spectrometer (2 rows of 7 spherically bent crystal
+    analyzers arranged in a _mixed_ Rowland circle)
+
 * :mod:`sloth.gui.sloth_main`
 
   - initial GUI layout (mainly an IPython embedded shell).
