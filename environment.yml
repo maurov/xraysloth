@@ -5,7 +5,13 @@ channels:
   - defaults
 dependencies:
   - python=3.6
+  - pip=10.0.1
+  - spyder
   - conda-forge::xraylib
   - conda-forge::silx>=0.8.0
   - GSECARS::xraylarch>=0.9.40
-
+  - pip
+    - hdf5plugin
+    - fisx
+    - PyMca5
+		
