@@ -13,4 +13,4 @@ dependencies:
   - pip
     - hdf5plugin
     - fisx
-    - PyMca5		
+    - PyMca5
