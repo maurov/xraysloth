@@ -10,7 +10,7 @@ dependencies:
   - conda-forge::xraylib
   - conda-forge::silx>=0.8.0
   - GSECARS::xraylarch>=0.9.40
-  - pip
+  - pip:
     - hdf5plugin
     - fisx
     - PyMca5
