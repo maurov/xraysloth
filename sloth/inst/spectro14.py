@@ -150,5 +150,6 @@ def show_spectro_overview(theta, d=None, r=1000., dz=82., sz=500.):
 
 # FOR TESTS #
 if __name__ == '__main__':
-    show_spectro_overview(65)
+    si555 = d_cubic(SI_ALAT, (5,5,5))
+    show_spectro_overview(80, d=si555)
     pass

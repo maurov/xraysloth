@@ -3,7 +3,7 @@
 """
 braggutils: utilities around the Bragg's law ($ n \lambda = 2 d sin \theta $)
 """
-
+import math
 import numpy as np
 import warnings
 
