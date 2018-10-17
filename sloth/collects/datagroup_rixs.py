@@ -25,11 +25,12 @@ from matplotlib import gridspec
 from matplotlib import cm
 from matplotlib.ticker import MaxNLocator, AutoLocator
 
-# Larch & friends
+#xraysloth
 from .datagroup2D import DataGroup2D
 from ..math.gridxyz import gridxyz
-from ..io.specfile_reader import _str2rng as str2rng
+from ..io.specfile_reader import _str2rng, _mot2array
 from ..io.specfile_reader import SpecfileData
+from sloth.fit.peakfit import fit_splitpvoigt, fit_results
 
 def get_xyz_bm16(logobj, specobj, fit_elastic=False):
     """function to get 3 arrays representing the RIXS plane from SPEC and log files
