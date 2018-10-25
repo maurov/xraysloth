@@ -328,15 +328,15 @@ class RixsData(object):
         
         if yet:
             _netpts = int((y2-y1)/_xystep)
-            _ymin = x1-y2
-            _ymax = x2-y1
+            _ymin = x2-y2
+            _ymax = x1-y1
             _nypts = int((_ymax-_ymin)/_xystep)
             self.etcrop = np.linspace(y1, y2, num=_netpts)
             self.ycrop = np.linspace(_ymin, _ymax, num=_nypts)
         else:
             _nypts = int((y2-y1)/_xystep)
-            _etmin = x1-y1
-            _etmax = x2-y2
+            _etmin = x1-y2
+            _etmax = x2-y1
             _netpts = int((_etmax-_etmin)/_xystep)
             self.etcrop = np.linspace(_etmin, _etmax, num=_netpts)
             self.ycrop = np.linspace(y1, y2, num=_nypts)
