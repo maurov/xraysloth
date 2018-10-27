@@ -102,16 +102,35 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>10</y>
+      <y>510</y>
       <width>861</width>
-      <height>621</height>
+      <height>121</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="consoleLayout"/>
    </widget>
-   <zorder>horizontalLayoutWidget_3</zorder>
-   <zorder>infoTabWidget</zorder>
-   <zorder>verticalLayoutWidget_2</zorder>
+   <widget class="QWidget" name="verticalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>0</y>
+      <width>591</width>
+      <height>501</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="plotLayout"/>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>0</y>
+      <width>261</width>
+      <height>501</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="dataLayout"/>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

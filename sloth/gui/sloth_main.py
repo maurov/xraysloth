@@ -45,7 +45,9 @@ class SlothMainWindow(qt.QMainWindow):
         logoPath = os.path.join(_resourcesPath, 'logo', 'xraysloth_logo_03.svg')
         self.setWindowTitle('Sloth {0}'.format(sloth.__version__))
         self.setWindowIcon(qt.QIcon(logoPath))
-        self.aboutDialog = AboutDialog()
+
+        #About dialog
+        self.aboutDialog = AboutDialog(parent=self)
         self.actionAbout.triggered.connect(self.openAboutDialog)
 
         #EXIT with C-q
@@ -70,11 +72,11 @@ class SlothMainWindow(qt.QMainWindow):
         for _key in _slothKit.keys():
             self.slothInfoListWidget.addItem(_key)
             
-        # #PLOT WIDGET
-        # self.plotWidget = customPlotWidget()
-        # self.plotLayout.addWidget(self.plotWidget)
-        # self.consoleWidget.pushVariables({'p1d' : self.plotWidget})
-        # self.tabInfoListWidget.addItem('p1d : SILX plot1d widget')
+        #PLOT WIDGET
+        self.plotWidget = customPlotWidget()
+        self.plotLayout.addWidget(self.plotWidget)
+        self.consoleWidget.pushVariables({'p1d' : self.plotWidget})
+        self.tabInfoListWidget.addItem('p1d : SILX plot1d widget')
 
         # #PERIODIC TABLE
         # self.periodicTable = PeriodicTable(selectable=False)
@@ -106,7 +108,6 @@ class SlothMainWindow(qt.QMainWindow):
     def click_table(self, element):
         self.ptInfoListWidget.addItem(element.name)
 
-        
     def openAboutDialog(self):
         self.aboutDialog.show()
 
