@@ -24,9 +24,10 @@ import matplotlib.pyplot as plt
 from silx.gui import qt
 from silx.gui.widgets.PeriodicTable import PeriodicTable
 
-import sloth
-from sloth import (HAS_XRAYLIB, HAS_LARCH, _resourcesPath,\
-                   _pushDict, _pushInfos, _slothKit)
+import sloth 
+from sloth.gui.widgets.console import (HAS_XRAYLIB, HAS_LARCH,
+                                       _pushDict, _pushInfos,
+                                       _slothKit)
 
 from sloth.gui.widgets.console import customIPythonWidget
 from sloth.gui.widgets.plot1D import customPlotWidget
@@ -40,9 +41,11 @@ class SlothMainWindow(qt.QMainWindow):
 
     def __init__(self, parent=None):
         super(SlothMainWindow, self).__init__(parent)
-        uiPath = os.path.join(_resourcesPath, 'gui', 'uis', 'sloth_main_common.ui')
+        uiPath = os.path.join(sloth._resourcesPath, 'gui', 'uis',
+                              'sloth_main_common.ui')
         qt.loadUi(uiPath, baseinstance=self, package='sloth.gui')
-        logoPath = os.path.join(_resourcesPath, 'logo', 'xraysloth_logo_03.svg')
+        logoPath = os.path.join(sloth._resourcesPath, 'logo',
+                                'xraysloth_logo_03.svg')
         self.setWindowTitle('Sloth {0}'.format(sloth.__version__))
         self.setWindowIcon(qt.QIcon(logoPath))
 
@@ -134,7 +137,7 @@ class AboutDialog(qt.QDialog):
 
     def __init__(self, parent=None):
         super(AboutDialog, self).__init__()
-        uiPath = os.path.join(_resourcesPath, 'gui', 'uis', 'sloth_about.ui')
+        uiPath = os.path.join(sloth._resourcesPath, 'gui', 'uis', 'sloth_about.ui')
         qt.loadUi(uiPath, baseinstance=self, package='sloth.gui')
         self.nameLabel.setText('Sloth {0}'.format(sloth.__version__))
             
