@@ -6,12 +6,8 @@
 
 """
 import os, sys
-import math
-import numpy as np
-import matplotlib.pyplot as plt
-
 from silx.gui import qt
-
+import sloth
 from sloth.gui.widgets.dataview import DataViewDockWidget
 
 class SlothDataViewMainWindow(qt.QMainWindow):
@@ -38,6 +34,6 @@ def sloth_dataview_app():
     sys.exit(app.exec_())
             
 if __name__ == '__main__':
-    from silx import sx
-    sx.enable_gui()
+    #from silx import sx
+    #sx.enable_gui()
     sloth_dataview_app()

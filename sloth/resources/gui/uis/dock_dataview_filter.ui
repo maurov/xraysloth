@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>dataViewFilterDockWidget</class>
- <widget class="QDockWidget" name="dataViewFilterDockWidget">
+ <class>dataviewDockWidget</class>
+ <widget class="QDockWidget" name="dataviewDockWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>260</width>
-    <height>579</height>
+    <width>301</width>
+    <height>609</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,10 +23,10 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>0</y>
+      <x>20</x>
+      <y>20</y>
       <width>258</width>
-      <height>551</height>
+      <height>237</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
