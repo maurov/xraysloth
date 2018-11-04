@@ -6,6 +6,8 @@ channels:
   #NOTE: specific channels are given per-package, not here!
 dependencies:
   - python=3.6
+  - pip
+  - git
   - cython>0.21.1
   - pyopengl
   - qt
@@ -44,15 +46,14 @@ dependencies:
   - pyparsing
   - sphinx
   - sphinxcontrib
+  - reportlab
   - natsort
   - spyder
   - patchelf #required in xraylarch: setup.py(fix_linux_dylibs)
   ### CONDA-FORGE ###
   - conda-forge::pyopencl
-  - conda-forge::fabio>=0.7
   - conda-forge::nbsphinx
   - conda-forge::pyinstaller
-  - conda-forge::silx=0.8.0
   - conda-forge::xraylib
   - conda-forge::ase
   - conda-forge::peakutils>=1.0.0
@@ -72,8 +73,10 @@ dependencies:
   ### PIP ###
   - pip:
     - hdf5plugin
-    - fisx
-    - PyMca5
+    - fisx>=1.1.6
+    - fabio>=0.8.0
+    - silx>=0.9.0
+    - PyMca5>=5.4.0
     - palettable
     #- oasys-canvas-core  #OASYS kit 
     #- oasys-widget-core  #OASYS kit 

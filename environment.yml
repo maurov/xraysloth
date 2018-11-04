@@ -12,5 +12,6 @@ dependencies:
   - pip:
     - hdf5plugin
     - fisx>=1.1.6
+    - fabio>=0.8.0
     - silx>=0.9.0
     - PyMca5>=5.4.0
