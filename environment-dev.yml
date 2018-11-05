@@ -1,14 +1,14 @@
 #Python DEVELOPMENT environment for: https://github.com/maurov/xraysloth
-#*DESCRIPTION*: this environment permits developing `silx` and `larch` (NO WX)
-#conda env create -f environment-dev.yml
+#Target: developing `silx` and `larch` (NO WX)
+#Usage: conda env create -f environment-dev.yml
 name: sloth-dev
 channels:
   - defaults
   #NOTE: specific channels are given per-package, not here!
 dependencies:
   - python=3.6
+  - git=2.11        #Debian9
   - pip=10.0.1
-  - git
   - cython>0.21.1
   - pyopengl
   - qt
@@ -17,7 +17,7 @@ dependencies:
   - six>=1.10
   - scipy>=0.17
   - matplotlib>=2.0
-  #- wxpython>=4.0.1 #NO WX
+  #- wxpython>=4.0.1 #IF WX
   - qtconsole
   - pillow>=3.4
   - python-dateutil
@@ -66,9 +66,8 @@ dependencies:
   - conda-forge::pycifrw
   #- conda-forge::orange3 #*conflicts with OASYS1* /:test:`orange-canvas -l 4`
   ###
-  #- GSECARS::wxmplot>=0.9.30 #NO WX
-  #- GSECARS::wxutils         #NO WX
-  #- GSECARS::xraylarch       #BUILD FROM SOURCE
+  #- GSECARS::wxmplot>=0.9.30 #IF WX
+  #- GSECARS::wxutils         #IF WX
   ###
   #- nexpy::nexusformat
   ### PIP ###
@@ -76,8 +75,6 @@ dependencies:
     - hdf5plugin
     - fisx>=1.1.6
     - fabio>=0.8.0
-    #- silx>=0.9.0        #BUILD FROM SOURCE
-    #- PyMca5>=5.4.0      #BUILD FROM SOURCE
     - palettable
     #- oasys-canvas-core  #OASYS kit 
     #- oasys-widget-core  #OASYS kit 
@@ -87,3 +84,7 @@ dependencies:
     #- wofry		  #OASYS kit 
     ### PIP WHEELS ###
     - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl
+  ### BUILD FROM SOURCE =DEVEL (KEEP ORDER) ###
+  #silx>=0.9.0       #git fetch upstream; git merge upstream/master; pip install .
+  #PyMca5>=5.4.0     #git fetch upstream; git merge upstream/master; pip install .
+  #xraylarch>=0.9.40 #git fetch upstream; git merge upstream/master; python setup.py build/install
