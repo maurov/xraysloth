@@ -1,22 +1,23 @@
-#Python environment for: https://github.com/maurov/xraysloth
-#conda env create -f environment.yml
+#Python DEVELOPMENT environment for: https://github.com/maurov/xraysloth
+#*DESCRIPTION*: this environment permits developing `silx` and `larch` (NO WX)
+#conda env create -f environment-dev.yml
 name: sloth-dev
 channels:
   - defaults
   #NOTE: specific channels are given per-package, not here!
 dependencies:
   - python=3.6
-  - pip
+  - pip=10.0.1
   - git
   - cython>0.21.1
   - pyopengl
   - qt
   - pyqt=5
-  - wxpython>=4.0.1
+  - numpy>=1.10
   - six>=1.10
   - scipy>=0.17
-  - numpy>=1.10
   - matplotlib>=2.0
+  #- wxpython>=4.0.1 #NO WX
   - qtconsole
   - pillow>=3.4
   - python-dateutil
@@ -61,13 +62,13 @@ dependencies:
   - conda-forge::asteval>=0.9.12
   - conda-forge::psutil
   - conda-forge::pytest
-  - conda-forge::uncertainties
+  - conda-forge::uncertainties>=3.0
   - conda-forge::pycifrw
   #- conda-forge::orange3 #*conflicts with OASYS1* /:test:`orange-canvas -l 4`
   ###
-  - GSECARS::wxmplot>=0.9.30
-  - GSECARS::wxutils
-  - GSECARS::xraylarch #WARNING: it will force ALL deps
+  #- GSECARS::wxmplot>=0.9.30 #NO WX
+  #- GSECARS::wxutils         #NO WX
+  #- GSECARS::xraylarch       #BUILD FROM SOURCE
   ###
   #- nexpy::nexusformat
   ### PIP ###
@@ -75,8 +76,8 @@ dependencies:
     - hdf5plugin
     - fisx>=1.1.6
     - fabio>=0.8.0
-    - silx>=0.9.0
-    - PyMca5>=5.4.0
+    #- silx>=0.9.0        #BUILD FROM SOURCE
+    #- PyMca5>=5.4.0      #BUILD FROM SOURCE
     - palettable
     #- oasys-canvas-core  #OASYS kit 
     #- oasys-widget-core  #OASYS kit 
