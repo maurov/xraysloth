@@ -12,7 +12,7 @@ dependencies:
   - numpy>=1.10
   - scipy>=0.17
   - pyqt=5
-  - wxpython>=4.0.1
+  - wxpython>=4.0.3
   - matplotlib>=2.0
   - h5py>=2.4
   - ipython
@@ -27,7 +27,7 @@ dependencies:
   - conda-forge::uncertainties>=3.0
   - conda-forge::pycifrw
   - GSECARS::wxmplot>=0.9.30
-  - GSECARS::wxutils
+  - GSECARS::wxutils>=0.2
   - pip:
     - hdf5plugin
     - fisx>=1.1.6
