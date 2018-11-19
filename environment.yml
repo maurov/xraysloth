@@ -8,9 +8,26 @@ dependencies:
   - python=3.6
   - git=2.11
   - pip=10.0.1
+  - qt>=5.7
+  - numpy>=1.10
+  - scipy>=0.17
+  - pyqt=5
+  - wxpython>=4.0.1
+  - matplotlib>=2.0
+  - h5py>=2.4
+  - ipython
+  - ipykernel
+  - jupyter
+  - ipywidgets
   - spyder
   - conda-forge::xraylib
-  - GSECARS::xraylarch>=0.9.40
+  - conda-forge::peakutils>=1.0.0
+  - conda-forge::lmfit>=0.9.11
+  - conda-forge::asteval>=0.9.12
+  - conda-forge::uncertainties>=3.0
+  - conda-forge::pycifrw
+  - GSECARS::wxmplot>=0.9.30
+  - GSECARS::wxutils>=0.2.2
   - pip:
     - hdf5plugin
     - fisx>=1.1.6
@@ -18,3 +35,4 @@ dependencies:
     - silx>=0.9.0
     - PyMca5>=5.4.0
     - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl
+    - git+https://github.com/xraypy/xraylarch.git
