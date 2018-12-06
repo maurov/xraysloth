@@ -29,8 +29,11 @@ dependencies:
   - GSECARS::wxmplot>=0.9.30
   - GSECARS::wxutils>=0.2
   - GSECARS::xraylarch
+  - nexpy::nexusformat
+  - nexpy::nexpy
   - pip:
     - hdf5plugin
+    - spec2nexus
     - fisx>=1.1.6
     - fabio>=0.8.0
     - silx>=0.9.0

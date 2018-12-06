@@ -70,10 +70,12 @@ dependencies:
   #- GSECARS::wxmplot>=0.9.30 #IF WX
   #- GSECARS::wxutils         #IF WX
   ###
-  #- nexpy::nexusformat
+  - nexpy::nexusformat
+  - nexpy::nexpy
   ### PIP ###
   - pip:
     - hdf5plugin
+    - spec2nexus
     - fisx>=1.1.6
     - fabio>=0.8.0
     - palettable
