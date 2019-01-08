@@ -23,7 +23,7 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
                  figName='fig1', xyFigSize=(10*150, 6*150), figDpi=150, fontSize=8,\
                  nlevels=15, colSpan=2, xylab=(0.025, 0.97), ylabshift=-0.3,\
                  plotMask=True, plotVert=False, absWrc=False, cbarShow=True,\
-                 cbarTicks=2.5E-5, figCmap=cm.RdYlGn):
+                 cbarTicks=2.5E-5, figCmap=cm.RdYlGn, figOut=None):
     """plots the effective scattering angle given a masked array
     
     Parameters
@@ -67,6 +67,9 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
     
     figDpi : int, 150
              figure resolution
+
+    figOut : [None]
+             figure to save
 
     fontSize : int, 8
                
@@ -184,6 +187,11 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
         cb.set_label(r'$|\Delta \theta|$ below given threshold of {:.3E}'.format(wrc))
     plt.tight_layout()
     plt.show()
+    if figOut:
+        plt.savefig('{0}.pdf'.format(figOut), bbox_inches='tight')
+        plt.savefig('{0}.png'.format(figOut), bbox_inches='tight')
+        plt.savefig('{0}.svg'.format(figOut), bbox_inches='tight')
+
 
 def plotScanThetaFile(fname, scans, signal='eres', xlims=None, ylims=None, ylog=True,
                       yscale=1, caseScale='Js', plotDeeShells=True, showLegend=True,

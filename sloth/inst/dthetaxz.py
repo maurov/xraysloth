@@ -210,6 +210,11 @@ def dThetaXZ(x, z, thetab, case=None):
         R1p = 1.
         R2 = math.sin(rthetab)**2
         R2p = math.sin(rthetab)**2
+    elif (case == 10 or case == 'Von Hamos' or case == 'VH'):
+        R1 = np.inf
+        R1p = np.inf
+        R2 = 1.
+        R2p = 1.
     else:
         raise NameError("case '{0}' unknown".format(case))
 
@@ -246,17 +251,14 @@ def getMeshMasked(mask='circular', r1p=1000., cryst_x=50., cryst_z=10., csteps=1
            shape of the mask: 'circular' or 'rectangular'
     
     r1p : float, [1000.]
-    
-          bending radius of the crystal planes in mm
+          bending radius of the crystal planes in mm (used only to get
+          the mesh in normlized units)
 
     cryst_x : float, [50.]
-              radius of circular analyzer in mm
-    
-              (for rectangular mask, this is half side in
-              meridional/dispersive x-direction)
+              radius of circular analyzer in mm (for rectangular mask,
+              this is half side in meridional/dispersive x-direction)
 
     cryst_z : float [10.]
-
               half side in sagittal/focusing z-direction of the
               rectangular analyzer in mm
 
@@ -314,8 +316,8 @@ def getDthetaDats(mxx, mzz, wrc=1.25E-4,
     for cs in cases:
         dd[cs] = {}
         dd[cs]['thetaB'] = angles
-        #dd[cs]['dth'] = []
-        #dd[cs]['mdth'] = []
+        dd[cs]['dth'] = []
+        dd[cs]['mdth'] = []
         dd[cs]['sa'] = []
         dd[cs]['eres'] = []
         print('Angle loop for {0}...'.format(cs))
@@ -340,8 +342,8 @@ def getDthetaDats(mxx, mzz, wrc=1.25E-4,
             #eres = math.sqrt((mdth.max()-mdth.min())**2 + wrc**2)/math.tan(np.deg2rad(th))
             eres = math.sqrt((dth.max()-dth.min())**2 + wrc**2)/math.tan(np.deg2rad(th))
             # append to output
-            #dd[cs]['dth'].append(dth)
-            #dd[cs]['mdth'].append(mdth)
+            dd[cs]['dth'].append(dth)
+            dd[cs]['mdth'].append(mdth)
             dd[cs]['sa'].append(eff_sa)
             dd[cs]['eres'].append(eres)
     #
