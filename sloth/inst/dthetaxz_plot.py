@@ -7,12 +7,12 @@ import numpy as np
 import numpy.ma as ma
 
 import matplotlib.pyplot as plt
-from matplotlib import gridspec
-from matplotlib import cm
+import matplotlib.cm as cm
+import matplotlib.gridspec as gridspec
 from matplotlib.ticker import MaxNLocator, AutoLocator, MultipleLocator
 
-from .dthetaxz import dThetaXZ, mapCase2Num, mapNum2Case, getMeshMasked, getDthetaDats, writeScanDats
-from ..io.specfile_reader import SpecfileData
+from sloth.inst.dthetaxz import dThetaXZ, mapCase2Num, mapNum2Case, getMeshMasked, getDthetaDats, writeScanDats
+from sloth.io.specfile_reader import SpecfileData
 
 def plotEffScatt(xx, zz, wrc=1.25E-4,\
                  cases=['Johann', 'Johansson', 'Spherical plate', 'Wittry'],\
@@ -21,9 +21,9 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
                  xlabel=r'x, mer. (R$_{m}^{\prime}$)',\
                  ylabel=r'z, sag. (R$_{m}^{\prime}$)',\
                  figName='fig1', xyFigSize=(10*150, 6*150), figDpi=150, fontSize=8,\
-                 nlevels=15, colSpan=2, xylab=(0.025, 0.97), ylabshift=-0.3,\
+                 nlevels=15, rowSpan=2, colSpan=2, xylab=(0.025, 0.97), ylabshift=-0.3,\
                  plotMask=True, plotVert=False, absWrc=False, cbarShow=True,\
-                 cbarTicks=2.5E-5, figCmap=cm.RdYlGn, figOut=None):
+                 cbarTicks=2.5E-5, cbarOrientation='vertical', figCmap=cm.RdYlGn, figOut=None):
     """plots the effective scattering angle given a masked array
     
     Parameters
@@ -78,7 +78,10 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
               number of color levels
     
     colSpan : int, 2
-              number of columns to span for each subplot
+              number of columns to span for each subplot (useful if cbarOrientation=='vertical')
+
+    rowSpan : int, 2
+              number of row to span for each subplot (useful if cbarOrientation=='horizontal')
 
     xylab : tuple of floats, (0.025, 0.97)
             position of the angles label (showing theta) in 'figure
@@ -102,6 +105,9 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
     cbarTicks : float, 2.5E-5
                 spacing between color bar ticks
 
+    cbarOrientation : str, 'vertical'
+                      orientation of the colorbar: 'vertical' or 'horizontal'
+
     Returns
     -------
     None
@@ -120,26 +126,42 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
         hasMasks = False
         _xx = xx
         _zz = zz
+    nangles = len(angles)
+    ncases = len(cases)
     extent = (_xx.min(), _xx.max(), _zz.min(), _zz.max())
     norm = cm.colors.Normalize(vmin=-2*wrc, vmax=2*wrc) #NOT WORKING (NOT USED)!!!
-    levels = np.linspace(-wrc, wrc, nlevels)
-    fig = plt.figure(num=figName, figsize=(xyFigSize[0]/figDpi, xyFigSize[1]/figDpi), dpi=figDpi)
-    gs = gridspec.GridSpec(len(angles), colSpan*len(cases)+1) #3x3+1 grid +1 is for the colorbar
+    if absWrc:
+        levels = np.linspace(0, wrc, nlevels)
+    else:
+        levels = np.linspace(-wrc, wrc, nlevels)
+    fig = plt.figure(num=figName, figsize=(xyFigSize[0]/figDpi, xyFigSize[1]/figDpi), dpi=figDpi, constrained_layout=True)
+    if cbarOrientation == 'horizontal':
+        gs = gridspec.GridSpec(rowSpan*nangles+1, ncases, figure=fig) #iN+1xM grid +1 is for the colorbar
+        gsx_rng = range(0, rowSpan*nangles, rowSpan)
+        gsy_rng = range(ncases)
+        cplt = plt.subplot(gs[-1, :])
+    else:
+        gs = gridspec.GriSpec(nangles, colSpan*ncases+1, figure=fig) #NxjM+1 grid +1 is for the colorbar
+        gsx_rng = range(nangles)
+        gsy_rng = range(0, colSpan*ncases, colSpan)
+        cplt = plt.subplot(gs[:, -1])
     xlab = xylab[0]
     ylab = xylab[1]
     if casesLabels is None:
         casesLabels = cases
-    for th, gsx in zip(angles, range(len(angles))):
-        for ic, (cs, cl, gsy) in enumerate(zip(cases, casesLabels, range(colSpan*len(cases))[::colSpan])):
+    for th, gsx in zip(angles, gsx_rng):
+        for ic, (cs, cl, gsy) in enumerate(zip(cases, casesLabels, gsy_rng)):
             if hasMasks:
                 _xx = xx[ic]
                 _zz = zz[ic]
             dth = dThetaXZ(_xx, _zz, th, case=cs)
-            if absWrc:
-                mdth = ma.masked_where(np.abs(dth) > wrc, dth)
+            mdth = ma.masked_where(np.abs(dth) > wrc, dth)
+            cbar_label = r'$|\Delta \theta|$ below given threshold of {:.3E}'.format(wrc)
+            if absWrc: mdth = np.abs(mdth)
+            if cbarOrientation == 'horizontal':
+                gsplt = fig.add_subplot(gs[gsx:gsx+rowSpan, gsy])
             else:
-                mdth = ma.masked_where(dth > wrc, dth)
-            gsplt = plt.subplot(gs[gsx, gsy:gsy+colSpan])
+                gsplt = fig.add_subplot(gs[gsx, gsy:gsy+colSpan])
             if xyFigHalfRange is not None:
                 gsplt.set_xlim(-xyFigHalfRange, xyFigHalfRange)
                 gsplt.set_ylim(-xyFigHalfRange, xyFigHalfRange)
@@ -153,8 +175,7 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
                 _zzplot = _zz
             #cntf = gsplt.contourf(_xxplot, _zzplot, mdth, levels, cmap=cm.get_cmap(figCmap, len(levels)-1), norm=norm)
             cntf = gsplt.contourf(_xxplot, _zzplot, mdth, levels, cmap=cm.get_cmap(figCmap, len(levels)-1))
-            #cntf = gsplt.contourf(_xxplot, _zzplot, mdth, levels, cmap=figCmap)
-            #gsplt.imshow(_zzplot, origin='lower', extent=extent, cmap=cm.RdBu, norm=norm)
+            #gsplt.imshow(_zzplot, origin='lower', extent=extent, cmap=cm.get_cmap(figCmap), norm=norm)
             # gsplt.xaxis.set_major_locator(MaxNLocator(4))
             # gsplt.xaxis.set_minor_locator(MaxNLocator(5))
             # gsplt.yaxis.set_major_locator(MaxNLocator(4))
@@ -180,11 +201,10 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
                 ylab += ylabshift
     # colorbar
     if cbarShow:
-        cplt = plt.subplot(gs[:, -1])
-        cb = fig.colorbar(cntf, cax=cplt, use_gridspec=True, orientation='vertical', format='%.1E')
+        cb = fig.colorbar(cntf, cax=cplt, use_gridspec=True, orientation=cbarOrientation, format='%.1E')
         #cb.set_ticks(AutoLocator())
         cb.set_ticks(MultipleLocator(cbarTicks))
-        cb.set_label(r'$|\Delta \theta|$ below given threshold of {:.3E}'.format(wrc))
+        cb.set_label(cbar_label)
     plt.tight_layout()
     plt.show()
     if figOut:
@@ -226,7 +246,7 @@ def plotScanThetaFile(fname, scans, signal='eres', xlims=None, ylims=None, ylog=
     """
     plt.rcParams['font.size'] = fontSize
     fig = plt.figure(num=figName, figsize=figSize, dpi=figDpi)
-    gs = gridspec.GridSpec(1,1)
+    gs = fig.gridspec.GridSpec(1,1)
     gsplt = plt.subplot(gs[0])
     cls = {'Js' : 'blue',
            'SphJn' : 'red',
