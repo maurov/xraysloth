@@ -1,0 +1,11 @@
+#Python environment for: https://github.com/maurov/xraysloth
+#Target: minimal environment for larch
+#Usage: conda env create -f environment-larch.yml
+name: larch-env
+channels:
+  - defaults
+dependencies:
+  - python=3.6
+  - git=2.11    #as Debian9
+  - pip=10.0.1  #18.1 fails!
+  - GSECARS::xraylarch
