@@ -10,12 +10,14 @@ dependencies:
   - pip=10.0.1  #18.1 fails!	
   - qt>=5.7
   - pyqt=5
+  - wxpython=4.0.1
   - numpy>=1.10
   - scipy>=0.17
   - matplotlib>=2.0
   - h5py>=2.7
   - sqlalchemy>=0.9
   - scikit-learn>=0.18
+  - pillow>=3.4
   - ipython
   - ipykernel<5
   - jupyter
@@ -23,11 +25,10 @@ dependencies:
   - spyder
   - conda-forge::xraylib
   - conda-forge::peakutils>=1.0.0
-  - conda-forge::lmfit>=0.9.12
+  - conda-forge::lmfit=0.9.11  #0.9.12 breaks larch
   - conda-forge::asteval>=0.9.12
   - conda-forge::uncertainties>=3.0
   - conda-forge::pycifrw
-  - GSECARS::wxpython>=4.0.3
   - GSECARS::wxmplot>=0.9.32
   - GSECARS::wxutils>=0.2
   - GSECARS::xraylarch>=0.9.40
