@@ -16,12 +16,12 @@ Sloth: slowly evolving utilities for x-ray spectroscopists
 .. _Orange-XOPPY: https://github.com/srio/Orange-XOPPY
 .. _XRT : http://pythonhosted.org/xrt
 
-This repository contains (simple) utilities for x-ray spectroscopists,
-oriented to x-ray optics and data reduction/analysis for XAS/XES/RIXS
+This repository contains (simple) utilities for X-ray spectroscopists,
+oriented to X-ray optics and data reduction/analysis for XAS/XES/RIXS
 techniques.
 
 **NOTE** These scripts perform as a partial random snapshot of daily
-research in x-ray instrumentation and still-to-implement ideas (mainly
+research in X-ray instrumentation and still-to-implement ideas (mainly
 due to lack of time). Feel free to use/hack them and do not hesitate
 to drop me a line if you find them useful.
 
@@ -64,8 +64,8 @@ Notes on installing requirements
 
 All the required Python libraries (and more!) can be easily installed
 via `conda <https://conda.io/docs/>`_ on any platform. My personal
-workflow is described (_in detail_) `setup_conda_envs.sh
-<https://github.com/maurov/software-notes/blob/master/setup_conda_envs.sh>`_.
+workflow is described in `setup_conda_envs.sh
+<https://github.com/maurov/software-notes/blob/master/conda/setup_conda_envs.sh>`_.
 
 A dedicated Conda environment called `sloth-env` can be automagically
 installed by::
@@ -81,17 +81,22 @@ All this, with few Linux shell lines::
   #put it in /home/your_home_directory/local/conda (or somewhere else)
   #[no] DO NOT ADD TO PATH
   source conda/bin/activate base
-  conda install -y git
-  #(if behind a proxy) git config --global http.proxy HOST:PORT
-  git clone https://github.com/maurov/xraysloth.git
-  cd xraysloth
+  wget https://github.com/maurov/xraysloth/blob/master/environment.yml
+  #eventually change the name from `sloth-env` to whatever you prefer 
   conda env create -f environment.yml
   conda deactivate
   source ../conda/bin/activate sloth-env
+
+Then install `sloth` from source::
+
+  cd; cd local
+  #(if behind a proxy) git config --global http.proxy HOST:PORT
+  git clone https://github.com/maurov/xraysloth.git
+  cd xraysloth
   python setup.py install
   #ENJOY!
 
-Or run directly in Binder (*experimental!!!*)
+Or run directly in Binder (*experimental and probably broken!!!*)
 
 .. image:: https://mybinder.org/badge.svg
    :target: https://mybinder.org/v2/gh/maurov/xraysloth/master
