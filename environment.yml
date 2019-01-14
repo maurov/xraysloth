@@ -1,22 +1,22 @@
 #Python environment for: https://github.com/maurov/xraysloth
-#Target: basic usage as user
+#Target: basic usage as user (larch from GSECARS, silx with pip)
 #Usage: conda env create -f environment.yml
 name: sloth-env
 channels:
   - defaults
 dependencies:
   - python=3.6
-  - git=2.11
-  - pip=10.0.1
+  - git=2.11    #as Debian9
+  - pip=10.0.1  #18.1 fails!	
   - qt>=5.7
   - pyqt=5
+  - wxpython=4.0.3
   - numpy>=1.10
   - scipy>=0.17
   - matplotlib>=2.0
   - h5py>=2.7
   - sqlalchemy>=0.9
   - scikit-learn>=0.18
-  - pillow>=3.4
   - ipython
   - ipykernel<5
   - jupyter
@@ -41,4 +41,3 @@ dependencies:
     - silx>=0.9.0
     - PyMca5>=5.4.0
     - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl
-    #- git+https://github.com/xraypy/xraylarch.git

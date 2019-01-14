@@ -1,4 +1,4 @@
-Sloth: slowly evolving utilities for x-ray spectroscopists
+Sloth: slowly evolving utilities for X-ray spectroscopists
 ==========================================================
 
 .. _Numpy : http://www.numpy.org
@@ -105,7 +105,7 @@ Or run directly in Binder (*experimental and probably broken!!!*)
 Usage
 -----
 
-Full documentation will reside in the ``doc`` directory at a certain
+Full documentation will reside in the ``docs`` directory at a certain
 point. Meanwhile, the best is to read directly the ``__doc__`` strings
 in the source code. The Python files sometimes have a test/example
 included in the ``__main__`` block or referring to the ``examples``

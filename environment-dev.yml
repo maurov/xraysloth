@@ -7,14 +7,14 @@ channels:
   #NOTE: specific channels are given per-package, not here!
 dependencies:
   - python=3.6
-  - git=2.11        #Debian9
-  - pip=10.0.1
+  - git=2.11        #as Debian9
+  - pip=10.0.1      #18.1 fails!
   - cython>0.21.1
-  - pyopengl>=3.1.1a1
-  - anaconda:pyopengl-accelerate>=3.1.1a1
+  - pyopengl=3.1.1a1
+  - anaconda:pyopengl-accelerate=3.1.1a1
   - qt>=5.7
   - pyqt=5
-  #- wxpython>=4.0.3
+  #- wxpython=4.0.3 #IF WX
   - numpy>=1.10
   - six>=1.10
   - scipy>=0.17
@@ -88,7 +88,8 @@ dependencies:
     #- wofry		  #OASYS kit 
     ### PIP WHEELS ###
     - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl
-  ### BUILD FROM SOURCE =DEVEL (KEEP ORDER) ###
-  #silx>=0.9.0       #git fetch upstream; git merge upstream/master; pip install .
-  #PyMca5>=5.4.0     #git fetch upstream; git merge upstream/master; pip install .
-  #xraylarch>=0.9.40 #git fetch upstream; git merge upstream/master; python setup.py build/install
+  #
+  ### MANUALLY BUILT FROM SOURCE =DEVEL (KEEP ORDER) ###
+  #silx>=0.9.0       #maurov's fork-> pip install .
+  #PyMca5>=5.4.0     #maurov's fork-> pip install .
+  #xraylarch>=0.9.40 #maurov's fork-> python setup.py build/install
