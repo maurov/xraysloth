@@ -371,8 +371,11 @@ def plot_fpstack(fps):
     """
     fpStack = np.array([i['histogram'] for i in fps])
     sv = StackViewMainWindow()
-    sv.setWindowTitle('footprints')
+    sv.setWindowTitle('footprints (= lost rays at OE)')
     sv.setColormap('viridis')
+    sv.setKeepDataAspectRatio(True)
+    sv.setGraphXLabel('X')
+    sv.setGraphXLabel('Y')
     sv.setStack(fpStack)
     sv.show()
     return sv
