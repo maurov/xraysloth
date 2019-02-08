@@ -374,8 +374,7 @@ def plot_fpstack(fps):
     sv.setWindowTitle('footprints (= lost rays at OE)')
     sv.setColormap('viridis')
     sv.setKeepDataAspectRatio(True)
-    sv.setGraphXLabel('X')
-    sv.setGraphXLabel('Y')
+    sv.setLabels(["index", "Y [nbins]", "X [nbins]"])
     sv.setStack(fpStack)
     sv.show()
     return sv
