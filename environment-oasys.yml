@@ -11,8 +11,8 @@ dependencies:
   - pip=10.0.1  #18.1 fails!
   - qt>=5.7
   - pyqt=5
-  - numpy>=1.10
-  - scipy>=0.17
+  - numpy>=1.16
+  - scipy>=1.2.0
   - matplotlib>=2.0
   - h5py>=2.7
   - requests
@@ -32,10 +32,10 @@ dependencies:
     - srxraylib
     - syned
     - wofry
-    - git+https://github.com/oasys-kit/wofryshadow.git
-    - git+https://github.com/oasys-kit/ShadowOui.git    
-    #- OASYS1-ShadowOui
-    #- OASYS1-XOPPY
+    #- git+https://github.com/oasys-kit/wofryshadow.git
+    #- git+https://github.com/oasys-kit/ShadowOui.git    
+    - OASYS1-ShadowOui
+    - OASYS1-XOPPY
     #- OASYS1-XRayServer
     #- OASYS1-SRW
     #- pySRU
