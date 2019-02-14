@@ -241,6 +241,47 @@ def merge_beams(beams):
         beam_mrg.rays = np.append(beam_mrg.rays, beam.rays, axis=0)
     return beam_mrg
 
+def rotate_rays(rays, angle, axis):
+        """rotate rays
+
+        Parameters
+        ----------
+        rays : array of floats
+            Shadow rays
+        angle : float
+            Rotation angle in degrees
+        axis : int
+            Rotation axis number (Shadow's column)
+            1: X, 2: Y, 3: Z
+
+        Returns
+        -------
+        array
+            Rotated rays
+        """
+        a1 = rays.copy()
+        rangle = np.deg2rad(angle)
+        if axis == 1:
+            torot = [2,3]
+        elif axis == 2:
+            torot = [1,3]
+        elif axis == 3:
+            torot = [1,2]
+        else:
+            raise NameError("Wrong axis")
+        costh = np.cos(rangle)
+        sinth = np.sin(rangle)
+        tstart = np.array([1,4,7,16])
+        for i in range(len(tstart)):
+            newaxis = axis + tstart[i] - 1
+            newaxisi = newaxis - 1
+            newtorot = torot + tstart[i] - 1
+            newtoroti = newtorot -1
+            rays[:, newtoroti[0]] =  a1[:, newtoroti[0]]*costh + a1[:, newtoroti[1]]* sinth
+            rays[:, newtoroti[1]] = -a1[:, newtoroti[0]]*sinth + a1[:, newtoroti[1]]* costh
+            rays[:, newaxisi]     =  a1[:, newaxisi]
+        return rays
+
 ######################
 ### ROWLAND CIRCLE ###
 ######################

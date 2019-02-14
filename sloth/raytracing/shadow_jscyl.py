@@ -18,78 +18,63 @@ except:
     logger.warning("Shadow not found!")
     pass
 
-from sloth.raytracing.shadow_utils import (get_src_hdiv, get_src_vdiv)
+from sloth.raytracing.shadow_utils import (get_src_hdiv, get_src_vdiv, rotate_rays)
 
 #############
 ### JSCYL ###
 #############
 def jscyl(d=None, refl_file=None, theta0=75., R=1000., nrays=50000,
           aw=25., ah=80., ene0=None, ene0_hw=5., src_ovf=0.001,
-          src_shape='rectangle', src_x=0.2, src_z=0.1, move=None,
-          run=True, **kwargs):
+          src_shape='rectangle', src_x=0.2, src_z=0.1, src_rot=False,
+          move=None, run=True, **kwargs):
     """raytrace Johansson cylindrical analyzer at a given theta angle
 
     Notes
-    =====
+    -----
     - units given in mm
     - this works/tested *only* for a symmetric vertical Rowland circle geometry
 
     Parameters
-    ==========
-
+    ----------
     d : float
-        crystal d-spacing in Ang [None]
-
+        Crystal d-spacing in Ang [None]
     refl_file : string
-        reflectivity file as calculated by Xcrystal (or Bragg) [None]
-    
+        Reflectivity file as calculated by Xcrystal (or Bragg) [None]
     theta0 : float
-        incidence angle in deg (= Bragg angle) [75.]
-    
+        Incidence angle in deg (= Bragg angle) [75.]
     nrays : int
-        number of rays [50000]
-    
+        Number of rays [50000]
     aw : float
-       dimension of the flat side (=short side) in mm [25.]
-    
+        Dimension of the flat side (=short side) in mm [25.]
     ah : float
-       dimension of the curved side (=long side) in mm [80.]
-    
+        Dimension of the curved side (=long side) in mm [80.]
     R : float
-       bending radius (= diameter Rowland circle) in mm [1000.]
-    
+        Bending radius (= diameter Rowland circle) in mm [1000.]
     ene0 : float
-       source central energy in eV [None]
-       if None, it is calculated from Bragg angle
-    
+        Source central energy in eV [None]
+        if None, it is calculated from Bragg angle
     ene0_hw : float
-       source energy half bandwidth in eV [5]
-
+        Source energy half bandwidth in eV [5]
     src_shape : str ['rectangle']
-                spatial source type/shape in X-Z plane. Avaiable
-                options are: 'point', 'rectangle' and 'ellipse'
-    
+        Spatial source type/shape in X-Z plane. Avaiable
+        options are: 'point', 'rectangle' and 'ellipse'
     src_ovf : float
         add extra divergence to overfill the optical element [0.001]
-
     src_x, src_z : floats
         (WXSOU, WZSOU) -> X,Z size of elliptical source [0.2, 0.1]
-    
+    src_rot : boolean
+        Rotate the source [False]
     move : None or list of floats
-       optical element movement [None]
-    
-       [OFFX, OFFY, OFFZ, X_ROT, Y_ROT, Z_ROT]
-
-       where:
-           OFF*: X/Y/Z offset mm
-           *_ROT: X/Y/Z rotation CCW, deg
-
+        optical element movement [None]
+        [OFFX, OFFY, OFFZ, X_ROT, Y_ROT, Z_ROT]
+        where:
+            OFF*: X/Y/Z offset mm
+            *_ROT: X/Y/Z rotation CCW, deg
     run : boolean
-       run Shadow [True]
+        run Shadow [True]
 
     Returns
-    =======
-
+    -------
     beam, src, oe : :class:`Shadow.Beam`, :class:`Shadow.Source`, :class:`Shadow.OE`
 
     """
@@ -177,23 +162,31 @@ def jscyl(d=None, refl_file=None, theta0=75., R=1000., nrays=50000,
         oe.OFFZ = move[2]
         oe.X_ROT = move[3]
         oe.Y_ROT = move[4]
-        oe.Z_ROT = move[5] 
-        #adjust src divergence -> EMPIRICAL ADJUSTMENTS!!!
-        hdiv1 = get_src_hdiv(1.05*move[0]+aw/2, p) + 7*src_ovf
-        hdiv2 = -1*(get_src_hdiv(1.05*move[0]-aw/2, p) - 5*src_ovf)
-        vdiv1 = get_src_vdiv(2.5*move[2]+ah/2., p, theta0) + 5*src_ovf
-        vdiv2 = get_src_vdiv(0.5*move[2]+ah/2., p, theta0) + src_ovf
-        src.HDIV1 = hdiv1
-        src.HDIV2 = hdiv2
-        src.VDIV1 = vdiv1
-        src.VDIV2 = vdiv2
-        #src.CONE_MAX = hdiv1
-        #rotate source -> NOT WORKING!!!
+        oe.Z_ROT = move[5]
+        if (not src_rot):
+            #adjust src divergence -> EMPIRICAL ADJUSTMENTS!!!
+            hdiv1 = get_src_hdiv(1.05*move[0]+aw/2, p) + 7*src_ovf
+            hdiv2 = -1*(get_src_hdiv(1.05*move[0]-aw/2, p) - 5*src_ovf)
+            vdiv1 = get_src_vdiv(2.5*move[2]+ah/2., p, theta0) + 5*src_ovf
+            vdiv2 = get_src_vdiv(0.5*move[2]+ah/2., p, theta0) + src_ovf
+            src.HDIV1 = hdiv1
+            src.HDIV2 = hdiv2
+            src.VDIV1 = vdiv1
+            src.VDIV2 = vdiv2
+            #src.CONE_MAX = hdiv1
+            #rotate source -> NOT WORKING!!!
         oe.FSTAT = 0
     if run:
         #Run SHADOW to create the source
         if iwrite: src.write("start.00")
         beam.genSource(src)
+        if (move is not None) and src_rot:
+            rays = beam.rays.copy()
+            rz = math.degrees(math.atan(move[0]/p))
+            rays_rz = rotate_rays(rays, rz, 3)
+            rx = math.degrees(math.atan(move[5]/p))
+            rays_rzrx = rotate_rays(rays_rz, rx, 1)
+            beam.rays = rays_rzrx
         if iwrite:
             src.write("end.00")
             beam.write("begin.dat")
