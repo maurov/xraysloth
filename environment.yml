@@ -1,16 +1,18 @@
 #Python environment for: https://github.com/maurov/xraysloth
-#Target: basic usage as user (larch from GSECARS, silx with pip)
+#Target: basic usage as user (larch from GSECARS, silx with pip, OASYS)
 #Usage: conda env create -f environment.yml
 name: sloth-env
 channels:
   - defaults
 dependencies:
+  #basics bulding blocks
   - python=3.6
   - git=2.11    #as Debian9
   - pip=10.0.1  #18.1 fails!	
   - qt>=5.7
   - pyqt=5
   - wxpython>=4.0.3
+  #Numpy & friends
   - numpy>=1.16
   - scipy>=1.2.0
   - matplotlib>=2.0
@@ -18,6 +20,7 @@ dependencies:
   - sqlalchemy>=0.9
   - scikit-learn>=0.18
   - pillow>=3.4
+  #Jupyter project
   - ipython
   - ipykernel<5
   - jupyter
@@ -25,7 +28,9 @@ dependencies:
   - conda-forge::ipympl
   - conda-forge::widgetsnbextension
   - conda-forge::jupyterlab
+  #xraylib
   - conda-forge::xraylib
+  #Larch & friends
   - conda-forge::peakutils>=1.0.0
   - conda-forge::lmfit>=0.9.12
   - conda-forge::asteval>=0.9.12
@@ -34,14 +39,24 @@ dependencies:
   - GSECARS::wxmplot>=0.9.34
   - GSECARS::wxutils>=0.2
   - GSECARS::xraylarch>=0.9.41
+  #NEXPY
   - nexpy::nexusformat
   - nexpy::nexpy
   - pip:
+    #SILX & friends
     - hdf5plugin
     - spec2nexus
     - fisx>=1.1.6
     - fabio>=0.8.0
     - silx>=0.9.0
     - PyMca5>=5.4.0
-    ### PIP WHEELS ###
+    #Shadow & OASYS
     - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl; sys_platform == 'linux'
+    - oasys-canvas-core
+    - oasys-widget-core
+    - oasys1
+    - srxraylib
+    - syned
+    - wofry
+    - OASYS1-ShadowOui
+    - OASYS1-XOPPY
