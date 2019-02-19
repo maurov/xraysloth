@@ -42,6 +42,7 @@ dependencies:
     - radon #orange-dev
     - graypy #tomwer
     - requests-unixsocket #tomwer-dev
+    - recommonmark #Orange3 make htmlhelp
     - hdf5plugin
     - fisx>=1.1.6
     - fabio>=0.8.0
