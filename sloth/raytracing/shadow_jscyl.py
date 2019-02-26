@@ -182,9 +182,13 @@ def jscyl(d=None, refl_file=None, theta0=75., R=1000., nrays=50000,
         beam.genSource(src)
         if (move is not None) and src_rot:
             rays = beam.rays.copy()
-            rz = math.degrees(math.atan(move[0]/p))
+            #rays_ry = rotate_rays(rays, move[4], 2)
+            _rz = math.atan(move[0]/p)
+            rz = math.degrees(_rz) * 0.5 #empirical factor to reduce!!!
             rays_rz = rotate_rays(rays, rz, 3)
-            rx = math.degrees(math.atan(move[5]/p))
+            p1 = p/math.cos(_rz)
+            _rx = math.atan(move[5]/p1)
+            rx = -1*math.degrees(_rx) * 0.9 #empirical factor to reduce!!!
             rays_rzrx = rotate_rays(rays_rz, rx, 1)
             beam.rays = rays_rzrx
         if iwrite:
