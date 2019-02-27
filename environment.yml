@@ -4,53 +4,84 @@
 name: sloth-env
 channels:
   - defaults
+  #NOTE: specific channels are given per-package, not here!
 dependencies:
-  #basics bulding blocks
+  #<Basics bulding blocks>
   - python=3.6
-  - git=2.11    #as Debian9
-  - pip=10.0.1  #18.1 fails!	
+  - git=2.11 #as Debian9
+  - pip>=19.0.2 #18.1 fails!
+  - setuptools>=36.3
+  - cython>0.21.1
+  # pyopengl=3.1.1a1 >>> NO VIRTUALBOX
+  # anaconda:pyopengl-accelerate=3.1.1a1 #numpy 1.9! >>> NO VIRTUALBOX
+  # conda-forge::pyopencl >>> NO VIRTUALBOX
+  - six>=1.10
+  #<Qt/Wx>
   - qt>=5.7
   - pyqt=5
+  - anyqt>=0.0.8 #PyQt4/PyQt5 compatibility layer
+  - pyqtgraph>=0.10.0
   - wxpython>=4.0.3
-  #Numpy & friends
+  #<Numpy & friends>
   - numpy>=1.16
   - scipy>=1.2.0
   - matplotlib>=2.0
   - h5py>=2.7
   - sqlalchemy>=0.9
-  - scikit-learn>=0.18
+  - scikit-learn>=0.20.0
+  - bottleneck>=1.0.0
+  - scikit-image
   - pillow>=3.4
-  #Jupyter project
+  - pandas
+  - psutil
+  - lxml
+  - requests
+  #<Jupyter project>
+  - qtconsole
   - ipython
-  - ipykernel<5
+  - ipykernel
   - jupyter
   - ipywidgets
   - conda-forge::ipympl
   - conda-forge::widgetsnbextension
   - conda-forge::jupyterlab
-  #xraylib
+  #<Sphinx & friends>
+  - sphinx>=1.5
+  - sphinxcontrib
+  - conda-forge::nbsphinx
+  - reportlab
+  - natsort
+  - docutils
+  - pylint
+  #<Scisoft>
   - conda-forge::xraylib
-  #Larch & friends
+  - conda-forge::ase
+  - patchelf #required in xraylarch: setup.py(fix_linux_dylibs)
   - conda-forge::peakutils>=1.0.0
   - conda-forge::lmfit>=0.9.12
   - conda-forge::asteval>=0.9.12
+  - conda-forge::psutil
+  - conda-forge::pytest
   - conda-forge::uncertainties>=3.0
   - conda-forge::pycifrw
-  - GSECARS::wxmplot>=0.9.34
-  - GSECARS::wxutils>=0.2
-  - GSECARS::xraylarch>=0.9.41
-  #NEXPY
+  - GSECARS::wxmplot>=0.9.33
+  - GSECARS::wxutils>=0.2.3
+  - GSECARS::pyshortcuts>=1.3
+  - GSECARS::xraylarch>=0.9.42
   - nexpy::nexusformat
   - nexpy::nexpy
+  #<<<PIP PART>>>
   - pip:
-    #SILX & friends
+    #<SILX & friends>
     - hdf5plugin
     - spec2nexus
     - fisx>=1.1.6
     - fabio>=0.8.0
-    - silx>=0.9.0
+    - palettable
+    - silx>=0.10.0
     - PyMca5>=5.4.0
-    #Shadow & OASYS
+    #<Shadow & OASYS>
+    - resources
     - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl; sys_platform == 'linux'
     - oasys-canvas-core
     - oasys-widget-core

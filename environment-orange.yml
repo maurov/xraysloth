@@ -5,40 +5,43 @@ name: sloth-orange
 channels:
   - defaults
 dependencies:
+  #<Basics bulding blocks>
   - python=3.6
   - git=2.11
   - pip>=19.0.1
-  - h5py>=2.7
   - six>=1.10
+  #<Qt/Wx>
   - qt>=5.7
   - pyqt=5
-  - anyqt>=0.0.8 # PyQt4/PyQt5 compatibility layer
+  - anyqt>=0.0.8 #PyQt4/PyQt5 compatibility layer
   - pyqtgraph>=0.10.0
-  - matplotlib>=2.0.0
-  - docutils
+  #<Numpy & friends>
   - numpy>=1.15
   - scipy>=1.2.0
+  - matplotlib>=2.0.0
+  - h5py>=2.7
+  - docutils
   - psutil
   - lxml
-  - luigi # tomwer-dev
-  #Orange-shadok
+  - luigi #tomwer-dev
+  #<Orange-shadok>
   - yaml
   - ipython
   - qtconsole
-  #Orange3-core
+  #<Orange3-core>
   - scikit-learn>=0.20.0
   - bottleneck>=1.0.0
-  - xlrd>=0.9.2 # Reading Excel files
-  - chardet>=3.0.2 # Encoding detection
-  - joblib>=0.9.4 # Multiprocessing abstraction
+  - xlrd>=0.9.2 #Reading Excel files
+  - chardet>=3.0.2 #Encoding detection
+  - joblib>=0.9.4 #Multiprocessing abstraction
   - keyring
-  - keyrings.alt # alternative keyring implementations
+  - keyrings.alt #alternative keyring implementations
   - setuptools>=36.3
-  - serverfiles # for Data Sets synchronization
+  - serverfiles #for Data Sets synchronization
   - networkx
   - python-louvain
   - requests
-  #Orange3-dev
+  #<Orange3-dev>
   - pylint
   - sphinx>=1.5 # for build_htmlhelp command
   - conda-forge::orange3 #official
