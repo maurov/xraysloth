@@ -56,7 +56,6 @@ dependencies:
   #<Scisoft>
   - conda-forge::xraylib
   - conda-forge::ase
-  - patchelf #required in xraylarch: setup.py(fix_linux_dylibs)
   - conda-forge::peakutils>=1.0.0
   - conda-forge::lmfit>=0.9.12
   - conda-forge::asteval>=0.9.12
@@ -82,6 +81,7 @@ dependencies:
   - conda-forge::orange3 #*conflicts with OASYS1* /:test:`orange-canvas -l 4`
   #<<<PIP PART>>>
   - pip:
+    #- patchelf-wrapper #required in xraylarch: setup.py(fix_linux_dylibs)
     #<SILX & friends>
     - hdf5plugin
     - spec2nexus
