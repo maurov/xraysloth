@@ -56,7 +56,6 @@ dependencies:
   #<Scisoft>
   - conda-forge::xraylib
   - conda-forge::ase
-  - patchelf #required in xraylarch: setup.py(fix_linux_dylibs)
   - conda-forge::peakutils>=1.0.0
   - conda-forge::lmfit>=0.9.12
   - conda-forge::asteval>=0.9.12
