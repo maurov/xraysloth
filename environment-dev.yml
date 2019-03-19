@@ -9,13 +9,15 @@ dependencies:
   #<Basics bulding blocks>
   - python=3.6
   - git=2.11 #as Debian9
-  - pip>=19.0.2 #18.1 fails!
+  - pip=19.0.3 #18.1 fails!
   - setuptools>=36.3
   - cython>0.21.1
+  - libgfortran
   # pyopengl=3.1.1a1 >>> NO VIRTUALBOX
   # anaconda:pyopengl-accelerate=3.1.1a1 #numpy 1.9! >>> NO VIRTUALBOX
   # conda-forge::pyopencl >>> NO VIRTUALBOX
   - six>=1.10
+  - patchelf
   #<Qt/Wx>
   - qt>=5.7
   - pyqt=5
@@ -81,13 +83,12 @@ dependencies:
   - conda-forge::orange3 #*conflicts with OASYS1* /:test:`orange-canvas -l 4`
   #<<<PIP PART>>>
   - pip:
-    #- patchelf-wrapper #required in xraylarch: setup.py(fix_linux_dylibs)
-    #<SILX & friends>
     - hdf5plugin
     - spec2nexus
+    - palettable
+    #<SILX & friends>
     - fisx>=1.1.6
     - fabio>=0.8.0
-    - palettable
     # silx >>> DEV: MANUALLY BUILT FROM SOURCE
     # pymca5 >>> DEV: MANUALLY BUILT FROM SOURCE
     #<Shadow & OASYS>
