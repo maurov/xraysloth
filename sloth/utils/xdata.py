@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """Simple utility to retrieve X-ray data from external
 libraries/databases
 
@@ -12,11 +11,6 @@ Available libraries/dbs
 * ``Elements`` in `PyMca <https://github.com/vasole/pymca>`_
 
 """
-__author__ = "Mauro Rovezzi"
-__email__ = "mauro.rovezzi@gmail.com"
-__credits__ = ""
-__license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-
 import os, sys, math
 import numpy as np
 import logging
@@ -72,7 +66,7 @@ def sigma2fwhm(sigma):
 
 def lorentzian(x, amplitude=1.0, center=0.0, sigma=1.0):
     """Return a 1-dimensional Lorentzian function.
-    
+
     lorentzian(x, amplitude, center, sigma) = (amplitude/(1 +
     ((1.0*x-center)/sigma)**2)) / (pi*sigma)
 
@@ -121,9 +115,9 @@ LINES_DICT = {'K' : ('KA1', 'KA2', 'KA3',                       #LINES[0, 1, 2]
               'L1' : ('LB3', 'LB4', 'LG2', 'LG3'),              #LINES[8, 9, 10, 11]
               'L2' : ('LB1', 'LG1', 'LG6', 'LE'),               #LINES[12, 13, 14, 15]
               'L3' : ('LA1', 'LA2', 'LB2', 'LB5', 'LB6', 'LL'), #LINES[16, 17, 18, 19, 20, 21]
-              'M3' : ('MG',),                                   #LINES[22] 
-              'M4' : ('MB',),                                   #LINES[23] 
-              'M5' : ('MA1', 'MA2')}                            #LINES[24, 25] 
+              'M3' : ('MG',),                                   #LINES[22]
+              'M4' : ('MB',),                                   #LINES[23]
+              'M5' : ('MA1', 'MA2')}                            #LINES[24, 25]
 LINES_K = LINES_DICT['K']
 LINES_L = LINES_DICT['L1'] + LINES_DICT['L2'] + LINES_DICT['L3']
 LINES_M = LINES_DICT['M3'] + LINES_DICT['M4'] + LINES_DICT['M5']
@@ -161,7 +155,7 @@ LINES2TRANS = {'KA1' : (0, 0, 3),
                'LA1' : (16, 3, 8),
                'LA2' : (17, 3, 7),
                'LB2' : (18, 3, 13),
-               'LB5' : (19, 3, 19), #WARNING: here is only O4               
+               'LB5' : (19, 3, 19), #WARNING: here is only O4
                'LB6' : (20, 3, 9),
                'LL' :  (21, 3, 4),
                'MG' :  (22, 6, 13),
@@ -181,7 +175,6 @@ def mapLine2Trans(line):
 ###############################
 ### XRAYLIB-BASED FUNCTIONS ###
 ###############################
-
 def get_element(elem):
     """get a tuple for element name and number"""
     if (type(elem) is str) and (elem in ELEMENTS):
@@ -197,7 +190,7 @@ def get_element(elem):
     else:
         raise NameError("check element argument")
     return (elem_str, elem_z)
-    
+
 def find_edge(emin, emax, shells=None):
     """return the edge energy in a given energy range [emin, emax] (eV)"""
     if HAS_XRAYLIB is False: _xraylib_error(0)
@@ -217,13 +210,13 @@ def find_line(emin, emax, elements=None, lines=None, outDict=False):
 
     emin, emax : float
                  [minimum, maximum] energy range (eV)
-    
+
     elements : list of str
                list of elements, [ELEMENTS (all)]
-    
+
     lines : list of str
             list of lines, [LINES (all)]
-    
+
     outDict : boolean, False
               returns a dictionary instead of printing to screen with keywords:
               _out['el'] : element symbol, list of strs
@@ -234,7 +227,7 @@ def find_line(emin, emax, elements=None, lines=None, outDict=False):
 
     Returns
     =======
-    
+
     None, prints to screen the results (unless outDict boolean given)
 
     """
@@ -262,7 +255,7 @@ def find_line(emin, emax, elements=None, lines=None, outDict=False):
                 if not w == 0:
                     _out['el'].append(el)
                     _out['eln'].append(eln)
-                    _out['ln'].append(ln) 
+                    _out['ln'].append(ln)
                     _out['en'].append(line)
                     _out['w'].append(w)
     # returns
@@ -271,7 +264,7 @@ def find_line(emin, emax, elements=None, lines=None, outDict=False):
     else:
         for eln, el, ln, line, w in zip(_out['eln'], _out['el'], _out['ln'], _out['en'], _out['w']):
             print('{eln} \t {el} \t {ln} \t {line:>.2f} \t {w:>.2f}'.format(**_out))
-                
+
 def ene_res(emin, emax, shells=['K']):
     """ used in spectro.py """
     if HAS_XRAYLIB is False: _xraylib_error(0)
@@ -335,7 +328,7 @@ def fluo_amplitude(elem, line, excitation=None, barn_unit=False):
 
     elem : string or number
            element
-    
+
     line : string
            emission line Siegban (e.g. 'LA1') or IUPAC (e.g. 'L3M5')
 
@@ -377,7 +370,7 @@ def xray_line(element, line=None, initial_level=None):
     :param line: string, Siegbahn notation, e.g. 'KA1' [None]
     :param initial_level: string, initial core level, e.g. 'K' [None]
     :returns: dictionary {'line' : [], 'ene' : []} or a number
-    
+
     """
     if HAS_XRAYLIB is False: _xraylib_error(0)
     el_n = get_element(element)[1]
@@ -411,7 +404,7 @@ def xray_edge(element, initial_level=None):
     :param element: string or number
     :param initial_level: string, initial core level, e.g. 'K' or list [None]
     :returns: dictionary {'edge' : [], 'ene' : []} or a number
-    
+
     """
     if HAS_XRAYLIB is False: _xraylib_error(0)
     el_n = get_element(element)[1]
@@ -464,7 +457,7 @@ def fluo_spectrum(elem, line, xwidth=3, xstep=0.05,\
 
     showInfos : boolean [True]
                 print the `info` dict
-    
+
     plot : boolean [False]
            plot the line before returning it
 
@@ -511,7 +504,7 @@ def fluo_spectrum(elem, line, xwidth=3, xstep=0.05,\
         p1.show()
         input('PRESS ENTER to close the plot window and return')
     return xfluo, yfluo, info
-    
+
 def fluo_lines(elem, lines, **fluokws):
     """generate the emission spectrum of a given element and list of lines
 
@@ -559,7 +552,7 @@ def fluo_lines(elem, lines, **fluokws):
         for x, y, i in zip(xi, yi, ii):
             p.addCurve(x ,y, legend=i['ln'], replace=False,)
         p.show()
-        
+
     return xcom, ycom
 
 
@@ -652,4 +645,3 @@ def fluo_lines(elem, lines, **fluokws):
 if __name__ == '__main__':
     # see tests/examples in xdata_tests.py
     pass
-

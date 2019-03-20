@@ -17,9 +17,6 @@ except:
     HAS_CODATA = False
     HC = 1.2398418743309972e-06 # eV * m
 
-
-from .xdata import xray_line
-
 ### GLOBAL VARIABLES ###
 HKL_MAX = 30 # maximum number of hkl index considered
 SI_ALAT = 5.431065 # Ang at 25C
@@ -62,7 +59,7 @@ def kev2ang(ene, d=0, deg=True):
         _ang = math.asin((kev2wlen(ene))/(2*d))
         if (deg is True): _ang = math.degrees(_ang)
         return _ang
-    
+
 def ang2kev(theta, d=0, deg=True):
     """Bragg angle (deg/rad) to energy (keV) for given d-spacing (\AA)"""
     if (deg is True): theta=math.radians(theta)
@@ -112,7 +109,7 @@ def cotdeg(theta):
 
 def de_bragg(theta, dth):
     """energy resolution $\frac{\Delta E}{E}$ from derivative of Bragg's law
-    
+
     $|\frac{\Delta E}{E}| = |\frac{\Delta \theta}{\theta} = \Delta \theta \cot(\theta)|$
     """
     return dth * cotdeg(theta)
@@ -122,7 +119,7 @@ def sqrt1over(d2m):
         return 0
     else:
         return np.sqrt( 1 / d2m )
-    
+
 def d_cubic(a, hkl, **kws):
     """d-spacing for a cubic lattice"""
     h, k, l = hkl[0], hkl[1], hkl[2]
@@ -197,7 +194,7 @@ def findhkl(energy=None, thetamin=65., crystal='all', retAll=False):
     Usage
     =====
     findhkl(energy, thetamin, crystal, return_flag)
-    
+
     energy (eV) [required]
     thetamin (deg) [optional, default: 65 deg]
     crystal ('Si', 'Ge', 'all') [optional, default: 'all']
@@ -205,15 +202,15 @@ def findhkl(energy=None, thetamin=65., crystal='all', retAll=False):
     Output
     ======
     String: "Crystal(hkl), Bragg angle (deg)"
-    
+
     if retAll: ("crystal", h, k, l, bragg_angle_deg)
     """
     if energy is None:
         print(findhkl.__doc__)
 
-    
 
-    retDat = [("#crystal", "h", "k", "l", "bragg_deg")] 
+
+    retDat = [("#crystal", "h", "k", "l", "bragg_deg")]
     import itertools
     def _find_theta(crystal, alat):
         def _structure_factor(idx):
@@ -235,7 +232,7 @@ def findhkl(energy=None, thetamin=65., crystal='all', retAll=False):
                     if (theta >= thetamin):
                         print('{0}({1} {2} {3}), {4} {5:2.2f}'.format(crystal, x[0], x[1], x[2], 'Bragg', theta))
                         if retAll: retDat.append((crystal, x[0], x[1], x[2], theta))
-                            
+
         ###
         _structure_factor(reversed(range(1, HKL_MAX, 2))) # all permutations of odd (h,k,l)
         _structure_factor(reversed(range(0, HKL_MAX, 2))) # all permutations of even (h,k,l)

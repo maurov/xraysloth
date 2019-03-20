@@ -1,37 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """Generic utilities for daily work
 ===================================
 
 TODO
 ====
-
 - collect all bits and pieces here
 
 """
 import sys, os
 import numpy as np
 
-#-> FILES
-import glob, subprocess
-
-
-__author__ = "Mauro Rovezzi"
-__email__ = "mauro.rovezzi@gmail.com"
-__credits__ = ""
-__license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
-
-##################################
-### MOVED TO A SPECIFIC MODULE ###
-##################################
-
-from sloth.utils.pymca import getPyMcaMain
-
 ########################
 ### COLORIZED OUTPUT ###
 ########################
-
 HAS_TERMCOLOR = False
 try:
     from termcolor import colored
@@ -63,49 +45,6 @@ def colorstr(instr, color='green', on_color=None, attrs=['bold']):
     else:
         return instr
 
-#############
-### FILES ###
-#############
-
-def cp_replace(grepfns, grepstr, rplstr, splitstr='_'):
-    """given a filenames search string, copy the files with replaced string
-
-    Parameters
-    ----------
-    grepfns : string
-              search string passed to glob to generate files list to
-              copy
-    grepstr : string
-              string to replace
-    rplstr : string
-             new string
-    splitstr : string, '_'
-               string used as separator
-    """
-    fns = glob.glob(grepfns)
-    for fn in fns:
-        _fn2 = [w.replace(grepstr, rplstr) for w in fn.split(splitstr)]
-        fn2 = splitstr.join(_fn2)
-        subprocess.call('cp {0} {1}'.format(fn, fn2), shell=True)
-        print(fn2)
-
-def get_fnames(grepstr, rpath=os.getcwd(), substr1=None):
-    """get a list of filenames
-
-    Arguments
-    ---------
-    grepstr : pattern according to the rules used by the Unix shell
-    
-    Keyword arguments
-    -----------------
-    rpath : [os.getcwd()] root path
-    substr1 : [None] if given, search first level of subdirs
-    
-    """
-    if substr1 is not None:
-        return glob.glob(os.path.join(rpath, substr1, grepstr))
-    else:
-        return glob.glob(os.path.join(rpath, grepstr))
 
 def get_efermi(fn):
     """get the Fermi level energy from a FDMNES out file"""
@@ -122,14 +61,13 @@ def get_efermi(fn):
 #############
 ### NUMPY ###
 #############
-
 def imin(arr, check=False):
     """index of minimum value"""
     _im = np.argmin(arr)
     if check:
         print('Check: {0} = {1}'.format(np.min(arr), arr[_im]))
     return _im
-        
+
 def imax(arr, check=False):
     """index of maximum value"""
     _im = np.argmax(arr)
@@ -140,7 +78,6 @@ def imax(arr, check=False):
 ###############
 ### IPython ###
 ###############
-
 def ipythonAutoreload():
     """force ipython to autoreload imported modules"""
     from IPython import get_ipython
@@ -171,11 +108,10 @@ def is_in_notebook():
             return False  # Other type (?)
     except NameError:
         return False      # Probably standard Python interpreter
-    
+
 ##################
 ### Matplotlib ###
 ##################
-
 def mplSetPubFont(size=8, usetex=True):
     """very basic mpl set font for publication-quality figures"""
     from matplotlib import rc
@@ -185,7 +121,6 @@ def mplSetPubFont(size=8, usetex=True):
 ##########
 ### Qt ###
 ##########
-
 def qt_create_window(window_class):
     """Create a Qt window in Python, or interactively in IPython with Qt
     GUI event loop integration.
@@ -211,7 +146,7 @@ def qt_close_all_windows():
     """close all qt windows!!!"""
     from silx.gui import qt
     qt.QApplication.closeAllWindows()
-    
+
 def qt_get_version():
     from silx.gui import qt
     from sip import SIP_VERSION_STR
@@ -220,7 +155,7 @@ def qt_get_version():
     print("SIP version:", SIP_VERSION_STR)
     print("PyQt version:", qt.PYQT_VERSION_STR)
 
-    
+
 if __name__ == '__main__':
     #qt5_get_version()
     pass
