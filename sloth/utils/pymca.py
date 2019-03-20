@@ -6,8 +6,6 @@
 
 """
 import sys, getopt
-
-
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -23,7 +21,7 @@ else:
     pass
 finally:
     pass
-    
+
 ### PyMca ###
 def getPyMcaMain(fload=None):
     """show PyMcaMain from a shell (e.g. IPython) and return its obj"""
