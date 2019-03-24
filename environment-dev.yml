@@ -1,5 +1,5 @@
 #Python DEVELOPMENT environment for: https://github.com/maurov/xraysloth
-#Target: developing `silx` (Qt) and `larch` (with wxPython) + Orange3 (no OASYS)
+#Target: developing `silx` (Qt) and `larch` (no wxPython) + Orange3 (no OASYS)
 #Usage: conda env create -f environment-dev.yml
 name: sloth-dev
 channels:
@@ -23,7 +23,7 @@ dependencies:
   - pyqt=5
   - anyqt>=0.0.8 #PyQt4/PyQt5 compatibility layer
   - pyqtgraph>=0.10.0
-  - wxpython>=4.0.3
+  #- wxpython>=4.0.3
   #<Numpy & friends>
   - numpy>=1.16
   - scipy>=1.2.0
@@ -65,8 +65,8 @@ dependencies:
   - conda-forge::pytest
   - conda-forge::uncertainties>=3.0
   - conda-forge::pycifrw
-  - GSECARS::wxmplot>=0.9.33
-  - GSECARS::wxutils>=0.2.3
+  #- GSECARS::wxmplot>=0.9.33
+  #- GSECARS::wxutils>=0.2.3
   - GSECARS::pyshortcuts>=1.3
   # xraylarch >>> DEV: MANUALLY BUILT FROM SOURCE
   - nexpy::nexusformat
@@ -104,5 +104,5 @@ dependencies:
     #- OASYS1-XOPPY
   ### MANUALLY BUILT FROM SOURCE =DEVEL (KEEP ORDER) ###
   #silx>=0.9.0       #maurov's fork-> pip install .
-  #PyMca5>=5.4.0     #maurov's fork-> pip install .
+  #PyMca5>=5.4.0     #maurov's fork-> pip install . // if gl.h not found >> sudo apt install libglu1-mesa-dev freeglut3-dev mesa-common-dev
   #xraylarch>=0.9.41 #maurov's fork-> python setup.py build/install
