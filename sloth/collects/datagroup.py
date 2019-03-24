@@ -66,12 +66,8 @@ try:
 except ImportError:
     pass
 
-from ..io.specfile_reader import _str2rng as str2rng
+from ..utils.strings import str2rng
 from ..io.specfile_reader import spec_getmap2group, spec_getmrg2group
-
-#backward compatibility -> to be removed
-from sloth.utils.genericutils import get_fnames
-from sloth.math.normalization import norm1D as _norm
 
 ### GLOBAL VARIABLES ###
 MODNAME = '_datagroup'
@@ -81,7 +77,7 @@ DEBUG = 0
 ### CLASS ###
 class DataGroup(object):
     """a list of groups with some wrapped methods from Larch & friends"""
-    
+
     def __init__(self, kwsd=None, _larch=None):
         if _larch is None:
             if HAS_LARCH:
@@ -193,15 +189,15 @@ class DataGroup(object):
             except:
                 print('Error setting {0} in {1}'.format(attr, g.label))
         map(_safe_setattr, self.gs_sel)
-        
+
     def copyattr(self, attr1, attr2):
-        """copy attr1 to attr2""" 
+        """copy attr1 to attr2"""
         for _n, _g in enumerate(self.gs):
             try:
                 setattr(_g, str(attr2), getattr(_g, attr1))
             except AttributeError:
                 print("Attribute {0} does not exist in group {1}".format(attr1, _g.label))
-        
+
     def get_kwsd(self):
         """return a dictionary with default keyword arguments"""
         # globally setted kws:
@@ -270,7 +266,7 @@ class DataGroup(object):
     def getcom(self, *args, **kwargs):
         return self._deprecated_msg()
     def norint(self, *args, **kwargs):
-        return self._deprecated_msg()        
+        return self._deprecated_msg()
     def normax(self, *args, **kwargs):
         return self._deprecated_msg()
     def norxafs(self, *args, **kwargs):
@@ -298,11 +294,11 @@ class DataGroup(object):
     def load(self, *args, **kwargs):
         return self._deprecated_msg()
 
-### LARCH ###    
+### LARCH ###
 def datagroup(kwsd=None, _larch=None):
     """ utility to perform common operations on a list of data groups """
     return DataGroup(kwsd=kwsd, _larch=_larch)
-   
+
 def registerLarchPlugin():
     return (MODNAME, {'datagroup': datagroup})
 
@@ -352,7 +348,7 @@ class EvalData(object):
     def show_label(self, infd):
         """show label"""
         print(infd['label'])
-            
+
     def get_labels(self):
         """labels"""
         return map(self.show_label, self.linfs)

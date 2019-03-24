@@ -67,7 +67,7 @@ except (ValueError, ImportError):
     pass
 
 ### UTILITIES (the class is below!)
-from sloth.utils.strings import string2rng as _str2rng
+from sloth.utils.strings import str2rng as _str2rng
 
 def _mot2array(motor, acopy):
     """simple utility to generate a copy of an array containing a
