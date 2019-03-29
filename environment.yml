@@ -78,6 +78,8 @@ dependencies:
   - conda-forge::pymca>=5.4.3
   #<<<PIP PART>>>
   - pip:
+    #<various utils>
+    - colorlog
     - hdf5plugin
     - spec2nexus
     - palettable

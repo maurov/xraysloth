@@ -83,6 +83,8 @@ dependencies:
   - conda-forge::orange3 #*conflicts with OASYS1* /:test:`orange-canvas -l 4`
   #<<<PIP PART>>>
   - pip:
+    #<various utils>
+    - colorlog
     - hdf5plugin
     - spec2nexus
     - palettable
