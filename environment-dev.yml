@@ -13,9 +13,10 @@ dependencies:
     - setuptools>=36.3
     - cython>0.21.1
     - libgfortran
-    # pyopengl=3.1.1a1 >>> NO VIRTUALBOX
+    - pyopengl #>>> NO VIRTUALBOX
+    - conda-forge::pyopencl #>>> NO VIRTUALBOX
+    - conda-forge::pocl #or conda-forge::oclgrid
     # anaconda:pyopengl-accelerate=3.1.1a1 #numpy 1.9! >>> NO VIRTUALBOX
-    # conda-forge::pyopencl >>> NO VIRTUALBOX
     - six>=1.10
     - patchelf
     #<Qt/Wx>
