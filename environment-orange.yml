@@ -3,59 +3,59 @@
 #Usage: conda env create -f environment.yml
 name: sloth-orange
 channels:
-  - defaults
+    - defaults
 dependencies:
-  #<Basics bulding blocks>
-  - python=3.6
-  - git=2.11
-  - pip>=19.0.1
-  - six>=1.10
-  #<Qt/Wx>
-  - qt>=5.7
-  - pyqt=5
-  - anyqt>=0.0.8 #PyQt4/PyQt5 compatibility layer
-  - pyqtgraph>=0.10.0
-  #<Numpy & friends>
-  - numpy>=1.15
-  - scipy>=1.2.0
-  - matplotlib>=2.0.0
-  - h5py>=2.7
-  - docutils
-  - psutil
-  - lxml
-  - luigi #tomwer-dev
-  #<Orange-shadok>
-  - yaml
-  - ipython
-  - qtconsole
-  #<Orange3-core>
-  - scikit-learn>=0.20.0
-  - bottleneck>=1.0.0
-  - xlrd>=0.9.2 #Reading Excel files
-  - chardet>=3.0.2 #Encoding detection
-  - joblib>=0.9.4 #Multiprocessing abstraction
-  - keyring
-  - keyrings.alt #alternative keyring implementations
-  - setuptools>=36.3
-  - serverfiles #for Data Sets synchronization
-  - networkx
-  - python-louvain
-  - requests
-  #<Orange3-dev>
-  - pylint
-  - sphinx>=1.5 # for build_htmlhelp command
-  - conda-forge::orange3 #official
-  - pip:
-    - radon #orange-dev
-    - graypy #tomwer
-    - requests-unixsocket #tomwer-dev
-    - recommonmark #Orange3 make htmlhelp
-    - hdf5plugin
-    - fisx>=1.1.6
-    - fabio>=0.8.0
-    - silx>=0.9.0
-    - PyMca5>=5.4.0
-    #- git+https://github.com/payno/orange3.git #tomwer's fork (with loops)
-    #- git+https://gitlab.esrf.fr/silx/silx-addon.git
-    #- git+https://gitlab.esrf.fr/tomotools/tomwer.git
-    #- git+https://github.com/Quasars/orange-spectroscopy.git
+    #<Basics bulding blocks>
+    - python=3.6
+    - git=2.11
+    - pip>=19.0.1
+    - six>=1.10
+    #<Qt/Wx>
+    - qt>=5.7
+    - pyqt=5
+    - anyqt>=0.0.8 #PyQt4/PyQt5 compatibility layer
+    - pyqtgraph>=0.10.0
+    #<Numpy & friends>
+    - numpy>=1.15
+    - scipy>=1.2.0
+    - matplotlib>=2.0.0
+    - h5py>=2.7
+    - docutils
+    - psutil
+    - lxml
+    - luigi #tomwer-dev
+    #<Orange-shadok>
+    - yaml
+    - ipython
+    - qtconsole
+    #<Orange3-core>
+    - scikit-learn>=0.20.0
+    - bottleneck>=1.0.0
+    - xlrd>=0.9.2 #Reading Excel files
+    - chardet>=3.0.2 #Encoding detection
+    - joblib>=0.9.4 #Multiprocessing abstraction
+    - keyring
+    - keyrings.alt #alternative keyring implementations
+    - setuptools>=36.3
+    - serverfiles #for Data Sets synchronization
+    - networkx
+    - python-louvain
+    - requests
+    #<Orange3-dev>
+    - pylint
+    - sphinx>=1.5 # for build_htmlhelp command
+    - conda-forge::orange3 #official
+    - pip:
+        - radon #orange-dev
+        - graypy #tomwer
+        - requests-unixsocket #tomwer-dev
+        - recommonmark #Orange3 make htmlhelp
+        - hdf5plugin
+        - fisx>=1.1.6
+        - fabio>=0.8.0
+        - silx>=0.9.0
+        - PyMca5>=5.4.0
+        #- git+https://github.com/payno/orange3.git #tomwer's fork (with loops)
+        #- git+https://gitlab.esrf.fr/silx/silx-addon.git
+        #- git+https://gitlab.esrf.fr/tomotools/tomwer.git
+        #- git+https://github.com/Quasars/orange-spectroscopy.git
