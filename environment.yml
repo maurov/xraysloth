@@ -37,7 +37,10 @@ dependencies:
     - pandas
     - psutil
     - lxml
+    - yaml
     - requests
+    #- luigi #tomwer-dev
+    - xlrd>=0.9.2 #Reading Excel files
     #<Jupyter project>
     - qtconsole
     - ipython
@@ -61,7 +64,6 @@ dependencies:
     - conda-forge::peakutils>=1.0.0
     - conda-forge::lmfit>=0.9.12
     - conda-forge::asteval>=0.9.12
-    - conda-forge::psutil
     - conda-forge::pytest
     - conda-forge::uncertainties>=3.0
     - conda-forge::pycifrw
@@ -71,6 +73,15 @@ dependencies:
     - GSECARS::xraylarch>=0.9.42
     - nexpy::nexusformat
     - nexpy::nexpy
+    #<Orange3-core>
+    #- chardet>=3.0.2 #Encoding detection
+    #- joblib>=0.9.4 #Multiprocessing abstraction
+    #- keyring
+    #- keyrings.alt #alternative keyring implementations
+    #- serverfiles #for Data Sets synchronization
+    #- networkx
+    #- python-louvain
+    #- conda-forge::orange3
     #<SILX & friends>
     - conda-forge::fisx>=1.1.6
     - conda-forge::fabio>=0.8.0
@@ -83,6 +94,10 @@ dependencies:
         - hdf5plugin
         - spec2nexus
         - palettable
+        #- radon #orange-dev
+        #- graypy #tomwer
+        #- requests-unixsocket #tomwer-dev
+        #- recommonmark #Orange3 make htmlhelp
         #<Shadow & OASYS>
         - resources
         - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl; sys_platform == 'linux'
