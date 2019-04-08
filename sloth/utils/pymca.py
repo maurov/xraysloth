@@ -11,12 +11,13 @@ _logger = logging.getLogger(__name__)
 
 HAS_PYMCA = False
 try:
-    from PyMca5.PyMcaGui.pymca import PyMcaMain
+    from PyMca5.PyMcaGui.pymca.PyMcaMain import PyMcaMain
     from PyMca5.PyMcaGui import PyMcaQt as qt
     QTVERSION = qt.qVersion()
     HAS_PYMCA = True
 except ImportError:
-    pass
+    from sloth import NullClass
+    PyMcaMain = NullClass
 else:
     pass
 finally:
@@ -37,7 +38,7 @@ def getPyMcaMain(fload=None):
         _logger.error("PyMca not found")
         return 0
 
-class myPyMcaMain(PyMcaMain.PyMcaMain):
+class myPyMcaMain(PyMcaMain):
     """customized version of PyMcaMain to run within IPython shell"""
 
     def __init__(self, fload=None, name="slothPyMca", **kws):
