@@ -19,7 +19,7 @@ try:
     from silx.math.fit import fittheories, bgtheories
     from silx.math.fit.fitmanager import FitManager
     HAS_SILX = True
-except NameError:
+except:
     pass
 
 HAS_PYMCA = False
@@ -27,11 +27,14 @@ HAS_PYMCA5 = False
 try:
     from PyMca5.PyMcaMath.fitting import Specfit, SpecfitFunctions
     HAS_PYMCA5 = True
-except NameError:
+except:
     try:
         from PyMca import Specfit, SpecfitFunctions
         HAS_PYMCA = True
-    except NameError:
+    except:
+        from sloth import NullClass
+        Specfit = NullClass
+        SpecfitFunctions = NullClass
         pass
 
 from sloth.utils.genericutils import run_from_ipython
@@ -50,47 +53,47 @@ def fit_silx(x, y, theory=None, bkg=None):
     x, y: data 1D arrays
 
     theory : string [None]
-             available theories: 
+             available theories:
              +---------------------+
-             | Gaussians           | 
-             | Lorentz             | 
-             | Area Gaussians      | 
-             | Area Lorentz        | 
-             | Pseudo-Voigt Line   | 
-             | Area Pseudo-Voigt   | 
-             | Split Gaussian      | 
-             | Split Lorentz       | 
-             | Split Pseudo-Voigt  | 
-             | Step Down           | 
-             | Step Up             | 
-             | Slit                | 
-             | Atan                | 
-             | Hypermet            | 
-             | Degree 2 Polynomial | 
-             | Degree 3 Polynomial | 
-             | Degree 4 Polynomial | 
-             | Degree 5 Polynomial | 
+             | Gaussians           |
+             | Lorentz             |
+             | Area Gaussians      |
+             | Area Lorentz        |
+             | Pseudo-Voigt Line   |
+             | Area Pseudo-Voigt   |
+             | Split Gaussian      |
+             | Split Lorentz       |
+             | Split Pseudo-Voigt  |
+             | Step Down           |
+             | Step Up             |
+             | Slit                |
+             | Atan                |
+             | Hypermet            |
+             | Degree 2 Polynomial |
+             | Degree 3 Polynomial |
+             | Degree 4 Polynomial |
+             | Degree 5 Polynomial |
              +---------------------+
-    
+
     bkg : string [None]
           available bkg theories:
           +---------------------+
-          | No Background       | 
-          | Constant            | 
-          | Linear              | 
-          | Strip               | 
-          | Snip                | 
-          | Degree 2 Polynomial | 
-          | Degree 3 Polynomial | 
-          | Degree 4 Polynomial | 
-          | Degree 5 Polynomial | 
+          | No Background       |
+          | Constant            |
+          | Linear              |
+          | Strip               |
+          | Snip                |
+          | Degree 2 Polynomial |
+          | Degree 3 Polynomial |
+          | Degree 4 Polynomial |
+          | Degree 5 Polynomial |
           +---------------------+
 
     Returns
     =======
 
     yfit : fit array like x
-    
+
     """
     fit = FitManager()
     fit.loadtheories(fittheories)
@@ -124,7 +127,7 @@ def fit_silx(x, y, theory=None, bkg=None):
 ###################
 ### PYMCA BASED ###
 ###################
-    
+
 def fit_splitpvoigt(x, y, dy=False,\
                     theory='Split Pseudo-Voigt', bkg='Constant',\
                     conf=None, npeaks=1,\
@@ -134,7 +137,7 @@ def fit_splitpvoigt(x, y, dy=False,\
     the goal is to fit (automagically) a set of 1D data (x,y) with an
     asymmetric PseudoVoigt (splitpvoigt) function plus a constant
     background
-    
+
     Parameters
     ----------
     x, y : data arrays
@@ -143,7 +146,7 @@ def fit_splitpvoigt(x, y, dy=False,\
          error bar on y. If dy==True: dy=np.sqrt(y) or give an
          explicit array
 
-    theory : str, ['Split Pseudo-Voigt', 
+    theory : str, ['Split Pseudo-Voigt',
                    'Gaussians',
                    'Lorentz',
                    'Area Gaussians',
@@ -208,13 +211,13 @@ def fit_splitpvoigt(x, y, dy=False,\
     dconf.update({'fitbkg' : bkg,
                   'fittheory' : theory})
 
-    if conf is not None: dconf.update(conf) 
+    if conf is not None: dconf.update(conf)
 
     if show_infos: print('{0:=^64}'.format('FIT INFOS'))
-    
+
     # init Specfit object
     fit = Specfit.Specfit()
-    
+
     # set the data
     if dy is True:
         dy = np.sqrt(y)
@@ -240,7 +243,7 @@ def fit_splitpvoigt(x, y, dy=False,\
         newpars = currpars[:5*npeaks]
         newcons = currcons[:][:5*npeaks]
         return newpars, newcons
-    
+
     # force Split Pseudo-Voigt estimate to a single peak
     sff = SpecfitFunctions.SpecfitFunctions()
     conf_fun = sff.configure(**dconf)
@@ -250,7 +253,7 @@ def fit_splitpvoigt(x, y, dy=False,\
     if show_infos:
         print('backgroung: {0}'.format(bkg))
         print('theory: {0} {1}'.format(npeaks, theory))
-        
+
     # update configuration
     fit_conf = fit.configure(**dconf)
 
@@ -272,11 +275,11 @@ def fit_splitpvoigt(x, y, dy=False,\
     fit.resdict.update({'area' : pk_area})
     fit.yfit = yfit
     fit.residual = residual
-    
+
     # print results
     if show_res is True:
         fit_results(fit, output='print', pk_info=True)
-    
+
     # plot
     if plot is True:
         if HAS_PYMCA5:
@@ -321,11 +324,11 @@ def fit_results(fitobj, output='print', pk_info=True):
 
     # HEADER
     out = [tmpl_head.format(' FIT RESULTS ')]
-    
+
     # STATISTICS
     out.append(tmpl_head.format(' STATISTICS '))
     out.append('chi_squared = {0}'.format(fitobj.chisq))
-    
+
     # FITTED PARAMETERS
     out.append(tmpl_head.format(' FITTED PARAMETERS '))
     out.append(tmpl_parhead.format('#idx', ' name ', ' fitresult ', ' sigma ', ' estimation '))
@@ -362,7 +365,7 @@ def fit_results(fitobj, output='print', pk_info=True):
 
         out.append(tmpl_pkhead.format('#', ' hght-min ', ' position ', ' FHWM ', ' cen_FWHM '))
         out.append(tmpl_pkinfo.format('1', pk_height, pk_pos, pk_fwhm, pk_cfwhm))
-    
+
     # OUTPUT
     if ('print' in output.lower()):
         print('\n'.join(out))
@@ -372,7 +375,7 @@ def fit_results(fitobj, output='print', pk_info=True):
         return resdict
     else:
         return '\n'.join(out)
-    
+
 if __name__ == '__main__':
     pass
     # TESTS are in examples/peakfit_tests.py
