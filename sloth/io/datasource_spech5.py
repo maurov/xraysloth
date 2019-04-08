@@ -9,6 +9,7 @@ Requirements
 - silx (http://www.silx.org/doc/silx/latest/modules/io/spech5.html)
 
 """
+import os
 import logging
 import silx
 
@@ -20,7 +21,11 @@ class DataSourceSpecH5(object):
 
     def __init__(self, fname=None):
         """init with file name and default attributes"""
-        self._logger = logging.getLogger(__name__)
+        try:
+            _logger_name = fname.split(os.sep)[-1]
+        except:
+            _logger_name = "DataSourceSpecH5"
+        self._logger = logging.getLogger(_logger_name)
         self._logger.setLevel(logging.INFO)
         self.fname = fname
         try:
@@ -104,6 +109,9 @@ class DataSourceSpecH5(object):
 
         Args:
             scan_n (int): optional scan number [None -> self._scan_n]
+
+        Returns:
+            title (str): scan title self._sg[self._title_url][()]
         """
         if scan_n is not None: self.set_scan(scan_n)
         return self._sg[self._title_url][()]
