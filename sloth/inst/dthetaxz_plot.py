@@ -3,6 +3,7 @@
 
 """plots related to dthetaxz"""
 import sys, os
+import copy
 import numpy as np
 import numpy.ma as ma
 
@@ -23,20 +24,22 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
                  figName='fig1', xyFigSize=(10*150, 6*150), figDpi=150, fontSize=8,\
                  nlevels=15, rowSpan=2, colSpan=2, xylab=(0.025, 0.97), ylabshift=-0.3,\
                  plotMask=True, plotVert=False, absWrc=False, cbarShow=True,\
-                 cbarTicks=2.5E-5, cbarOrientation='vertical', figCmap=cm.RdYlGn, figOut=None):
+                 cbarTicks=2.5E-5, cbarOrientation='vertical',\
+                 cbarLabel=r'$\Delta \theta$',\
+                 figCmap=cm.RdYlGn, figOut=None):
     """plots the effective scattering angle given a masked array
-    
+
     Parameters
     ----------
     xx, zz : 2D masked arrays of floats
              dThetaXZ() is calculated over them
-             
-    w : float, 1.25E-4
+
+    wrc : float, 1.25E-4
         maximum accepted angular range
-        
+
     cases : list of str, ['Johann', 'Johansson', 'Spherical plate', 'Wittry']
             accepted cases by dThetaXZ (tip: nicely shows for 4 items)
-            
+
     casesLabels : list of str, None
                   labels for the cases (if none, it takes cases
                   strings)
@@ -64,7 +67,7 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
 
     xyFigSize : list of int or floats, [10*dpi, 6*dpi]
                 x, y size of the figure
-    
+
     figDpi : int, 150
              figure resolution
 
@@ -72,11 +75,11 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
              figure to save
 
     fontSize : int, 8
-               
-             
+
+
     nlevels : int, 15
               number of color levels
-    
+
     colSpan : int, 2
               number of columns to span for each subplot (useful if cbarOrientation=='vertical')
 
@@ -89,19 +92,19 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
 
     xylabshift : float, -0.3
                  shift ('figure fraction' units) xylab[1] each subplot
-    
+
     plotMask : boolean, True
                to show the mask
 
     plotVert: boolean, False
               plot vertical scattering
-    
+
     absWrc : boolean, False
              to show absolute $\Delta \theta$
-    
+
     cbarShow : boolean, True
                to show the color bar
-    
+
     cbarTicks : float, 2.5E-5
                 spacing between color bar ticks
 
@@ -116,6 +119,15 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
     plt.ion()
     plt.rcParams['font.size'] = fontSize
     plt.rcParams['text.usetex'] = True
+    #wrc as multi-values
+    if (type(wrc) is list):
+        if not (len(wrc) == len(angles)):
+            raise NameError('len(wrc) not as angles')
+        else:
+            wrc_angles = copy.deepcopy(wrc)
+    else:
+        wrc_angles = np.ones_like(angles)*wrc
+    wrc = min(wrc_angles)
     #check if there is a common or separated grid for each case
     if (type(xx) is list) and (type(zz) is list):
         if (len(xx) == len(cases)) and (len(zz) == len(cases)):
@@ -129,11 +141,6 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
     nangles = len(angles)
     ncases = len(cases)
     extent = (_xx.min(), _xx.max(), _zz.min(), _zz.max())
-    norm = cm.colors.Normalize(vmin=-2*wrc, vmax=2*wrc) #NOT WORKING (NOT USED)!!!
-    if absWrc:
-        levels = np.linspace(0, wrc, nlevels)
-    else:
-        levels = np.linspace(-wrc, wrc, nlevels)
     fig = plt.figure(num=figName, figsize=(xyFigSize[0]/figDpi, xyFigSize[1]/figDpi), dpi=figDpi, constrained_layout=True)
     if cbarOrientation == 'horizontal':
         gs = gridspec.GridSpec(rowSpan*nangles+1, ncases, figure=fig) #iN+1xM grid +1 is for the colorbar
@@ -149,14 +156,13 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
     ylab = xylab[1]
     if casesLabels is None:
         casesLabels = cases
-    for th, gsx in zip(angles, gsx_rng):
+    for th, gsx, _wrc in zip(angles, gsx_rng, wrc_angles):
         for ic, (cs, cl, gsy) in enumerate(zip(cases, casesLabels, gsy_rng)):
             if hasMasks:
                 _xx = xx[ic]
                 _zz = zz[ic]
             dth = dThetaXZ(_xx, _zz, th, case=cs)
-            mdth = ma.masked_where(np.abs(dth) > wrc, dth)
-            cbar_label = r'$|\Delta \theta|$ below given threshold of {:.3E}'.format(wrc)
+            mdth = ma.masked_where(np.abs(dth) > _wrc, dth)
             if absWrc: mdth = np.abs(mdth)
             if cbarOrientation == 'horizontal':
                 gsplt = fig.add_subplot(gs[gsx:gsx+rowSpan, gsy])
@@ -173,8 +179,14 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
             else:
                 _xxplot = _xx
                 _zzplot = _zz
+            norm = cm.colors.Normalize(vmin=-2*wrc, vmax=2*wrc) #NOT WORKING (NOT USED)!!!
+            if absWrc:
+                levels = np.linspace(0, wrc, nlevels)
+            else:
+                levels = np.linspace(-wrc, wrc, nlevels)
             #cntf = gsplt.contourf(_xxplot, _zzplot, mdth, levels, cmap=cm.get_cmap(figCmap, len(levels)-1), norm=norm)
-            cntf = gsplt.contourf(_xxplot, _zzplot, mdth, levels, cmap=cm.get_cmap(figCmap, len(levels)-1))
+            #cntf = gsplt.contourf(_xxplot, _zzplot, mdth, levels, cmap=cm.get_cmap(figCmap, len(levels)-1))
+            cntf = gsplt.contourf(_xxplot, _zzplot, mdth, nlevels, cmap=cm.get_cmap(figCmap, nlevels-1))
             #gsplt.imshow(_zzplot, origin='lower', extent=extent, cmap=cm.get_cmap(figCmap), norm=norm)
             # gsplt.xaxis.set_major_locator(MaxNLocator(4))
             # gsplt.xaxis.set_minor_locator(MaxNLocator(5))
@@ -204,7 +216,7 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
         cb = fig.colorbar(cntf, cax=cplt, use_gridspec=True, orientation=cbarOrientation, format='%.1E')
         #cb.set_ticks(AutoLocator())
         cb.set_ticks(MultipleLocator(cbarTicks))
-        cb.set_label(cbar_label)
+        cb.set_label(cbarLabel)
     plt.tight_layout()
     plt.show()
     if figOut:
@@ -217,7 +229,7 @@ def plotScanThetaFile(fname, scans, signal='eres', xlims=None, ylims=None, ylog=
                       yscale=1, caseScale='Js', plotDeeShells=True, showLegend=True,
                       figName='fig1', figSize=(5,5), figDpi=150, fontSize=10):
     """plot 1D $\theta_{B}$ scans from SPEC file
-    
+
     Parameters
     ----------
     fname : SPEC file name (refer writeScanDats)
@@ -301,4 +313,3 @@ def plotScanThetaFile(fname, scans, signal='eres', xlims=None, ylims=None, ylog=
 if __name__ == '__main__':
     # TESTS in xraysloth/examples/dthetaxz_tests.py
     pass
-
