@@ -3,7 +3,6 @@
 """
 braggutils: utilities around the Bragg's law ($ n \lambda = 2 d sin \theta $)
 """
-import math
 import numpy as np
 import warnings
 
@@ -56,14 +55,14 @@ def kev2ang(ene, d=0, deg=True):
         print("ERROR kev2deg: d-spacing is 0")
         return 0
     else:
-        _ang = math.asin((kev2wlen(ene))/(2*d))
-        if (deg is True): _ang = math.degrees(_ang)
+        _ang = np.asin((kev2wlen(ene))/(2*d))
+        if (deg is True): _ang = np.rad2deg(_ang)
         return _ang
 
 def ang2kev(theta, d=0, deg=True):
     """Bragg angle (deg/rad) to energy (keV) for given d-spacing (\AA)"""
-    if (deg is True): theta=math.radians(theta)
-    return wlen2kev(2*d*math.sin(theta))
+    if (deg is True): theta=np.deg2rad(theta)
+    return wlen2kev(2*d*np.sin(theta))
 
 def bragg_ev(d, theta, n=1):
     """return the Bragg energy (eV) for a given d-spacing (\AA) and angle (deg)"""
