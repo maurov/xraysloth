@@ -55,7 +55,7 @@ def kev2ang(ene, d=0, deg=True):
         print("ERROR kev2deg: d-spacing is 0")
         return 0
     else:
-        _ang = np.asin((kev2wlen(ene))/(2*d))
+        _ang = np.arcsin((kev2wlen(ene))/(2*d))
         if (deg is True): _ang = np.rad2deg(_ang)
         return _ang
 
