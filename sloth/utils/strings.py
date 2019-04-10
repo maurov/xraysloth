@@ -58,3 +58,9 @@ def str2rng(rngstr, keeporder=True, rebin=None):
         return uniquify(_rngout)
     else:
         return list(set(_rngout))
+
+def get_timestamp() -> str:
+    """return a custom time stamp string: YYY-MM-DD_HHMM"""
+    import time
+    return '{0:04d}-{1:02d}-{2:02d}_{3:02d}{4:02d}'.format(*time.localtime())
+    
