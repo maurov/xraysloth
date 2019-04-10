@@ -305,9 +305,8 @@ def registerLarchPlugin():
 ###############################################
 ### PICKLE-BASED // TEMPORARY DO NOT USE!!! ###
 ###############################################
-
 class EvalData(object):
-    """.. warning:: this is a temporary object -> DO NOT USE IN PRODCTION!"""
+    """.. warning:: this is a temporary (=work-in-progress) data object -> DO NOT USE IT IN PRODCTION!"""
 
     def __init__(self, lcols=None, ldats=None, linfs=None, **kws):
         """set attributes"""
