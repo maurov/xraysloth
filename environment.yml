@@ -13,9 +13,9 @@ dependencies:
     - setuptools>=36.3
     - cython>0.21.1
     - libgfortran
-    # pyopengl=3.1.1a1 >>> NO VIRTUALBOX
-    # anaconda:pyopengl-accelerate=3.1.1a1 #numpy 1.9! >>> NO VIRTUALBOX
-    # conda-forge::pyopencl >>> NO VIRTUALBOX
+    - pyopengl #>>> NO VIRTUALBOX
+    - conda-forge::pyopencl #>>> NO VIRTUALBOX
+    - conda-forge::pocl #or conda-forge::oclgrid
     - six>=1.10
     - patchelf
     #<Qt/Wx>
@@ -64,6 +64,7 @@ dependencies:
     - conda-forge::peakutils>=1.0.0
     - conda-forge::lmfit>=0.9.12
     - conda-forge::asteval>=0.9.12
+    - conda-forge::psutil
     - conda-forge::pytest
     - conda-forge::uncertainties>=3.0
     - conda-forge::pycifrw
@@ -82,13 +83,13 @@ dependencies:
     #- networkx
     #- python-louvain
     #- conda-forge::orange3
-    #<SILX & friends>
-    - conda-forge::fisx>=1.1.6
-    - conda-forge::fabio>=0.8.0
-    - conda-forge::silx>=0.10.0
-    - conda-forge::pymca>=5.4.3
     #<<<PIP PART>>>
     - pip:
+        #<SILX & friends>
+        - fisx>=1.1.6
+        - fabio>=0.8.0
+        - silx>=0.10.0
+        - pymca>=5.4.3
         #<various utils>
         - colorlog
         - hdf5plugin
