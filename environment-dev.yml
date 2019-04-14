@@ -86,7 +86,7 @@ dependencies:
     #<<<PIP PART>>>
     - pip:
         #<SILX & friends>
-        - fisx>=1.1.6 
+        - fisx>=1.1.6
         - fabio>=0.8.0
         #- silx>=0.10.0 #>>> DEV: MANUALLY BUILT FROM SOURCE
         #- pymca>=5.4.3 #>>> DEV: MANUALLY BUILT FROM SOURCE
@@ -95,6 +95,16 @@ dependencies:
         - hdf5plugin
         - spec2nexus
         - palettable
+        # Python IDE with Atom and/or Emacs
+        - rope
+        - jedi
+        - flake8
+        - importmagic
+        - autopep8
+        - yapf
+        - future
+        - python-jsonrpc-server
+        - python-language-server[all]
         #- radon #orange-dev
         #- graypy #tomwer
         #- requests-unixsocket #tomwer-dev
