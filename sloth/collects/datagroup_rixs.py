@@ -9,68 +9,67 @@
 - DataGroup
   - DataGroup2D
     - DataGroupRixs
-
-
 """
 
 from __future__ import print_function, division
 
-import os, sys, copy
+import os
+import copy
 import numpy as np
-
 from scipy.interpolate import griddata
-
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
 from matplotlib import cm
 from matplotlib.ticker import MaxNLocator, AutoLocator
 
-#xraysloth
+# sloth
 from .datagroup2D import DataGroup2D
 from ..math.gridxyz import gridxyz
-from ..io.specfile_reader import _str2rng, _mot2array
+from ..io.specfile_reader import _mot2array
 from ..io.specfile_reader import SpecfileData
-from sloth.fit.peakfit import fit_splitpvoigt, fit_results
+from sloth.fit.peakfit import fit_splitpvoigt
+
 
 def get_xyz_bm16(logobj, specobj, fit_elastic=False):
-    """function to get 3 arrays representing the RIXS plane from SPEC and log files
-    
-    .. note: this scheme is currently used at FAME-UHD beamline (ESRF/BM16)
-    
+    """function to get 3 arrays representing the RIXS plane
+
+    .. note: this scheme is currently used at FAME-UHD beamline (ESRF/BM16) and
+             requires a SPEC file and log file
+
     Parameters
-    ==========
-    
-    logobj : 2-D columns array (scanN, eneKeV)
-    
+    ----------
+    logobj : numpy.ndarray or str
+        2lD columns array (scanN, eneKeV) or RIXS log file name
     specobj : SpecfileData object
-    
     fit_elastic : [False] controls if the elastic peak should be fitted
                   if True:
-                          - fits the elastic peak with a SplitPseudoVoigt function
-                          - substract the fitted function from the data
-                          - reset the energy array to the mono energy at the center of FWHM
-
+                      - fits the elastic peak with a SplitPseudoVoigt
+                        function
+                      - substract the fitted function from the data
+                      - reset the energy array to the mono energy at the
+                        center of FWHM
     Returns
-    =======
-
-    xcol, ycol, zcol: 1-D arrays
+    -------
+    xcol, ycol, zcol: 1D arrays
 
     """
-    scans = logobj[:,0] #list of scan numers
-    enes = logobj[:,1]*1000 #in eV
+    if type(logobj) is str:
+        logobj = np.genfromtxt(logobj, delimiter=',', comments='#')
+    scans = logobj[:, 0]  # list of scan numers
+    enes = logobj[:, 1]*1000  # in eV
     _counter = 0
     for scan, ene in zip(scans, enes):
         try:
             x, z, mot, info = specobj.get_scan('{0}.2'.format(int(scan)))
-        except:
+        except KeyError:
             x, z, mot, info = specobj.get_scan('{0}.1'.format(int(scan)))
         print("INFO: loaded scan {0}".format(int(scan)))
         y = _mot2array(ene, x)
-        #perform some data treatment
-        if (fit_elastic==True):
+        # perform some data treatment -> TODO: move elsewhere!!!
+        if fit_elastic is True:
             fit, pw = fit_splitpvoigt(x, z, bkg='No Background', plot=False)
             x = x-fit.resdict['position']+ene
-            #z = fit.residual
+            # z = fit.residual
         if _counter == 0:
             xcol = x
             ycol = y
@@ -82,8 +81,10 @@ def get_xyz_bm16(logobj, specobj, fit_elastic=False):
         _counter += 1
     return xcol, ycol, zcol
 
+
 class DataGroupRixs(DataGroup2D):
     """DataGroup for RIXS planes"""
+
     def __init__(self, kwsd=None, _larch=None):
         super(DataGroupRixs, self).__init__(self, kwsd=kwsd, _larch=_larch)
 
@@ -121,10 +122,10 @@ class DataGroupRixs(DataGroup2D):
 
 class RixsData(object):
     """RIXS plane object"""
-    
+
     def __init__(self, label=None, kwsd=None):
         """initialize with keyword arguments dictionaries"""
-        
+
         if kwsd is None:
             kwsd = self.get_kwsd()
         self.kwsd = kwsd
@@ -134,7 +135,7 @@ class RixsData(object):
 
     def get_kwsd(self):
         """return a dictionary of dictionaries with keywords arguments:
-        
+
         kwsd['exp']['expdir'] : main working directory (experiment directory)
         ...........['datdir'] : directory where the raw data (e.g. SPEC data) are stored
         ...........['evaldir'] : directory where evaluated data are saved
@@ -144,7 +145,7 @@ class RixsData(object):
         ...........['geom'] : data collection geometry (VGI or V## / HGI or H##)
         ...........['scnt'] : type of scan (EXA, XAN, PRE, RIXS, RIXS_ET)
         ...........['mode'] : data collection mode ???
-        
+
         kwsd['spec']['fname'] : file name to load (full path)
         ............['rngstr'] : string to identify the range of loaded scans
         ............['cntx'] : name of x-axis counter/motor
@@ -153,9 +154,9 @@ class RixsData(object):
         ............['cmon'] : name for monitor (e.g. incoming beam monitor, I0)
         ............['cmon2'] : name for a second monitor (e.g. total fluo yield, IF2)
         ............['csec'] : name for seconds
-        ............['norm'] : normalization type ( 
+        ............['norm'] : normalization type (
         ............['xystep'] : step in meshgrid
-        
+
         kwsd['plot']['...']
         ............
         """
@@ -233,14 +234,14 @@ class RixsData(object):
         e_out, signal
 
         """
-      
+
         try:
             self.dat = np.loadtxt(fname)
             print('Loaded {0}'.format(fname))
         except:
             print('Error in loading {0}'.format(fname))
             return
-        
+
         self.xcol = self.dat[:,0]
         #decide if dat[:,1] is e_out or e_in-e_out
         if np.max(self.dat[:,1])/np.max(self.dat[:,0]) < 0.5:
@@ -269,7 +270,7 @@ class RixsData(object):
                                              xystep=xystep,
                                              method=method,
                                              lib=lib)
-        
+
     def load_spec_map(self, **kws):
         """load the plane from SPEC file
 
@@ -290,7 +291,7 @@ class RixsData(object):
         xystep = kws.get('xystep', self.kwsd['grid']['xystep'])
         method = kws.get('method', self.kwsd['grid']['method'])
         lib = kws.get('lib', self.kwsd['grid']['lib'])
-        
+
         self.sfd = SpecfileData(os.path.join(datdir, fname))
         _x, _y, self.zcol = self.sfd.get_map(scans=scans,
                                              cntx=cntx,
@@ -311,7 +312,7 @@ class RixsData(object):
 
         Parameters
         ==========
-        
+
         x1, y1, x2, y2 : floats
                          X/Y initial and new coordinates
 
@@ -325,7 +326,7 @@ class RixsData(object):
 
         _nxpts = int((x2-x1)/_xystep)
         self.xcrop = np.linspace(x1, x2, num=_nxpts)
-        
+
         if yet:
             _netpts = int((y2-y1)/_xystep)
             _ymin = x2-y2
@@ -340,10 +341,10 @@ class RixsData(object):
             _netpts = int((_etmax-_etmin)/_xystep)
             self.etcrop = np.linspace(_etmin, _etmax, num=_netpts)
             self.ycrop = np.linspace(y1, y2, num=_nypts)
-            
+
         _xx, _yy = np.meshgrid(self.xcrop, self.ycrop)
         _exx, _et = np.meshgrid(self.xcrop, self.etcrop)
-        
+
         self.zzcrop = griddata((self.xcol, self.ycol), self.zcol, (_xx, _yy), method=_method)
 
         self.ezzcrop = griddata((self.xcol, self.etcol), self.zcol, (_exx, _et), method=_method)
@@ -367,7 +368,7 @@ class RixsDataPlotter(object):
     def updatekwsd(self, kwsd):
         """ update plot parameters """
         return self.kwsd['plot'].update(kwsd)
- 
+
     def plot(self, x=None, y=None, zz=None, **kws):
         """ make the plot """
         if x is None:
@@ -390,11 +391,11 @@ class RixsDataPlotter(object):
         xcut = kws.get('xcut', self.kwsd['plot']['xcut'])
         ycut = kws.get('ycut', self.kwsd['plot']['ycut'])
         dcut = kws.get('dcut', self.kwsd['plot']['dcut'])
-        
+
         lc_dticks = kws.get('lc_dticks', self.kwsd['plot']['lc_dticks'])
         lc_color = kws.get('lc_color', self.kwsd['plot']['lc_color'])
         lc_lw = kws.get('lc_lw', self.kwsd['plot']['lc_lw'])
-        
+
         replace = kws.get('replace', self.kwsd['plot']['replace'])
         figname = kws.get('figname', self.kwsd['plot']['figname'])
         figsize = kws.get('figsize', self.kwsd['plot']['figsize'])
@@ -408,13 +409,13 @@ class RixsDataPlotter(object):
         zlabel = kws.get('zlabel', self.kwsd['plot']['zlabel'])
         xmin = kws.get('xmin', self.kwsd['plot']['xmin'])
         xmax = kws.get('xmax', self.kwsd['plot']['xmax'])
-        ymin = kws.get('ymin', self.kwsd['plot']['ymin'])        
+        ymin = kws.get('ymin', self.kwsd['plot']['ymin'])
         ymax = kws.get('ymax', self.kwsd['plot']['ymax'])
         x_nticks = kws.get('x_nticks', self.kwsd['plot']['x_nticks'])
         y_nticks = kws.get('y_nticks', self.kwsd['plot']['y_nticks'])
         z_nticks = kws.get('z_nticks', self.kwsd['plot']['z_nticks'])
         cmap = kws.get('cmap', self.kwsd['plot']['cmap'])
-        
+
         cbar_show = kws.get('cbar_show', self.kwsd['plot']['cbar_show'])
         cbar_pos = kws.get('cbar_pos', self.kwsd['plot']['cbar_pos'])
         cbar_nticks = kws.get('cbar_nticks', self.kwsd['plot']['cbar_nticks'])
@@ -428,7 +429,7 @@ class RixsDataPlotter(object):
 
         # NOTE: np.nanmin/np.nanmax fails with masked arrays! better
         #       to work with MaskedArray for zz
-        
+
         #if not 'MaskedArray' in str(type(zz)):
         #    zz = np.ma.masked_where(zz == np.nan, zz)
 
@@ -451,10 +452,10 @@ class RixsDataPlotter(object):
         else:
             # normalize colors from min to max
             norm = cm.colors.Normalize(vmin=zzmin, vmax=zzmax)
-        
+
         extent = (x.min(), x.max(), y.min(), y.max())
         levels = np.linspace(zzmin, zzmax, cont_levels)
-       
+
         ### FIGURE LAYOUT ###
         if replace:
             plt.close(figname)
@@ -487,13 +488,13 @@ class RixsDataPlotter(object):
             self.contf = self.plane.imshow(zz, origin='lower', extent=extent, cmap=cmap, norm=norm)
         else:
             self.contf = self.plane.contourf(x, y, zz, levels, cmap=cm.get_cmap(cmap, len(levels)-1), norm=norm)
-       
+
         if 'line' in cont_type.lower():
             self.cont = self.plane.contour(x, y, zz, levels, colors = 'k', hold='on', linewidths=cont_lwidths)
         if x_nticks:
             self.plane.xaxis.set_major_locator(MaxNLocator(int(x_nticks)))
         else:
-            self.plane.xaxis.set_major_locator(AutoLocator())            
+            self.plane.xaxis.set_major_locator(AutoLocator())
         if y_nticks:
             self.plane.yaxis.set_major_locator(MaxNLocator(int(y_nticks)))
         else:
@@ -503,7 +504,7 @@ class RixsDataPlotter(object):
         if cbar_show:
             self.cbar = self.fig.colorbar(self.contf, use_gridspec=True, orientation=cbar_pos)
             if cbar_nticks:
-                self.cbar.set_ticks(MaxNLocator(int(y_nticks)))           
+                self.cbar.set_ticks(MaxNLocator(int(y_nticks)))
             else:
                 self.cbar.set_ticks(AutoLocator())
             self.cbar.set_label(cbar_label)
@@ -520,7 +521,7 @@ class RixsDataPlotter(object):
             if y_nticks:
                 self.lxcut.xaxis.set_major_locator(MaxNLocator(int(y_nticks/lc_dticks)))
             else:
-                self.lxcut.xaxis.set_major_locator(AutoLocator())            
+                self.lxcut.xaxis.set_major_locator(AutoLocator())
             if z_nticks:
                 self.lxcut.yaxis.set_major_locator(MaxNLocator(int(z_nticks/lc_dticks)))
             else:
@@ -543,7 +544,7 @@ class RixsDataPlotter(object):
             if x_nticks:
                 self.lycut.xaxis.set_major_locator(MaxNLocator(int(x_nticks/lc_dticks)))
             else:
-                self.lycut.xaxis.set_major_locator(AutoLocator())            
+                self.lycut.xaxis.set_major_locator(AutoLocator())
             if z_nticks:
                 self.lycut.yaxis.set_major_locator(MaxNLocator(int(z_nticks/lc_dticks)))
             else:
@@ -566,7 +567,7 @@ class RixsDataPlotter(object):
             if x_nticks:
                 self.ldcut.xaxis.set_major_locator(MaxNLocator(int(x_nticks/lc_dticks)))
             else:
-                self.ldcut.xaxis.set_major_locator(AutoLocator())            
+                self.ldcut.xaxis.set_major_locator(AutoLocator())
             if z_nticks:
                 self.ldcut.yaxis.set_major_locator(MaxNLocator(int(z_nticks/lc_dticks)))
             else:
@@ -576,8 +577,8 @@ class RixsDataPlotter(object):
             self.ldcut.set_xlabel(xlabel)
             if xmin and xmax:
                 self.ldcut.set_xlim(xmin, xmax)
-        plt.draw()    
+        plt.draw()
         plt.show()
-    
+
 if __name__ == '__main__':
     pass

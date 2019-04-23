@@ -1,78 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""custom version of PlotWidget
-===============================
+"""Sloth custom version of Plot1D
+=================================
 
-initial version taken from
+This class is based on:
 
-https://github.com/mretegan/crispy/blob/master/crispy/gui/widgets/plotwidget.py
-
-__authors__ = ['Marius Retegan']
-__license__ = 'MIT'
-__date__ = '13/03/2018'
+- https://github.com/mretegan/crispy/blob/master/crispy/gui/widgets/plotwidget.py
+- https://github.com/silx-kit/silx/blob/master/examples/plotCurveLegendWidget.py
 
 """
-
 from __future__ import absolute_import, division, unicode_literals
-
-from collections import OrderedDict as odict
-
+import functools
 from silx.gui import qt
 from silx.gui.plot import Plot1D
-from silx.gui.plot.backends.BackendMatplotlib import BackendMatplotlibQt
 from silx.gui.plot.tools.CurveLegendsWidget import CurveLegendsWidget
 from silx.gui.widgets.BoxLayoutDockWidget import BoxLayoutDockWidget
 
-class customBackendMatplotlibQt(BackendMatplotlibQt):
 
-    def __init__(self, plot, parent=None):
-        super(customBackendMatplotlibQt, self).__init__(plot, parent)
-        self._legends = odict()
-
-    def addCurve(self, x, y, legend, *args, **kwargs):
-        container = super(customBackendMatplotlibQt, self).addCurve(
-            x, y, legend, *args, **kwargs)
-
-        # Remove the unique identifier from the legend.
-        legend = legend[:-11]
-        curve = container.get_children()[0]
-        self._legends[curve] = legend
-        self._updateLegends()
-
-        return container
-
-    def remove(self, container):
-        super(customBackendMatplotlibQt, self).remove(container)
-        try:
-            curve = container.get_children()[0]
-            try:
-                self._legends.pop(curve)
-            except KeyError:
-                pass
-        except IndexError:
-            pass
-        self._updateLegends()
-
-    def _updateLegends(self):
-        curves = list()
-        legends = list()
-
-        for curve in self._legends:
-            curves.append(curve)
-            legends.append(self._legends[curve])
-
-        legend = self.ax.legend(curves, legends, prop={'size': 'medium'})
-        frame = legend.get_frame()
-        frame.set_edgecolor('white')
-        self.postRedisplay()
-
-class customCurveLegendsWidget(CurveLegendsWidget):
-    
+class CustomCurveLegendsWidget(CurveLegendsWidget):
     """Extension of CurveLegendWidget.
 
     .. note:: Taken from SILX examples -> plotCurveLegendWidget
-    
+
     This widget adds:
     - Set a curve as active with a left click its the legend
     - Adds a context menu with content specific to the hovered legend
@@ -80,7 +30,7 @@ class customCurveLegendsWidget(CurveLegendsWidget):
     """
 
     def __init__(self, parent=None):
-        super(customCurveLegendsWidget, self).__init__(parent)
+        super(CustomCurveLegendsWidget, self).__init__(parent)
 
         # Activate/Deactivate curve with left click on the legend widget
         self.sigCurveClicked.connect(self._switchCurveActive)
@@ -109,7 +59,7 @@ class customCurveLegendsWidget(CurveLegendsWidget):
         :param silx.gui.plot.items.Curve curve:
         """
         yaxis = curve.getYAxis()
-        curve.setYAxis('left' if yaxis is 'right' else 'right')
+        curve.setYAxis('left' if yaxis == 'right' else 'right')
 
     def _contextMenu(self, pos):
         """Create a show the context menu.
@@ -137,21 +87,17 @@ class customCurveLegendsWidget(CurveLegendsWidget):
             menu.exec_(globalPosition)
 
 
-class customPlotWidget(Plot1D):
-    def __init__(self, *args):
-        
-        # super(customPlotWidget, self).__init__(
-        #     logScale=False, grid=True, yInverted=False,
-        #     roi=False, mask=False, print_=False, backend=customBackendMatplotlibQt)
-        #super(customPlotWidget, self).__init__(backend=customBackendMatplotlibQt)
-        super(customPlotWidget, self).__init__()
+class SlothPlot1D(Plot1D):
+    def __init__(self, *args, parent=None, **kwargs):
+
+        super(SlothPlot1D, self).__init__(parent=parent)
 
         self.setActiveCurveHandling(False)
         self.setGraphGrid('both')
         self.setDataMargins(0, 0, 0.05, 0.05)
 
         # Create a MyCurveLegendWidget associated to the plot
-        self.legendsWidget = customCurveLegendsWidget()
+        self.legendsWidget = CustomCurveLegendsWidget()
         self.legendsWidget.setPlotWidget(self)
 
         # Add the CurveLegendsWidget as a dock widget to the plot
@@ -167,15 +113,15 @@ class customPlotWidget(Plot1D):
         self.clear()
         self.setGraphTitle()
         self.setGraphXLabel('X')
-        self.setGraphXLimits(0, 100)
+        # self.setGraphXLimits(0, 100)
         self.setGraphYLabel('Y')
-        self.setGraphYLimits(0, 100)
+        # self.setGraphYLimits(0, 100)
         self.keepDataAspectRatio(False)
 
 def main():
     """Run a Qt app with the widget"""
     app = qt.QApplication([])
-    widget = customPlotWidget()
+    widget = SlothPlot1D()
     widget.show()
     app.exec_()
 

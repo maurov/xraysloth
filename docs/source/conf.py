@@ -17,12 +17,12 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os, sys
+import os
 from datetime import datetime
 
 import sloth
 
-#check if building on readthedocs.org
+# check if building on readthedocs.org
 ON_RTD = os.environ.get('READTHEDOCS') == 'True'
 
 # sys.path.insert(0, os.path.abspath('.'))
@@ -39,7 +39,7 @@ ON_RTD = os.environ.get('READTHEDOCS') == 'True'
 # ones.
 extensions = ['sphinx.ext.mathjax',
               'sphinx.ext.autosummary',
-              'sphinx.ext.napoleon',
+              'sphinxcontrib.napoleon',
               'sphinx.ext.todo',
               'sphinx.ext.githubpages',
               'sphinx.ext.autodoc',
@@ -118,7 +118,7 @@ else:
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-#html_static_path = ['_static']
+# html_static_path = ['_static']
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
@@ -127,7 +127,7 @@ html_logo = "xraysloth.png"
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-#html_favicon = "xraysloth.ico"
+# html_favicon = "xraysloth.ico"
 
 
 # -- Options for HTMLHelp output ------------------------------------------
@@ -182,6 +182,3 @@ texinfo_documents = [
      author, 'Sloth', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-
