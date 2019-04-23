@@ -5,14 +5,14 @@
 
 A custom QMdiArea where to add custom PlotWindows
 
-
 """
 import numpy as np
 from silx.utils.weakref import WeakList
 from silx.gui import qt
-from .plotwindow import PlotWindow
+from .plot1D import SlothPlot1D
+from .plot2D import SlothPlot2D
 
-__authors__ = ["Marius Retegan"]
+__authors__ = ["Marius Retegan", "Mauro Rovezzi"]
 
 
 class MdiSubWindow(qt.QMdiSubWindow):
@@ -55,8 +55,12 @@ class PlotArea(qt.QMdiArea):
     def showContextMenu(self, position):
         menu = qt.QMenu('Plot Area Menu', self)
 
-        action = qt.QAction('Add Plot Window', self,
-                            triggered=self.addPlotWindow)
+        action = qt.QAction('Add Plot1D Window', self,
+                            triggered=self.addPlot1D)
+        menu.addAction(action)
+
+        action = qt.QAction('Add Plot2D Window', self,
+                            triggered=self.addPlot2D)
         menu.addAction(action)
 
         menu.addSeparator()
@@ -71,16 +75,30 @@ class PlotArea(qt.QMdiArea):
 
         menu.exec_(self.mapToGlobal(position))
 
-    def addPlotWindow(self, *args):
+    def addPlot1D(self):
+        return self.addPlotWindow(plotType='1D')
+
+    def addPlot2D(self):
+        return self.addPlotWindow(plotType='2D')
+
+    def addPlotWindow(self, *args, plotType='1D'):
+        """add a plot window in the mdi Area
+
+        Parameters
+        ----------
+        plotType : str
+            type of plot, '1D' (=curves) or '2D' (images)
+        """
         subWindow = MdiSubWindow(parent=self)
-
-        plotWindow = PlotWindow(parent=subWindow)
+        if plotType == '2D':
+            plotWindow = SlothPlot2D(parent=subWindow)
+        else:
+            plotWindow = SlothPlot1D(parent=subWindow)
         plotWindow.setIndex(len(self.plotWindows()))
-
         subWindow.setWidget(plotWindow)
         subWindow.show()
-
         self.changed.emit()
+        return plotWindow
 
     def renumberPlotWindows(self):
         for index, plotWindow in enumerate(self.plotWindows()):
@@ -89,7 +107,7 @@ class PlotArea(qt.QMdiArea):
 
 class PlotAreaMainWindow(qt.QMainWindow):
 
-    def __init__(self, app, parent=None):
+    def __init__(self, app=None, parent=None):
         super(PlotAreaMainWindow, self).__init__(parent=parent)
 
         self.app = app
@@ -100,10 +118,6 @@ class PlotAreaMainWindow(qt.QMainWindow):
         # Add (empty) menu bar -> contents added later
         self.menuBar = qt.QMenuBar()
         self.setMenuBar(self.menuBar)
-
-        # Add two plot windows to the plot area.
-        self.plotArea.addPlotWindow()
-        self.plotArea.addPlotWindow()
 
         self.closeAction = qt.QAction(
             "&Quit", self, shortcut="Ctrl+Q", triggered=self.onClose)
@@ -129,7 +143,6 @@ class PlotAreaMainWindow(qt.QMainWindow):
         self.app.lastWindowClosed.connect(qt.pyqtSignal(quit()))
 
 
-
 def main():
     global app
     app = qt.QApplication([])
@@ -140,7 +153,10 @@ def main():
     window.setWindowTitle("PlotArea Main Window")
     window.show()
 
-    # Change the default colormap
+    # Add two plot windows to the plot area.
+    window.plotArea.addPlotWindow(plotType='1D')
+    window.plotArea.addPlotWindow(plotType='2D')
+
     plot0 = window.plotArea.getPlotWindow(0)
     plot1 = window.plotArea.getPlotWindow(1)
 
@@ -149,7 +165,8 @@ def main():
     x1 = np.linspace(-10, 5, 150)
     x = np.outer(x0, x1)
     image = np.sin(x) / x
-    plot0.addCurve(x0, np.sin(x0)/x0)
+    plot0.addCurve(x0, np.sin(x0)/x0, legend='test curve 0')
+    plot0.addCurve(x1, np.sin(x1)/x1+0.1, legend='test curve 1')
     plot1.addImage(image)
 
     app.exec_()

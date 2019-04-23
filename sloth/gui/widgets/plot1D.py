@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Sloth custom version of Plot1D
-=================================
+"""Sloth custom version of SILX Plot1D
+======================================
 
 This class is based on:
 
@@ -13,7 +13,7 @@ This class is based on:
 from __future__ import absolute_import, division, unicode_literals
 import functools
 from silx.gui import qt
-from silx.gui.plot import Plot1D
+from silx.gui.plot import PlotWindow
 from silx.gui.plot.tools.CurveLegendsWidget import CurveLegendsWidget
 from silx.gui.widgets.BoxLayoutDockWidget import BoxLayoutDockWidget
 
@@ -87,13 +87,22 @@ class CustomCurveLegendsWidget(CurveLegendsWidget):
             menu.exec_(globalPosition)
 
 
-class SlothPlot1D(Plot1D):
-    def __init__(self, *args, parent=None, **kwargs):
+class SlothPlot1D(PlotWindow):
+    """Custom PlotWindow instance targeted to 1D curves"""
 
-        super(SlothPlot1D, self).__init__(parent=parent)
+    def __init__(self, parent=None, backend=None):
 
-        self.setActiveCurveHandling(False)
-        self.setGraphGrid('both')
+        super(SlothPlot1D, self).__init__(parent=parent, backend=backend,
+                                          resetzoom=True, autoScale=True,
+                                          logScale=True, grid=False,
+                                          curveStyle=True, colormap=False,
+                                          aspectRatio=False, yInverted=False,
+                                          copy=True, save=True, print_=True,
+                                          control=False, position=True,
+                                          roi=False, mask=False, fit=True
+                                          )
+        self._index = None
+
         self.setDataMargins(0, 0, 0.05, 0.05)
 
         # Create a MyCurveLegendWidget associated to the plot
@@ -102,12 +111,22 @@ class SlothPlot1D(Plot1D):
 
         # Add the CurveLegendsWidget as a dock widget to the plot
         self.dock = BoxLayoutDockWidget()
-        self.dock.setWindowTitle('Legends')
+        self.dock.setWindowTitle('Legend')
         self.dock.setWidget(self.legendsWidget)
         self.addDockWidget(qt.Qt.RightDockWidgetArea, self.dock)
 
         # Show the plot and run the QApplication
         self.setAttribute(qt.Qt.WA_DeleteOnClose)
+
+    def index(self):
+        if self._index is None:
+            self._index = 0
+        return self._index
+
+    def setIndex(self, value):
+        self._index = value
+        if self._index is not None:
+            self.setWindowTitle('{}: Plot1D'.format(self._index))
 
     def reset(self):
         self.clear()
@@ -118,12 +137,14 @@ class SlothPlot1D(Plot1D):
         # self.setGraphYLimits(0, 100)
         self.keepDataAspectRatio(False)
 
+
 def main():
     """Run a Qt app with the widget"""
     app = qt.QApplication([])
     widget = SlothPlot1D()
     widget.show()
     app.exec_()
+
 
 if __name__ == '__main__':
     main()
