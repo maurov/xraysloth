@@ -103,6 +103,10 @@ class SlothPlot1D(PlotWindow):
                                           )
         self._index = None
 
+        # Active curve behaviour
+        # TODO: https://github.com/silx-kit/silx/blob/5035be343dc37ef60eab114c139016ebd9832d96/silx/gui/plot/test/testPlotWidget.py#L636
+        self.setActiveCurveHandling(True)
+
         self.setDataMargins(0, 0, 0.05, 0.05)
 
         # Create a MyCurveLegendWidget associated to the plot
