@@ -1,7 +1,33 @@
+python:
+    - '3.6'
+branches:
+    only:
+        - master
+node_js: 6
+before_install:
+    # Here we just install Miniconda, which you shouldn't have to change.
+    - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+    - chmod +x miniconda.sh
+    - ./miniconda.sh -b
+    - export PATH=/home/travis/miniconda/bin:$PATH
+    - conda update --yes conda
+install:
+    - conda create --yes -n test python=$TRAVIS_PYTHON_VERSION
+    - source activate test
+    - pip install -U pip
+    - pip install -r requirements.txt
+    - pip install -r requirements_docs.txt
+    - pip install -e .
+#script:
+#   - python -m unittest
+after_success:
+  - cd docs && make html
 deploy:
   provider: pages
-  skip_cleanup: true
-  github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
-  keep_history: true
+  skip-cleanup: true
+  keep-history: true
   on:
     branch: master
+  github-token: $GITHUB_TOKEN
+  local-dir: docs/build/html
+  committer-from-gh: true
