@@ -15,19 +15,27 @@ to drop me a line if you find them useful. Furthermore, I appreciate if you coul
 Resources
 ---------
 
-- Documentation: http://mauro.rovezzi.it/xraysloth |travis|
+- Documentation: http://mauro.rovezzi.it/xraysloth |travis| or at https://xraysloth.readthedocs.io |rtd|
 - Citation: |zenodo|
 - License: |license|
-- Binder (*experimental, probably not working!!!*): |binder|
+- BinderHub (*experimental*): |binder|
 
 .. |license| image:: https://img.shields.io/github/license/maurov/xraysloth.svg
-  :target: https://github.com/maurov/xraysloth/blob/master/LICENSE.txt
+    :target: https://github.com/maurov/xraysloth/blob/master/LICENSE.txt
+    :alt: License
 
 .. |zenodo| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.821221.svg
-  :target: https://doi.org/10.5281/zenodo.821221
+    :target: https://doi.org/10.5281/zenodo.821221
+    :alt: Citation DOI
 
 .. |travis| image:: https://travis-ci.org/maurov/xraysloth.svg?branch=master
-  :target: https://travis-ci.org/maurov/xraysloth
+    :target: https://travis-ci.org/maurov/xraysloth
+    :alt: Travis-CI status
 
-.. |binder| image:: https://mybinder.org/badge.svg
-  :target: https://mybinder.org/v2/gh/maurov/xraysloth/master
+.. |rtd| image:: https://readthedocs.org/projects/xraysloth/badge/?version=latest
+    :target: https://xraysloth.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
+.. |binder| image:: https://img.shields.io/badge/launch-sloth-579ACA.svg
+    :target: https://mybinder.org/v2/gh/maurov/xraysloth/master
+    :alt: Launch Sloth on Binder
