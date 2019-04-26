@@ -1,0 +1,672 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sloth.math: mathematical utilities &mdash; Sloth 0.3.0-dev documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="sloth.utils: utilities" href="utils.html" />
+    <link rel="prev" title="sloth.raytracing: x-ray raytracing" href="raytracing.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Sloth
+          
+
+          
+            
+            <img src="../_static/xraysloth.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Full contents - hidden:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="io.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.io</span></code>: Input-output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collects.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects</span></code>: Data containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fit.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit</span></code>: fitting tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inst.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst</span></code>: working with instrumentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="raytracing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing</span></code>: x-ray raytracing</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math</span></code>: mathematical utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-sloth.math.gridxyz"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math.gridxyz</span></code>: grid (X,Y,Z) to meshgrid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#utilities-to-work-with-2d-grids-and-interpolation">Utilities to work with 2D grids and interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sloth.math.rotmatrix"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math.rotmatrix</span></code>: 3D rotation matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sloth.math.convolution1D"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math.convolution1D</span></code>: XAS convolution</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#description">Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#resources">Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sloth.math.normalization"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math.normalization</span></code>: normalization schemes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#normalization-schemes">Normalization schemes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sloth.math.geometry3D"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math.geometry3D</span></code>: simple 3D geometry</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sources">Sources</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sloth.math.deglitch"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math.deglitch</span></code>: data deglich (=remove spikes)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deglitch-utilities">Deglitch utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils</span></code>: utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dft.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.dft</span></code>: interacting with density functional theory (DFT) codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.gui</span></code>: GUI</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../todo.html">To Do</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Sloth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Reference</a> &raquo;</li>
+        
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math</span></code>: mathematical utilities</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/modules/math.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-sloth.math"></span><div class="section" id="sloth-math-mathematical-utilities">
+<h1><a class="reference internal" href="#module-sloth.math" title="sloth.math"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math</span></code></a>: mathematical utilities<a class="headerlink" href="#sloth-math-mathematical-utilities" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-sloth.math.gridxyz">
+<span id="sloth-math-gridxyz-grid-x-y-z-to-meshgrid"></span><h2><a class="reference internal" href="#module-sloth.math.gridxyz" title="sloth.math.gridxyz"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math.gridxyz</span></code></a>: grid (X,Y,Z) to meshgrid<a class="headerlink" href="#module-sloth.math.gridxyz" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="utilities-to-work-with-2d-grids-and-interpolation">
+<h3>Utilities to work with 2D grids and interpolation<a class="headerlink" href="#utilities-to-work-with-2d-grids-and-interpolation" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="sloth.math.gridxyz.gridxyz">
+<code class="descclassname">sloth.math.gridxyz.</code><code class="descname">gridxyz</code><span class="sig-paren">(</span><em>xcol</em>, <em>ycol</em>, <em>zcol</em>, <em>xystep=None</em>, <em>lib='scipy'</em>, <em>method='cubic'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/gridxyz.html#gridxyz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.gridxyz.gridxyz" title="Permalink to this definition">¶</a></dt>
+<dd><p>grid (X, Y, Z) 1D data on a 2D regular mesh</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ycol</strong><strong>, </strong><strong>zcol</strong> (<em>xcol</em><em>,</em>) – </p></li>
+<li><p><strong>xystep</strong> (<em>the step size of the XY grid</em>) – </p></li>
+<li><p><strong>lib</strong> (<em>library used for griddata</em>) – [scipy]
+matplotlib</p></li>
+<li><p><strong>method</strong> (<em>interpolation method</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>xgrid, ygrid</strong> (<em>1D arrays giving abscissa and ordinate of the map</em>)</p></li>
+<li><p><strong>zz</strong> (<em>2D array with the gridded intensity map</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">-()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.math.gridxyz.gridxyz_larch">
+<code class="descclassname">sloth.math.gridxyz.</code><code class="descname">gridxyz_larch</code><span class="sig-paren">(</span><em>xcol</em>, <em>ycol</em>, <em>zcol</em>, <em>xystep=None</em>, <em>method='cubic'</em>, <em>lib='scipy'</em>, <em>_larch=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/gridxyz.html#gridxyz_larch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.gridxyz.gridxyz_larch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Larch equivalent of gridxyz()  grid (X, Y, Z) 1D data on a 2D regular mesh</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ycol</strong><strong>, </strong><strong>zcol</strong> (<em>xcol</em><em>,</em>) – </p></li>
+<li><p><strong>xystep</strong> (<em>the step size of the XY grid</em>) – </p></li>
+<li><p><strong>lib</strong> (<em>library used for griddata</em>) – [scipy]
+matplotlib</p></li>
+<li><p><strong>method</strong> (<em>interpolation method</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>xgrid, ygrid</strong> (<em>1D arrays giving abscissa and ordinate of the map</em>)</p></li>
+<li><p><strong>zz</strong> (<em>2D array with the gridded intensity map</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">-()</span></code></p>
+</div>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-sloth.math.rotmatrix">
+<span id="sloth-math-rotmatrix-3d-rotation-matrix"></span><h2><a class="reference internal" href="#module-sloth.math.rotmatrix" title="sloth.math.rotmatrix"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math.rotmatrix</span></code></a>: 3D rotation matrix<a class="headerlink" href="#module-sloth.math.rotmatrix" title="Permalink to this headline">¶</a></h2>
+<p>Rotation matrix using the <a class="reference external" href="http://en.wikipedia.org/wiki/Euler%E2%80%93Rodrigues_parameters">Euler-Rodrigues formula</a></p>
+<p>Rotation using the <a class="reference external" href="http://en.wikipedia.org/wiki/Right_hand_rule">right hand rule</a></p>
+<p>Code downloaded from
+<a class="reference external" href="http://stackoverflow.com/questions/6802577/python-rotation-of-3d-vector">http://stackoverflow.com/questions/6802577/python-rotation-of-3d-vector</a></p>
+<dl class="function">
+<dt id="sloth.math.rotmatrix.rotation_matrix_numpy">
+<code class="descclassname">sloth.math.rotmatrix.</code><code class="descname">rotation_matrix_numpy</code><span class="sig-paren">(</span><em>axis</em>, <em>theta</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/rotmatrix.html#rotation_matrix_numpy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.rotmatrix.rotation_matrix_numpy" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the rotation matrix using numpy</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>numpy.array</em><em>(</em><em>[</em><em>x</em><em>,</em><em>y</em><em>,</em><em>z</em><em>]</em><em>)</em>) – </p></li>
+<li><p><strong>theta</strong> (<em>rotation angle in radians</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.math.rotmatrix.rotation_matrix_weave">
+<code class="descclassname">sloth.math.rotmatrix.</code><code class="descname">rotation_matrix_weave</code><span class="sig-paren">(</span><em>axis</em>, <em>theta</em>, <em>mat=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/rotmatrix.html#rotation_matrix_weave"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.rotmatrix.rotation_matrix_weave" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the rotation matrix using Weave
+(~20x faster than numpy)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>numpy.array</em><em>(</em><em>[</em><em>x</em><em>,</em><em>y</em><em>,</em><em>z</em><em>]</em><em>)</em>) – </p></li>
+<li><p><strong>theta</strong> (<em>rotation angle in radians</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.math.rotmatrix.rotate">
+<code class="descclassname">sloth.math.rotmatrix.</code><code class="descname">rotate</code><span class="sig-paren">(</span><em>arr</em>, <em>axis</em>, <em>theta</em>, <em>method='numpy'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/rotmatrix.html#rotate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.rotmatrix.rotate" title="Permalink to this definition">¶</a></dt>
+<dd><p>rotate array around axis by theta with ‘numpy’ or ‘weave’</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>arr</strong> (<em>np.array</em><em>(</em><em>[</em><em>x</em><em>,</em><em>y</em><em>,</em><em>z</em><em>]</em><em>)</em>) – </p></li>
+<li><p><strong>axis</strong> (<em>np.array</em><em>(</em><em>[</em><em>x</em><em>,</em><em>y</em><em>,</em><em>z</em><em>]</em><em>)</em>) – </p></li>
+<li><p><strong>theta</strong> (<em>in radians</em>) – </p></li>
+<li><p><strong>method</strong> (<em>'numpy'</em><em> or </em><em>'weave'</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array([x,y,z])</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sloth.math.convolution1D">
+<span id="sloth-math-convolution1d-xas-convolution"></span><h2><a class="reference internal" href="#module-sloth.math.convolution1D" title="sloth.math.convolution1D"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math.convolution1D</span></code></a>: XAS convolution<a class="headerlink" href="#module-sloth.math.convolution1D" title="Permalink to this headline">¶</a></h2>
+<p>Generic discrete convolution</p>
+<div class="section" id="description">
+<h3>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>This is a manual (not optimized!) implementation of discrete 1D
+convolution intended for spectroscopy analysis. The difference with
+commonly used methods is the possibility to adapt the convolution
+kernel for each convolution point, e.g. change the FWHM of the
+Gaussian kernel as a function of the energy scale.</p>
+</div></blockquote>
+</div>
+<div class="section" id="resources">
+<h3>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h3>
+<dl class="citation">
+<dt class="label" id="wpconv"><span class="brackets">WPconv</span></dt>
+<dd><p>&lt;<a class="reference external" href="http://en.wikipedia.org/wiki/Convolution#Discrete_convolution">http://en.wikipedia.org/wiki/Convolution#Discrete_convolution</a>&gt;</p>
+</dd>
+<dt class="label" id="fisher"><span class="brackets">Fisher</span></dt>
+<dd><p>&lt;<a class="reference external" href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/convolve.htm">http://homepages.inf.ed.ac.uk/rbf/HIPR2/convolve.htm</a>&gt;</p>
+</dd>
+<dt class="label" id="gp1202"><span class="brackets">GP1202</span></dt>
+<dd><p>&lt;<a class="reference external" href="http://glowingpython.blogspot.fr/2012/02/convolution-with-numpy.html">http://glowingpython.blogspot.fr/2012/02/convolution-with-numpy.html</a>&gt;</p>
+</dd>
+</dl>
+<dl class="function">
+<dt id="sloth.math.convolution1D.gaussian">
+<code class="descclassname">sloth.math.convolution1D.</code><code class="descname">gaussian</code><span class="sig-paren">(</span><em>x</em>, <em>cen=0</em>, <em>sigma=1</em>, <em>fwhm=False</em>, <em>peak=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/convolution1D.html#gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.convolution1D.gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>1 dimensional Gaussian function (<a class="reference external" href="https://en.wikipedia.org/wiki/Gaussian_function">https://en.wikipedia.org/wiki/Gaussian_function</a>)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – </p></li>
+<li><p><strong>cen</strong> (<em>[</em><em>0</em><em>] </em><em>center</em><em>, </em><em>x0</em>) – </p></li>
+<li><p><strong>sigma</strong> (<em>[</em><em>1</em><em>] </em><em>standard deviation</em><em>, </em><em>FWHM = 2*sqrt</em><em>(</em><em>2*ln</em><em>(</em><em>2</em><em>)</em><em>) </em><em>* sigma =~ 2.35482 * sigma</em>) – </p></li>
+<li><p><strong>fwhm</strong> (<em>[</em><em>False</em><em>] </em><em>if True</em><em>, </em><em>the given sigma is assumed as fwhm and then converted accordingly</em>) – </p></li>
+<li><p><strong>peak</strong> (<em>[</em><em>None</em><em>] </em><em>if None</em><em>, </em><em>peak = 1 / math.sqrt</em><em>(</em><em>2*math.pi</em><em>)</em><em>, </em><em>the distribution integrate to 1</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.math.convolution1D.lorentzian">
+<code class="descclassname">sloth.math.convolution1D.</code><code class="descname">lorentzian</code><span class="sig-paren">(</span><em>x</em>, <em>cen=0</em>, <em>gamma=1</em>, <em>peak=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/convolution1D.html#lorentzian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.convolution1D.lorentzian" title="Permalink to this definition">¶</a></dt>
+<dd><p>1 dimensional Lorentzian</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – </p></li>
+<li><p><strong>cen</strong> (<em>[</em><em>0</em><em>] </em><em>center</em><em>, </em><em>x0</em>) – </p></li>
+<li><p><strong>gamma</strong> (<em>[</em><em>1</em><em>] </em><em>half width at half maximum</em>) – </p></li>
+<li><p><strong>peak</strong> (<em>[</em><em>None</em><em>] </em><em>if None</em><em>, </em><em>peak = 1 /</em><em> (</em><em>math.pi*sigma</em><em>)</em><em>, </em><em>the distribution integrate to 1</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.math.convolution1D.get_ene_index">
+<code class="descclassname">sloth.math.convolution1D.</code><code class="descname">get_ene_index</code><span class="sig-paren">(</span><em>ene</em>, <em>cen</em>, <em>hwhm</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/convolution1D.html#get_ene_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.convolution1D.get_ene_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the min/max indexes for array ene at (cen-hwhm) and (cen+hwhm)
+very similar to index_of in larch</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.math.convolution1D.lin_gamma">
+<code class="descclassname">sloth.math.convolution1D.</code><code class="descname">lin_gamma</code><span class="sig-paren">(</span><em>ene</em>, <em>fwhm=1.0</em>, <em>linbroad=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/convolution1D.html#lin_gamma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.convolution1D.lin_gamma" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns constant or linear energy-dependent broadening</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ene</strong> (<em>energy array in eV</em>) – </p></li>
+<li><p><strong>fwhm</strong> (<em>first full width at half maximum in eV</em>) – </p></li>
+<li><p><strong>linbroad</strong> (<em>list of 3-elements giving</em>) – ‘second full width at half maximum’
+‘energy starting point of the linear increase’
+‘energy ending point of the linear increase’</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.math.convolution1D.atan_gamma">
+<code class="descclassname">sloth.math.convolution1D.</code><code class="descname">atan_gamma</code><span class="sig-paren">(</span><em>ene</em>, <em>gamma_hole</em>, <em>gamma_max=15.0</em>, <em>e0=0</em>, <em>eslope=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/convolution1D.html#atan_gamma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.convolution1D.atan_gamma" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns arctangent-like broadening, $Gamma(E)$</p>
+<blockquote>
+<div><p>..math</p>
+<p>Gamma(E) = Gamma_{hole} + Gamma_{max} * ( rctan(</p>
+</div></blockquote>
+<p>rac{E-E_{0}}{E_{slope}} ) / pi + 1/2) )</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.math.convolution1D.conv">
+<code class="descclassname">sloth.math.convolution1D.</code><code class="descname">conv</code><span class="sig-paren">(</span><em>e</em>, <em>mu</em>, <em>kernel='gaussian'</em>, <em>fwhm_e=None</em>, <em>efermi=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/convolution1D.html#conv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.convolution1D.conv" title="Permalink to this definition">¶</a></dt>
+<dd><p>linear broadening</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>e</strong> (<em>x-axis</em><em> (</em><em>energy</em><em>)</em>) – </p></li>
+<li><p><strong>mu</strong> (<em>f</em><em>(</em><em>x</em><em>) </em><em>to convolve with g</em><em>(</em><em>x</em><em>) </em><em>kernel</em><em>, </em><em>mu</em><em>(</em><em>energy</em><em>)</em>) – </p></li>
+<li><p><strong>kernel</strong> (<em>convolution kernel</em><em>, </em><em>g</em><em>(</em><em>x</em><em>)</em>) – ‘gaussian’
+‘lorentzian’</p></li>
+<li><p><strong>fwhm_e</strong> (<em>the full width half maximum in eV for the kernel</em>) – broadening. It is an array of size ‘e’ with constants or
+an energy-dependent values determined by a function as
+‘lin_gamma()’ or ‘atan_gamma()’</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.math.convolution1D.glinbroad">
+<code class="descclassname">sloth.math.convolution1D.</code><code class="descname">glinbroad</code><span class="sig-paren">(</span><em>e</em>, <em>mu</em>, <em>fwhm_e=None</em>, <em>efermi=None</em>, <em>_larch=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/convolution1D.html#glinbroad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.convolution1D.glinbroad" title="Permalink to this definition">¶</a></dt>
+<dd><p>linear broadening</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>e</strong> (<em>x-axis</em><em> (</em><em>energy</em><em>)</em>) – </p></li>
+<li><p><strong>mu</strong> (<em>f</em><em>(</em><em>x</em><em>) </em><em>to convolve with g</em><em>(</em><em>x</em><em>) </em><em>kernel</em><em>, </em><em>mu</em><em>(</em><em>energy</em><em>)</em>) – </p></li>
+<li><p><strong>kernel</strong> (<em>convolution kernel</em><em>, </em><em>g</em><em>(</em><em>x</em><em>)</em>) – ‘gaussian’
+‘lorentzian’</p></li>
+<li><p><strong>fwhm_e</strong> (<em>the full width half maximum in eV for the kernel</em>) – broadening. It is an array of size ‘e’ with constants or
+an energy-dependent values determined by a function as
+‘lin_gamma()’ or ‘atan_gamma()’</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="sloth.math.convolution1D.FdmnesConv">
+<em class="property">class </em><code class="descclassname">sloth.math.convolution1D.</code><code class="descname">FdmnesConv</code><span class="sig-paren">(</span><em>opts=None</em>, <em>calcroot=None</em>, <em>fn_in=None</em>, <em>fn_out=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/convolution1D.html#FdmnesConv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.convolution1D.FdmnesConv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs convolution with FDMNES within Python</p>
+<dl class="method">
+<dt id="sloth.math.convolution1D.FdmnesConv.wfdmfile">
+<code class="descname">wfdmfile</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/convolution1D.html#FdmnesConv.wfdmfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.convolution1D.FdmnesConv.wfdmfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>write a simple fdmfile.txt to enable the convolution
+first makes a copy of previous fdmfile.txt if not already done</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sloth.math.convolution1D.FdmnesConv.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/convolution1D.html#FdmnesConv.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.convolution1D.FdmnesConv.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>runs fdmnes</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-sloth.math.normalization">
+<span id="sloth-math-normalization-normalization-schemes"></span><h2><a class="reference internal" href="#module-sloth.math.normalization" title="sloth.math.normalization"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math.normalization</span></code></a>: normalization schemes<a class="headerlink" href="#module-sloth.math.normalization" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="normalization-schemes">
+<h3>Normalization schemes<a class="headerlink" href="#normalization-schemes" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="sloth.math.normalization.norm1D">
+<code class="descclassname">sloth.math.normalization.</code><code class="descname">norm1D</code><span class="sig-paren">(</span><em>y</em>, <em>norm=None</em>, <em>**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/normalization.html#norm1D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.normalization.norm1D" title="Permalink to this definition">¶</a></dt>
+<dd><p>collection of simple normalization methods</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>array of float</em><em>, </em><em>to normalize</em>) – </p></li>
+<li><p><strong>norm</strong> (<em>string</em><em>, </em><em>available options</em>) – “max”     -&gt; y / np.max(y)
+“max-min” -&gt; (y - np.min(y)) / (np.max(y) - np.min(y))
+“area”    -&gt; (y - np.min(y)) / np.trapz(y, x=kws.get(‘x’))
+“sum”     -&gt;  (y - np.min(y)) / np.sum(y)
+“larch”   -&gt; TODO!!!</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ynorm</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array of float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-sloth.math.geometry3D">
+<span id="sloth-math-geometry3d-simple-3d-geometry"></span><h2><a class="reference internal" href="#module-sloth.math.geometry3D" title="sloth.math.geometry3D"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math.geometry3D</span></code></a>: simple 3D geometry<a class="headerlink" href="#module-sloth.math.geometry3D" title="Permalink to this headline">¶</a></h2>
+<p>Collection of simple 3D geometry utilities</p>
+<div class="section" id="sources">
+<h3>Sources<a class="headerlink" href="#sources" title="Permalink to this headline">¶</a></h3>
+<p>The following functions are simply grabbed for the net. In this case,
+their own license apply.</p>
+<dl class="function">
+<dt id="sloth.math.geometry3D.dot">
+<code class="descclassname">sloth.math.geometry3D.</code><code class="descname">dot</code><span class="sig-paren">(</span><em>v1</em>, <em>v2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/geometry3D.html#dot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.geometry3D.dot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dot product of two vectors</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.math.geometry3D.cross">
+<code class="descclassname">sloth.math.geometry3D.</code><code class="descname">cross</code><span class="sig-paren">(</span><em>v1</em>, <em>v2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/geometry3D.html#cross"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.geometry3D.cross" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cross product of two vectors</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.math.geometry3D.length">
+<code class="descclassname">sloth.math.geometry3D.</code><code class="descname">length</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/geometry3D.html#length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.geometry3D.length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Length of vector</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.math.geometry3D.unit">
+<code class="descclassname">sloth.math.geometry3D.</code><code class="descname">unit</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/geometry3D.html#unit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.geometry3D.unit" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unit vector in the direction of v</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.math.geometry3D.circle_3p">
+<code class="descclassname">sloth.math.geometry3D.</code><code class="descname">circle_3p</code><span class="sig-paren">(</span><em>A</em>, <em>B</em>, <em>C</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/geometry3D.html#circle_3p"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.geometry3D.circle_3p" title="Permalink to this definition">¶</a></dt>
+<dd><p>get center and radius of a circle given 3 points in space</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.math.geometry3D.plane_3p">
+<code class="descclassname">sloth.math.geometry3D.</code><code class="descname">plane_3p</code><span class="sig-paren">(</span><em>p1</em>, <em>p2</em>, <em>p3</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/geometry3D.html#plane_3p"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.geometry3D.plane_3p" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the plane ax+by+cz+d=0 given 3 points, p1, p2, p3</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.math.geometry3D.circle_radius">
+<code class="descclassname">sloth.math.geometry3D.</code><code class="descname">circle_radius</code><span class="sig-paren">(</span><em>point</em>, <em>center</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/geometry3D.html#circle_radius"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.geometry3D.circle_radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>get circle radius given a point and center as 3D arrays</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.math.geometry3D.lines2_intersect">
+<code class="descclassname">sloth.math.geometry3D.</code><code class="descname">lines2_intersect</code><span class="sig-paren">(</span><em>p10</em>, <em>p11</em>, <em>p20</em>, <em>p21</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/geometry3D.html#lines2_intersect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.geometry3D.lines2_intersect" title="Permalink to this definition">¶</a></dt>
+<dd><p>get intesection point, assuming line1 and line2 intersect and
+represented by two points each line, respectively, (p10, p11)
+and (p20, p21)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.math.geometry3D.angle_3p">
+<code class="descclassname">sloth.math.geometry3D.</code><code class="descname">angle_3p</code><span class="sig-paren">(</span><em>p0</em>, <em>p1</em>, <em>p2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/geometry3D.html#angle_3p"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.geometry3D.angle_3p" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the angle between three 3D points, p0 is the intersection point</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.math.geometry3D.point_on_plane_projection">
+<code class="descclassname">sloth.math.geometry3D.</code><code class="descname">point_on_plane_projection</code><span class="sig-paren">(</span><em>point</em>, <em>plane</em>, <em>test=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/geometry3D.html#point_on_plane_projection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.geometry3D.point_on_plane_projection" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the orthogonal projection of a 3d point on plane</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point</strong> (<em>3d P</em><em>(</em><em>x</em><em>,</em><em>y</em><em>,</em><em>z</em><em>) </em><em>=&gt; np.array</em><em>(</em><em>[</em><em>x</em><em>,</em><em>y</em><em>,</em><em>z</em><em>]</em><em>)</em>) – </p></li>
+<li><p><strong>plane</strong> (<em>Ax+By+Cz+d=0</em><em>, </em><em>norm =</em><em> (</em><em>A</em><em>,</em><em>B</em><em>,</em><em>C</em><em>)</em>) – =&gt; np.array([norm_x, norm_y, norm_z, d])</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>proj_pt</strong> – =&gt; np.array([proj_x, proj_y, proj_z])</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>projected point = point - norm * offset</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-sloth.math.deglitch">
+<span id="sloth-math-deglitch-data-deglich-remove-spikes"></span><h2><a class="reference internal" href="#module-sloth.math.deglitch" title="sloth.math.deglitch"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math.deglitch</span></code></a>: data deglich (=remove spikes)<a class="headerlink" href="#module-sloth.math.deglitch" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="deglitch-utilities">
+<h3>Deglitch utilities<a class="headerlink" href="#deglitch-utilities" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="sloth.math.deglitch.remove_spikes">
+<code class="descclassname">sloth.math.deglitch.</code><code class="descname">remove_spikes</code><span class="sig-paren">(</span><em>y</em>, <em>window=3</em>, <em>threshold=3</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/deglitch.html#remove_spikes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.deglitch.remove_spikes" title="Permalink to this definition">¶</a></dt>
+<dd><p>remove spikes using pandas</p>
+<p>taken from <a href="#id1"><span class="problematic" id="id2">`https://ocefpaf.github.io/python4oceanographers/blog/2015/03/16/outlier_detection/`_</span></a></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>this will not work in pandas &gt; 0.17 one could simply do
+<cite>df.rolling(3, center=True).median()</cite>; also
+df.as_matrix() is deprecated, use df.values instead</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>data array</em>) – </p></li>
+<li><p><strong>window</strong> (<em>int</em><em>, </em><em>[</em><em>3</em><em>]</em>) – window in rolling</p></li>
+<li><p><strong>threshold</strong> (<em>int</em><em>, </em><em>[</em><em>3</em><em>]</em>) – number of sigma</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ynew</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array like x/y</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="utils.html" class="btn btn-neutral float-right" title="sloth.utils: utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="raytracing.html" class="btn btn-neutral float-left" title="sloth.raytracing: x-ray raytracing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014--2019, Mauro Rovezzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

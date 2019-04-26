@@ -1,0 +1,1090 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sloth.io.specfile_reader &mdash; Sloth 0.3.0-dev documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Sloth
+          
+
+          
+            
+            <img src="../../../_static/xraysloth.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Full contents - hidden:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../todo.html">To Do</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Sloth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sloth.io.specfile_reader</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sloth.io.specfile_reader</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;SpecfileData object to read data in SPEC_ format</span>
+<span class="sd">===================================================</span>
+
+<span class="sd">.. _SPEC: http://www.certif.com/content/spec</span>
+
+<span class="sd">Requirements</span>
+<span class="sd">------------</span>
+<span class="sd">- silx (http://www.silx.org/doc/silx/dev/modules/io/specfilewrapper.html)</span>
+
+<span class="sd">TODO</span>
+<span class="sd">----</span>
+<span class="sd">- _pymca_average() : use faster scipy.interpolate.interp1d</span>
+<span class="sd">- implement a 2D normalization in get_map</span>
+<span class="sd">- implement the case of dichroic measurements (two consecutive scans</span>
+<span class="sd">  with flipped helicity)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Mauro Rovezzi&quot;</span><span class="p">,</span> <span class="s2">&quot;Matt Newville&quot;</span><span class="p">]</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.2.2 (sloth)&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">interp1d</span>
+<span class="kn">from</span> <span class="nn">scipy.ndimage</span> <span class="k">import</span> <span class="n">map_coordinates</span>
+
+<span class="c1"># to grid X,Y,Z columnar data</span>
+<span class="n">HAS_GRIDXYZ</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1">#from larch_plugins.math.gridxyz import gridxyz</span>
+    <span class="kn">from</span> <span class="nn">..math.gridxyz</span> <span class="k">import</span> <span class="n">gridxyz</span>
+    <span class="n">HAS_GRIDXYZ</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+<span class="n">HAS_SPECFILE</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">silx.io</span> <span class="k">import</span> <span class="n">specfilewrapper</span> <span class="k">as</span> <span class="n">specfile</span>
+    <span class="n">HAS_SPECFILE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+<span class="c1"># SimpleMath from PyMca5</span>
+<span class="n">HAS_SIMPLEMATH</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">try</span><span class="p">:</span>
+   <span class="kn">from</span> <span class="nn">PyMca5.PyMcaMath</span> <span class="k">import</span> <span class="n">SimpleMath</span>
+   <span class="n">HAS_SIMPLEMATH</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+   <span class="k">pass</span>
+
+<span class="c1"># SG module from PyMca5</span>
+<span class="n">HAS_SGMODULE</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">try</span><span class="p">:</span>
+   <span class="kn">from</span> <span class="nn">PyMca5.PyMcaMath</span> <span class="k">import</span> <span class="n">SGModule</span>
+   <span class="n">HAS_SGMODULE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+   <span class="k">pass</span>
+
+<span class="c1"># specfile_writer</span>
+<span class="n">HAS_SFDW</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.specfile_writer</span> <span class="k">import</span> <span class="n">SpecfileDataWriter</span>
+    <span class="n">HAS_SFDW</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">ImportError</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="c1">### UTILITIES (the class is below!)</span>
+<span class="kn">from</span> <span class="nn">sloth.utils.strings</span> <span class="k">import</span> <span class="n">str2rng</span> <span class="k">as</span> <span class="n">_str2rng</span>
+
+<span class="k">def</span> <span class="nf">_mot2array</span><span class="p">(</span><span class="n">motor</span><span class="p">,</span> <span class="n">acopy</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;simple utility to generate a copy of an array containing a</span>
+<span class="sd">    constant value (e.g. motor position)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">acopy</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">motor</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_make_dlist</span><span class="p">(</span><span class="n">dall</span><span class="p">,</span> <span class="n">rep</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;make a list of strings representing the scans to average</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dall : list of all good scans</span>
+<span class="sd">    rep : int, repetition</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dlist : list of lists of int</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dlist</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">rep</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rep</span><span class="p">):</span>
+        <span class="n">dlist</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">dall</span><span class="p">[</span><span class="n">idx</span><span class="p">::</span><span class="n">rep</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">dlist</span>
+
+<span class="k">def</span> <span class="nf">_checkZeroDiv</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="n">dnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;compatibility layer&quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;DEPRECATED: use &#39;_check_zero_div&#39; instead&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_check_zero_div</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="n">dnum</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_check_zero_div</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="n">dnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;simple division check to avoid ZeroDivisionError&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">num</span><span class="o">/</span><span class="n">dnum</span>
+    <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: found a division by zero&quot;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_checkScans</span><span class="p">(</span><span class="n">scans</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;compatibility layer&quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;DEPRECATED: use &#39;_check_scans&#39; instead&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_check_scans</span><span class="p">(</span><span class="n">scans</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_check_scans</span><span class="p">(</span><span class="n">scans</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;simple checker for scans input&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">scans</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;Provide a string or list of scans to load&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">scans</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">nscans</span> <span class="o">=</span> <span class="n">_str2rng</span><span class="p">(</span><span class="n">scans</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;scans string &#39;</span><span class="si">{0}</span><span class="s2">&#39; not understood by str2rng&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">scans</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">scans</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="n">nscans</span> <span class="o">=</span> <span class="n">scans</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;Provide a string or list of scans to load&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">nscans</span>
+
+<span class="k">def</span> <span class="nf">_numpy_sum_list</span><span class="p">(</span><span class="n">xdats</span><span class="p">,</span> <span class="n">zdats</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;sum list of arrays</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xdats, zdats : lists of arrays</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    xdats[0], sum(zdats)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1">#sum element-by-element</span>
+        <span class="n">arr_zdats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">zdats</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">xdats</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">arr_zdats</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="c1">#sum by interpolation</span>
+        <span class="n">xref</span> <span class="o">=</span> <span class="n">xdats</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">zsum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">xref</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">xdat</span><span class="p">,</span> <span class="n">zdat</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xdats</span><span class="p">,</span> <span class="n">zdats</span><span class="p">):</span>
+            <span class="n">fdat</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">xdat</span><span class="p">,</span> <span class="n">zdat</span><span class="p">)</span>
+            <span class="n">zsum</span> <span class="o">+=</span> <span class="n">fdat</span><span class="p">(</span><span class="n">xref</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">xref</span><span class="p">,</span> <span class="n">zsum</span>
+
+<span class="k">def</span> <span class="nf">_pymca_average</span><span class="p">(</span><span class="n">xdats</span><span class="p">,</span> <span class="n">zdats</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;call to SimpleMath.average() method from PyMca/SimpleMath.py</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - xdats, ydats : lists of arrays contaning the data to merge</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    - xmrg, zmrg : 1D arrays containing the merged data</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">HAS_SIMPLEMATH</span><span class="p">:</span>
+        <span class="n">sm</span> <span class="o">=</span> <span class="n">SimpleMath</span><span class="o">.</span><span class="n">SimpleMath</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Merging data...&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sm</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">xdats</span><span class="p">,</span> <span class="n">zdats</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;SimpleMath is not available -- this operation cannot be performed!&quot;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_pymca_SG</span><span class="p">(</span><span class="n">ydat</span><span class="p">,</span> <span class="n">npoints</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;call to symmetric Savitzky-Golay filter in PyMca</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ydat : 1D array contaning the data to smooth</span>
+<span class="sd">    npoints : integer [3], means that 2*npoints+1 values contribute</span>
+<span class="sd">              to the smoother.</span>
+<span class="sd">    degree : degree of fitting polynomial</span>
+<span class="sd">    order : is degree of implicit differentiation</span>
+<span class="sd">            0 means that filter results in smoothing of function</span>
+<span class="sd">            1 means that filter results in smoothing the first</span>
+<span class="sd">              derivative of function.</span>
+<span class="sd">            and so on ...</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ys : smoothed array</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">HAS_SGMODULE</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">SGModule</span><span class="o">.</span><span class="n">getSavitzkyGolay</span><span class="p">(</span><span class="n">ydat</span><span class="p">,</span> <span class="n">npoints</span><span class="o">=</span><span class="n">npoints</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;SGModule is not available -- this operation cannot be performed!&quot;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">savitzky_golay</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">window_size</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="c1"># code from from scipy cookbook</span>
+    <span class="sd">&quot;&quot;&quot;Smooth (and optionally differentiate) data with a Savitzky-Golay</span>
+<span class="sd">    filter.  The Savitzky-Golay filter removes high frequency noise</span>
+<span class="sd">    from data.  It has the advantage of preserving the original shape</span>
+<span class="sd">    and features of the signal better than other types of filtering</span>
+<span class="sd">    approaches, such as moving averages techhniques.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y : array_like, shape (N,)</span>
+<span class="sd">        the values of the time history of the signal.</span>
+<span class="sd">    window_size : int</span>
+<span class="sd">                  the length of the window. Must be an odd integer</span>
+<span class="sd">                  number.</span>
+<span class="sd">    order : int</span>
+<span class="sd">            the order of the polynomial used in the filtering. Must be</span>
+<span class="sd">            less then `window_size` - 1.</span>
+<span class="sd">    deriv: int</span>
+<span class="sd">           the order of the derivative to compute (default = 0 means</span>
+<span class="sd">           only smoothing)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ys : ndarray, shape (N)</span>
+<span class="sd">         the smoothed signal (or it&#39;s n-th derivative).</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The Savitzky-Golay is a type of low-pass filter, particularly</span>
+<span class="sd">    suited for smoothing noisy data. The main idea behind this</span>
+<span class="sd">    approach is to make for each point a least-square fit with a</span>
+<span class="sd">    polynomial of high order over a odd-sized window centered at the</span>
+<span class="sd">    point.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    t = np.linspace(-4, 4, 500)</span>
+<span class="sd">    y = np.exp( -t**2 ) + np.random.normal(0, 0.05, t.shape)</span>
+<span class="sd">    ysg = savitzky_golay(y, window_size=31, order=4)</span>
+<span class="sd">    import matplotlib.pyplot as plt</span>
+<span class="sd">    plt.plot(t, y, label=&#39;Noisy signal&#39;)</span>
+<span class="sd">    plt.plot(t, np.exp(-t**2), &#39;k&#39;, lw=1.5, label=&#39;Original signal&#39;)</span>
+<span class="sd">    plt.plot(t, ysg, &#39;r&#39;, label=&#39;Filtered signal&#39;)</span>
+<span class="sd">    plt.legend()</span>
+<span class="sd">    plt.show()</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] A. Savitzky, M. J. E. Golay, Smoothing and Differentiation</span>
+<span class="sd">           of Data by Simplified Least Squares Procedures. Analytical</span>
+<span class="sd">           Chemistry, 1964, 36 (8), pp 1627-1639.</span>
+
+<span class="sd">    .. [2] Numerical Recipes 3rd Edition: The Art of Scientific</span>
+<span class="sd">           Computing W.H. Press, S.A. Teukolsky, W.T. Vetterling,</span>
+<span class="sd">           B.P. Flannery Cambridge University Press ISBN-13:</span>
+<span class="sd">           9780521880688</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">window_size</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">window_size</span><span class="p">))</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">order</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;window_size and order have to be of type int&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">window_size</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">window_size</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;window_size size must be a positive odd number&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">window_size</span> <span class="o">&lt;</span> <span class="n">order</span> <span class="o">+</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;window_size is too small for the polynomials order&quot;</span><span class="p">)</span>
+    <span class="n">order_range</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">order</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">half_window</span> <span class="o">=</span> <span class="p">(</span><span class="n">window_size</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="c1"># precompute coefficients</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mat</span><span class="p">([[</span><span class="n">k</span><span class="o">**</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">order_range</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">half_window</span><span class="p">,</span> <span class="n">half_window</span><span class="o">+</span><span class="mi">1</span><span class="p">)])</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">A</span><span class="p">[</span><span class="n">deriv</span><span class="p">]</span>
+    <span class="c1"># pad the signal at the extremes with</span>
+    <span class="c1"># values taken from the signal itself</span>
+    <span class="n">firstvals</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">half_window</span><span class="o">+</span><span class="mi">1</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span>
+    <span class="n">lastvals</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="n">half_window</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">firstvals</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">lastvals</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;valid&#39;</span><span class="p">)</span>
+
+<span class="c1">### ==================================================================</span>
+<span class="c1">### MAIN CLASS</span>
+<span class="c1">### ==================================================================</span>
+<div class="viewcode-block" id="SpecfileData"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.specfile_reader.SpecfileData">[docs]</a><span class="k">class</span> <span class="nc">SpecfileData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;SpecfileData object&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cntx</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cnty</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">csig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">cmon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">csec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;reads the given specfile</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fname : SPEC file name [string, None]</span>
+<span class="sd">                if &#39;DUMMY!&#39;: return (used to get docstrings)</span>
+<span class="sd">        cntx : counter for x axis, motor 1 scanned [string, 1]</span>
+<span class="sd">        cnty : counter for y axis, motor 2 steps [string, None]</span>
+<span class="sd">               used by get_map()</span>
+<span class="sd">        csig : counter for signal [string, None]</span>
+<span class="sd">        cmon : counter for monitor/normalization [string, None]</span>
+<span class="sd">        csec : counter for time in seconds [string, None]</span>
+<span class="sd">        scnt : scan type [string, None]</span>
+<span class="sd">        norm : normalization [string, None]</span>
+<span class="sd">               &#39;max&#39; -&gt; z/max(z)</span>
+<span class="sd">               &#39;max-min&#39; -&gt; (z-min(z))/(max(z)-min(z))</span>
+<span class="sd">               &#39;area&#39; -&gt; (z-min(z))/trapz(z, x)</span>
+<span class="sd">               &#39;sum&#39; -&gt; (z-min(z)/sum(z)</span>
+
+<span class="sd">        verbosity : level of verbosity [int, 0]</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None, sets attributes.</span>
+<span class="sd">        self.fname -&gt; spec file name</span>
+<span class="sd">        self.sf -&gt; spec file object</span>
+<span class="sd">        self.cntx/cnty/csig/cmon/csec/norm</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">=</span> <span class="n">verbosity</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">fname</span> <span class="o">==</span> <span class="s1">&#39;DUMMY!&#39;</span><span class="p">):</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">HAS_SPECFILE</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING &#39;specfile&#39; is missing -&gt; check requirements!&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">fname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;Provide a SPEC data file to load with full path&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s2">&quot;File not found: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">fname</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;sf&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;fname&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fname</span> <span class="o">==</span> <span class="n">fname</span><span class="p">:</span>
+                    <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sf</span> <span class="o">=</span> <span class="n">specfile</span><span class="o">.</span><span class="n">Specfile</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span> <span class="c1">#sf = specfile file</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fname</span> <span class="o">=</span> <span class="n">fname</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loaded: </span><span class="si">{0}</span><span class="s2"> (</span><span class="si">{1}</span><span class="s2"> scans)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sf</span><span class="o">.</span><span class="n">scanno</span><span class="p">()))</span>
+        <span class="c1">#if HAS_SIMPLEMATH: self.sm = SimpleMath.SimpleMath()</span>
+        <span class="c1">#set common attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cntx</span> <span class="o">=</span> <span class="n">cntx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnty</span> <span class="o">=</span> <span class="n">cnty</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">csig</span> <span class="o">=</span> <span class="n">csig</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmon</span> <span class="o">=</span> <span class="n">cmon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">csec</span> <span class="o">=</span> <span class="n">csec</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="n">norm</span>
+
+<div class="viewcode-block" id="SpecfileData.get_scan"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.specfile_reader.SpecfileData.get_scan">[docs]</a>    <span class="k">def</span> <span class="nf">get_scan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scnt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get a single scan from a SPEC file</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        scan : scan number to get [integer]</span>
+<span class="sd">        cntx : counter for x axis, motor 1 scanned [string]</span>
+<span class="sd">        cnty : counter for y axis, motor 2 steps [string] - used by get_map()</span>
+<span class="sd">        csig : counter for signal [string]</span>
+<span class="sd">        cmon : counter for monitor/normalization [string]</span>
+<span class="sd">        csec : counter for time in seconds [string]</span>
+<span class="sd">        scnt : scan type [string]</span>
+<span class="sd">        norm : normalization [string]</span>
+<span class="sd">               &#39;max&#39; -&gt; z/max(z)</span>
+<span class="sd">               &#39;max-min&#39; -&gt; (z-min(z))/(max(z)-min(z))</span>
+<span class="sd">               &#39;area&#39; -&gt; (z-min(z))/trapz(z, x)</span>
+<span class="sd">               &#39;sum&#39; -&gt; (z-min(z)/sum(z)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        scan_datx : 1D array with x data (scanned axis)</span>
+<span class="sd">        scan_datz : 1D array with z data (intensity axis)</span>
+<span class="sd">        scan_mots : dictionary with all motors positions for the given scan</span>
+<span class="sd">                    NOTE: if cnty is given, it will return only scan_mots[cnty]</span>
+<span class="sd">        scan_info : dictionary with information on the scan</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">HAS_SPECFILE</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;Specfile not available!&quot;</span><span class="p">)</span>
+
+        <span class="c1">#get keywords arguments</span>
+        <span class="n">cntx</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cntx&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cntx</span><span class="p">)</span>
+        <span class="n">cnty</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cnty&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnty</span><span class="p">)</span>
+        <span class="n">csig</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;csig&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">csig</span><span class="p">)</span>
+        <span class="n">cmon</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cmon&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmon</span><span class="p">)</span>
+        <span class="n">csec</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;csec&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">csec</span><span class="p">)</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;norm&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="p">)</span>
+        <span class="c1">#input checks</span>
+        <span class="k">if</span> <span class="n">scan</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;Give a scan number [integer]: between 1 and </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sf</span><span class="o">.</span><span class="n">scanno</span><span class="p">()))</span>
+        <span class="k">if</span> <span class="n">cntx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;Give the counter for x, the abscissa [string]&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cnty</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">cnty</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sf</span><span class="o">.</span><span class="n">allmotors</span><span class="p">()):</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;&#39;</span><span class="si">{0}</span><span class="s2">&#39; is not in the list of motors&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cnty</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">csig</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;Give the counter for signal [string]&quot;</span><span class="p">)</span>
+
+        <span class="c1">#select the given scan number</span>
+        <span class="c1">#NOTE: here impossible to catch an exception, if the next</span>
+        <span class="c1">#fails, specfile will directly call sys.exit! the try: except</span>
+        <span class="c1">#did not work!</span>
+        <span class="n">_scanstr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">scan</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">_scanstr</span><span class="p">):</span>
+            <span class="n">_scansel</span> <span class="o">=</span> <span class="n">_scanstr</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_scansel</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.1&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_scanstr</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sf</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">_scansel</span><span class="p">)</span> <span class="c1">#sd = specfile data</span>
+
+        <span class="c1">#the case cntx is not given, the first counter is taken by default</span>
+        <span class="k">if</span> <span class="n">cntx</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">_cntx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">alllabels</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_cntx</span> <span class="o">=</span> <span class="n">cntx</span>
+
+        <span class="c1">## x-axis</span>
+        <span class="n">scan_datx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">data_column_by_name</span><span class="p">(</span><span class="n">_cntx</span><span class="p">)</span>
+        <span class="n">_xlabel</span> <span class="o">=</span> <span class="s1">&#39;x&#39;</span>
+        <span class="n">_xscale</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">if</span> <span class="n">scnt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># try to guess the scan type if it is not given</span>
+            <span class="c1"># this condition should work in case of an energy scan</span>
+            <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;ene&#39;</span> <span class="ow">in</span> <span class="n">_cntx</span><span class="o">.</span><span class="n">lower</span><span class="p">()):</span>
+                <span class="c1"># this condition should detect if the energy scale is keV</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">scan_datx</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">scan_datx</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">&lt;</span> <span class="mf">3.0</span><span class="p">:</span>
+                    <span class="n">scan_datx</span> <span class="o">=</span> <span class="n">scan_datx</span><span class="o">*</span><span class="mi">1000</span>
+                    <span class="n">_xscale</span> <span class="o">=</span> <span class="mf">1000.0</span>
+                    <span class="n">_xlabel</span> <span class="o">=</span> <span class="s2">&quot;energy, eV&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">scan_datx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">data_column_by_name</span><span class="p">(</span><span class="n">cntx</span><span class="p">)</span>
+                    <span class="n">_xscale</span> <span class="o">=</span> <span class="mf">1.0</span>
+                    <span class="n">_xlabel</span> <span class="o">=</span> <span class="s2">&quot;energy, keV&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;Wrong scan type string&quot;</span><span class="p">)</span>
+
+        <span class="c1">## z-axis (start with the signal)</span>
+        <span class="c1"># data signal</span>
+        <span class="n">datasig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">data_column_by_name</span><span class="p">(</span><span class="n">csig</span><span class="p">)</span>
+        <span class="c1"># data monitor</span>
+        <span class="k">if</span> <span class="n">cmon</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">datamon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">datasig</span><span class="p">)</span>
+            <span class="n">labmon</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span>
+        <span class="k">elif</span> <span class="p">((</span><span class="s1">&#39;int&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">cmon</span><span class="p">)))</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;float&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">cmon</span><span class="p">)))</span> <span class="p">):</span>
+               <span class="c1"># the case we want to divide by a constant value</span>
+               <span class="n">datamon</span> <span class="o">=</span> <span class="n">_mot2array</span><span class="p">(</span><span class="n">cmon</span><span class="p">,</span> <span class="n">datasig</span><span class="p">)</span>
+               <span class="n">labmon</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">cmon</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">datamon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">data_column_by_name</span><span class="p">(</span><span class="n">cmon</span><span class="p">)</span>
+            <span class="n">labmon</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">cmon</span><span class="p">)</span>
+        <span class="c1"># data cps</span>
+        <span class="k">if</span> <span class="n">csec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">scan_datz</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span> <span class="n">datasig</span> <span class="o">/</span> <span class="n">datamon</span> <span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">datamon</span><span class="p">)</span> <span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">data_column_by_name</span><span class="p">(</span><span class="n">csec</span><span class="p">)</span>
+            <span class="n">_zlabel</span> <span class="o">=</span> <span class="s2">&quot;((signal/</span><span class="si">{0}</span><span class="s2">)*mean(</span><span class="si">{0}</span><span class="s2">))/seconds&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">labmon</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">scan_datz</span> <span class="o">=</span> <span class="p">(</span><span class="n">datasig</span> <span class="o">/</span> <span class="n">datamon</span><span class="p">)</span>
+            <span class="n">_zlabel</span> <span class="o">=</span> <span class="s2">&quot;signal/</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">labmon</span><span class="p">)</span>
+
+        <span class="c1">### z-axis normalization, if required</span>
+        <span class="k">if</span> <span class="n">norm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_zlabel</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> norm by </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_zlabel</span><span class="p">,</span> <span class="n">norm</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">norm</span> <span class="o">==</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span>
+                <span class="n">scan_datz</span> <span class="o">=</span> <span class="n">_check_zero_div</span><span class="p">(</span><span class="n">scan_datz</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">scan_datz</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">norm</span> <span class="o">==</span> <span class="s2">&quot;max-min&quot;</span><span class="p">:</span>
+                <span class="n">scan_datz</span> <span class="o">=</span> <span class="n">_check_zero_div</span><span class="p">(</span><span class="n">scan_datz</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">scan_datz</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">scan_datz</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">scan_datz</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">norm</span> <span class="o">==</span> <span class="s2">&quot;area&quot;</span><span class="p">:</span>
+                <span class="n">scan_datz</span> <span class="o">=</span> <span class="n">_check_zero_div</span><span class="p">(</span><span class="n">scan_datz</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">scan_datz</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">scan_datz</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">scan_datx</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">norm</span> <span class="o">==</span> <span class="s2">&quot;sum&quot;</span><span class="p">:</span>
+                <span class="n">scan_datz</span> <span class="o">=</span> <span class="n">_check_zero_div</span><span class="p">(</span><span class="n">scan_datz</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">scan_datz</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">scan_datz</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;Provide a correct normalization type string&quot;</span><span class="p">)</span>
+
+        <span class="c1">### z-axis replace nan and inf, in case</span>
+        <span class="n">scan_datz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">scan_datz</span><span class="p">)</span>
+
+        <span class="c1">## the motors dictionary</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">scan_mots</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sf</span><span class="o">.</span><span class="n">allmotors</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">allmotorpos</span><span class="p">()))</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: NO MOTORS IN </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fname</span><span class="p">))</span>
+            <span class="n">scan_mots</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1">## y-axis</span>
+        <span class="k">if</span> <span class="n">cnty</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_ylabel</span> <span class="o">=</span> <span class="s2">&quot;motor </span><span class="si">{0}</span><span class="s2"> at </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cnty</span><span class="p">,</span> <span class="n">scan_mots</span><span class="p">[</span><span class="n">cnty</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_ylabel</span> <span class="o">=</span> <span class="n">_zlabel</span>
+
+        <span class="c1">## collect information on the scan</span>
+        <span class="n">scan_info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;xlabel&#39;</span> <span class="p">:</span> <span class="n">_xlabel</span><span class="p">,</span>
+                     <span class="s1">&#39;xscale&#39;</span> <span class="p">:</span> <span class="n">_xscale</span><span class="p">,</span>
+                     <span class="s1">&#39;ylabel&#39;</span> <span class="p">:</span> <span class="n">_ylabel</span><span class="p">,</span>
+                     <span class="s1">&#39;zlabel&#39;</span> <span class="p">:</span> <span class="n">_zlabel</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">cnty</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">scan_datx</span><span class="p">,</span> <span class="n">scan_datz</span><span class="p">,</span> <span class="n">scan_mots</span><span class="p">[</span><span class="n">cnty</span><span class="p">]</span><span class="o">*</span><span class="n">_xscale</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">scan_datx</span><span class="p">,</span> <span class="n">scan_datz</span><span class="p">,</span> <span class="n">scan_mots</span><span class="p">,</span> <span class="n">scan_info</span></div>
+
+<div class="viewcode-block" id="SpecfileData.get_map"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.specfile_reader.SpecfileData.get_map">[docs]</a>    <span class="k">def</span> <span class="nf">get_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scans</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get a map composed of many scans repeated at different position of</span>
+<span class="sd">        a given motor</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        scans : scans to load in the map [string]; the format of the</span>
+<span class="sd">                string is intended to be parsed by &#39;_str2rng()&#39;</span>
+<span class="sd">        **kws : see get_scan() method</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        xcol, ycol, zcol : 1D arrays representing the map</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#get keywords arguments</span>
+        <span class="n">cntx</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cntx&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cntx</span><span class="p">)</span>
+        <span class="n">cnty</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cnty&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnty</span><span class="p">)</span>
+        <span class="n">csig</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;csig&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">csig</span><span class="p">)</span>
+        <span class="n">cmon</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cmon&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmon</span><span class="p">)</span>
+        <span class="n">csec</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;csec&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">csec</span><span class="p">)</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;norm&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="p">)</span>
+        <span class="c1">#check inputs - some already checked in get_scan()</span>
+        <span class="n">nscans</span> <span class="o">=</span> <span class="n">_check_scans</span><span class="p">(</span><span class="n">scans</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cnty</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;Provide the name of an existing motor&quot;</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="n">_counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">nscans</span><span class="p">:</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">moty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_scan</span><span class="p">(</span><span class="n">scan</span><span class="o">=</span><span class="n">scan</span><span class="p">,</span> <span class="n">cntx</span><span class="o">=</span><span class="n">cntx</span><span class="p">,</span>\
+                                       <span class="n">cnty</span><span class="o">=</span><span class="n">cnty</span><span class="p">,</span> <span class="n">csig</span><span class="o">=</span><span class="n">csig</span><span class="p">,</span>\
+                                       <span class="n">cmon</span><span class="o">=</span><span class="n">cmon</span><span class="p">,</span> <span class="n">csec</span><span class="o">=</span><span class="n">csec</span><span class="p">,</span>\
+                                       <span class="n">scnt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">)</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">_mot2array</span><span class="p">(</span><span class="n">moty</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO loading scan </span><span class="si">{0}</span><span class="s2"> into the map...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">scan</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">_counter</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">xcol</span> <span class="o">=</span> <span class="n">x</span>
+                <span class="n">ycol</span> <span class="o">=</span> <span class="n">y</span>
+                <span class="n">zcol</span> <span class="o">=</span> <span class="n">z</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">xcol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xcol</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+                <span class="n">ycol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ycol</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                <span class="n">zcol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">zcol</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+            <span class="n">_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">xcol</span><span class="p">,</span> <span class="n">ycol</span><span class="p">,</span> <span class="n">zcol</span></div>
+
+    <span class="k">def</span> <span class="nf">grid_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xcol</span><span class="p">,</span> <span class="n">ycol</span><span class="p">,</span> <span class="n">zcol</span><span class="p">,</span> <span class="n">xystep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lib</span><span class="o">=</span><span class="s1">&#39;scipy&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;cubic&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">HAS_GRIDXYZ</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">gridxyz</span><span class="p">(</span><span class="n">xcol</span><span class="p">,</span> <span class="n">ycol</span><span class="p">,</span> <span class="n">zcol</span><span class="p">,</span> <span class="n">xystep</span><span class="o">=</span><span class="n">xystep</span><span class="p">,</span> <span class="n">lib</span><span class="o">=</span><span class="n">lib</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span>
+
+<div class="viewcode-block" id="SpecfileData.get_scans"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.specfile_reader.SpecfileData.get_scans">[docs]</a>    <span class="k">def</span> <span class="nf">get_scans</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scans</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">motinfo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get a list of scans</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        scans : string or list of scans to load [None]; the format of the</span>
+<span class="sd">                string is intended to be parsed by &#39;_str2rng()&#39;</span>
+
+<span class="sd">        motinfo : boolean [True] returns also motors and scaninfo</span>
+<span class="sd">                  dictionaries (see self.get_scan())</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        xdats, zdats : list of arrays</span>
+<span class="sd">        if motinfo: return also mdats, idats dictionaries</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#get keywords arguments</span>
+        <span class="n">cntx</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cntx&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cntx</span><span class="p">)</span>
+        <span class="n">csig</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;csig&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">csig</span><span class="p">)</span>
+        <span class="n">cmon</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cmon&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmon</span><span class="p">)</span>
+        <span class="n">csec</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;csec&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">csec</span><span class="p">)</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;norm&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="n">nscans</span> <span class="o">=</span> <span class="n">_check_scans</span><span class="p">(</span><span class="n">scans</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="n">_ct</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">xdats</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">zdats</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">mdats</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">idats</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO loading </span><span class="si">{0}</span><span class="s2"> scans from SPEC ...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nscans</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">nscans</span><span class="p">:</span>
+            <span class="n">_x</span><span class="p">,</span> <span class="n">_z</span><span class="p">,</span> <span class="n">_m</span><span class="p">,</span> <span class="n">_i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_scan</span><span class="p">(</span><span class="n">scan</span><span class="o">=</span><span class="n">scan</span><span class="p">,</span> <span class="n">cntx</span><span class="o">=</span><span class="n">cntx</span><span class="p">,</span>\
+                                           <span class="n">cnty</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">csig</span><span class="o">=</span><span class="n">csig</span><span class="p">,</span>\
+                                           <span class="n">cmon</span><span class="o">=</span><span class="n">cmon</span><span class="p">,</span> <span class="n">csec</span><span class="o">=</span><span class="n">csec</span><span class="p">,</span>\
+                                           <span class="n">scnt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">)</span>
+            <span class="n">xdats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_x</span><span class="p">)</span>
+            <span class="n">zdats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_z</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">motinfo</span><span class="p">:</span>
+                <span class="n">mdats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_m</span><span class="p">)</span>
+                <span class="n">idats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_i</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loading scan </span><span class="si">{0}</span><span class="s2">...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">scan</span><span class="p">))</span>
+            <span class="n">_ct</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">motinfo</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">xdats</span><span class="p">,</span> <span class="n">zdats</span><span class="p">,</span> <span class="n">mdats</span><span class="p">,</span> <span class="n">idats</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">xdats</span><span class="p">,</span> <span class="n">zdats</span></div>
+
+
+<div class="viewcode-block" id="SpecfileData.get_mrg"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.specfile_reader.SpecfileData.get_mrg">[docs]</a>    <span class="k">def</span> <span class="nf">get_mrg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scans</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;average&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get a merged scan from a list of scans</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        scans : scans to load in the merge [string]</span>
+<span class="sd">                the format of the string is intended to be parsed by &#39;_str2rng()&#39;</span>
+<span class="sd">        action : action to perform on the loaded list of scans</span>
+<span class="sd">                 &#39;average&#39; -&gt; average the scans ( see _pymca_average() )</span>
+<span class="sd">                 &#39;sum&#39; -&gt; sum all zscans ( see _numpy_sum_list() )</span>
+<span class="sd">                 &#39;join&#39; -&gt; concatenate the scans</span>
+<span class="sd">                 &#39;single&#39; -&gt; scans_list[0] : equivalent to get_scan()</span>
+<span class="sd">        **kws : see get_scan() method</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        xmrg, zmrg : 1D arrays</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#check inputs - some already checked in get_scan()/get_scans()</span>
+        <span class="n">nscans</span> <span class="o">=</span> <span class="n">_check_scans</span><span class="p">(</span><span class="n">scans</span><span class="p">)</span>
+
+        <span class="n">actions</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;single&#39;</span><span class="p">,</span> <span class="s1">&#39;average&#39;</span><span class="p">,</span> <span class="s1">&#39;sum&#39;</span><span class="p">,</span> <span class="s1">&#39;join&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;&#39;action=</span><span class="si">{0}</span><span class="s2">&#39; not in known actions </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">actions</span><span class="p">))</span>
+
+        <span class="c1"># moved to get_scans</span>
+        <span class="n">xdats</span><span class="p">,</span> <span class="n">zdats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scans</span><span class="o">=</span><span class="n">nscans</span><span class="p">,</span> <span class="n">motinfo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">)</span>
+
+        <span class="c1"># override &#39;action&#39; keyword if it is only one scan</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nscans</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="s1">&#39;single&#39;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING(get_mrg): len(scans)==1 -&gt; &#39;action=single&#39;&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;average&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: merging data...&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">_pymca_average</span><span class="p">(</span><span class="n">xdats</span><span class="p">,</span> <span class="n">zdats</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;sum&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_numpy_sum_list</span><span class="p">(</span><span class="n">xdats</span><span class="p">,</span> <span class="n">zdats</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;join&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">xdats</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">zdats</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;single&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">xdats</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">zdats</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="SpecfileData.get_mrgs_by"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.specfile_reader.SpecfileData.get_mrgs_by">[docs]</a>    <span class="k">def</span> <span class="nf">get_mrgs_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scans</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">nbin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get merge by groups of scans</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        scans : string [&#39;all&#39;] to pass to _str2rng, if &#39;all&#39;,</span>
+<span class="sd">                sf.scanno() is taken</span>
+<span class="sd">        nbin : int [1], number of scans to merge together</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        xmrgs, zmrgs : lists of merged arrays</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#get keywords arguments</span>
+        <span class="n">cntx</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cntx&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cntx</span><span class="p">)</span>
+        <span class="n">csig</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;csig&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">csig</span><span class="p">)</span>
+        <span class="n">cmon</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cmon&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmon</span><span class="p">)</span>
+        <span class="n">csec</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;csec&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">csec</span><span class="p">)</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;norm&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="p">)</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;average&#39;</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="n">xmrgs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">zmrgs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">scans</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+            <span class="n">scans</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">:</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sf</span><span class="o">.</span><span class="n">scanno</span><span class="p">())</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">nScans</span> <span class="o">=</span> <span class="n">_str2rng</span><span class="p">(</span><span class="n">scans</span><span class="p">)</span>
+            <span class="n">nAvg</span> <span class="o">=</span> <span class="n">nScans</span><span class="p">[::</span><span class="n">nbin</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;wrong &#39;scans&#39;/&#39;nbin&#39; parameters!&quot;</span><span class="p">)</span>
+        <span class="n">nScansLast</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">nScans</span><span class="p">)</span><span class="o">%</span><span class="n">nbin</span>
+        <span class="k">for</span> <span class="n">iAvg</span><span class="p">,</span> <span class="n">Avg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nAvg</span><span class="p">):</span>
+            <span class="n">iStart</span> <span class="o">=</span> <span class="n">iAvg</span><span class="o">*</span><span class="n">nbin</span>
+            <span class="k">if</span> <span class="n">Avg</span> <span class="o">==</span> <span class="n">nAvg</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">nScansLast</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING avg </span><span class="si">{0}</span><span class="s2"> is of </span><span class="si">{1}</span><span class="s2"> scans only&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">iAvg</span><span class="p">,</span> <span class="n">nScansLast</span><span class="p">))</span>
+                <span class="n">nAdd</span> <span class="o">=</span> <span class="n">nScansLast</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">nAdd</span> <span class="o">=</span> <span class="n">nbin</span>
+            <span class="n">mscans</span> <span class="o">=</span> <span class="n">nScans</span><span class="p">[</span><span class="n">iStart</span><span class="p">:</span><span class="n">iStart</span><span class="o">+</span><span class="n">nAdd</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO avg </span><span class="si">{0}</span><span class="s2">: scans=&#39;</span><span class="si">{1}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">iAvg</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">mscans</span><span class="p">)))</span>
+            <span class="n">_xmrg</span><span class="p">,</span> <span class="n">_zmrg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_mrg</span><span class="p">(</span><span class="n">scans</span><span class="o">=</span><span class="n">mscans</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>\
+                                        <span class="n">cntx</span><span class="o">=</span><span class="n">cntx</span><span class="p">,</span> <span class="n">cnty</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>\
+                                        <span class="n">csig</span><span class="o">=</span><span class="n">csig</span><span class="p">,</span> <span class="n">cmon</span><span class="o">=</span><span class="n">cmon</span><span class="p">,</span>\
+                                        <span class="n">csec</span><span class="o">=</span><span class="n">csec</span><span class="p">,</span> <span class="n">scnt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>\
+                                        <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">)</span>
+            <span class="n">xmrgs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_xmrg</span><span class="p">)</span>
+            <span class="n">zmrgs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_zmrg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">xmrgs</span><span class="p">,</span> <span class="n">zmrgs</span></div>
+
+<div class="viewcode-block" id="SpecfileData.get_mrgs_rep"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.specfile_reader.SpecfileData.get_mrgs_rep">[docs]</a>    <span class="k">def</span> <span class="nf">get_mrgs_rep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scns</span><span class="p">,</span> <span class="n">nrep</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get merge by groups of repetitions</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        scns : string</span>
+<span class="sd">               string representing ALL the good scans (parsed by str2rng)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Not implemented yet!&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpecfileData.get_det_dt"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.specfile_reader.SpecfileData.get_det_dt">[docs]</a>    <span class="k">def</span> <span class="nf">get_det_dt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">zcts</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">secs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get detector signal corrected by dead time</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        zcts : array of floats</span>
+<span class="sd">               detector [counts], if ysecs=None [counts/s]</span>
+
+<span class="sd">        tau : float</span>
+<span class="sd">              tau [s]</span>
+
+<span class="sd">        secs : array of floats, None</span>
+<span class="sd">               normalization time [s]</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        zcts_corr : array of floats</span>
+<span class="sd">                    zcps = zcts/secs</span>
+<span class="sd">                    zcps_corr = zcps / (1 - zcps * tau)</span>
+<span class="sd">                    zcts_corr = zcps_corr * secs</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">secs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">zcts</span> <span class="o">=</span> <span class="n">zcts</span> <span class="o">/</span> <span class="n">secs</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;det_dtc ERROR&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">zcts</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1">#import pdb</span>
+            <span class="c1">#pdb.set_trace()</span>
+            <span class="c1">#print(zcps)</span>
+            <span class="n">zcts_corr</span> <span class="o">=</span> <span class="n">zcts</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">zcts</span> <span class="o">*</span> <span class="n">tau</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;det_dtc ERROR step 2&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">zcts</span>
+        <span class="k">if</span> <span class="n">secs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">zcts_corr</span> <span class="o">*</span> <span class="n">secs</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">zcts_corr</span></div>
+
+<div class="viewcode-block" id="SpecfileData.get_filter"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.specfile_reader.SpecfileData.get_filter">[docs]</a>    <span class="k">def</span> <span class="nf">get_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ydats</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;scipySG&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get filtered data using a list of ydats and given method</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ydats : list of 1D arrays</span>
+
+<span class="sd">        method : &#39;scipySG&#39; -&gt; Savitsky Golay filter from Scipy</span>
+<span class="sd">                              (see savitzky_golay())</span>
+<span class="sd">                 &#39;pymcaSG&#39; -&gt; Savitsky Golay filter from PyMca</span>
+<span class="sd">                              (see _pymca_SG())</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ysdats : list of 1D smoothed arrays</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;pymcaSG&#39;</span><span class="p">:</span>
+            <span class="n">npoints</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;npoints&#39;</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+            <span class="n">degree</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;degree&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="n">order</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;order&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">ysdats</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO smoothing data with Savitzky-Golay filter (pymca)...&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">ydats</span><span class="p">:</span>
+                <span class="n">ysdats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_pymca_SG</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">npoints</span><span class="o">=</span><span class="n">npoints</span><span class="p">,</span>
+                                        <span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">ysdats</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;scipySG&#39;</span><span class="p">:</span>
+            <span class="n">window_size</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;window_size&#39;</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+            <span class="n">order</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;order&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="n">deriv</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;deriv&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">ysdats</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO smoothing data with Savitzky-Golay filter (scipy)...&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">ydats</span><span class="p">:</span>
+                <span class="n">ysdats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">savitzky_golay</span><span class="p">(</span><span class="n">y</span><span class="p">,</span>
+                                             <span class="n">window_size</span><span class="o">=</span><span class="n">window_size</span><span class="p">,</span>
+                                             <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
+                                             <span class="n">deriv</span><span class="o">=</span><span class="n">deriv</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">ysdats</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;method not known!&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpecfileData.write_ascii"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.specfile_reader.SpecfileData.write_ascii">[docs]</a>    <span class="k">def</span> <span class="nf">write_ascii</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;export single scans to separate ascii files&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_SFDW</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;specfiledatawriter required for this method!!!&quot;</span><span class="p">)</span>
+        <span class="c1">#get keywords arguments</span>
+        <span class="n">cntx</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cntx&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cntx</span><span class="p">)</span>
+        <span class="n">csig</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;csig&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">csig</span><span class="p">)</span>
+        <span class="n">cmon</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cmon&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmon</span><span class="p">)</span>
+        <span class="n">csec</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;csec&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">csec</span><span class="p">)</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;norm&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="p">)</span>
+
+        <span class="n">nscans</span> <span class="o">=</span> <span class="n">_check_scans</span><span class="p">(</span><span class="n">scans</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">scn</span> <span class="ow">in</span> <span class="n">nscans</span><span class="p">:</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_scan</span><span class="p">(</span><span class="n">scan</span><span class="o">=</span><span class="n">scn</span><span class="p">,</span> <span class="n">scnt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cntx</span><span class="o">=</span><span class="n">cntx</span><span class="p">,</span>
+                                       <span class="n">cnty</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">csig</span><span class="o">=</span><span class="n">csig</span><span class="p">,</span>
+                                       <span class="n">cmon</span><span class="o">=</span><span class="n">cmon</span><span class="p">,</span> <span class="n">csec</span><span class="o">=</span><span class="n">csec</span><span class="p">,</span>
+                                       <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">)</span>
+            <span class="n">fout</span> <span class="o">=</span> <span class="n">SpecfileDataWriter</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">_S</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fname</span><span class="p">,</span>
+                                                        <span class="nb">str</span><span class="p">(</span><span class="n">scn</span><span class="p">)</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)))</span>
+            <span class="n">fout</span><span class="o">.</span><span class="n">wHeader</span><span class="p">(</span><span class="n">epoch</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sf</span><span class="o">.</span><span class="n">epoch</span><span class="p">(),</span> <span class="n">date</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sf</span><span class="o">.</span><span class="n">date</span><span class="p">(),</span>
+                         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;spec2spec&#39;</span><span class="p">,</span>
+                         <span class="n">motnames</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sf</span><span class="o">.</span><span class="n">allmotors</span><span class="p">())</span>
+            <span class="n">fout</span><span class="o">.</span><span class="n">wScan</span><span class="p">([</span><span class="s1">&#39;Energy&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s1">&#39;zlabel&#39;</span><span class="p">])],</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span>
+                       <span class="n">title</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">command</span><span class="p">()),</span>
+                       <span class="n">motpos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">allmotorpos</span><span class="p">())</span></div></div>
+
+
+<span class="c1">### LARCH ###</span>
+<span class="k">def</span> <span class="nf">_specfiledata_getdoc</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;to get the docstring of method inside a class&quot;&quot;&quot;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">SpecfileData</span><span class="p">(</span><span class="s1">&#39;DUMMY!&#39;</span><span class="p">)</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> Docstring from </span><span class="si">{0}</span><span class="s2">:</span><span class="se">\n</span><span class="s2"> -------------------</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">head</span> <span class="o">+</span> <span class="nb">getattr</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">method</span><span class="p">),</span> <span class="s1">&#39;__doc__&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">spec_getscan2group</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cntx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">csig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">cmon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">csec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scnt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">_larch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;*** simple mapping of SpecfileData.get_scan() to Larch group ***&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">_larch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Warning</span><span class="p">(</span><span class="s2">&quot;larch broken?&quot;</span><span class="p">)</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="n">SpecfileData</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="n">_larch</span><span class="o">.</span><span class="n">symtable</span><span class="o">.</span><span class="n">create_group</span><span class="p">()</span>
+    <span class="n">group</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s1">&#39;SPEC data file </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">fname</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">motors</span><span class="p">,</span> <span class="n">infos</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get_scan</span><span class="p">(</span><span class="n">scan</span><span class="o">=</span><span class="n">scan</span><span class="p">,</span> <span class="n">cntx</span><span class="o">=</span><span class="n">cntx</span><span class="p">,</span> <span class="n">csig</span><span class="o">=</span><span class="n">csig</span><span class="p">,</span>
+                                     <span class="n">cmon</span><span class="o">=</span><span class="n">cmon</span><span class="p">,</span> <span class="n">csec</span><span class="o">=</span><span class="n">csec</span><span class="p">,</span> <span class="n">scnt</span><span class="o">=</span><span class="n">scnt</span><span class="p">,</span>
+                                     <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">)</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s1">&#39;motors&#39;</span><span class="p">,</span> <span class="n">motors</span><span class="p">)</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s1">&#39;infos&#39;</span><span class="p">,</span> <span class="n">infos</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">group</span>
+<span class="n">spec_getscan2group</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">+=</span> <span class="n">_specfiledata_getdoc</span><span class="p">(</span><span class="s1">&#39;get_scan&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">spec_getmap2group</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">scans</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cntx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cnty</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">csig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cmon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">csec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">xystep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_larch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; *** simple mapping of SpecfileData.get_map() + grid_map () to Larch group *** &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">_larch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Warning</span><span class="p">(</span><span class="s2">&quot;larch broken?&quot;</span><span class="p">)</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="n">SpecfileData</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="n">_larch</span><span class="o">.</span><span class="n">symtable</span><span class="o">.</span><span class="n">create_group</span><span class="p">()</span>
+    <span class="n">group</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s1">&#39;SPEC data file </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">fname</span>
+    <span class="n">xcol</span><span class="p">,</span> <span class="n">ycol</span><span class="p">,</span> <span class="n">zcol</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span><span class="n">scans</span><span class="o">=</span><span class="n">scans</span><span class="p">,</span> <span class="n">cntx</span><span class="o">=</span><span class="n">cntx</span><span class="p">,</span> <span class="n">cnty</span><span class="o">=</span><span class="n">cnty</span><span class="p">,</span> <span class="n">csig</span><span class="o">=</span><span class="n">csig</span><span class="p">,</span> <span class="n">cmon</span><span class="o">=</span><span class="n">cmon</span><span class="p">,</span> <span class="n">csec</span><span class="o">=</span><span class="n">csec</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">)</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">zz</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">grid_map</span><span class="p">(</span><span class="n">xcol</span><span class="p">,</span> <span class="n">ycol</span><span class="p">,</span> <span class="n">zcol</span><span class="p">,</span> <span class="n">xystep</span><span class="o">=</span><span class="n">xystep</span><span class="p">)</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s1">&#39;zz&#39;</span><span class="p">,</span> <span class="n">zz</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">group</span>
+<span class="n">spec_getmap2group</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">+=</span> <span class="n">_specfiledata_getdoc</span><span class="p">(</span><span class="s1">&#39;get_map&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">spec_getmrg2group</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">scans</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cntx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">csig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">cmon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">csec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">action</span><span class="o">=</span><span class="s1">&#39;average&#39;</span><span class="p">,</span> <span class="n">_larch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;*** simple mapping of SpecfileData.get_mrg() to Larch group ***&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">_larch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Warning</span><span class="p">(</span><span class="s2">&quot;larch broken?&quot;</span><span class="p">)</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="n">SpecfileData</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="n">_larch</span><span class="o">.</span><span class="n">symtable</span><span class="o">.</span><span class="n">create_group</span><span class="p">()</span>
+    <span class="n">group</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s1">&#39;SPEC data file </span><span class="si">{0}</span><span class="s1">; scans </span><span class="si">{1}</span><span class="s1">; action </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get_mrg</span><span class="p">(</span><span class="n">scans</span><span class="o">=</span><span class="n">scans</span><span class="p">,</span> <span class="n">cntx</span><span class="o">=</span><span class="n">cntx</span><span class="p">,</span> <span class="n">csig</span><span class="o">=</span><span class="n">csig</span><span class="p">,</span> <span class="n">cmon</span><span class="o">=</span><span class="n">cmon</span><span class="p">,</span>
+                     <span class="n">csec</span><span class="o">=</span><span class="n">csec</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">)</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">group</span>
+<span class="n">spec_getmrg2group</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">+=</span> <span class="n">_specfiledata_getdoc</span><span class="p">(</span><span class="s1">&#39;get_mrg&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">str2rng_larch</span><span class="p">(</span><span class="n">rngstr</span><span class="p">,</span> <span class="n">keeporder</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">_larch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; larch equivalent of _str2rng() &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">_larch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Warning</span><span class="p">(</span><span class="s2">&quot;larch broken?&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_str2rng</span><span class="p">(</span><span class="n">rngstr</span><span class="p">,</span> <span class="n">keeporder</span><span class="o">=</span><span class="n">keeporder</span><span class="p">)</span>
+<span class="n">str2rng_larch</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">_str2rng</span><span class="o">.</span><span class="vm">__doc__</span>
+
+<span class="k">def</span> <span class="nf">registerLarchPlugin</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">HAS_SPECFILE</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;_io&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;read_specfile_scan&#39;</span><span class="p">:</span> <span class="n">spec_getscan2group</span><span class="p">,</span>
+                        <span class="s1">&#39;read_specfile_map&#39;</span> <span class="p">:</span> <span class="n">spec_getmap2group</span><span class="p">,</span>
+                        <span class="s1">&#39;read_specfile_mrg&#39;</span> <span class="p">:</span> <span class="n">spec_getmrg2group</span><span class="p">,</span>
+                        <span class="s1">&#39;str2rng&#39;</span> <span class="p">:</span> <span class="n">str2rng_larch</span>
+                        <span class="p">})</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;_io&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; test/examples in examples/specfiledata_test.py &quot;&quot;&quot;</span>
+    <span class="c1">#test01()</span>
+    <span class="c1">#test02(100)</span>
+    <span class="c1">#test03</span>
+    <span class="k">pass</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014--2019, Mauro Rovezzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

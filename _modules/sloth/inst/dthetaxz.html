@@ -1,0 +1,568 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sloth.inst.dthetaxz &mdash; Sloth 0.3.0-dev documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Sloth
+          
+
+          
+            
+            <img src="../../../_static/xraysloth.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Full contents - hidden:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../todo.html">To Do</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Sloth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sloth.inst.dthetaxz</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sloth.inst.dthetaxz</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;Analytical expression of $\Delta \theta (x, z)$ from Wittry</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy.ma</span> <span class="k">as</span> <span class="nn">ma</span>
+
+<span class="kn">from</span> <span class="nn">sloth.io.specfile_writer</span> <span class="k">import</span> <span class="n">SpecfileDataWriter</span>
+
+<span class="c1"># ----------------</span>
+<span class="c1"># Global variables</span>
+<span class="c1"># ----------------</span>
+<span class="n">DEG2RAD</span> <span class="o">=</span> <span class="mf">0.017453292519943295</span> <span class="c1"># np.pi / 180</span>
+<span class="n">RAD2DEG</span> <span class="o">=</span> <span class="mf">57.29577951308232</span> <span class="c1"># 180 / np.pi</span>
+
+<span class="c1"># from Saint-Gobain (SG) crystals</span>
+<span class="n">SI_ALAT</span> <span class="o">=</span> <span class="mf">5.431</span> <span class="c1"># cubic</span>
+<span class="n">SI_2D111</span> <span class="o">=</span> <span class="mf">6.271</span>  <span class="c1"># from Matjaz</span>
+<span class="n">GE_ALAT</span> <span class="o">=</span> <span class="mf">5.658</span> <span class="c1"># cubic</span>
+<span class="n">INSB_ALAT</span> <span class="o">=</span> <span class="mf">6.48</span> <span class="c1"># cubic</span>
+<span class="n">SIO2_A</span> <span class="o">=</span> <span class="mf">4.913</span> <span class="c1"># beta-quartz, hexagonal</span>
+<span class="n">SIO2_C</span> <span class="o">=</span> <span class="mf">5.405</span>
+<span class="n">SIO2_2D101</span> <span class="o">=</span> <span class="mf">6.684</span> <span class="c1"># from SG</span>
+<span class="c1">#SIO2_2D100 = 8.514 # from SG</span>
+<span class="n">SIO2_2D100</span> <span class="o">=</span> <span class="mf">8.510</span> <span class="c1"># from Matjaz</span>
+<span class="n">INSB_2D111</span> <span class="o">=</span> <span class="mf">7.480</span> <span class="c1"># from SG</span>
+
+<span class="c1">#</span>
+<span class="n">DEBUG</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="k">def</span> <span class="nf">mapCase2Num</span><span class="p">(</span><span class="n">case</span><span class="p">):</span>
+    <span class="n">dc2n</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Johann&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s1">&#39;Jn&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s1">&#39;Johansson&#39;</span> <span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s1">&#39;Js&#39;</span> <span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s1">&#39;Spherical plate&#39;</span> <span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="s1">&#39;Spherical Jn&#39;</span> <span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="s1">&#39;SphJn&#39;</span> <span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="s1">&#39;Spherical Johansson&#39;</span> <span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="s1">&#39;Spherical Js&#39;</span> <span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="s1">&#39;SphJs&#39;</span> <span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="s1">&#39;Wittry&#39;</span> <span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+            <span class="s1">&#39;Toroidal Js&#39;</span> <span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+            <span class="s1">&#39;TorJs&#39;</span> <span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+            <span class="s1">&#39;Js 45 deg focusing&#39;</span> <span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+            <span class="s1">&#39;Js45focus&#39;</span> <span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+            <span class="s1">&#39;Js focusing&#39;</span> <span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+            <span class="s1">&#39;JsFocus&#39;</span> <span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+            <span class="s1">&#39;Berreman&#39;</span> <span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+            <span class="s1">&#39;Jn focusing&#39;</span> <span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+            <span class="s1">&#39;JnFocus&#39;</span> <span class="p">:</span> <span class="mi">9</span><span class="p">}</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dc2n</span><span class="p">[</span><span class="n">case</span><span class="p">]</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+<span class="k">def</span> <span class="nf">mapNum2Case</span><span class="p">(</span><span class="n">case</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;label&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;label&#39;</span><span class="p">):</span>
+        <span class="n">dn2c</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span> <span class="p">:</span> <span class="s1">&#39;Jn&#39;</span><span class="p">,</span>
+                <span class="mi">2</span> <span class="p">:</span> <span class="s1">&#39;Js&#39;</span><span class="p">,</span>
+                <span class="mi">3</span> <span class="p">:</span> <span class="s1">&#39;SphJn&#39;</span><span class="p">,</span>
+                <span class="mi">4</span> <span class="p">:</span> <span class="s1">&#39;SphJs&#39;</span><span class="p">,</span>
+                <span class="mi">5</span> <span class="p">:</span> <span class="s1">&#39;TorJs&#39;</span><span class="p">,</span>
+                <span class="mi">6</span> <span class="p">:</span> <span class="s1">&#39;Js45focus&#39;</span><span class="p">,</span>
+                <span class="mi">7</span> <span class="p">:</span> <span class="s1">&#39;JsFocus&#39;</span><span class="p">,</span>
+                <span class="mi">8</span> <span class="p">:</span> <span class="s1">&#39;Berreman&#39;</span><span class="p">,</span>
+                <span class="mi">9</span> <span class="p">:</span> <span class="s1">&#39;JnFocus&#39;</span><span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dn2c</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span> <span class="p">:</span> <span class="s1">&#39;Johann&#39;</span><span class="p">,</span>
+                <span class="mi">2</span> <span class="p">:</span> <span class="s1">&#39;Johansson&#39;</span><span class="p">,</span>
+                <span class="mi">3</span> <span class="p">:</span> <span class="s1">&#39;Spherical Jn&#39;</span><span class="p">,</span>
+                <span class="mi">4</span> <span class="p">:</span> <span class="s1">&#39;Spherical Johansson&#39;</span><span class="p">,</span>
+                <span class="mi">5</span> <span class="p">:</span> <span class="s1">&#39;Toroidal Js&#39;</span><span class="p">,</span>
+                <span class="mi">6</span> <span class="p">:</span> <span class="s1">&#39;Js 45 deg focusing&#39;</span><span class="p">,</span>
+                <span class="mi">7</span> <span class="p">:</span> <span class="s1">&#39;Js focusing&#39;</span><span class="p">,</span>
+                <span class="mi">8</span> <span class="p">:</span> <span class="s1">&#39;Berreman&#39;</span><span class="p">,</span>
+                <span class="mi">9</span> <span class="p">:</span> <span class="s1">&#39;Jn focusing&#39;</span><span class="p">}</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dn2c</span><span class="p">[</span><span class="n">case</span><span class="p">]</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;Unknown&#39;</span>
+
+<div class="viewcode-block" id="dThetaXZ"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.dthetaxz.dThetaXZ">[docs]</a><span class="k">def</span> <span class="nf">dThetaXZ</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">thetab</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Analytical espression of the angular deviation from Bragg</span>
+<span class="sd">    reflection over a diffractor in conventional point-to-point</span>
+<span class="sd">    focusing geometries</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ==========</span>
+<span class="sd">    x, z : masked array of floats</span>
+<span class="sd">           2D meshgrid where to evaluate dThetaXZ </span>
+<span class="sd">    thetab : float</span>
+<span class="sd">             Bragg angle [deg]</span>
+<span class="sd">    case : int or str</span>
+<span class="sd">           diffractor geometries</span>
+<span class="sd">           1 or &#39;Johann&#39; or &#39;Jn&#39; [cylindrical]</span>
+<span class="sd">           2 or &#39;Johansson&#39; or &#39;Js&#39; [cylindrical]</span>
+<span class="sd">           3 or &#39;Spherical plate&#39; or &#39;Spherical Jn&#39; or &#39;SphJn&#39;</span>
+<span class="sd">           4 or &#39;Spherical Johansson&#39; or &#39;Spherical Js&#39; or &#39;SphJs&#39;</span>
+<span class="sd">           5 or &#39;Wittry&#39; or &#39;Toroidal Js&#39; or &#39;TorJs&#39;</span>
+<span class="sd">           6 or &#39;Js 45 deg focusing&#39; or &#39;Js45focus&#39;</span>
+<span class="sd">           7 or &#39;Js focusing&#39; or &#39;JsFocus&#39;</span>
+<span class="sd">           8 or &#39;Berreman&#39;</span>
+<span class="sd">           9 or &#39;Jn focusing&#39; or &#39;JnFocus&#39;</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    =======</span>
+<span class="sd">    dThetaXZ : 2D masked array</span>
+<span class="sd">    </span>
+<span class="sd">    Notes</span>
+<span class="sd">    =====</span>
+<span class="sd">    The following expression is taken from table I in</span>
+<span class="sd">    [Wittry:1992_JAP]_. This is the same of Eq.12-13 in [Pestehe2]_</span>
+<span class="sd">    and holds within the following approximations:</span>
+
+<span class="sd">    - the source is an ideal point source located on the Rowland circle</span>
+<span class="sd">    - the diffractor size is small compared with the radius of the focal circle</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">    \begin{eqnarray}\label{eq:dthetaxz}</span>
+<span class="sd">    \Delta \theta (x,z) = A_1 x^2 + A_2 x^3 + A_3 z^2 + A_4 xz^2 \nonumber \\</span>
+<span class="sd">    where: \nonumber \\</span>
+<span class="sd">    A_1 = \cot \theta_B \left( 1-\frac{1}{2R_{1}} \right) \nonumber \\</span>
+<span class="sd">    A_2 = \cot^2\ \theta_B \left( 1-\frac{1}{2R_{1}} \right) \nonumber \\</span>
+<span class="sd">    A_3 = \frac{\tan \theta_B}{2} \left[ \frac{1}{R_{2}} - \frac{1}{R_{2}^{\prime}} + \frac{1}{\sin \theta_{B}^{2}} \left( \frac{2}{R_{2}^{\prime}} - \frac{1}{R_{2}} -1 \right) - A_{4}^{\prime} \right] \nonumber \\</span>
+<span class="sd">    A_4 = \frac{1}{2} \left[ \frac{1}{R_{2}} + \frac{1}{\sin \theta_{B}^{2}} \left( \frac{2}{R_{2}^{2}} - \frac{1}{R_{2}} -2 \right) \right] - \frac{A_{4}^{\prime}}{2} \nonumber \\</span>
+<span class="sd">    A_4^{\prime} = \frac{1-R_{2}^{\prime}}{R_{2}^{\prime}^{2}} \nonumber\\</span>
+<span class="sd">    \end{eqnarray}</span>
+<span class="sd">    </span>
+<span class="sd">    .. [Wittry:1992_JAP] D. Wittry and S. Sun, J. Appl. Phys. **71** (1992) 564</span>
+<span class="sd">    .. [Pestehe2] S. J. Pestehe, J. Appl. Cryst. **45** (2012) 890-901</span>
+
+<span class="sd">    The parametrization is expressed with 4 radii: 1) in the</span>
+<span class="sd">    meridional (dispesion) direction (x), R$_{1}$ and R$_{1}^\prime$</span>
+<span class="sd">    and 2) in the sagittal (focusing) direction (z), R$_{2}$ and</span>
+<span class="sd">    R$_{2}^\prime$. In each direction the two radii, R and R$^\prime$,</span>
+<span class="sd">    are for the crystal surface and planes, respectively. The</span>
+<span class="sd">    implemented cases are the following ones:</span>
+
+<span class="sd">    |------+----------------------+----------+----------------+------------------+------------------|</span>
+<span class="sd">    | Case | Name                 |  R$_{1}$ | R$_{1}^\prime$ | R$_{2}$          | R$_{2}^\prime$   |</span>
+<span class="sd">    |      |                      |  surface |         planes | surface          | planes           |</span>
+<span class="sd">    |------+----------------------+----------+----------------+------------------+------------------|</span>
+<span class="sd">    |    1 | Johann (Jn)          |       1. |             1. | $\infty$         | $\infty$         |</span>
+<span class="sd">    |    2 | Johansson (Js)       |      0.5 |             1. | $\infty$         | $\infty$         |</span>
+<span class="sd">    |    3 | Spherical Jn (SphJn) |       1. |             1. | 1.               | 1.               |</span>
+<span class="sd">    |    4 | Spherical Js (SphJs) |      0.5 |             1. | 0.5              | 1.               |</span>
+<span class="sd">    |    5 | Wittry (TorJs)       |      0.5 |             1. | 1.               | 1.               |</span>
+<span class="sd">    |    6 | Js 45 deg focusing   |      0.5 |             1. | 0.5              | 0.5              |</span>
+<span class="sd">    |    7 | Js focusing          |      0.5 |             1. | $\sin^2(\theta)$ | $\sin^2(\theta)$ |</span>
+<span class="sd">    |    8 | Berreman             | $\infty$ |             1. | $\sin^2(\theta)$ | $\sin^2(\theta)$ |</span>
+<span class="sd">    |    9 | Jn focusing          |       1. |             1. | $\sin^2(\theta)$ | $\sin^2(\theta)$ |</span>
+<span class="sd">    |------+----------------------+----------+----------------+------------------+------------------|</span>
+
+<span class="sd">    It is important to note that all the coordinates are given in</span>
+<span class="sd">    units of R$_{1}^\prime$, the bending radius of the crystal</span>
+<span class="sd">    planes. This is crucial for converting to real dimensions (mm).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rthetab</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">thetab</span><span class="p">)</span>
+    <span class="c1"># CASES</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">case</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;Johann&#39;</span> <span class="ow">or</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;Jn&#39;</span><span class="p">):</span>
+        <span class="n">R1</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">R1p</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">R2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+        <span class="n">R2p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">case</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;Johansson&#39;</span> <span class="ow">or</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;Js&#39;</span><span class="p">):</span>
+        <span class="n">R1</span> <span class="o">=</span> <span class="mf">0.5</span>
+        <span class="n">R1p</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">R2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+        <span class="n">R2p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">case</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">or</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;Spherical plate&#39;</span> <span class="ow">or</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;Spherical Jn&#39;</span> <span class="ow">or</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;SphJn&#39;</span><span class="p">):</span>
+        <span class="n">R1</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">R1p</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">R2</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">R2p</span> <span class="o">=</span> <span class="mf">1.</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">case</span> <span class="o">==</span> <span class="mi">4</span> <span class="ow">or</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;Spherical Johansson&#39;</span> <span class="ow">or</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;Spherical Js&#39;</span> <span class="ow">or</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;SphJs&#39;</span><span class="p">):</span>
+        <span class="n">R1</span> <span class="o">=</span> <span class="mf">0.5</span>
+        <span class="n">R1p</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">R2</span> <span class="o">=</span> <span class="mf">0.5</span>
+        <span class="n">R2p</span> <span class="o">=</span> <span class="mf">1.</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">case</span> <span class="o">==</span> <span class="mi">5</span> <span class="ow">or</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;Wittry&#39;</span> <span class="ow">or</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;Toroidal Js&#39;</span> <span class="ow">or</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;TorJs&#39;</span><span class="p">):</span>
+        <span class="n">R1</span> <span class="o">=</span> <span class="mf">0.5</span>
+        <span class="n">R1p</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">R2</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">R2p</span> <span class="o">=</span> <span class="mf">1.</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">case</span> <span class="o">==</span> <span class="mi">6</span> <span class="ow">or</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;Js 45 deg focusing&#39;</span> <span class="ow">or</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;Js45focus&#39;</span><span class="p">):</span>
+        <span class="n">R1</span> <span class="o">=</span> <span class="mf">0.5</span>
+        <span class="n">R1p</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">R2</span> <span class="o">=</span> <span class="mf">0.5</span>
+        <span class="n">R2p</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">case</span> <span class="o">==</span> <span class="mi">7</span> <span class="ow">or</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;Js focusing&#39;</span> <span class="ow">or</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;JsFocus&#39;</span><span class="p">):</span>
+        <span class="n">R1</span> <span class="o">=</span> <span class="mf">0.5</span>
+        <span class="n">R1p</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">R2</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rthetab</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">R2p</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rthetab</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">case</span> <span class="o">==</span> <span class="mi">8</span> <span class="ow">or</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;Berreman&#39;</span><span class="p">):</span>
+        <span class="n">R1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+        <span class="n">R1p</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">R2</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rthetab</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">R2p</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rthetab</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">case</span> <span class="o">==</span> <span class="mi">9</span> <span class="ow">or</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;Jn focusing&#39;</span> <span class="ow">or</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;JnFocus&#39;</span><span class="p">):</span>
+        <span class="n">R1</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">R1p</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">R2</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rthetab</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">R2p</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rthetab</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">case</span> <span class="o">==</span> <span class="mi">10</span> <span class="ow">or</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;Von Hamos&#39;</span> <span class="ow">or</span> <span class="n">case</span> <span class="o">==</span> <span class="s1">&#39;VH&#39;</span><span class="p">):</span>
+        <span class="n">R1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+        <span class="n">R1p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+        <span class="n">R2</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">R2p</span> <span class="o">=</span> <span class="mf">1.</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;case &#39;</span><span class="si">{0}</span><span class="s2">&#39; unknown&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">case</span><span class="p">))</span>
+
+    <span class="c1"># COEFFICIENTS</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">R2p</span> <span class="o">==</span> <span class="mf">1.</span> <span class="ow">or</span> <span class="n">R2p</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">):</span>
+        <span class="n">A4p</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">A4p</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">R2p</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">R2p</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> 
+    <span class="n">A1</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">rthetab</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">R1</span><span class="p">))</span>
+    <span class="n">A2</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">rthetab</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">R1</span><span class="p">))</span>
+    <span class="n">A3</span> <span class="o">=</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">rthetab</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">R2</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="n">R2p</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="p">)</span> <span class="o">+</span> <span class="p">(</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rthetab</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">rthetab</span><span class="p">))</span> <span class="p">)</span> <span class="o">*</span> <span class="p">(</span> <span class="p">(</span><span class="mf">2.</span><span class="o">/</span><span class="n">R2p</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">R2</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span>
+    <span class="c1">#A4 = (1./(2.*R2)) - (1./(4.*R2p)) + (1/(4.*R2p**2)) + (1./(math.sin(rthetab)**2)) * ((1./R2p) - (1./(2*R2)) - 1.)</span>
+    <span class="n">A4</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">R2</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">R2p</span><span class="p">))</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">R2p</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rthetab</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="p">((</span><span class="mf">1.</span><span class="o">/</span><span class="n">R2p</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">R2</span><span class="p">))</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">DEBUG</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Analytical DeltaTheta(x,z) for </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">case</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Radii: R1=</span><span class="si">{0}</span><span class="s1">, R1p=</span><span class="si">{1}</span><span class="s1">, R2=</span><span class="si">{2}</span><span class="s1">, R2p=</span><span class="si">{3}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">R1</span><span class="p">,</span> <span class="n">R1p</span><span class="p">,</span> <span class="n">R2</span><span class="p">,</span> <span class="n">R2p</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Coefficients:&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;A1 = </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">A1</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;A2 = </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">A2</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;A3 = </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">A3</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;A4p = </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">A4p</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;A4 = </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">A4</span><span class="p">))</span>
+    
+    <span class="k">return</span> <span class="n">A1</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">A2</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="n">A3</span> <span class="o">*</span> <span class="n">z</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">A4</span> <span class="o">*</span> <span class="n">x</span> <span class="o">*</span> <span class="n">z</span><span class="o">**</span><span class="mi">2</span></div>
+
+<div class="viewcode-block" id="getMeshMasked"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.dthetaxz.getMeshMasked">[docs]</a><span class="k">def</span> <span class="nf">getMeshMasked</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="s1">&#39;circular&#39;</span><span class="p">,</span> <span class="n">r1p</span><span class="o">=</span><span class="mf">1000.</span><span class="p">,</span> <span class="n">cryst_x</span><span class="o">=</span><span class="mf">50.</span><span class="p">,</span> <span class="n">cryst_z</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span> <span class="n">csteps</span><span class="o">=</span><span class="mi">1000</span><span class="n">j</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;returns two 2D masked arrays representing a (flat) grid of the</span>
+<span class="sd">    crystal surface</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mask : str, &#39;circular&#39;</span>
+<span class="sd">           shape of the mask: &#39;circular&#39; or &#39;rectangular&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    r1p : float, [1000.]</span>
+<span class="sd">          bending radius of the crystal planes in mm (used only to get</span>
+<span class="sd">          the mesh in normlized units)</span>
+
+<span class="sd">    cryst_x : float, [50.]</span>
+<span class="sd">              radius of circular analyzer in mm (for rectangular mask,</span>
+<span class="sd">              this is half side in meridional/dispersive x-direction)</span>
+
+<span class="sd">    cryst_z : float [10.]</span>
+<span class="sd">              half side in sagittal/focusing z-direction of the</span>
+<span class="sd">              rectangular analyzer in mm</span>
+
+<span class="sd">    csteps  : grid steps (given as imaginary number!) [1000j]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span> <span class="o">=</span>  <span class="o">-</span><span class="mi">1</span><span class="o">*</span><span class="n">cryst_x</span><span class="o">/</span><span class="n">r1p</span><span class="p">,</span> <span class="n">cryst_x</span><span class="o">/</span><span class="n">r1p</span>
+    <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.</span><span class="o">*</span><span class="n">cryst_x</span><span class="o">/</span><span class="n">r1p</span><span class="p">,</span> <span class="n">cryst_x</span><span class="o">/</span><span class="n">r1p</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">csteps</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span>
+    <span class="n">z0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">,</span> <span class="n">csteps</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span>
+    <span class="n">xx0</span><span class="p">,</span> <span class="n">zz0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">z0</span><span class="p">)</span>
+    <span class="c1"># using a circular crystal of given &#39;cryst_x&#39;</span>
+    <span class="n">xx1</span><span class="p">,</span> <span class="n">zz1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="n">xmin</span><span class="p">:</span><span class="n">xmax</span><span class="p">:</span><span class="n">csteps</span><span class="p">,</span> <span class="n">zmin</span><span class="p">:</span><span class="n">zmax</span><span class="p">:</span><span class="n">csteps</span><span class="p">]</span>
+    <span class="n">cmask</span> <span class="o">=</span> <span class="n">xx1</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">zz1</span><span class="o">**</span><span class="mi">2</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">cryst_x</span><span class="o">/</span><span class="n">r1p</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">mxx1</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xx0</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">cmask</span><span class="p">)</span>
+    <span class="n">mzz1</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">zz0</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">cmask</span><span class="p">)</span>
+    <span class="c1"># using a rectangular crystal of given (&#39;cryst_x&#39;, &#39;cryst_z&#39;)</span>
+    <span class="n">rmask1</span> <span class="o">=</span> <span class="n">zz1</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="n">cryst_z</span><span class="o">/</span><span class="n">r1p</span>
+    <span class="n">rmask2</span> <span class="o">=</span> <span class="n">zz1</span> <span class="o">&gt;=</span> <span class="n">cryst_z</span><span class="o">/</span><span class="n">r1p</span>
+    <span class="n">mxx2</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xx1</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">ma</span><span class="o">.</span><span class="n">mask_or</span><span class="p">(</span><span class="n">rmask1</span><span class="p">,</span> <span class="n">rmask2</span><span class="p">))</span>
+    <span class="n">mzz2</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">zz1</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">ma</span><span class="o">.</span><span class="n">mask_or</span><span class="p">(</span><span class="n">rmask1</span><span class="p">,</span> <span class="n">rmask2</span><span class="p">))</span>
+    <span class="c1"># returns</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;circ&#39;</span> <span class="ow">in</span> <span class="n">mask</span><span class="o">.</span><span class="n">lower</span><span class="p">()):</span>
+        <span class="k">return</span> <span class="n">mxx1</span><span class="p">,</span> <span class="n">mzz1</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="s1">&#39;rect&#39;</span> <span class="ow">in</span> <span class="n">mask</span><span class="o">.</span><span class="n">lower</span><span class="p">()):</span>
+        <span class="k">return</span> <span class="n">mxx2</span><span class="p">,</span> <span class="n">mzz2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="getDthetaDats"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.dthetaxz.getDthetaDats">[docs]</a><span class="k">def</span> <span class="nf">getDthetaDats</span><span class="p">(</span><span class="n">mxx</span><span class="p">,</span> <span class="n">mzz</span><span class="p">,</span> <span class="n">wrc</span><span class="o">=</span><span class="mf">1.25E-4</span><span class="p">,</span>
+                  <span class="n">cases</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Johann&#39;</span><span class="p">,</span> <span class="s1">&#39;Johansson&#39;</span><span class="p">,</span> <span class="s1">&#39;Spherical plate&#39;</span><span class="p">,</span> <span class="s1">&#39;Wittry&#39;</span><span class="p">],</span>
+                  <span class="n">angles</span><span class="o">=</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">75</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;calculates data (see returns for details) in given loops</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mxx, mzz : 2D masked meshgrids, (X,Z) mapping of the analyzer</span>
+<span class="sd">    wrc : width of the analyzer rocking curve in rad [1.25E-4]</span>
+<span class="sd">    cases : list of str, see cases in dThetaXZ()</span>
+<span class="sd">    angles : list of int/floats, Bragg angles </span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dd: dictionary of dictionaries, for each case in cases</span>
+<span class="sd">    Lists:</span>
+<span class="sd">        dd[case][&#39;thetaB&#39;] : angles</span>
+<span class="sd">        #dd[case][&#39;dth&#39;] : $\Delta \theta$(x,z)</span>
+<span class="sd">        #dd[case][&#39;mdth&#39;] : effective $\Delta \theta$(x,z)</span>
+<span class="sd">        dd[case][&#39;sa&#39;] : solid angle</span>
+<span class="sd">        dd[case][&#39;eres&#39;] : energy resolution</span>
+
+<span class="sd">    NOTE: dth, mdth not stored (too much space in memory!)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dd</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1">#container dictonary to store results</span>
+    <span class="k">for</span> <span class="n">cs</span> <span class="ow">in</span> <span class="n">cases</span><span class="p">:</span>
+        <span class="n">dd</span><span class="p">[</span><span class="n">cs</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">dd</span><span class="p">[</span><span class="n">cs</span><span class="p">][</span><span class="s1">&#39;thetaB&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">angles</span>
+        <span class="n">dd</span><span class="p">[</span><span class="n">cs</span><span class="p">][</span><span class="s1">&#39;dth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">dd</span><span class="p">[</span><span class="n">cs</span><span class="p">][</span><span class="s1">&#39;mdth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">dd</span><span class="p">[</span><span class="n">cs</span><span class="p">][</span><span class="s1">&#39;sa&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">dd</span><span class="p">[</span><span class="n">cs</span><span class="p">][</span><span class="s1">&#39;eres&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Angle loop for </span><span class="si">{0}</span><span class="s1">...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cs</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">th</span> <span class="ow">in</span> <span class="n">angles</span><span class="p">:</span>
+            <span class="n">dth</span> <span class="o">=</span> <span class="n">dThetaXZ</span><span class="p">(</span><span class="n">mxx</span><span class="p">,</span> <span class="n">mzz</span><span class="p">,</span> <span class="n">th</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="n">cs</span><span class="p">)</span>
+            <span class="c1"># calc effective (&lt; wrc) solid angle and energy resolution</span>
+            <span class="n">mdth</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">masked_where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dth</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">wrc</span><span class="p">,</span> <span class="n">dth</span><span class="p">)</span>
+            <span class="n">gridSizeXX</span> <span class="o">=</span> <span class="p">(</span><span class="n">mxx</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">mxx</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">gridSizeZZ</span> <span class="o">=</span> <span class="p">(</span><span class="n">mzz</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">mzz</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">gridSizeXX</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">):</span>
+                <span class="n">mm</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">mxx</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+                <span class="n">mm</span> <span class="o">=</span> <span class="n">mm</span> <span class="o">*</span> <span class="n">gridSizeXX</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="p">(</span><span class="n">gridSizeZZ</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">):</span>
+                <span class="n">mm</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">mzz</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+                <span class="n">mm</span> <span class="o">=</span> <span class="n">mm</span> <span class="o">*</span> <span class="n">gridSizeZZ</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error: 0 grid size in solid angle for </span><span class="si">{0}</span><span class="s1"> at </span><span class="si">{1}</span><span class="s1"> deg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cs</span><span class="p">,</span> <span class="n">th</span><span class="p">))</span>
+                <span class="k">continue</span>
+            <span class="n">mm</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">mdth</span><span class="o">.</span><span class="n">mask</span>
+            <span class="c1">#eff_area = (mm.sum()/(mm.shape[0]*mm.shape[1]))*(np.pi*(r_cryst**2))</span>
+            <span class="n">eff_sa</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">th</span><span class="p">))</span>
+            <span class="c1">#eres = math.sqrt((mdth.max()-mdth.min())**2 + wrc**2)/math.tan(np.deg2rad(th))</span>
+            <span class="n">eres</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">dth</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">-</span><span class="n">dth</span><span class="o">.</span><span class="n">min</span><span class="p">())</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">wrc</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">th</span><span class="p">))</span>
+            <span class="c1"># append to output</span>
+            <span class="n">dd</span><span class="p">[</span><span class="n">cs</span><span class="p">][</span><span class="s1">&#39;dth&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dth</span><span class="p">)</span>
+            <span class="n">dd</span><span class="p">[</span><span class="n">cs</span><span class="p">][</span><span class="s1">&#39;mdth&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mdth</span><span class="p">)</span>
+            <span class="n">dd</span><span class="p">[</span><span class="n">cs</span><span class="p">][</span><span class="s1">&#39;sa&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eff_sa</span><span class="p">)</span>
+            <span class="n">dd</span><span class="p">[</span><span class="n">cs</span><span class="p">][</span><span class="s1">&#39;eres&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eres</span><span class="p">)</span>
+    <span class="c1">#</span>
+    <span class="k">return</span> <span class="n">dd</span></div>
+
+<div class="viewcode-block" id="writeScanDats"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.dthetaxz.writeScanDats">[docs]</a><span class="k">def</span> <span class="nf">writeScanDats</span><span class="p">(</span><span class="n">dd</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">scanLabel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">motpos</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; writes 1D scan data to SPEC file (refer to &#39;getMeshMasked&#39; and &#39;getDthetaDats &quot;&quot;&quot;</span>
+    <span class="n">mots</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;case&#39;</span><span class="p">,</span> <span class="s1">&#39;r1p&#39;</span><span class="p">,</span> <span class="s1">&#39;mask&#39;</span><span class="p">,</span> <span class="s1">&#39;cryst_x&#39;</span><span class="p">,</span> <span class="s1">&#39;cryst_z&#39;</span><span class="p">,</span> <span class="s1">&#39;wrc&#39;</span><span class="p">,</span> <span class="s1">&#39;csteps&#39;</span><span class="p">]</span>
+    <span class="n">ncols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;thetaB&#39;</span><span class="p">,</span> <span class="s1">&#39;sa&#39;</span><span class="p">,</span> <span class="s1">&#39;eres&#39;</span><span class="p">]</span>
+    <span class="n">sfw</span> <span class="o">=</span> <span class="n">SpecfileDataWriter</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">DEBUG</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;scanOnly mode is </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sfw</span><span class="o">.</span><span class="n">scanOnly</span><span class="p">))</span>
+    <span class="n">sfw</span><span class="o">.</span><span class="n">wHeader</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;scan data from dthetaxz.py&#39;</span><span class="p">,</span> <span class="n">motnames</span><span class="o">=</span><span class="n">mots</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">cs</span> <span class="ow">in</span> <span class="n">dd</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">dcols</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dd</span><span class="p">[</span><span class="n">cs</span><span class="p">][</span><span class="n">ncol</span><span class="p">])</span> <span class="k">for</span> <span class="n">ncol</span> <span class="ow">in</span> <span class="n">ncols</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">scanLabel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_title</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_title</span> <span class="o">=</span> <span class="n">scanLabel</span>
+        <span class="n">sfw</span><span class="o">.</span><span class="n">wScan</span><span class="p">(</span><span class="n">ncols</span><span class="p">,</span> <span class="n">dcols</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">_title</span><span class="p">,</span> <span class="n">motpos</span><span class="o">=</span><span class="n">motpos</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># TESTS in xrayspina/examples/dthetaxz_tests.py</span>
+    <span class="k">pass</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014--2019, Mauro Rovezzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

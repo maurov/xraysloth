@@ -1,0 +1,359 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sloth.utils.genericutils &mdash; Sloth 0.3.0-dev documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Sloth
+          
+
+          
+            
+            <img src="../../../_static/xraysloth.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Full contents - hidden:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../todo.html">To Do</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Sloth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sloth.utils.genericutils</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sloth.utils.genericutils</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Generic utilities for daily work</span>
+<span class="sd">===================================</span>
+
+<span class="sd">TODO</span>
+<span class="sd">====</span>
+<span class="sd">- collect all bits and pieces here</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1">########################</span>
+<span class="c1">### COLORIZED OUTPUT ###</span>
+<span class="c1">########################</span>
+<span class="n">HAS_TERMCOLOR</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">termcolor</span> <span class="k">import</span> <span class="n">colored</span>
+    <span class="n">HAS_TERMCOLOR</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+<div class="viewcode-block" id="colorstr"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.genericutils.colorstr">[docs]</a><span class="k">def</span> <span class="nf">colorstr</span><span class="p">(</span><span class="n">instr</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">on_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;bold&#39;</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;colorized string</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    color : str, &#39;green&#39;</span>
+<span class="sd">            Available text colors:</span>
+<span class="sd">            &#39;red&#39;, &#39;green&#39;, &#39;yellow&#39;, &#39;blue&#39;, &#39;magenta&#39;, &#39;cyan&#39;,</span>
+<span class="sd">            &#39;white&#39;</span>
+
+<span class="sd">    on_color : str, None</span>
+<span class="sd">               Available text highlights:</span>
+<span class="sd">               &#39;on_red&#39;, &#39;on_green&#39;, &#39;on_yellow&#39;, &#39;on_blue&#39;, &#39;on_magenta&#39;,</span>
+<span class="sd">               &#39;on_cyan&#39;, &#39;on_white&#39;</span>
+
+<span class="sd">    attrs : list of str, [&#39;bold&#39;]</span>
+<span class="sd">            Available attributes:</span>
+<span class="sd">            &#39;bold&#39;, &#39;dark&#39;, &#39;underline&#39;, &#39;blink&#39;, &#39;reverse&#39;, &#39;concealed&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">HAS_TERMCOLOR</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">colored</span><span class="p">(</span><span class="n">instr</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">on_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">instr</span></div>
+
+
+<div class="viewcode-block" id="get_efermi"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.genericutils.get_efermi">[docs]</a><span class="k">def</span> <span class="nf">get_efermi</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;get the Fermi level energy from a FDMNES out file&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">ef</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">6</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">DEBUG</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Calculated Fermi level: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ef</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">ef</span></div>
+
+<span class="c1">#############</span>
+<span class="c1">### NUMPY ###</span>
+<span class="c1">#############</span>
+<div class="viewcode-block" id="imin"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.genericutils.imin">[docs]</a><span class="k">def</span> <span class="nf">imin</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;index of minimum value&quot;&quot;&quot;</span>
+    <span class="n">_im</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Check: </span><span class="si">{0}</span><span class="s1"> = </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">arr</span><span class="p">),</span> <span class="n">arr</span><span class="p">[</span><span class="n">_im</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">_im</span></div>
+
+<div class="viewcode-block" id="imax"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.genericutils.imax">[docs]</a><span class="k">def</span> <span class="nf">imax</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;index of maximum value&quot;&quot;&quot;</span>
+    <span class="n">_im</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Check: </span><span class="si">{0}</span><span class="s1"> = </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">arr</span><span class="p">),</span> <span class="n">arr</span><span class="p">[</span><span class="n">_im</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">_im</span></div>
+
+<span class="c1">###############</span>
+<span class="c1">### IPython ###</span>
+<span class="c1">###############</span>
+<div class="viewcode-block" id="ipythonAutoreload"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.genericutils.ipythonAutoreload">[docs]</a><span class="k">def</span> <span class="nf">ipythonAutoreload</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;force ipython to autoreload imported modules&quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">IPython</span> <span class="k">import</span> <span class="n">get_ipython</span>
+    <span class="n">mgc</span> <span class="o">=</span> <span class="n">get_ipython</span><span class="p">()</span><span class="o">.</span><span class="n">magic</span>
+    <span class="n">mgc</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;</span><span class="si">%lo</span><span class="s1">ad_ext autoreload&#39;</span><span class="p">)</span>
+    <span class="n">mgc</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;</span><span class="si">%a</span><span class="s1">utoreload 2&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="run_from_ipython"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.genericutils.run_from_ipython">[docs]</a><span class="k">def</span> <span class="nf">run_from_ipython</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;check if inside ipython&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">__IPYTHON__</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="is_in_notebook"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.genericutils.is_in_notebook">[docs]</a><span class="k">def</span> <span class="nf">is_in_notebook</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;check if code is run from IPython notebook</span>
+
+<span class="sd">    .. note:: code from StackOverflow `https://stackoverflow.com/questions/15411967/how-can-i-check-if-code-is-executed-in-the-ipython-notebook/24937408#24937408`_</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">shell</span> <span class="o">=</span> <span class="n">get_ipython</span><span class="p">()</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">if</span> <span class="n">shell</span> <span class="o">==</span> <span class="s1">&#39;ZMQInteractiveShell&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>   <span class="c1"># Jupyter notebook or qtconsole</span>
+        <span class="k">elif</span> <span class="n">shell</span> <span class="o">==</span> <span class="s1">&#39;TerminalInteractiveShell&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>  <span class="c1"># Terminal running IPython</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>  <span class="c1"># Other type (?)</span>
+    <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>      <span class="c1"># Probably standard Python interpreter</span></div>
+
+<span class="c1">##################</span>
+<span class="c1">### Matplotlib ###</span>
+<span class="c1">##################</span>
+<div class="viewcode-block" id="mplSetPubFont"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.genericutils.mplSetPubFont">[docs]</a><span class="k">def</span> <span class="nf">mplSetPubFont</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">usetex</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;very basic mpl set font for publication-quality figures&quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">rc</span>
+    <span class="n">rc</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;family&#39;</span><span class="p">:</span><span class="s1">&#39;sans-serif&#39;</span><span class="p">,</span><span class="s1">&#39;sans-serif&#39;</span><span class="p">:[</span><span class="s1">&#39;Helvetica&#39;</span><span class="p">],</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span><span class="n">size</span><span class="p">})</span>
+    <span class="n">rc</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">usetex</span><span class="o">=</span><span class="n">usetex</span><span class="p">)</span></div>
+
+<span class="c1">##########</span>
+<span class="c1">### Qt ###</span>
+<span class="c1">##########</span>
+<div class="viewcode-block" id="qt_create_window"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.genericutils.qt_create_window">[docs]</a><span class="k">def</span> <span class="nf">qt_create_window</span><span class="p">(</span><span class="n">window_class</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a Qt window in Python, or interactively in IPython with Qt</span>
+<span class="sd">    GUI event loop integration.</span>
+
+<span class="sd">    Credits: http://cyrille.rossant.net/making-pyqt4-pyside-and-ipython-work-together/</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">silx.gui</span> <span class="k">import</span> <span class="n">qt</span>
+    <span class="n">app_created</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QCoreApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">app</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">app</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+        <span class="n">app_created</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">references</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="n">window_class</span><span class="p">()</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">references</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">app_created</span><span class="p">:</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">window</span></div>
+
+<div class="viewcode-block" id="qt_close_all_windows"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.genericutils.qt_close_all_windows">[docs]</a><span class="k">def</span> <span class="nf">qt_close_all_windows</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;close all qt windows!!!&quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">silx.gui</span> <span class="k">import</span> <span class="n">qt</span>
+    <span class="n">qt</span><span class="o">.</span><span class="n">QApplication</span><span class="o">.</span><span class="n">closeAllWindows</span><span class="p">()</span></div>
+
+<span class="k">def</span> <span class="nf">qt_get_version</span><span class="p">():</span>
+    <span class="kn">from</span> <span class="nn">silx.gui</span> <span class="k">import</span> <span class="n">qt</span>
+    <span class="kn">from</span> <span class="nn">sip</span> <span class="k">import</span> <span class="n">SIP_VERSION_STR</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Qt version:&quot;</span><span class="p">,</span> <span class="n">qt</span><span class="o">.</span><span class="n">QT_VERSION_STR</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SIP version:&quot;</span><span class="p">,</span> <span class="n">SIP_VERSION_STR</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;PyQt version:&quot;</span><span class="p">,</span> <span class="n">qt</span><span class="o">.</span><span class="n">PYQT_VERSION_STR</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1">#qt5_get_version()</span>
+    <span class="k">pass</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014--2019, Mauro Rovezzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

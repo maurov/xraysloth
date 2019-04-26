@@ -1,0 +1,579 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sloth.fit.peakfit &mdash; Sloth 0.3.0-dev documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Sloth
+          
+
+          
+            
+            <img src="../../../_static/xraysloth.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Full contents - hidden:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../todo.html">To Do</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Sloth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sloth.fit.peakfit</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sloth.fit.peakfit</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;Simple peak fitting utility</span>
+<span class="sd">==============================</span>
+
+<span class="sd">Current fitting backends: PyMca_ or SILX_</span>
+
+<span class="sd">.. _PyMca: https://github.com/vasole/pymca</span>
+<span class="sd">.. _SILX: https://github.com/silx-kit/silx</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">HAS_SILX</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">silx.math.fit.functions</span> <span class="k">import</span> <span class="n">sum_gauss</span>
+    <span class="kn">from</span> <span class="nn">silx.math.fit</span> <span class="k">import</span> <span class="n">fittheories</span><span class="p">,</span> <span class="n">bgtheories</span>
+    <span class="kn">from</span> <span class="nn">silx.math.fit.fitmanager</span> <span class="k">import</span> <span class="n">FitManager</span>
+    <span class="n">HAS_SILX</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+<span class="n">HAS_PYMCA</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">HAS_PYMCA5</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">PyMca5.PyMcaMath.fitting</span> <span class="k">import</span> <span class="n">Specfit</span><span class="p">,</span> <span class="n">SpecfitFunctions</span>
+    <span class="n">HAS_PYMCA5</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">PyMca</span> <span class="k">import</span> <span class="n">Specfit</span><span class="p">,</span> <span class="n">SpecfitFunctions</span>
+        <span class="n">HAS_PYMCA</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">sloth</span> <span class="k">import</span> <span class="n">NullClass</span>
+        <span class="n">Specfit</span> <span class="o">=</span> <span class="n">NullClass</span>
+        <span class="n">SpecfitFunctions</span> <span class="o">=</span> <span class="n">NullClass</span>
+        <span class="k">pass</span>
+
+<span class="kn">from</span> <span class="nn">sloth.utils.genericutils</span> <span class="k">import</span> <span class="n">run_from_ipython</span>
+<span class="n">IN_IPYTHON</span> <span class="o">=</span> <span class="n">run_from_ipython</span><span class="p">()</span>
+
+<span class="c1">##################</span>
+<span class="c1">### SILX BASED ###</span>
+<span class="c1">##################</span>
+
+<div class="viewcode-block" id="fit_silx"><a class="viewcode-back" href="../../../modules/fit.html#sloth.fit.peakfit.fit_silx">[docs]</a><span class="k">def</span> <span class="nf">fit_silx</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bkg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;fit a peak with using silx library</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ==========</span>
+
+<span class="sd">    x, y: data 1D arrays</span>
+
+<span class="sd">    theory : string [None]</span>
+<span class="sd">             available theories:</span>
+<span class="sd">             +---------------------+</span>
+<span class="sd">             | Gaussians           |</span>
+<span class="sd">             | Lorentz             |</span>
+<span class="sd">             | Area Gaussians      |</span>
+<span class="sd">             | Area Lorentz        |</span>
+<span class="sd">             | Pseudo-Voigt Line   |</span>
+<span class="sd">             | Area Pseudo-Voigt   |</span>
+<span class="sd">             | Split Gaussian      |</span>
+<span class="sd">             | Split Lorentz       |</span>
+<span class="sd">             | Split Pseudo-Voigt  |</span>
+<span class="sd">             | Step Down           |</span>
+<span class="sd">             | Step Up             |</span>
+<span class="sd">             | Slit                |</span>
+<span class="sd">             | Atan                |</span>
+<span class="sd">             | Hypermet            |</span>
+<span class="sd">             | Degree 2 Polynomial |</span>
+<span class="sd">             | Degree 3 Polynomial |</span>
+<span class="sd">             | Degree 4 Polynomial |</span>
+<span class="sd">             | Degree 5 Polynomial |</span>
+<span class="sd">             +---------------------+</span>
+
+<span class="sd">    bkg : string [None]</span>
+<span class="sd">          available bkg theories:</span>
+<span class="sd">          +---------------------+</span>
+<span class="sd">          | No Background       |</span>
+<span class="sd">          | Constant            |</span>
+<span class="sd">          | Linear              |</span>
+<span class="sd">          | Strip               |</span>
+<span class="sd">          | Snip                |</span>
+<span class="sd">          | Degree 2 Polynomial |</span>
+<span class="sd">          | Degree 3 Polynomial |</span>
+<span class="sd">          | Degree 4 Polynomial |</span>
+<span class="sd">          | Degree 5 Polynomial |</span>
+<span class="sd">          +---------------------+</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    =======</span>
+
+<span class="sd">    yfit : fit array like x</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">FitManager</span><span class="p">()</span>
+    <span class="n">fit</span><span class="o">.</span><span class="n">loadtheories</span><span class="p">(</span><span class="n">fittheories</span><span class="p">)</span>
+    <span class="n">fit</span><span class="o">.</span><span class="n">loadbgtheories</span><span class="p">(</span><span class="n">bgtheories</span><span class="p">)</span>
+    <span class="n">fit</span><span class="o">.</span><span class="n">setdata</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">yfit</span> <span class="o">=</span> <span class="n">y</span>
+    <span class="n">_kwerror</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">theory</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;fit theory not given! choose one of the following:&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">theories</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
+        <span class="n">_kwerror</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">bkg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;fit background not given! choose one of the following:&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">bgtheories</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
+        <span class="n">_kwerror</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">_kwerror</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">yfit</span>
+    <span class="n">fit</span><span class="o">.</span><span class="n">settheory</span><span class="p">(</span><span class="n">theory</span><span class="p">)</span>
+    <span class="n">fit</span><span class="o">.</span><span class="n">setbackground</span><span class="p">(</span><span class="n">bkg</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">fit</span><span class="o">.</span><span class="n">estimate</span><span class="p">()</span>
+        <span class="n">fit</span><span class="o">.</span><span class="n">runfit</span><span class="p">()</span>
+        <span class="n">yfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">gendata</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ERROR: fit_silx FAILED!!!&#39;</span><span class="p">)</span>
+
+    <span class="c1">#print(&#39;FWHM: {0}&#39;.format(fwhm(x,yfit,method=&#39;bin&#39;)))</span>
+    <span class="k">return</span> <span class="n">yfit</span></div>
+
+
+<span class="c1">###################</span>
+<span class="c1">### PYMCA BASED ###</span>
+<span class="c1">###################</span>
+
+<div class="viewcode-block" id="fit_splitpvoigt"><a class="viewcode-back" href="../../../modules/fit.html#sloth.fit.peakfit.fit_splitpvoigt">[docs]</a><span class="k">def</span> <span class="nf">fit_splitpvoigt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>\
+                    <span class="n">theory</span><span class="o">=</span><span class="s1">&#39;Split Pseudo-Voigt&#39;</span><span class="p">,</span> <span class="n">bkg</span><span class="o">=</span><span class="s1">&#39;Constant&#39;</span><span class="p">,</span>\
+                    <span class="n">conf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">npeaks</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>\
+                    <span class="n">show_infos</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_res</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;simple wrapper to PyMca.Specfit</span>
+
+<span class="sd">    the goal is to fit (automagically) a set of 1D data (x,y) with an</span>
+<span class="sd">    asymmetric PseudoVoigt (splitpvoigt) function plus a constant</span>
+<span class="sd">    background</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x, y : data arrays</span>
+
+<span class="sd">    dy : boolean or float, False</span>
+<span class="sd">         error bar on y. If dy==True: dy=np.sqrt(y) or give an</span>
+<span class="sd">         explicit array</span>
+
+<span class="sd">    theory : str, [&#39;Split Pseudo-Voigt&#39;,</span>
+<span class="sd">                   &#39;Gaussians&#39;,</span>
+<span class="sd">                   &#39;Lorentz&#39;,</span>
+<span class="sd">                   &#39;Area Gaussians&#39;,</span>
+<span class="sd">                   &#39;Area Lorentz&#39;,</span>
+<span class="sd">                   &#39;Pseudo-Voigt Line&#39;,</span>
+<span class="sd">                   &#39;Area Pseudo-Voigt&#39;,</span>
+<span class="sd">                   &#39;Split Gaussian&#39;,</span>
+<span class="sd">                   &#39;Split Lorentz&#39;,</span>
+<span class="sd">                   &#39;Step Down&#39;,</span>
+<span class="sd">                   &#39;Step Up&#39;,</span>
+<span class="sd">                   &#39;Slit&#39;,</span>
+<span class="sd">                   &#39;Atan&#39;,</span>
+<span class="sd">                   &#39;Hypermet&#39;,</span>
+<span class="sd">                   &#39;Periodic Gaussians&#39;]</span>
+
+<span class="sd">    bkg : str, [&#39;Constant&#39;, &#39;No Background&#39;, &#39;Linear&#39;, &#39;Internal&#39;]</span>
+
+<span class="sd">    conf : dictionary, None</span>
+<span class="sd">           to tune Specfit configuration, default:</span>
+<span class="sd">           &#39;FwhmPoints&#39; : int(len(y)/5.</span>
+<span class="sd">           &#39;Sensitivity&#39; : 5.</span>
+<span class="sd">           &#39;EtaFlag&#39; : 1 (force eta between 0 and 1)</span>
+<span class="sd">           &#39;WeightFlag&#39; : 0 (do not weight by noise)</span>
+<span class="sd">           &#39;AutoScaling&#39; : 1 (auto scale y)</span>
+<span class="sd">           &#39;AutoFwhm&#39; : 1 (auto guess fwhm)</span>
+
+<span class="sd">    npeaks : int, 1</span>
+<span class="sd">             limit the number of split-PseudoVoigt peaks to guess</span>
+
+<span class="sd">    show_infos: boolean, True</span>
+<span class="sd">                print information on the peakfit setup</span>
+
+<span class="sd">    show_res : boolean, True</span>
+<span class="sd">               print fit results to standard output</span>
+
+<span class="sd">    plot : boolean, True</span>
+<span class="sd">           plot data, fit and residual with PyMca (ScanWindow)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    PyMca.Specfit.Specfit, PyMca.ScanWindow.ScanWindow (None if plot=False)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># default fit configuration</span>
+    <span class="n">fwhmpts_guess</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">/</span><span class="mf">10.</span><span class="p">)</span> <span class="c1">#guess 1/10 of points resides in fwhm</span>
+    <span class="n">iflat</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">/</span><span class="mf">5.</span><span class="p">)</span> <span class="c1">#guess 1/5 of points are flat or out of peak</span>
+    <span class="n">sens_guess</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y</span><span class="p">[:</span><span class="n">iflat</span><span class="p">])</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="n">iflat</span><span class="p">:])</span>
+    <span class="n">dconf</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;FwhmPoints&#39;</span> <span class="p">:</span> <span class="n">fwhmpts_guess</span><span class="p">,</span> <span class="c1">#fwhm points</span>
+             <span class="s1">&#39;Sensitivity&#39;</span> <span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="mf">5.</span><span class="p">,</span> <span class="n">sens_guess</span><span class="p">),</span> <span class="c1">#sensitivity</span>
+             <span class="s1">&#39;Yscaling&#39;</span> <span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="c1">#Y factor</span>
+             <span class="s1">&#39;ForcePeakPresence&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="c1">#1 force peak presence</span>
+             <span class="s1">&#39;HeightAreaFlag&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="c1">#1 force positive Height/Area</span>
+             <span class="s1">&#39;PositionFlag&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="c1">#1 force position in interval</span>
+             <span class="s1">&#39;PosFwhmFlag&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="c1">#1 force positive FWHM</span>
+             <span class="s1">&#39;SameFwhmFlag&#39;</span> <span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="c1">#1 force same FWHM</span>
+             <span class="s1">&#39;EtaFlag&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="c1">#1 to force Eta between 0 and 1</span>
+             <span class="s1">&#39;NoConstrainsFlag&#39;</span> <span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="c1">#1 ignore Restrains</span>
+             <span class="s1">&#39;WeightFlag&#39;</span> <span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="s1">&#39;AutoScaling&#39;</span> <span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="s1">&#39;AutoFwhm&#39;</span> <span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+
+    <span class="c1"># force update config of bkg and theory</span>
+    <span class="n">dconf</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;fitbkg&#39;</span> <span class="p">:</span> <span class="n">bkg</span><span class="p">,</span>
+                  <span class="s1">&#39;fittheory&#39;</span> <span class="p">:</span> <span class="n">theory</span><span class="p">})</span>
+
+    <span class="k">if</span> <span class="n">conf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="n">dconf</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">show_infos</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:=^64}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;FIT INFOS&#39;</span><span class="p">))</span>
+
+    <span class="c1"># init Specfit object</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">Specfit</span><span class="o">.</span><span class="n">Specfit</span><span class="p">()</span>
+
+    <span class="c1"># set the data</span>
+    <span class="k">if</span> <span class="n">dy</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">fit</span><span class="o">.</span><span class="n">setdata</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">sigmay</span><span class="o">=</span><span class="n">dy</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">dy</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="n">fit</span><span class="o">.</span><span class="n">setdata</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fit</span><span class="o">.</span><span class="n">setdata</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">sigmay</span><span class="o">=</span><span class="n">dy</span><span class="p">)</span>
+
+    <span class="c1"># initialize fitting functions</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">theorylist</span><span class="p">):</span>
+        <span class="n">funsFile</span> <span class="o">=</span> <span class="s2">&quot;SpecfitFunctions.py&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">funsFile</span><span class="p">):</span>
+            <span class="n">funsFile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">Specfit</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="n">funsFile</span><span class="p">)</span>
+            <span class="n">fit</span><span class="o">.</span><span class="n">importfun</span><span class="p">(</span><span class="n">funsFile</span><span class="p">)</span>
+
+    <span class="c1"># limit number of estimated peaks</span>
+    <span class="k">def</span> <span class="nf">_estimate_splitpvoigt2</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">zzz</span><span class="p">,</span> <span class="n">xscaling</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">yscaling</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">npeaks</span><span class="o">=</span><span class="n">npeaks</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;wrap to SpecfitFunctions.estimate_splitpvoigt to limit to npeaks&quot;&quot;&quot;</span>
+        <span class="n">currpars</span><span class="p">,</span> <span class="n">currcons</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">estimate_splitpvoigt</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">zzz</span><span class="p">,</span> <span class="n">xscaling</span><span class="p">,</span> <span class="n">yscaling</span><span class="p">)</span>
+        <span class="c1">#print(currpars)</span>
+        <span class="c1">#print(currcons)</span>
+        <span class="n">newpars</span> <span class="o">=</span> <span class="n">currpars</span><span class="p">[:</span><span class="mi">5</span><span class="o">*</span><span class="n">npeaks</span><span class="p">]</span>
+        <span class="n">newcons</span> <span class="o">=</span> <span class="n">currcons</span><span class="p">[:][:</span><span class="mi">5</span><span class="o">*</span><span class="n">npeaks</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">newpars</span><span class="p">,</span> <span class="n">newcons</span>
+
+    <span class="c1"># force Split Pseudo-Voigt estimate to a single peak</span>
+    <span class="n">sff</span> <span class="o">=</span> <span class="n">SpecfitFunctions</span><span class="o">.</span><span class="n">SpecfitFunctions</span><span class="p">()</span>
+    <span class="n">conf_fun</span> <span class="o">=</span> <span class="n">sff</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="o">**</span><span class="n">dconf</span><span class="p">)</span>
+    <span class="n">fit</span><span class="o">.</span><span class="n">addtheory</span><span class="p">(</span><span class="s1">&#39;Split Pseudo-Voigt&#39;</span><span class="p">,</span> <span class="n">sff</span><span class="o">.</span><span class="n">splitpvoigt</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Height&#39;</span><span class="p">,</span><span class="s1">&#39;Position&#39;</span><span class="p">,</span><span class="s1">&#39;LowFWHM&#39;</span><span class="p">,</span> <span class="s1">&#39;HighFWHM&#39;</span><span class="p">,</span> <span class="s1">&#39;Eta&#39;</span><span class="p">],</span> <span class="n">_estimate_splitpvoigt2</span><span class="p">)</span>
+    <span class="n">theory</span> <span class="o">=</span> <span class="s1">&#39;Split Pseudo-Voigt&#39;</span>
+
+    <span class="k">if</span> <span class="n">show_infos</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;backgroung: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bkg</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;theory: </span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">npeaks</span><span class="p">,</span> <span class="n">theory</span><span class="p">))</span>
+
+    <span class="c1"># update configuration</span>
+    <span class="n">fit_conf</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="o">**</span><span class="n">dconf</span><span class="p">)</span>
+
+    <span class="c1"># set theory and bkg</span>
+    <span class="n">fit</span><span class="o">.</span><span class="n">settheory</span><span class="p">(</span><span class="n">theory</span><span class="p">)</span>
+    <span class="n">fit</span><span class="o">.</span><span class="n">setbackground</span><span class="p">(</span><span class="n">bkg</span><span class="p">)</span>
+
+    <span class="c1"># automatic estimate and fit</span>
+    <span class="n">fit_est</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">estimate</span><span class="p">()</span>
+    <span class="n">fit</span><span class="o">.</span><span class="n">startfit</span><span class="p">()</span>
+
+    <span class="c1"># RESULTS</span>
+    <span class="n">yfit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">gendata</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="n">fit</span><span class="o">.</span><span class="n">paramlist</span><span class="p">)</span>
+    <span class="n">residual</span> <span class="o">=</span> <span class="n">y</span><span class="o">-</span><span class="n">yfit</span>
+
+    <span class="c1"># outputs</span>
+    <span class="n">pk_area</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">yfit</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">fit</span><span class="o">.</span><span class="n">resdict</span> <span class="o">=</span> <span class="n">fit_results</span><span class="p">(</span><span class="n">fit</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s1">&#39;dict&#39;</span><span class="p">,</span> <span class="n">pk_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">fit</span><span class="o">.</span><span class="n">resdict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;area&#39;</span> <span class="p">:</span> <span class="n">pk_area</span><span class="p">})</span>
+    <span class="n">fit</span><span class="o">.</span><span class="n">yfit</span> <span class="o">=</span> <span class="n">yfit</span>
+    <span class="n">fit</span><span class="o">.</span><span class="n">residual</span> <span class="o">=</span> <span class="n">residual</span>
+
+    <span class="c1"># print results</span>
+    <span class="k">if</span> <span class="n">show_res</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">fit_results</span><span class="p">(</span><span class="n">fit</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s1">&#39;print&#39;</span><span class="p">,</span> <span class="n">pk_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># plot</span>
+    <span class="k">if</span> <span class="n">plot</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">HAS_PYMCA5</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">PyMca5.PyMcaGui</span> <span class="k">import</span> <span class="n">ScanWindow</span>
+        <span class="k">elif</span> <span class="n">HAS_PYMCA</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">PyMca</span> <span class="k">import</span> <span class="n">ScanWindow</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fit</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">IN_IPYTHON</span><span class="p">):</span>
+            <span class="kn">from</span> <span class="nn">PyMca</span> <span class="k">import</span> <span class="n">PyMcaQt</span> <span class="k">as</span> <span class="n">qt</span>
+            <span class="n">qtApp</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
+        <span class="n">pw</span> <span class="o">=</span> <span class="n">ScanWindow</span><span class="o">.</span><span class="n">ScanWindow</span><span class="p">()</span>
+        <span class="n">pw</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">800</span><span class="p">,</span><span class="mi">800</span><span class="p">)</span>
+        <span class="n">pw</span><span class="o">.</span><span class="n">addCurve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">pw</span><span class="o">.</span><span class="n">addCurve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">yfit</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;yfit&#39;</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">pw</span><span class="o">.</span><span class="n">addCurve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">residual</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;residual&#39;</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">pw</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">IN_IPYTHON</span><span class="p">):</span>
+            <span class="n">qtApp</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">plot</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fit</span><span class="p">,</span> <span class="n">pw</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fit</span><span class="p">,</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="fit_results"><a class="viewcode-back" href="../../../modules/fit.html#sloth.fit.peakfit.fit_results">[docs]</a><span class="k">def</span> <span class="nf">fit_results</span><span class="p">(</span><span class="n">fitobj</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s1">&#39;print&#39;</span><span class="p">,</span> <span class="n">pk_info</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; simple report of fit results</span>
+
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    fitobj : Specfit object</span>
+<span class="sd">    output : &#39;string&#39;</span>
+<span class="sd">             &#39;list&#39;</span>
+<span class="sd">             &#39;print&#39;</span>
+<span class="sd">             &#39;dict&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># templates</span>
+    <span class="n">tmpl_head</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:=^64}</span><span class="s1">&#39;</span>
+    <span class="n">tmpl_parhead</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:&lt;4}</span><span class="s1"> </span><span class="si">{1:=^12}</span><span class="s1"> </span><span class="si">{2:=^15}</span><span class="s1"> </span><span class="si">{3:=^13}</span><span class="s1"> (</span><span class="si">{4:=^14}</span><span class="s1">)&#39;</span>
+    <span class="n">tmpl_parlist</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:&lt;4}</span><span class="s1"> </span><span class="si">{1:&lt;12}</span><span class="s1"> </span><span class="si">{2:&lt; 15.5f}</span><span class="s1"> </span><span class="si">{3:&lt; 13.5f}</span><span class="s1"> (</span><span class="si">{4:^ 14.5f}</span><span class="s1">)&#39;</span>
+    <span class="n">tmpl_pkhead</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:&lt;4}</span><span class="s1"> </span><span class="si">{1:=^12}</span><span class="s1"> </span><span class="si">{2:=^14}</span><span class="s1"> </span><span class="si">{3:=^12}</span><span class="s1"> (</span><span class="si">{4:=^14}</span><span class="s1">)&#39;</span>
+    <span class="n">tmpl_pkinfo</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:&lt;4}</span><span class="s1"> </span><span class="si">{1:&lt; 12.5f}</span><span class="s1"> </span><span class="si">{2:&lt; 15.5f}</span><span class="s1"> </span><span class="si">{3:&lt; 13.5f}</span><span class="s1"> </span><span class="si">{4:^ 14.5f}</span><span class="s1">&#39;</span>
+
+    <span class="c1"># HEADER</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="n">tmpl_head</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; FIT RESULTS &#39;</span><span class="p">)]</span>
+
+    <span class="c1"># STATISTICS</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmpl_head</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; STATISTICS &#39;</span><span class="p">))</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;chi_squared = </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fitobj</span><span class="o">.</span><span class="n">chisq</span><span class="p">))</span>
+
+    <span class="c1"># FITTED PARAMETERS</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmpl_head</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; FITTED PARAMETERS &#39;</span><span class="p">))</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmpl_parhead</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;#idx&#39;</span><span class="p">,</span> <span class="s1">&#39; name &#39;</span><span class="p">,</span> <span class="s1">&#39; fitresult &#39;</span><span class="p">,</span> <span class="s1">&#39; sigma &#39;</span><span class="p">,</span> <span class="s1">&#39; estimation &#39;</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fitobj</span><span class="o">.</span><span class="n">paramlist</span><span class="p">):</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmpl_parlist</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;fitresult&#39;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;estimation&#39;</span><span class="p">]))</span>
+    <span class="c1"># PEAK INFO</span>
+    <span class="k">if</span> <span class="n">pk_info</span><span class="p">:</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmpl_head</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; PEAK INFO &#39;</span><span class="p">))</span>
+        <span class="n">bkg</span> <span class="o">=</span> <span class="n">fitobj</span><span class="o">.</span><span class="n">bkgfun</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s1">&#39;none&#39;</span> <span class="ow">in</span> <span class="n">bkg</span><span class="p">:</span>
+            <span class="n">ioff</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1">#const = 0</span>
+        <span class="k">elif</span> <span class="s1">&#39;constant&#39;</span> <span class="ow">in</span> <span class="n">bkg</span><span class="p">:</span>
+            <span class="n">ioff</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="c1">#const = fitobj.paramlist[0][&#39;fitresult&#39;]</span>
+        <span class="k">elif</span> <span class="s1">&#39;linear&#39;</span> <span class="ow">in</span> <span class="n">bkg</span><span class="p">:</span>
+            <span class="n">ioff</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="c1">#const = fitobj.paramlist[0][&#39;fitresult&#39;]</span>
+        <span class="k">elif</span> <span class="s1">&#39;internal&#39;</span> <span class="ow">in</span> <span class="n">bkg</span><span class="p">:</span>
+            <span class="n">ioff</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="c1">#const = fitobj.paramlist[2][&#39;fitresult&#39;]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="n">pk_height</span> <span class="o">=</span> <span class="n">fitobj</span><span class="o">.</span><span class="n">paramlist</span><span class="p">[</span><span class="n">ioff</span><span class="p">][</span><span class="s1">&#39;fitresult&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">fitobj</span><span class="o">.</span><span class="n">ydata</span><span class="p">)</span>
+        <span class="n">pk_pos</span> <span class="o">=</span> <span class="n">fitobj</span><span class="o">.</span><span class="n">paramlist</span><span class="p">[</span><span class="n">ioff</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;fitresult&#39;</span><span class="p">]</span>
+        <span class="n">pk_fwhm</span> <span class="o">=</span> <span class="p">(</span><span class="n">fitobj</span><span class="o">.</span><span class="n">paramlist</span><span class="p">[</span><span class="n">ioff</span><span class="o">+</span><span class="mi">2</span><span class="p">][</span><span class="s1">&#39;fitresult&#39;</span><span class="p">]</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">fitobj</span><span class="o">.</span><span class="n">paramlist</span><span class="p">[</span><span class="n">ioff</span><span class="o">+</span><span class="mi">3</span><span class="p">][</span><span class="s1">&#39;fitresult&#39;</span><span class="p">]</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+        <span class="n">pk_cfwhm</span> <span class="o">=</span> <span class="n">pk_pos</span> <span class="o">+</span> <span class="p">(</span> <span class="n">pk_fwhm</span><span class="o">/</span><span class="mf">2.</span> <span class="o">-</span> <span class="p">(</span><span class="n">fitobj</span><span class="o">.</span><span class="n">paramlist</span><span class="p">[</span><span class="n">ioff</span><span class="o">+</span><span class="mi">2</span><span class="p">][</span><span class="s1">&#39;fitresult&#39;</span><span class="p">]</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span> <span class="p">)</span>
+        <span class="c1"># collect peak infos in a dictionary</span>
+        <span class="n">resdict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;height&#39;</span> <span class="p">:</span> <span class="n">pk_height</span><span class="p">,</span>
+                   <span class="s1">&#39;position&#39;</span> <span class="p">:</span> <span class="n">pk_pos</span><span class="p">,</span>
+                   <span class="s1">&#39;fwhm&#39;</span> <span class="p">:</span> <span class="n">pk_fwhm</span><span class="p">,</span>
+                   <span class="s1">&#39;cfwhm&#39;</span> <span class="p">:</span> <span class="n">pk_cfwhm</span><span class="p">}</span>
+
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmpl_pkhead</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="s1">&#39; hght-min &#39;</span><span class="p">,</span> <span class="s1">&#39; position &#39;</span><span class="p">,</span> <span class="s1">&#39; FHWM &#39;</span><span class="p">,</span> <span class="s1">&#39; cen_FWHM &#39;</span><span class="p">))</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmpl_pkinfo</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="n">pk_height</span><span class="p">,</span> <span class="n">pk_pos</span><span class="p">,</span> <span class="n">pk_fwhm</span><span class="p">,</span> <span class="n">pk_cfwhm</span><span class="p">))</span>
+
+    <span class="c1"># OUTPUT</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;print&#39;</span> <span class="ow">in</span> <span class="n">output</span><span class="o">.</span><span class="n">lower</span><span class="p">()):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="s1">&#39;list&#39;</span> <span class="ow">in</span> <span class="n">output</span><span class="o">.</span><span class="n">lower</span><span class="p">()):</span>
+        <span class="k">return</span> <span class="n">out</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="s1">&#39;dict&#39;</span> <span class="ow">in</span> <span class="n">output</span><span class="o">.</span><span class="n">lower</span><span class="p">()):</span>
+        <span class="k">return</span> <span class="n">resdict</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out</span><span class="p">)</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">pass</span>
+    <span class="c1"># TESTS are in examples/peakfit_tests.py</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014--2019, Mauro Rovezzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

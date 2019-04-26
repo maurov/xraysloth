@@ -1,0 +1,565 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sloth.math.convolution1D &mdash; Sloth 0.3.0-dev documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Sloth
+          
+
+          
+            
+            <img src="../../../_static/xraysloth.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Full contents - hidden:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../todo.html">To Do</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Sloth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sloth.math.convolution1D</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sloth.math.convolution1D</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Generic discrete convolution</span>
+
+<span class="sd">Description</span>
+<span class="sd">-----------</span>
+
+<span class="sd"> This is a manual (not optimized!) implementation of discrete 1D</span>
+<span class="sd"> convolution intended for spectroscopy analysis. The difference with</span>
+<span class="sd"> commonly used methods is the possibility to adapt the convolution</span>
+<span class="sd"> kernel for each convolution point, e.g. change the FWHM of the</span>
+<span class="sd"> Gaussian kernel as a function of the energy scale.</span>
+
+<span class="sd">Resources</span>
+<span class="sd">---------</span>
+
+<span class="sd">.. [WPconv] &lt;http://en.wikipedia.org/wiki/Convolution#Discrete_convolution&gt;</span>
+<span class="sd">.. [Fisher] &lt;http://homepages.inf.ed.ac.uk/rbf/HIPR2/convolve.htm&gt;</span>
+<span class="sd">.. [GP1202] &lt;http://glowingpython.blogspot.fr/2012/02/convolution-with-numpy.html&gt;</span>
+
+<span class="sd">TODO</span>
+<span class="sd">----</span>
+<span class="sd">- [] get_ene_index: substitute with more elegant</span>
+<span class="sd">     &#39;np.argmin(np.abs(ene-(x)))&#39;</span>
+<span class="sd">- [] atan_gamma_fdmnes: define atan_gamma as in FDMNES</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">MODNAME</span> <span class="o">=</span> <span class="s1">&#39;_math&#39;</span>
+<span class="n">DEBUG</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">from</span> <span class="nn">optparse</span> <span class="k">import</span> <span class="n">OptionParser</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">date</span>
+<span class="kn">from</span> <span class="nn">string</span> <span class="k">import</span> <span class="n">Template</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># No deps on Larch: used only if you want to access this as Larch plugin</span>
+<span class="n">HAS_LARCH</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">larch</span> <span class="k">import</span> <span class="n">use_plugin_path</span>
+    <span class="n">use_plugin_path</span><span class="p">(</span><span class="s1">&#39;math&#39;</span><span class="p">)</span>
+    <span class="n">HAS_LARCH</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+<span class="c1"># &lt;LINESHAPES&gt; #</span>
+<div class="viewcode-block" id="gaussian"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.convolution1D.gaussian">[docs]</a><span class="k">def</span> <span class="nf">gaussian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">cen</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fwhm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">peak</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;1 dimensional Gaussian function (https://en.wikipedia.org/wiki/Gaussian_function)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ==========</span>
+<span class="sd">    x     : array</span>
+<span class="sd">    cen   : [0] center, x0</span>
+<span class="sd">    sigma : [1] standard deviation, FWHM = 2*sqrt(2*ln(2)) * sigma =~ 2.35482 * sigma</span>
+<span class="sd">    fwhm  : [False] if True, the given sigma is assumed as fwhm and then converted accordingly</span>
+<span class="sd">    peak  : [None] if None, peak = 1 / math.sqrt(2*math.pi), the distribution integrate to 1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">fwhm</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span> <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span> <span class="o">/</span> <span class="mi">2</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">peak</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">peak</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> 
+    <span class="k">return</span> <span class="n">peak</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span> <span class="o">-</span><span class="p">(</span><span class="mf">1.</span><span class="o">*</span><span class="n">x</span><span class="o">-</span><span class="n">cen</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="p">)</span></div>
+
+<div class="viewcode-block" id="lorentzian"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.convolution1D.lorentzian">[docs]</a><span class="k">def</span> <span class="nf">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">cen</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">peak</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;1 dimensional Lorentzian</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ==========</span>
+<span class="sd">    x     : array</span>
+<span class="sd">    cen   : [0] center, x0</span>
+<span class="sd">    gamma : [1] half width at half maximum</span>
+<span class="sd">    peak  : [None] if None, peak = 1 / (math.pi*sigma), the distribution integrate to 1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">peak</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">peak</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">gamma</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">peak</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="p">(</span> <span class="p">(</span><span class="mf">1.</span><span class="o">*</span><span class="n">x</span><span class="o">-</span><span class="n">cen</span><span class="p">)</span> <span class="o">/</span> <span class="n">gamma</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span> <span class="p">)</span></div>
+<span class="c1"># &lt;/LINESHAPES&gt; #</span>
+
+<div class="viewcode-block" id="get_ene_index"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.convolution1D.get_ene_index">[docs]</a><span class="k">def</span> <span class="nf">get_ene_index</span><span class="p">(</span><span class="n">ene</span><span class="p">,</span> <span class="n">cen</span><span class="p">,</span> <span class="n">hwhm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; returns the min/max indexes for array ene at (cen-hwhm) and (cen+hwhm)</span>
+<span class="sd">    very similar to index_of in larch</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">cen</span><span class="o">-</span><span class="n">hwhm</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ene</span><span class="p">)):</span>
+            <span class="n">ene_imin</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ene_imin</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ene</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">cen</span><span class="o">-</span><span class="n">hwhm</span><span class="p">))[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">cen</span><span class="o">+</span><span class="n">hwhm</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ene</span><span class="p">)):</span>
+            <span class="n">ene_imax</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ene_imax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ene</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">cen</span><span class="o">+</span><span class="n">hwhm</span><span class="p">))[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">ene_imin</span><span class="p">,</span> <span class="n">ene_imax</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;index not found for </span><span class="si">{0}</span><span class="s1"> +/- </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cen</span><span class="p">,</span> <span class="n">hwhm</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="lin_gamma"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.convolution1D.lin_gamma">[docs]</a><span class="k">def</span> <span class="nf">lin_gamma</span><span class="p">(</span><span class="n">ene</span><span class="p">,</span> <span class="n">fwhm</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">linbroad</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;returns constant or linear energy-dependent broadening</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ene : energy array in eV</span>
+<span class="sd">    fwhm : first full width at half maximum in eV</span>
+<span class="sd">    linbroad : list of 3-elements giving</span>
+<span class="sd">               &#39;second full width at half maximum&#39;</span>
+<span class="sd">               &#39;energy starting point of the linear increase&#39;</span>
+<span class="sd">               &#39;energy ending point of the linear increase&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">ene</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">linbroad</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">w</span><span class="o">*</span><span class="n">fwhm</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">fwhm2</span> <span class="o">=</span> <span class="n">linbroad</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">e1</span> <span class="o">=</span> <span class="n">linbroad</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">e2</span> <span class="o">=</span> <span class="n">linbroad</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;wrong format for linbroad&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">en</span><span class="p">,</span> <span class="n">ee</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ene</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">ee</span> <span class="o">&lt;</span> <span class="n">e1</span><span class="p">:</span>
+                <span class="n">w</span><span class="p">[</span><span class="n">en</span><span class="p">]</span> <span class="o">*=</span> <span class="n">fwhm</span>
+            <span class="k">elif</span> <span class="n">ee</span> <span class="o">&lt;=</span> <span class="n">e2</span><span class="p">:</span>
+                <span class="n">wlin</span> <span class="o">=</span> <span class="p">(</span><span class="n">fwhm</span> <span class="o">+</span> <span class="p">(</span><span class="n">ee</span> <span class="o">-</span> <span class="n">e1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">fwhm2</span> <span class="o">-</span> <span class="n">fwhm</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">e2</span> <span class="o">-</span> <span class="n">e1</span><span class="p">))</span>
+                <span class="n">w</span><span class="p">[</span><span class="n">en</span><span class="p">]</span> <span class="o">*=</span> <span class="n">wlin</span>
+            <span class="k">elif</span> <span class="n">ee</span> <span class="o">&gt;=</span> <span class="n">e2</span><span class="p">:</span>
+                <span class="n">w</span><span class="p">[</span><span class="n">en</span><span class="p">]</span> <span class="o">*=</span> <span class="n">fwhm2</span>
+        <span class="k">return</span> <span class="n">w</span></div>
+
+<div class="viewcode-block" id="atan_gamma"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.convolution1D.atan_gamma">[docs]</a><span class="k">def</span> <span class="nf">atan_gamma</span><span class="p">(</span><span class="n">ene</span><span class="p">,</span> <span class="n">gamma_hole</span><span class="p">,</span> <span class="n">gamma_max</span><span class="o">=</span><span class="mf">15.</span><span class="p">,</span> <span class="n">e0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eslope</span><span class="o">=</span><span class="mf">1.</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;returns arctangent-like broadening, $\Gamma(E)$</span>
+
+<span class="sd">    ..math</span>
+
+<span class="sd">    \Gamma(E) = \Gamma_{hole} + \Gamma_{max} * ( \arctan( \frac{E-E_{0}}{E_{slope}} ) / \pi + 1/2) )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">eslope</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: eslope cannot be zero, using default value of 1&#39;</span><span class="p">)</span>
+        <span class="n">eslope</span> <span class="o">=</span> <span class="mf">1.</span>
+    <span class="k">return</span> <span class="n">gamma_hole</span> <span class="o">+</span> <span class="n">gamma_max</span> <span class="o">*</span> <span class="p">(</span> <span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span> <span class="p">(</span><span class="n">ene</span> <span class="o">-</span> <span class="n">e0</span><span class="p">)</span> <span class="o">/</span> <span class="n">eslope</span> <span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="p">)</span></div>
+
+<div class="viewcode-block" id="conv"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.convolution1D.conv">[docs]</a><span class="k">def</span> <span class="nf">conv</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span> <span class="n">fwhm_e</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">efermi</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; linear broadening</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    e : x-axis (energy)</span>
+<span class="sd">    mu : f(x) to convolve with g(x) kernel, mu(energy)</span>
+<span class="sd">    kernel : convolution kernel, g(x)</span>
+<span class="sd">             &#39;gaussian&#39;</span>
+<span class="sd">             &#39;lorentzian&#39;</span>
+<span class="sd">    fwhm_e: the full width half maximum in eV for the kernel</span>
+<span class="sd">            broadening. It is an array of size &#39;e&#39; with constants or</span>
+<span class="sd">            an energy-dependent values determined by a function as</span>
+<span class="sd">            &#39;lin_gamma()&#39; or &#39;atan_gamma()&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">efermi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1">#ief = index_nearest(e, efermi)</span>
+        <span class="n">ief</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">e</span><span class="o">-</span><span class="n">efermi</span><span class="p">))</span>
+        <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">ief</span><span class="p">]</span> <span class="o">*=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">fwhm_e</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error: &#39;fwhm_e&#39; does not have the same shape of &#39;e&#39;&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="c1"># linar fit upper part of the spectrum to avoid border effects</span>
+    <span class="c1"># polyfit =&gt; pf</span>
+    <span class="n">lpf</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">cpf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="o">-</span><span class="n">lpf</span><span class="p">:],</span> <span class="n">f</span><span class="p">[</span><span class="o">-</span><span class="n">lpf</span><span class="p">:],</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">fpf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">poly1d</span><span class="p">(</span><span class="n">cpf</span><span class="p">)</span>
+    <span class="c1"># extend upper energy border to 3*fhwm_e[-1]</span>
+    <span class="n">estep</span> <span class="o">=</span> <span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">eup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">estep</span><span class="p">,</span> <span class="n">e</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">3</span><span class="o">*</span><span class="n">fwhm_e</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">estep</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="p">)):</span>
+        <span class="c1">#from now on I change e with eup</span>
+        <span class="n">eimin</span><span class="p">,</span> <span class="n">eimax</span> <span class="o">=</span> <span class="n">get_ene_index</span><span class="p">(</span><span class="n">eup</span><span class="p">,</span> <span class="n">eup</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="mf">1.5</span><span class="o">*</span><span class="n">fwhm_e</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">eimin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">eimax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">DEBUG</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s1">&#39;e[</span><span class="si">{0}</span><span class="s1">]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">eimin</span><span class="p">,</span> <span class="n">eimax</span><span class="p">))</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">kx</span> <span class="o">=</span> <span class="n">eup</span><span class="p">[</span><span class="n">eimin</span><span class="p">:</span><span class="n">eimax</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># odd range centered at the convolution point</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">kx</span> <span class="o">=</span> <span class="n">eup</span><span class="p">[</span><span class="n">eimin</span><span class="p">:</span><span class="n">eimax</span><span class="p">]</span>
+        <span class="c1">### kernel ###</span>
+        <span class="n">hwhm</span> <span class="o">=</span> <span class="n">fwhm_e</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">/</span><span class="mf">2.0</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;gauss&#39;</span> <span class="ow">in</span> <span class="n">kernel</span><span class="o">.</span><span class="n">lower</span><span class="p">()):</span>
+            <span class="n">ky</span> <span class="o">=</span> <span class="n">gaussian</span><span class="p">(</span><span class="n">kx</span><span class="p">,</span> <span class="n">cen</span><span class="o">=</span><span class="n">eup</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">sigma</span><span class="o">=</span><span class="n">hwhm</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="s1">&#39;lor&#39;</span> <span class="ow">in</span> <span class="n">kernel</span><span class="o">.</span><span class="n">lower</span><span class="p">()):</span>
+            <span class="n">ky</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">kx</span><span class="p">,</span> <span class="n">cen</span><span class="o">=</span><span class="n">eup</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">gamma</span><span class="o">=</span><span class="n">hwhm</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;convolution kernel &#39;</span><span class="si">{0}</span><span class="s2">&#39; not implemented&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">kernel</span><span class="p">))</span>
+        <span class="n">ky</span> <span class="o">=</span> <span class="n">ky</span><span class="o">/</span><span class="n">ky</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="c1"># normalize</span>
+        <span class="n">zn</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">lk</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">kx</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">mf</span><span class="p">,</span> <span class="n">mg</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="n">lk</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">lk</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">lk</span><span class="p">)</span> <span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span> <span class="p">((</span><span class="n">n</span><span class="o">+</span><span class="n">mf</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">((</span><span class="n">n</span><span class="o">+</span><span class="n">mf</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="p">))</span> <span class="p">):</span>
+                <span class="n">zn</span> <span class="o">+=</span> <span class="n">f</span><span class="p">[</span><span class="n">n</span><span class="o">+</span><span class="n">mf</span><span class="p">]</span> <span class="o">*</span> <span class="n">ky</span><span class="p">[</span><span class="n">mg</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="p">((</span><span class="n">n</span><span class="o">+</span><span class="n">mf</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="n">zn</span> <span class="o">+=</span> <span class="n">fpf</span><span class="p">(</span><span class="n">eup</span><span class="p">[</span><span class="n">n</span><span class="o">+</span><span class="n">mf</span><span class="p">])</span> <span class="o">*</span> <span class="n">ky</span><span class="p">[</span><span class="n">mg</span><span class="p">]</span>
+        <span class="n">z</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">zn</span>
+    <span class="k">return</span> <span class="n">z</span></div>
+
+<div class="viewcode-block" id="glinbroad"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.convolution1D.glinbroad">[docs]</a><span class="k">def</span> <span class="nf">glinbroad</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">fwhm_e</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">efermi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_larch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;gaussian linear convolution in Larch &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">_larch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Warning</span><span class="p">(</span><span class="s2">&quot;larch broken?&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">conv</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span> <span class="n">fwhm_e</span><span class="o">=</span><span class="n">fwhm_e</span><span class="p">,</span> <span class="n">efermi</span><span class="o">=</span><span class="n">efermi</span><span class="p">)</span></div>
+<span class="n">glinbroad</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">conv</span><span class="o">.</span><span class="vm">__doc__</span>
+
+<span class="c1">### CONVOLUTION WITH FDMNES VIA SYSTEM CALL ###</span>
+<div class="viewcode-block" id="FdmnesConv"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.convolution1D.FdmnesConv">[docs]</a><span class="k">class</span> <span class="nc">FdmnesConv</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Performs convolution with FDMNES within Python &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">opts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calcroot</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fn_in</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fn_out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">opts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">creator</span> <span class="o">=</span> <span class="s1">&#39;FDMNES toolbox&#39;</span><span class="p">,</span>
+                             <span class="n">today</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">(),</span>
+                             <span class="n">calcroot</span> <span class="o">=</span> <span class="n">calcroot</span><span class="p">,</span>
+                             <span class="n">fn_in</span> <span class="o">=</span> <span class="n">fn_in</span><span class="p">,</span>
+                             <span class="n">fn_out</span> <span class="o">=</span> <span class="n">fn_out</span><span class="p">,</span>
+                             <span class="n">fn_ext</span> <span class="o">=</span> <span class="s1">&#39;txt&#39;</span><span class="p">,</span>
+                             <span class="n">estart_sel</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                             <span class="n">estart</span> <span class="o">=</span> <span class="s1">&#39;-20.&#39;</span><span class="p">,</span>
+                             <span class="n">efermi_sel</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                             <span class="n">efermi</span> <span class="o">=</span> <span class="s1">&#39;-5.36&#39;</span><span class="p">,</span>
+                             <span class="n">spin</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                             <span class="n">core_sel</span> <span class="o">=</span> <span class="s1">&#39;!&#39;</span><span class="p">,</span>
+                             <span class="n">core</span> <span class="o">=</span> <span class="s1">&#39;!&#39;</span><span class="p">,</span>
+                             <span class="n">hole_sel</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                             <span class="n">hole</span> <span class="o">=</span> <span class="s1">&#39;0.5&#39;</span><span class="p">,</span>
+                             <span class="n">conv_const</span> <span class="o">=</span> <span class="s1">&#39;!&#39;</span><span class="p">,</span>
+                             <span class="n">conv_sel</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                             <span class="n">ecent</span> <span class="o">=</span> <span class="s1">&#39;25.0&#39;</span><span class="p">,</span>
+                             <span class="n">elarg</span> <span class="o">=</span> <span class="s1">&#39;20.0&#39;</span><span class="p">,</span>
+                             <span class="n">gamma_max</span> <span class="o">=</span> <span class="s1">&#39;10.0&#39;</span><span class="p">,</span>
+                             <span class="n">gamma_type</span> <span class="o">=</span> <span class="s1">&#39;Gamma_fix&#39;</span><span class="p">,</span>
+                             <span class="n">gauss_sel</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                             <span class="n">gaussian</span> <span class="o">=</span> <span class="s1">&#39;0.9&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span> <span class="o">=</span> <span class="n">opts</span>
+        <span class="k">if</span> <span class="n">calcroot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;calcroot&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">calcroot</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;fn_in&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">calcroot</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;fn_ext&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;fn_out&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_conv</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">calcroot</span><span class="p">,</span>
+                                                        <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;spin&#39;</span><span class="p">],</span>
+                                                        <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;fn_ext&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">fn_in</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;calcroot&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fn_in</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;fn_in&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fn_in</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;fn_out&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_conv</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn_in</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">],</span>
+                                                        <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;spin&#39;</span><span class="p">],</span>
+                                                        <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;fn_ext&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">fn_out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;fn_out&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fn_out</span>
+        <span class="c1"># then check all options</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checkopts</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">checkopts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;calcroot&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;fn_in&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;missing &#39;calcroot&#39; or &#39;fn_in&#39;&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;estart&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;!&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;estart_sel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;!&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;efermi&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;!&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;efermi_sel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;!&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;spin&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;up&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;core_sel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;core&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;2 !spin up&#39;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;spin&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;down&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;core_sel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;core&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1 !spin down&#39;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;spin&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;core_sel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;!&#39;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;spin&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;both&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;spin=&quot;both&quot; not implemented!&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;spin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;core_sel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;!&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;core&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;!&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;hole&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;!&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;hole_sel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;!&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;conv_const&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;!&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;conv_sel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;!&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;conv_sel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;gamma_type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Gamma_fix&#39;</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;gamma_type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Gamma_var&#39;</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;gamma_type=&quot;Gamma_fix&quot;/&quot;Gamma_var&quot;&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;gaussian&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;!&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;gauss_sel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;!&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;gauss_sel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="c1"># update the output file name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;fn_out&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_conv</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;calcroot&#39;</span><span class="p">],</span>
+                                                    <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;spin&#39;</span><span class="p">],</span>
+                                                    <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;fn_ext&#39;</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">setopt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="n">opt</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checkopts</span><span class="p">()</span>
+
+<div class="viewcode-block" id="FdmnesConv.wfdmfile"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.convolution1D.FdmnesConv.wfdmfile">[docs]</a>    <span class="k">def</span> <span class="nf">wfdmfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; write a simple fdmfile.txt to enable the convolution</span>
+<span class="sd">        first makes a copy of previous fdmfile.txt if not already done &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;fdmfile.bak&#39;</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;fdmfile.bak exists, good&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;cp fdmfile.txt fdmfile.bak&#39;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;copied fdmfile.txt to fmdfile.bak&#39;</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="s1">&#39;!fdmfile.txt automatically created by $</span><span class="si">{creator}</span><span class="s1"> on $</span><span class="si">{today}</span><span class="s1"> (for convolution)</span><span class="se">\n\</span>
+<span class="s1">!--------------------------------------------------------------------!</span><span class="se">\n\</span>
+<span class="s1">! Number of calculations</span><span class="se">\n\</span>
+<span class="s1"> 1</span><span class="se">\n\</span>
+<span class="s1">! FOR CONVOLUTION STEP</span><span class="se">\n\</span>
+<span class="s1">convfile.txt</span><span class="se">\n\</span>
+<span class="s1">!--------------------------------------------------------------------!</span><span class="se">\n\</span>
+<span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">outstr</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;fdmfile.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">outstr</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">wconvfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">!FDMNES convolution file</span><span class="se">\n\</span>
+<span class="s2">!created by $</span><span class="si">{creator}</span><span class="s2"> on $</span><span class="si">{today}</span><span class="se">\n\</span>
+<span class="s2">!</span>
+<span class="s2">Calculation</span><span class="se">\n\</span>
+<span class="s2">$</span><span class="si">{fn_in}</span><span class="se">\n\</span>
+<span class="s2">Conv_out</span><span class="se">\n\</span>
+<span class="s2">$</span><span class="si">{fn_out}</span><span class="se">\n\</span>
+<span class="s2">$</span><span class="si">{estart_sel}</span><span class="s2">Estart</span><span class="se">\n\</span>
+<span class="s2">$</span><span class="si">{estart_sel}</span><span class="s2">$</span><span class="si">{estart}</span><span class="se">\n\</span>
+<span class="s2">$</span><span class="si">{efermi_sel}</span><span class="s2">Efermi</span><span class="se">\n\</span>
+<span class="s2">$</span><span class="si">{efermi_sel}</span><span class="s2">$</span><span class="si">{efermi}</span><span class="se">\n\</span>
+<span class="s2">$</span><span class="si">{core_sel}</span><span class="s2">Selec_core</span><span class="se">\n\</span>
+<span class="s2">$</span><span class="si">{core_sel}</span><span class="s2">$</span><span class="si">{core}</span><span class="se">\n\</span>
+<span class="s2">$</span><span class="si">{hole_sel}</span><span class="s2">Gamma_hole</span><span class="se">\n\</span>
+<span class="s2">$</span><span class="si">{hole_sel}</span><span class="s2">$</span><span class="si">{hole}</span><span class="se">\n\</span>
+<span class="s2">$</span><span class="si">{conv_sel}</span><span class="s2">Convolution</span><span class="se">\n\</span>
+<span class="s2">$</span><span class="si">{conv_sel}</span><span class="s2">$</span><span class="si">{ecent}</span><span class="s2"> $</span><span class="si">{elarg}</span><span class="s2"> $</span><span class="si">{gamma_max}</span><span class="s2"> !Ecent Elarg Gamma_max</span><span class="se">\n\</span>
+<span class="s2">$</span><span class="si">{conv_sel}</span><span class="s2">$</span><span class="si">{gamma_type}</span><span class="se">\n\</span>
+<span class="s2">$</span><span class="si">{gauss_sel}</span><span class="s2">Gaussian</span><span class="se">\n\</span>
+<span class="s2">$</span><span class="si">{gauss_sel}</span><span class="s2">$</span><span class="si">{gaussian}</span><span class="s2"> !Gaussian conv for experimental res</span><span class="se">\n\</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+        <span class="n">outstr</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;convfile.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">outstr</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        
+<div class="viewcode-block" id="FdmnesConv.run"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.convolution1D.FdmnesConv.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; runs fdmnes &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wfdmfile</span><span class="p">()</span>  <span class="c1"># write fdmfile.txt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wconvfile</span><span class="p">()</span> <span class="c1"># write convfile.txt</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;fdmnes&#39;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> 
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;check &#39;fdmnes&#39; executable exists!&quot;</span><span class="p">)</span></div></div>
+
+<span class="c1">### LARCH ###    </span>
+<span class="k">def</span> <span class="nf">registerLarchPlugin</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">MODNAME</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;glinbroad&#39;</span><span class="p">:</span> <span class="n">glinbroad</span><span class="p">})</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1">#tests/examples in xraysloth/examples/convolution1D_tests.py</span>
+    <span class="k">pass</span>
+
+    
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014--2019, Mauro Rovezzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

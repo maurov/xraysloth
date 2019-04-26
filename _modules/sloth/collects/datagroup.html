@@ -1,0 +1,554 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sloth.collects.datagroup &mdash; Sloth 0.3.0-dev documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Sloth
+          
+
+          
+            
+            <img src="../../../_static/xraysloth.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Full contents - hidden:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../todo.html">To Do</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Sloth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sloth.collects.datagroup</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sloth.collects.datagroup</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;DataGroup: generic container for data objects</span>
+<span class="sd">================================================</span>
+
+<span class="sd">(=groups in Larch, =generic Python class)</span>
+
+<span class="sd">- DataGroup</span>
+<span class="sd">  - DataGroup1D</span>
+<span class="sd">    - DataGroupXanes</span>
+<span class="sd">      - DataGroupExafs</span>
+<span class="sd">    - DataGroupXes</span>
+<span class="sd">    - DataGroupPeak</span>
+<span class="sd">  - DataGroup2D</span>
+<span class="sd">    - DataGroupRixs</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">copy</span><span class="o">,</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">deque</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">interp1d</span>
+
+<span class="n">HAS_DILL</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">dill</span>
+    <span class="n">HAS_DILL</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+<span class="c1">#file access write access mode</span>
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version</span> <span class="o">&lt;</span> <span class="s1">&#39;3.0&#39;</span><span class="p">:</span>
+    <span class="n">write_access</span> <span class="o">=</span> <span class="s1">&#39;w&#39;</span>
+    <span class="n">read_access</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">write_access</span> <span class="o">=</span> <span class="s1">&#39;wb&#39;</span>
+    <span class="n">read_access</span> <span class="o">=</span> <span class="s1">&#39;rb&#39;</span>
+
+<span class="c1"># Larch</span>
+<span class="n">HAS_LARCH</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">larch</span>
+    <span class="kn">from</span> <span class="nn">larch</span> <span class="k">import</span> <span class="n">Group</span><span class="p">,</span> <span class="n">Interpreter</span>
+    <span class="c1">#from larch import use_plugin_path, Group</span>
+    <span class="c1">## load Larch Plugins</span>
+    <span class="c1">#use_plugin_path(&#39;io&#39;)</span>
+    <span class="c1">#from columnfile import _read_ascii</span>
+    <span class="c1">#use_plugin_path(&#39;wx&#39;)</span>
+    <span class="c1">#from plotter import _plot, _scatterplot, _plot_text</span>
+    <span class="c1">#use_plugin_path(&#39;math&#39;)</span>
+    <span class="c1">#from mathutils import _interp</span>
+    <span class="c1">#use_plugin_path(&#39;xafs&#39;)</span>
+    <span class="c1">#from xafsft import xftf, xftr, xftf_prep, xftf_fast, xftr_fast, ftwindow</span>
+    <span class="c1">#from pre_edge import pre_edge</span>
+    <span class="n">HAS_LARCH</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+<span class="c1"># PyMca</span>
+<span class="n">HAS_PYMCA</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">PyMca</span> <span class="k">import</span> <span class="n">ScanWindow</span>
+    <span class="n">HAS_PYMCA</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+<span class="kn">from</span> <span class="nn">..utils.strings</span> <span class="k">import</span> <span class="n">str2rng</span>
+<span class="kn">from</span> <span class="nn">..io.specfile_reader</span> <span class="k">import</span> <span class="n">spec_getmap2group</span><span class="p">,</span> <span class="n">spec_getmrg2group</span>
+
+<span class="c1">### GLOBAL VARIABLES ###</span>
+<span class="n">MODNAME</span> <span class="o">=</span> <span class="s1">&#39;_datagroup&#39;</span>
+<span class="n">DEBUG</span> <span class="o">=</span> <span class="mi">0</span>
+
+
+<span class="c1">### CLASS ###</span>
+<div class="viewcode-block" id="DataGroup"><a class="viewcode-back" href="../../../modules/collects.html#sloth.collects.datagroup.DataGroup">[docs]</a><span class="k">class</span> <span class="nc">DataGroup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;a list of groups with some wrapped methods from Larch &amp; friends&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwsd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_larch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">_larch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">HAS_LARCH</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_larch</span> <span class="o">=</span> <span class="n">Interpreter</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_inlarch</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;DataGroup requires Larch&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_larch</span> <span class="o">=</span> <span class="n">_larch</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_inlarch</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gs</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span> <span class="c1">#deque is faster than standard lists</span>
+        <span class="c1">### init keyword arguments ###</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">kwsd</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kwsd</span> <span class="o">=</span> <span class="n">kwsd</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kwsd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_kwsd</span><span class="p">()</span>
+
+<div class="viewcode-block" id="DataGroup.get_ig_from_label"><a class="viewcode-back" href="../../../modules/collects.html#sloth.collects.datagroup.DataGroup.get_ig_from_label">[docs]</a>    <span class="k">def</span> <span class="nf">get_ig_from_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grepstr</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;return a list of indexes where &#39;grepstr&#39; is in</span>
+<span class="sd">        self.gs.label&quot;&quot;&quot;</span>
+        <span class="n">igs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ig</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gs</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">grepstr</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">label</span><span class="p">:</span>
+                <span class="n">igs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ig</span><span class="p">)</span>
+        <span class="n">igs</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">igs</span></div>
+
+    <span class="k">def</span> <span class="nf">get_fnames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grepstr</span><span class="p">,</span> <span class="n">rpath</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">substr1</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">get_fnames</span><span class="p">(</span><span class="n">grepstr</span><span class="p">,</span> <span class="n">rpath</span><span class="o">=</span><span class="n">rpath</span><span class="p">,</span> <span class="n">substr1</span><span class="o">=</span><span class="n">substr1</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DataGroup.selector"><a class="viewcode-back" href="../../../modules/collects.html#sloth.collects.datagroup.DataGroup.selector">[docs]</a>    <span class="k">def</span> <span class="nf">selector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sel</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;initialize a selected list of objects, self.gs_sel&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">sel</span> <span class="o">==</span> <span class="s1">&#39;*&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gs</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ig_from_label</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">sel</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gs_sel</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gs</span><span class="p">[</span><span class="n">_s</span><span class="p">]</span> <span class="k">for</span> <span class="n">_s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataGroup.show"><a class="viewcode-back" href="../../../modules/collects.html#sloth.collects.datagroup.DataGroup.show">[docs]</a>    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="n">sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">none_value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;show a given attribute [&#39;label&#39;]&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">sel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">selector</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;(sel) gs[#] : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attr</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">ig</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gs</span><span class="p">):</span>
+            <span class="c1"># get the attribute</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">_attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">_attr</span> <span class="o">=</span> <span class="n">none_value</span>
+            <span class="c1"># check if selected</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">ig</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">):</span>
+                <span class="n">flag_sel</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flag_sel</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span>
+            <span class="c1"># then show</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;(</span><span class="si">{0}</span><span class="s2">) </span><span class="si">{1}</span><span class="s2"> : </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">flag_sel</span><span class="p">,</span> <span class="n">ig</span><span class="p">,</span> <span class="n">_attr</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="DataGroup.kick"><a class="viewcode-back" href="../../../modules/collects.html#sloth.collects.datagroup.DataGroup.kick">[docs]</a>    <span class="k">def</span> <span class="nf">kick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selrng</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;delete a given element in self.gs list&quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">_dlist</span><span class="p">(</span><span class="n">slist</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">ig</span> <span class="ow">in</span> <span class="n">slist</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">gs</span><span class="p">[</span><span class="n">ig</span><span class="p">]</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error deleting gs[</span><span class="si">{}</span><span class="s1">] (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ig</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gs</span><span class="p">[</span><span class="n">ig</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">selrng</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">selrng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">selrng</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span> <span class="n">selrng</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+            <span class="n">_dlist</span><span class="p">(</span><span class="n">selrng</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">selrng</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="n">_dlist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_ig_from_label</span><span class="p">(</span><span class="n">selrng</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">selrng</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="n">_dlist</span><span class="p">([</span><span class="n">selrng</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span></div>
+
+<div class="viewcode-block" id="DataGroup.get"><a class="viewcode-back" href="../../../modules/collects.html#sloth.collects.datagroup.DataGroup.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="n">sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">none_value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get given attribute</span>
+
+<span class="sd">        Keyword arguments</span>
+<span class="sd">        -----------------</span>
+<span class="sd">        attr :  [&#39;label&#39;] attribute to get</span>
+<span class="sd">        sel : [&#39;*&#39;] selection of groups</span>
+<span class="sd">        none_value : [None] value if the attribute does not exist</span>
+<span class="sd">                     &#39;pass&#39; -&gt; pass the AttributeError</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List of attribute values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">sel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">selector</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">_safe_getattr</span><span class="p">(</span><span class="n">g</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">none_value</span> <span class="o">==</span> <span class="s1">&#39;pass&#39;</span><span class="p">:</span> <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="n">none_value</span>
+        <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="n">_safe_getattr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gs_sel</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataGroup.setgroup"><a class="viewcode-back" href="../../../modules/collects.html#sloth.collects.datagroup.DataGroup.setgroup">[docs]</a>    <span class="k">def</span> <span class="nf">setgroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">sel</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;set attribute to selected list of groups &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">sel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">selector</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">_safe_setattr</span><span class="p">(</span><span class="n">g</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">attr</span><span class="p">),</span> <span class="n">value</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error setting </span><span class="si">{0}</span><span class="s1"> in </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">label</span><span class="p">))</span>
+        <span class="nb">map</span><span class="p">(</span><span class="n">_safe_setattr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gs_sel</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataGroup.copyattr"><a class="viewcode-back" href="../../../modules/collects.html#sloth.collects.datagroup.DataGroup.copyattr">[docs]</a>    <span class="k">def</span> <span class="nf">copyattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr1</span><span class="p">,</span> <span class="n">attr2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;copy attr1 to attr2&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">_n</span><span class="p">,</span> <span class="n">_g</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gs</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">_g</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">attr2</span><span class="p">),</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">_g</span><span class="p">,</span> <span class="n">attr1</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Attribute </span><span class="si">{0}</span><span class="s2"> does not exist in group </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attr1</span><span class="p">,</span> <span class="n">_g</span><span class="o">.</span><span class="n">label</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="DataGroup.get_kwsd"><a class="viewcode-back" href="../../../modules/collects.html#sloth.collects.datagroup.DataGroup.get_kwsd">[docs]</a>    <span class="k">def</span> <span class="nf">get_kwsd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;return a dictionary with default keyword arguments&quot;&quot;&quot;</span>
+        <span class="c1"># globally setted kws:</span>
+        <span class="c1"># self.sel = &#39;*&#39;</span>
+        <span class="n">kwsd</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;spec&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;cntx&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                          <span class="s1">&#39;cnty&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="s1">&#39;csig&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="s1">&#39;cmon&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="s1">&#39;csec&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="s1">&#39;norm&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="s1">&#39;action&#39;</span> <span class="p">:</span> <span class="s1">&#39;average&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;xystep&#39;</span> <span class="p">:</span> <span class="mf">0.02</span><span class="p">},</span>
+                <span class="s1">&#39;plot&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;xattr&#39;</span> <span class="p">:</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;yattr&#39;</span> <span class="p">:</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;norm&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="s1">&#39;replace&#39;</span> <span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                          <span class="s1">&#39;win&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                          <span class="s1">&#39;title&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="s1">&#39;show_legend&#39;</span> <span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                          <span class="s1">&#39;legend_loc&#39;</span> <span class="p">:</span> <span class="s1">&#39;ur&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;xlabel&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="s1">&#39;ylabel&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="s1">&#39;xlabelE&#39;</span> <span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;Energy (eV)&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;ylabelE&#39;</span> <span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\mu(E)$&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;xlabelK&#39;</span> <span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$k \rm\, (\AA^{-1})$&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;ylabelK&#39;</span> <span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$k^2\chi(k)$&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;xlabelR&#39;</span> <span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$R \rm\, (\AA)$&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;ylabelR&#39;</span> <span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$|\chi(R)|\rm\,(\AA^{-3})$&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;xlabelQ&#39;</span> <span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$k \rm\, (\AA^{-1})$&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;ylabelQ&#39;</span> <span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$|\chi(q)|\rm\, (\AA^{-2})$&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;xshift&#39;</span> <span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                          <span class="s1">&#39;ystack&#39;</span> <span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                          <span class="s1">&#39;xscale&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                          <span class="s1">&#39;yscale&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                          <span class="s1">&#39;xmin&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="s1">&#39;xmax&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="s1">&#39;ymin&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="s1">&#39;ymax&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
+                <span class="s1">&#39;interp&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;xmin&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="s1">&#39;xmax&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="s1">&#39;xstep&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="s1">&#39;kind&#39;</span> <span class="p">:</span> <span class="s1">&#39;linear&#39;</span><span class="p">},</span>
+                <span class="s1">&#39;pre_edge&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;e0&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="s1">&#39;pre1&#39;</span> <span class="p">:</span> <span class="o">-</span><span class="mi">50</span><span class="p">,</span>
+                              <span class="s1">&#39;pre2&#39;</span> <span class="p">:</span> <span class="o">-</span><span class="mi">20</span><span class="p">,</span>
+                              <span class="s1">&#39;norm1&#39;</span> <span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                              <span class="s1">&#39;norm2&#39;</span> <span class="p">:</span> <span class="mi">400</span><span class="p">,</span>
+                              <span class="s1">&#39;nvict&#39;</span> <span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                              <span class="s1">&#39;nnorm&#39;</span> <span class="p">:</span> <span class="mi">3</span><span class="p">},</span>
+                <span class="s1">&#39;xftf&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;xattr&#39;</span> <span class="p">:</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;yattr&#39;</span> <span class="p">:</span> <span class="s1">&#39;chi&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;kweight&#39;</span> <span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                          <span class="s1">&#39;kmin&#39;</span> <span class="p">:</span> <span class="mf">2.5</span><span class="p">,</span>
+                          <span class="s1">&#39;kmax&#39;</span> <span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+                          <span class="s1">&#39;dk&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                          <span class="s1">&#39;window&#39;</span> <span class="p">:</span> <span class="s1">&#39;hanning&#39;</span><span class="p">}}</span>
+        <span class="k">return</span> <span class="n">kwsd</span></div>
+
+    <span class="c1">### DEPRECATED METHODS ###</span>
+    <span class="k">def</span> <span class="nf">_deprecated_msg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Deprecated: moved to DataGroup1D (update your script!)&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">mkftf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deprecated_msg</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">mkchikw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deprecated_msg</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">getcom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deprecated_msg</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">norint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deprecated_msg</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">normax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deprecated_msg</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">norxafs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deprecated_msg</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">scale_kwin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deprecated_msg</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">plotexa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deprecated_msg</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">read_ascii</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deprecated_msg</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">getxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deprecated_msg</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">getspecscan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deprecated_msg</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">getspecmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deprecated_msg</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">xcalib</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deprecated_msg</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">mkiads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deprecated_msg</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">plotxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deprecated_msg</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">plotiads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deprecated_msg</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deprecated_msg</span><span class="p">()</span></div>
+
+<span class="c1">### LARCH ###</span>
+<div class="viewcode-block" id="datagroup"><a class="viewcode-back" href="../../../modules/collects.html#sloth.collects.datagroup.datagroup">[docs]</a><span class="k">def</span> <span class="nf">datagroup</span><span class="p">(</span><span class="n">kwsd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_larch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; utility to perform common operations on a list of data groups &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">DataGroup</span><span class="p">(</span><span class="n">kwsd</span><span class="o">=</span><span class="n">kwsd</span><span class="p">,</span> <span class="n">_larch</span><span class="o">=</span><span class="n">_larch</span><span class="p">)</span></div>
+
+<span class="k">def</span> <span class="nf">registerLarchPlugin</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">MODNAME</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;datagroup&#39;</span><span class="p">:</span> <span class="n">datagroup</span><span class="p">})</span>
+
+<span class="c1">###############################################</span>
+<span class="c1">### PICKLE-BASED // TEMPORARY DO NOT USE!!! ###</span>
+<span class="c1">###############################################</span>
+<div class="viewcode-block" id="EvalData"><a class="viewcode-back" href="../../../modules/collects.html#sloth.collects.datagroup.EvalData">[docs]</a><span class="k">class</span> <span class="nc">EvalData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;.. warning:: this is a temporary (=work-in-progress) data object -&gt; DO NOT USE IT IN PRODCTION!&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lcols</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ldats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linfs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;set attributes&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lcols</span> <span class="o">=</span> <span class="n">lcols</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ldats</span> <span class="o">=</span> <span class="n">ldats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linfs</span> <span class="o">=</span> <span class="n">linfs</span>
+
+<div class="viewcode-block" id="EvalData.save_data"><a class="viewcode-back" href="../../../modules/collects.html#sloth.collects.datagroup.EvalData.save_data">[docs]</a>    <span class="k">def</span> <span class="nf">save_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname_pickle</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;pickle dump evaluation results to file&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fname_pickle</span> <span class="o">=</span> <span class="n">fname_pickle</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname_pickle</span><span class="p">,</span> <span class="n">write_access</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: data saved to</span><span class="se">\n</span><span class="s1">.... </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname_pickle</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="EvalData.load_data"><a class="viewcode-back" href="../../../modules/collects.html#sloth.collects.datagroup.EvalData.load_data">[docs]</a>    <span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname_pickle</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;pickle load evaluation results from file&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname_pickle</span><span class="p">,</span> <span class="n">read_access</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: data loaded from</span><span class="se">\n</span><span class="s1">.... </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname_pickle</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="EvalData.overwrite_labels"><a class="viewcode-back" href="../../../modules/collects.html#sloth.collects.datagroup.EvalData.overwrite_labels">[docs]</a>    <span class="k">def</span> <span class="nf">overwrite_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_labels</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;overwrites data labels&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: overwriting data labels&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ilab</span><span class="p">,</span> <span class="n">newlab</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">new_labels</span><span class="p">):</span>
+            <span class="n">oldlab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linfs</span><span class="p">[</span><span class="n">ilab</span><span class="p">][</span><span class="s1">&#39;label&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">linfs</span><span class="p">[</span><span class="n">ilab</span><span class="p">][</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">newlab</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> -&gt; </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">oldlab</span><span class="p">,</span> <span class="n">newlab</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="EvalData.overwrite_flags"><a class="viewcode-back" href="../../../modules/collects.html#sloth.collects.datagroup.EvalData.overwrite_flags">[docs]</a>    <span class="k">def</span> <span class="nf">overwrite_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_flags</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;overwrites data flags&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: overwriting data flags&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ilab</span><span class="p">,</span> <span class="n">newflag</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">new_flags</span><span class="p">):</span>
+            <span class="n">oldflag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linfs</span><span class="p">[</span><span class="n">ilab</span><span class="p">][</span><span class="s1">&#39;flag&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">linfs</span><span class="p">[</span><span class="n">ilab</span><span class="p">][</span><span class="s1">&#39;flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">newflag</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> -&gt; </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">oldflag</span><span class="p">,</span> <span class="n">newflag</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="EvalData.show_label"><a class="viewcode-back" href="../../../modules/collects.html#sloth.collects.datagroup.EvalData.show_label">[docs]</a>    <span class="k">def</span> <span class="nf">show_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">infd</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;show label&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">infd</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="EvalData.get_labels"><a class="viewcode-back" href="../../../modules/collects.html#sloth.collects.datagroup.EvalData.get_labels">[docs]</a>    <span class="k">def</span> <span class="nf">get_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;labels&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">linfs</span><span class="p">)</span></div></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014--2019, Mauro Rovezzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

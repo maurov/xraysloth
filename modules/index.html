@@ -1,0 +1,277 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Reference &mdash; Sloth 0.3.0-dev documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="sloth.io: Input-output" href="io.html" />
+    <link rel="prev" title="Sloth: slowly evolving utilities for x-ray spectroscopists" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Sloth
+          
+
+          
+            
+            <img src="../_static/xraysloth.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Full contents - hidden:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="io.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.io</span></code>: Input-output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collects.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects</span></code>: Data containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fit.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit</span></code>: fitting tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inst.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst</span></code>: working with instrumentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="raytracing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing</span></code>: x-ray raytracing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math</span></code>: mathematical utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils</span></code>: utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dft.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.dft</span></code>: interacting with density functional theory (DFT) codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.gui</span></code>: GUI</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../todo.html">To Do</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Sloth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Reference</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/modules/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="reference">
+<h1>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="io.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.io</span></code>: Input-output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="io.html#module-sloth.io.specfile_reader"><code class="xref py py-mod docutils literal notranslate"><span class="pre">specfile_reader</span></code>: Wrapper on top of SpecFile reader</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="collects.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects</span></code>: Data containers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="collects.html#module-sloth.collects.datagroup"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects.datagroup</span></code>: generic data container</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collects.html#sloth-collects-datagroup1d-1d-data-scans"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects.datagroup1D</span></code>: 1D data (=scans)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collects.html#module-sloth.collects.datagroup2D"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects.datagroup2D</span></code>: 2D data (=images)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fit.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit</span></code>: fitting tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fit.html#module-sloth.fit.peakfit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit.peakfit</span></code>: peak fitting</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="inst.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst</span></code>: working with instrumentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="inst.html#module-sloth.inst.rowland"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst.rowland</span></code>: Rowland circle geometry (=XES spectrometers)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inst.html#sloth-inst-dthetaxz-analytical-expressions-for-delta-theta-crystal-analyzers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst.dthetaxz</span></code>: analytical expressions for <span class="math notranslate nohighlight">\(\Delta\theta\)</span> (=crystal analyzers)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="raytracing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing</span></code>: x-ray raytracing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="raytracing.html#module-sloth.raytracing.crystal_box"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing.crystal_box</span></code>: reflectivity of bent crystals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="raytracing.html#sloth-raytracing-shadow-utils-shadow3-utilities"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing.shadow_utils</span></code>: SHADOW3 utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="raytracing.html#sloth-raytracing-shadow-utils-johansson-cylindrical-analyzers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing.shadow_utils</span></code>: Johansson cylindrical analyzers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="math.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math</span></code>: mathematical utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="math.html#module-sloth.math.gridxyz"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math.gridxyz</span></code>: grid (X,Y,Z) to meshgrid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math.html#module-sloth.math.rotmatrix"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math.rotmatrix</span></code>: 3D rotation matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math.html#module-sloth.math.convolution1D"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math.convolution1D</span></code>: XAS convolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math.html#module-sloth.math.normalization"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math.normalization</span></code>: normalization schemes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math.html#module-sloth.math.geometry3D"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math.geometry3D</span></code>: simple 3D geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math.html#module-sloth.math.deglitch"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math.deglitch</span></code>: data deglich (=remove spikes)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils</span></code>: utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#module-sloth.utils.xdata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.xdata</span></code>: x-ray databases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#module-sloth.utils.bragg"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.bragg</span></code>: Bragg’s law</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#module-sloth.utils.pymca"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.pymca</span></code>: working with PyMca5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#module-sloth.utils.genericutils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.genericutils</span></code>: generic</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dft.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.dft</span></code>: interacting with density functional theory (DFT) codes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dft.html#sloth-dft-qe-xtl-quantum-espresso-to-xtl"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.dft.qe_xtl</span></code>: Quantum ESPRESSO to XTL</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.gui</span></code>: GUI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#sloth-gui-sloth-main-main-graphical-interface-prototype"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.gui.sloth_main</span></code>: main graphical interface (prototype)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="io.html" class="btn btn-neutral float-right" title="sloth.io: Input-output" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral float-left" title="Sloth: slowly evolving utilities for x-ray spectroscopists" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014--2019, Mauro Rovezzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

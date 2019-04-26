@@ -1,0 +1,1065 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sloth.inst.rowland &mdash; Sloth 0.3.0-dev documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Sloth
+          
+
+          
+            
+            <img src="../../../_static/xraysloth.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Full contents - hidden:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../todo.html">To Do</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Sloth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sloth.inst.rowland</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sloth.inst.rowland</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;Rowland circle geometry</span>
+<span class="sd">==========================</span>
+
+<span class="sd">Units here:</span>
+
+<span class="sd"> angular [deg]</span>
+<span class="sd"> spatial [mm]</span>
+<span class="sd"> energy [eV]</span>
+
+<span class="sd">Table of variables and conventions</span>
+
+<span class="sd">| description            | here    | XRT    | RT4XES  | SHADOW3 |</span>
+<span class="sd">|------------------------+---------+--------+---------+---------|</span>
+<span class="sd">| Bragg angle            | \theta  | \theta | \theta  | \theta  |</span>
+<span class="sd">| Rowland circle radius  | Rm      | Rm     | R/2     |         |</span>
+<span class="sd">| crystal bending radius | 2*Rm    | 2*Rm   | R       |         |</span>
+<span class="sd">| rays direction         | Y       | Y      | X       | Y       |</span>
+<span class="sd">| sagittal direction     | X       | X      | Y       | X       |</span>
+<span class="sd">| meridional direction   | Z       | Z      | Z       |         |</span>
+<span class="sd">| sample pos (X,Y,Z)     | (0,0,0) |        | (0,0,0) |         |</span>
+<span class="sd">|                        |         |        |         |         |</span>
+
+<span class="sd">.. note::</span>
+
+<span class="sd">   The sagittal plane local reference system is a 2D coordinate</span>
+<span class="sd">   system. All analysers are sitting/sliding on this plane. The origin</span>
+<span class="sd">   is located at the central analyser axis at &quot;aL&quot; parametric distance</span>
+<span class="sd">   from the central analyser surface (away from the sample). The</span>
+<span class="sd">   coordinates are (aXoff, SagOff). ``aXoff`` is positive on the right</span>
+<span class="sd">   of the central analyser when looking at the sample. ``SagOff`` is</span>
+<span class="sd">   positive toward the sample.</span>
+
+<span class="sd">.. note::</span>
+
+<span class="sd">   The following code has been tested with a 3D CAD model built using</span>
+<span class="sd">   SolidWorks: ``RowlandSketchPrototype-v1512``</span>
+
+<span class="sd">.. note ::</span>
+
+<span class="sd">   Lens equations used here are taken from:</span>
+
+<span class="sd">   - Suortti et al., J. Synchrotron Rad. 6, 69 (1999), DOI: 10.1107/S0909049599000291</span>
+<span class="sd">   - Podorov et al., J. Phys. D: Appl. Phys 34, 2363 (2001), DOI: 10.1088/0022-3727/34/15/317</span>
+
+<span class="sd">   *Meridional*</span>
+
+<span class="sd">   p0 = 2 * Rm * sin(theta0 - alpha)</span>
+<span class="sd">   q0 = 2 * Rm * sin(theta0 + alpha)</span>
+
+<span class="sd">   p0/p + q0/q = 2</span>
+
+<span class="sd">   *Sagittal*</span>
+
+<span class="sd">   1/p + 1/q = ( sin(theta0 - alpha) + sin(theta0 + alpha) ) / Rs</span>
+
+<span class="sd">RT4XES</span>
+<span class="sd">------</span>
+
+<span class="sd">ID26specVII.m</span>
+
+<span class="sd">- sample at (0,0,0); crystal at (Xa,0,Za); detector at (0,0,Zd=2*Za)</span>
+
+<span class="sd">TODO</span>
+<span class="sd">----</span>
+
+<span class="sd">- all the bender-related things should go only in RcHoriz!!!</span>
+<span class="sd">- check the full thing formulas when a miscut is given (alpha != 0)</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Mauro Rovezzi&quot;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s2">&quot;mauro.rovezzi@gmail.com&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;BSD license &lt;http://opensource.org/licenses/BSD-3-Clause&gt;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">..math.rotmatrix</span> <span class="k">import</span> <span class="n">rotate</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">xrange</span>
+<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+    <span class="n">xrange</span> <span class="o">=</span> <span class="nb">range</span>
+
+<span class="n">DEBUG</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1">### GLOBAL VARIABLES ###</span>
+<span class="n">HC</span> <span class="o">=</span> <span class="mf">1.2398418743309972e-06</span> <span class="c1"># eV * m</span>
+<span class="n">ED0</span> <span class="o">=</span> <span class="mf">1e-4</span> <span class="c1"># minimum energy step (eV) considered as 0 </span>
+<span class="n">AZ0</span> <span class="o">=</span> <span class="mf">1e-4</span> <span class="c1"># minimum Z step (mm) considered as 0</span>
+
+<span class="c1">### UTILITIES ###</span>
+<div class="viewcode-block" id="cs_h"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.cs_h">[docs]</a><span class="k">def</span> <span class="nf">cs_h</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Height of the circular segment, given its radius R and chord</span>
+<span class="sd">    length c See: [http://en.wikipedia.org/wiki/Circular_segment]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">c</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="o">*</span><span class="n">R</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;WARNING: the chord is greater than the diameter!&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;WARNING: returning maximum height, the radius&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">R</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">R</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="n">R</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">c</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span> <span class="p">)</span></div>
+
+<div class="viewcode-block" id="acenx"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.acenx">[docs]</a><span class="k">def</span> <span class="nf">acenx</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">asx</span><span class="o">=</span><span class="mf">25.</span><span class="p">,</span> <span class="n">agx</span><span class="o">=</span><span class="mf">5.</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;n-th analyser center (starting from 0!) in x, given its size (asx)</span>
+<span class="sd">    and gap between two (agx) in mm</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">asx</span> <span class="o">+</span> <span class="n">agx</span><span class="p">)</span> <span class="o">*</span> <span class="n">n</span></div>
+
+<div class="viewcode-block" id="det_pos_rotated"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.det_pos_rotated">[docs]</a><span class="k">def</span> <span class="nf">det_pos_rotated</span><span class="p">(</span><span class="n">dxyz</span><span class="p">,</span> <span class="n">drot</span><span class="o">=</span><span class="mf">35.</span><span class="p">,</span> <span class="n">doffsets</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;return the detector positions in a rotated reference system with</span>
+<span class="sd">    the origin at the sample</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    dxyz : numpy array of floats</span>
+<span class="sd">           [X, Y, Z] detector position in the global coordinate system</span>
+<span class="sd">           (detector assumed on the YZ plane)</span>
+
+<span class="sd">    drot : float [35.]</span>
+<span class="sd">           angle of rotation, counter-clock-wise, around X axis</span>
+
+<span class="sd">    doffsets : numpy array of floats [0, 0]</span>
+<span class="sd">               [Y, Z] offsets of the detector reference system origin</span>
+
+<span class="sd">    Return</span>
+<span class="sd">    ------</span>
+
+<span class="sd">    [dy, dz] : numpy array of floats</span>
+<span class="sd">               absolute positions of the detector stages</span>
+<span class="sd">               NOTE: the (dy, dz) sign here is given as the convention setted during the commissioning in Aug 2017</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">dxyz</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dxyz</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dxyz</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">dr</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">y</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">drot</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan</span><span class="p">(</span><span class="n">z</span><span class="o">/</span><span class="n">y</span><span class="p">)</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">drot</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">DEBUG</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;DEBUG(det_pos_rotated): alpha is </span><span class="si">{0}</span><span class="s1"> deg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">alpha</span><span class="p">)))</span>
+    <span class="n">dpar</span> <span class="o">=</span> <span class="n">dr</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+    <span class="n">dper</span> <span class="o">=</span> <span class="n">dr</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+    <span class="c1">#insert offset of the detector origin</span>
+    <span class="n">dy</span> <span class="o">=</span> <span class="n">dpar</span> <span class="o">-</span> <span class="n">doffsets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">dz</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">doffsets</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">dper</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dy</span><span class="p">,</span> <span class="n">dz</span><span class="p">])</span></div>
+    
+<span class="c1">### CLASS ###</span>
+<div class="viewcode-block" id="RowlandCircle"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RowlandCircle">[docs]</a><span class="k">class</span> <span class="nc">RowlandCircle</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Rowland circle geometry&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Rm</span><span class="o">=</span><span class="mf">500.</span><span class="p">,</span> <span class="n">theta0</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>\
+                 <span class="n">aW</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">aWext</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">rSext</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">aL</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>\
+                 <span class="n">bender_version</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bender</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">),</span> <span class="n">actuator</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">),</span>\
+                 <span class="n">inCircle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">useCm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">showInfos</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        </span>
+<span class="sd">        Rm : float, 500.</span>
+
+<span class="sd">             radius of the Rowland circle (meridional radius) in [mm]</span>
+<span class="sd">             </span>
+<span class="sd">        theta0 : float, 0.</span>
+<span class="sd">                 Bragg angle for the central Rowland circle [deg]</span>
+<span class="sd">        </span>
+<span class="sd">        alpha : float, 0.</span>
+
+<span class="sd">                miscut angle in deg: the angle between the surface of</span>
+<span class="sd">                the crystal and the crystal planes at the centre</span>
+<span class="sd">                point; for positive alpha, q &gt; p, that is, the center</span>
+<span class="sd">                analyser moves downward (or clockwise) the vertical</span>
+<span class="sd">                Rowland circle</span>
+
+<span class="sd">        d : float, None</span>
+
+<span class="sd">            crystal d-spacing in \AA (this is simply an utility to</span>
+<span class="sd">            convert theta to energy - in eV)</span>
+
+<span class="sd">        aW : float, 0.</span>
+
+<span class="sd">             crystal analyser optical width</span>
+<span class="sd">                </span>
+<span class="sd">        aWext : float, 0.</span>
+
+<span class="sd">                crystal analyser extended width (NOTE: this width is</span>
+<span class="sd">                used in self.get_chi2, that is, the width to get two</span>
+<span class="sd">                adjacent analysers touching)</span>
+
+<span class="sd">        rSext : float, 0.</span>
+
+<span class="sd">                sagittal radius offset where aWext is referred to,</span>
+<span class="sd">                that is, aWext condition is given for Rs+rSext</span>
+<span class="sd">        </span>
+<span class="sd">        aL : float, 0.</span>
+
+<span class="sd">             distance of analyser center from the chi rotation</span>
+<span class="sd">             (affects =&gt; Chi, SagOff)</span>
+
+<span class="sd">        bender_version : string, None</span>
+<span class="sd">                         defines the bender tuple keyword argument</span>
+<span class="sd">                         see -&gt; self.get_bender_pos()</span>
+<span class="sd">        </span>
+<span class="sd">        bender : tuple of floats, (0., 0., 0.) corresponds to</span>
+<span class="sd">                 if (bender_version is None) or (bender_version == 0):</span>
+<span class="sd">                 (length_arm0_mm, length_arm1_mm, angle_between_arms_deg)</span>
+<span class="sd">                 if (bender_version == 1):</span>
+<span class="sd">                 (length_arm0_mm, length_arm1_mm, length_anchor_actuator_mm)</span>
+
+<span class="sd">        actuator : tuple of floats, (0., 0.) corresponts to</span>
+<span class="sd">                   (axoff_actuator_mm, length_actuator_arm_mm)</span>
+
+<span class="sd">        inCircle : boolean, False</span>
+
+<span class="sd">                   sample on the Rowland cicle otherwise give the y</span>
+<span class="sd">                   offset if inside (dispersive)</span>
+
+<span class="sd">        useCm : boolean, False</span>
+<span class="sd">        </span>
+<span class="sd">                use cm instead of mm (as default in SHADOW)</span>
+
+<span class="sd">        showInfos : boolean, True</span>
+
+<span class="sd">                    print extra informations (sometimes useful)</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None (set attributes)</span>
+
+<span class="sd">        self.Rm</span>
+<span class="sd">        self.inCircle</span>
+<span class="sd">        self.sampPos</span>
+<span class="sd">        self.alpha</span>
+<span class="sd">        self.ralpha</span>
+<span class="sd">        self.aL</span>
+<span class="sd">        self.aW</span>
+<span class="sd">        self.aWext</span>
+<span class="sd">        self.rSext</span>
+<span class="sd">        self.bender</span>
+<span class="sd">        self.actuator</span>
+<span class="sd">        self.bender_version</span>
+<span class="sd">        self.showInfos</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">useCm</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">uDist</span> <span class="o">=</span> <span class="s1">&#39;cm&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">uDist</span> <span class="o">=</span> <span class="s1">&#39;mm&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Rm</span> <span class="o">=</span> <span class="n">Rm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aW</span> <span class="o">=</span> <span class="n">aW</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aWext</span> <span class="o">=</span> <span class="n">aWext</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rSext</span> <span class="o">=</span> <span class="n">rSext</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bender</span> <span class="o">=</span> <span class="n">bender</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">actuator</span> <span class="o">=</span> <span class="n">actuator</span>
+        <span class="k">if</span> <span class="n">bender_version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">bender_version</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bender_version</span> <span class="o">=</span> <span class="n">bender_version</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aL</span> <span class="o">=</span> <span class="n">aL</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Rs</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">d</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inCircle</span> <span class="o">=</span> <span class="n">inCircle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">showInfos</span> <span class="o">=</span> <span class="n">showInfos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infos_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">inCircle</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sampPos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="p">((</span><span class="s1">&#39;int&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">inCircle</span><span class="p">)))</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;float&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">inCircle</span><span class="p">)))):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sampPos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="n">inCircle</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;WARNING: inCircle not tested/implementd yet, REVERTED to 0 position!&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sampPos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;Sample inside the Rowland circle: y offset is required&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ralpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">theta0</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_theta0</span><span class="p">(</span><span class="n">theta0</span><span class="p">)</span>
+        <span class="c1">#no need to return self; this method will not be called in sequence</span>
+        <span class="c1">#return self</span>
+
+<div class="viewcode-block" id="RowlandCircle.set_dspacing"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RowlandCircle.set_dspacing">[docs]</a>    <span class="k">def</span> <span class="nf">set_dspacing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;set crystal d-spacing (\AA)&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">d</span></div>
+        
+<div class="viewcode-block" id="RowlandCircle.set_theta0"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RowlandCircle.set_theta0">[docs]</a>    <span class="k">def</span> <span class="nf">set_theta0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta0</span><span class="p">,</span> <span class="n">showInfos</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;set correct attributes for a given theta0 (Bragg angle =</span>
+<span class="sd">        center theta)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None (set attributes)</span>
+<span class="sd">        </span>
+<span class="sd">        self.theta0  : in degrees</span>
+<span class="sd">        self.rtheta0 : in radians</span>
+<span class="sd">        self.sd      : sample-detector distance (independent of \alpha?)</span>
+<span class="sd">        self.p       : sample-analyser distance</span>
+<span class="sd">        self.q       : analyser-detector distance</span>
+<span class="sd">        self.Rs      : sagittal radius (analyser center, self.aL == 0.)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">showInfos</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">showInfos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">showInfos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theta0</span> <span class="o">=</span> <span class="n">theta0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rtheta0</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta0</span><span class="p">)</span>       
+        <span class="bp">self</span><span class="o">.</span><span class="n">sd</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rm</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rtheta0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p0</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rm</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rtheta0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ralpha</span><span class="p">)</span>
+        <span class="c1">#self.p = self.p0 - self.sampPos[1] #not fully tested yet</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q0</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rm</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rtheta0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ralpha</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q0</span> <span class="c1"># TODO: generic case!</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">p0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">showInfos</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: sagittal focusing, symmetric formula&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Rs</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rm</span> <span class="o">*</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rtheta0</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span> <span class="c1"># no miscut</span>
+            <span class="k">else</span> <span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;WARNING: sagittal focusing with miscut (CHECK FORMULA!)&#39;</span><span class="p">)</span>
+                <span class="c1">#self.Rs = self.Rm * (math.cos(2*self.ralpha) - math.cos(2*self.theta0)) # TODO: check this</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Rs</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rm</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rtheta0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ralpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rtheta0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ralpha</span><span class="p">)</span> <span class="c1">#this one should be correct: TO TEST!</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="c1"># generic sagittal focusing # TODO: check this!!!</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;WARNING: sagittal focusing generic (CHECK FORMULA!)&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Rs</span> <span class="o">=</span> <span class="p">(</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rtheta0</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">q</span> <span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">showInfos</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: theta0 = </span><span class="si">{0:.3f}</span><span class="s2"> deg&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta0</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: alpha = </span><span class="si">{0:.3f}</span><span class="s2"> deg&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: ene0 = </span><span class="si">{0:.2f}</span><span class="s2"> eV&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_ene</span><span class="p">()))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: d = </span><span class="si">{0:.3f}</span><span class="s2"> \AA&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: p = </span><span class="si">{0:.3f}</span><span class="s2"> </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uDist</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: q = </span><span class="si">{0:.3f}</span><span class="s2"> </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uDist</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: Rm = </span><span class="si">{0:.3f}</span><span class="s2"> </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Rm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uDist</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: Rs = </span><span class="si">{0:.3f}</span><span class="s2"> </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Rs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uDist</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: aW = </span><span class="si">{0:.3f}</span><span class="s2"> </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aW</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uDist</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: aWext = </span><span class="si">{0:.3f}</span><span class="s2"> </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aWext</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uDist</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: aL = </span><span class="si">{0:.3f}</span><span class="s2"> </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aL</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uDist</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="RowlandCircle.get_infos"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RowlandCircle.get_infos">[docs]</a>    <span class="k">def</span> <span class="nf">get_infos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;show useful information on distances/parameters&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infos_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;theta0&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">theta0</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">],</span>
+                                <span class="s1">&#39;p&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uDist</span><span class="p">],</span>
+                                <span class="s1">&#39;q&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uDist</span><span class="p">],</span>
+                                <span class="s1">&#39;Rm&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">Rm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uDist</span><span class="p">],</span>
+                                <span class="s1">&#39;Rs&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">Rs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uDist</span><span class="p">],</span>
+                                <span class="s1">&#39;aW&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">aW</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uDist</span><span class="p">],</span>
+                                <span class="s1">&#39;aWext&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">aWext</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uDist</span><span class="p">],</span>
+                                <span class="s1">&#39;aL&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">aL</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uDist</span><span class="p">]})</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">infos_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;d&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">,</span> <span class="s1">&#39;\AA&#39;</span><span class="p">],</span>
+                                    <span class="s1">&#39;ene0&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_ene</span><span class="p">(),</span> <span class="s1">&#39;eV&#39;</span><span class="p">]})</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">infos_dict</span></div>
+
+<div class="viewcode-block" id="RowlandCircle.set_ene0"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RowlandCircle.set_ene0">[docs]</a>    <span class="k">def</span> <span class="nf">set_ene0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ene0</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;set the central energy (eV) and relative Bragg angle&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">theta0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_theta</span><span class="p">(</span><span class="n">ene0</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="n">d</span><span class="p">,</span> <span class="n">isDeg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_theta0</span><span class="p">(</span><span class="n">theta0</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: energy not setted!&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RowlandCircle.get_theta"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RowlandCircle.get_theta">[docs]</a>    <span class="k">def</span> <span class="nf">get_theta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ene</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">isDeg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get theta angle (deg or rad, controlled by isDeg var) for a</span>
+<span class="sd">        given energy (eV) and d-spacing&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span>
+        <span class="k">if</span> <span class="n">ene</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ene</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ene</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="n">d</span><span class="p">,</span> <span class="n">isDeg</span><span class="o">=</span><span class="n">isDeg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">d</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">ene</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">wlen</span> <span class="o">=</span> <span class="p">(</span> <span class="n">HC</span> <span class="o">/</span> <span class="n">ene</span> <span class="p">)</span> <span class="o">*</span> <span class="mf">1e10</span>
+            <span class="n">theta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span> <span class="n">wlen</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">d</span><span class="p">)</span> <span class="p">)</span>
+            <span class="k">if</span> <span class="n">isDeg</span><span class="p">:</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">theta</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;wrong d-spacing or energy&quot;</span><span class="p">)</span></div>
+            
+<div class="viewcode-block" id="RowlandCircle.get_ene"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RowlandCircle.get_ene">[docs]</a>    <span class="k">def</span> <span class="nf">get_ene</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">isDeg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get energy (eV) for a given angle (deg) and d-spacing&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">theta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">theta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rtheta0</span>
+            <span class="n">isDeg</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span>
+        <span class="k">if</span> <span class="n">isDeg</span><span class="p">:</span>
+            <span class="n">rtheta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rtheta</span> <span class="o">=</span> <span class="n">theta</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">wlen</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">d</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rtheta</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span> <span class="n">HC</span> <span class="o">/</span> <span class="n">wlen</span> <span class="p">)</span> <span class="o">*</span> <span class="mf">1e10</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;give d-spacing (\AA)&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RowlandCircle.get_dth"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RowlandCircle.get_dth">[docs]</a>    <span class="k">def</span> <span class="nf">get_dth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eDelta</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Delta\theta using differential Bragg law&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">eDelta</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">ED0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="n">ene</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ene</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rtheta0</span><span class="p">,</span> <span class="n">isDeg</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="p">(</span> <span class="n">eDelta</span> <span class="o">/</span> <span class="n">ene</span> <span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rtheta0</span><span class="p">)</span></div>
+            
+<div class="viewcode-block" id="RowlandCircle.get_chi"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RowlandCircle.get_chi">[docs]</a>    <span class="k">def</span> <span class="nf">get_chi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aXoff</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aL</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inDeg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get \chi angle in sagittal focusing using offset from</span>
+<span class="sd">        centre analyser (aXoff)&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">Rs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">Rs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rs</span>
+        <span class="k">if</span> <span class="n">aL</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">aL</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aL</span>
+        <span class="n">Rs2</span> <span class="o">=</span> <span class="n">Rs</span> <span class="o">+</span> <span class="n">aL</span>
+        <span class="n">rchi</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan</span><span class="p">(</span> <span class="n">aXoff</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Rs2</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">aXoff</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">inDeg</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">rchi</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">rchi</span></div>
+
+<div class="viewcode-block" id="RowlandCircle.get_chi2"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RowlandCircle.get_chi2">[docs]</a>    <span class="k">def</span> <span class="nf">get_chi2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aN</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">aWext</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rSext</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inDeg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get \chi angle in sagittal focusing using touching/connected analysers</span>
+
+<span class="sd">        Description</span>
+<span class="sd">        -----------</span>
+<span class="sd">        </span>
+<span class="sd">        Using the extended radius Rsp=Rs+rSext, can be calculated as</span>
+<span class="sd">        aN times the chi/2 of the first analyser given by:</span>
+<span class="sd">        </span>
+<span class="sd">        \chi/2 = \atan((aWext/2)/Rsp)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        aN : float, 1.</span>
+<span class="sd">             n-th analyser (0 is the central one)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">aWext</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">aWext</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aWext</span>
+        <span class="k">if</span> <span class="n">Rs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">Rs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rs</span>
+        <span class="k">if</span> <span class="n">rSext</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">rSext</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rSext</span>
+        <span class="n">Rsp</span> <span class="o">=</span> <span class="n">Rs</span> <span class="o">+</span> <span class="n">rSext</span>
+        <span class="n">rchi</span> <span class="o">=</span> <span class="p">(</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">atan</span><span class="p">((</span><span class="n">aWext</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">Rsp</span><span class="p">)</span> <span class="p">)</span> <span class="o">*</span> <span class="n">aN</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">inDeg</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">rchi</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">rchi</span></div>
+
+<div class="viewcode-block" id="RowlandCircle.get_ana_dist"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RowlandCircle.get_ana_dist">[docs]</a>    <span class="k">def</span> <span class="nf">get_ana_dist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chi</span><span class="p">,</span> <span class="n">aN</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">aW</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inDeg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get analyser-analyser distance at Rs&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">aW</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">aW</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aW</span>
+        <span class="k">if</span> <span class="n">Rs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">Rs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rs</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">aN</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span> <span class="n">chi</span> <span class="o">=</span> <span class="n">chi</span><span class="o">/</span><span class="n">aN</span>
+        <span class="k">if</span> <span class="n">inDeg</span><span class="p">:</span>
+            <span class="n">chihalf</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">chi</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">chihalf</span> <span class="o">=</span> <span class="n">chi</span><span class="o">/</span><span class="mf">2.</span>
+        <span class="n">aDist</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">chihalf</span><span class="p">)</span> <span class="o">-</span> <span class="n">aW</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">chihalf</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">showInfos</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: analyser #</span><span class="si">{0:.0f}</span><span class="s1">-#</span><span class="si">{1:.0f}</span><span class="s1"> (edge-to-edge) = </span><span class="si">{2:.4f}</span><span class="s1"> </span><span class="si">{3}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aN</span><span class="p">,</span> <span class="n">aN</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">aDist</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uDist</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: delta chi = </span><span class="si">{0:.4f}</span><span class="s1"> deg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chi</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">aDist</span></div>
+
+<div class="viewcode-block" id="RowlandCircle.get_axoff"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RowlandCircle.get_axoff">[docs]</a>    <span class="k">def</span> <span class="nf">get_axoff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chi</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aL</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get aXoff for the pivot point when chi is known (simple case)&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">Rs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">Rs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rs</span>
+        <span class="k">if</span> <span class="n">aL</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">aL</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aL</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">Rs</span> <span class="o">+</span> <span class="n">aL</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">chi</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="RowlandCircle.get_axoff0"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RowlandCircle.get_axoff0">[docs]</a>    <span class="k">def</span> <span class="nf">get_axoff0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chi</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get aXoff at the surface of the analyser&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_axoff</span><span class="p">(</span><span class="n">chi</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="n">Rs</span><span class="p">,</span> <span class="n">aL</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="RowlandCircle.get_axoff_line"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RowlandCircle.get_axoff_line">[docs]</a>    <span class="k">def</span> <span class="nf">get_axoff_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aXoffMin</span><span class="p">,</span> <span class="n">SagOffMin</span><span class="p">,</span> <span class="n">degRot</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aL</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get aXoff for the pivot point when only a linear trajectory is known</span>
+
+<span class="sd">        Description</span>
+<span class="sd">        -----------</span>
+<span class="sd">        </span>
+<span class="sd">        The local sagittal cartesian coordinate system is assumed: the</span>
+<span class="sd">        origin is at the pivot point of the central analyser, the</span>
+<span class="sd">        abscissa is pointing toward the center of the sagittal circle</span>
+<span class="sd">        and the ordinate is pointing on the right side when looking in</span>
+<span class="sd">        the abscissa direction. In the following is given the solution</span>
+<span class="sd">        of the linear equations system consisting in the interception</span>
+<span class="sd">        of the sagittal circle with the linear trajectory of the pivot</span>
+<span class="sd">        point, that is:</span>
+
+<span class="sd">        (x-Rs-aL)^2 + y^2 - (Rs+aL)^2 = 0</span>
+<span class="sd">        x = x0 - d*cos(phi)</span>
+<span class="sd">        y = y0 + d*sin(phi)</span>
+<span class="sd">        </span>
+<span class="sd">        where:</span>
+
+<span class="sd">        x is SagOff</span>
+<span class="sd">        y is aXoff</span>
+<span class="sd">        x0, y0 is SagOffMin, aXoffMin at minimum Rs</span>
+<span class="sd">        phi is degRot</span>
+
+<span class="sd">        d is the distance of x, y from x0, y0 on the local polar</span>
+<span class="sd">        coordinate system of the pivot point</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        aXoffMin, SagOffMin : float</span>
+
+<span class="sd">                              coordinates of the minimum position of</span>
+<span class="sd">                              the pivot point on the linear trajectory</span>
+<span class="sd">                              on the sagittal plane.                              </span>
+
+<span class="sd">        degRot : float, 0.</span>
+<span class="sd">        </span>
+<span class="sd">                 angle (deg) of the linear trajectory with respect to</span>
+<span class="sd">                 the abscissa (horizontal)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        aXoff1 : float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">Rs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">Rs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rs</span>
+        <span class="k">if</span> <span class="n">aL</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">aL</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aL</span>
+        <span class="n">y0</span> <span class="o">=</span> <span class="n">aXoffMin</span>
+        <span class="n">x0</span> <span class="o">=</span> <span class="n">SagOffMin</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">degRot</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">phi</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">showInfos</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: simple case where aXoff is constant at aXoffMin&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: aXoffMin = </span><span class="si">{0:.5f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aXoffMin</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">aXoffMin</span>
+        <span class="n">sinphi</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+        <span class="n">cosphi</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1">#sinphi**2 + cosphi**2</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">x0</span><span class="o">*</span><span class="n">cosphi</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">Rs</span><span class="o">*</span><span class="n">cosphi</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">y0</span><span class="o">*</span><span class="n">sinphi</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">aL</span><span class="o">*</span><span class="n">cosphi</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">x0</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y0</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="n">Rs</span><span class="o">*</span><span class="n">x0</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="n">aL</span><span class="o">*</span><span class="n">x0</span>
+        <span class="c1">#solutions to: a*y**2 + b*y + c = 0</span>
+        <span class="n">y1</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">b</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">b</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">4</span><span class="o">*</span><span class="n">a</span><span class="o">*</span><span class="n">c</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">a</span><span class="p">)</span> <span class="c1">#good solution!</span>
+        <span class="n">y2</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">b</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">b</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">4</span><span class="o">*</span><span class="n">a</span><span class="o">*</span><span class="n">c</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">showInfos</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: two solutions for polar distance d:&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: 1 = </span><span class="si">{0:.5f}</span><span class="s1"> (good)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">y1</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: 2 = </span><span class="si">{0:.5f}</span><span class="s1"> (bad)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">y2</span><span class="p">))</span>
+        <span class="n">aXoff1</span> <span class="o">=</span> <span class="n">y1</span><span class="o">*</span><span class="n">sinphi</span> <span class="o">+</span> <span class="n">aXoffMin</span>
+        <span class="n">SagOff1</span> <span class="o">=</span> <span class="n">SagOffMin</span> <span class="o">-</span> <span class="n">y1</span><span class="o">*</span><span class="n">cosphi</span>
+        <span class="n">aXoff2</span> <span class="o">=</span> <span class="n">y2</span><span class="o">*</span><span class="n">sinphi</span> <span class="o">+</span> <span class="n">aXoffMin</span>
+        <span class="n">SagOff2</span> <span class="o">=</span> <span class="n">SagOffMin</span> <span class="o">-</span> <span class="n">y2</span><span class="o">*</span><span class="n">cosphi</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">showInfos</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: aXoffMin = </span><span class="si">{0:.5f}</span><span class="s1">, SagOffMin = </span><span class="si">{1:.5f}</span><span class="s1">, degRot = </span><span class="si">{2:.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aXoffMin</span><span class="p">,</span> <span class="n">SagOffMin</span><span class="p">,</span> <span class="n">degRot</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: aXoff1 = </span><span class="si">{0:.5f}</span><span class="s1">, SagOff1 = </span><span class="si">{1:.5f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aXoff1</span><span class="p">,</span> <span class="n">SagOff1</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: aXoff2 = </span><span class="si">{0:.5f}</span><span class="s1">, SagOff2 = </span><span class="si">{1:.5f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aXoff2</span><span class="p">,</span> <span class="n">SagOff2</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">aXoff1</span></div>
+
+<div class="viewcode-block" id="RowlandCircle.get_sag_off"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RowlandCircle.get_sag_off">[docs]</a>    <span class="k">def</span> <span class="nf">get_sag_off</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aXoff</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aL</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">retAll</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;analyser sagittal offset from the center one (Y-like direction)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        </span>
+<span class="sd">        aXoff : float, required position at the pivot point (will give</span>
+<span class="sd">                       a wrong result using the position at the</span>
+<span class="sd">                       analyser surface)</span>
+
+<span class="sd">        retAll : boolean, False</span>
+
+<span class="sd">                 control return</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        if retAll: list of float</span>
+<span class="sd">        </span>
+<span class="sd">                   [chi_angle_deg, aXoff, SagOff, chi0_angle_deg, aXoff0, SagOff0]</span>
+<span class="sd">                   where the 0 is referred to the case with aL=0</span>
+<span class="sd">        else:</span>
+<span class="sd">                   float</span>
+
+<span class="sd">                   SagOff</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">Rs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">Rs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rs</span>
+        <span class="k">if</span> <span class="n">aL</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">aL</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aL</span>
+        <span class="n">rchi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_chi</span><span class="p">(</span><span class="n">aXoff</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="n">Rs</span><span class="p">,</span> <span class="n">aL</span><span class="o">=</span><span class="n">aL</span><span class="p">,</span> <span class="n">inDeg</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">aXoff0</span> <span class="o">=</span> <span class="n">aXoff</span> <span class="o">-</span> <span class="n">aL</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rchi</span><span class="p">)</span>
+        <span class="n">rchi0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_chi</span><span class="p">(</span><span class="n">aXoff0</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="n">Rs</span><span class="p">,</span> <span class="n">aL</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">inDeg</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1">#to check this is equal to rchi!</span>
+        <span class="n">SagOff0</span> <span class="o">=</span> <span class="n">cs_h</span><span class="p">(</span><span class="n">aXoff0</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span>
+        <span class="n">SagOff</span> <span class="o">=</span> <span class="n">SagOff0</span> <span class="o">-</span> <span class="n">aL</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">rchi</span><span class="p">)</span> <span class="o">+</span> <span class="n">aL</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">showInfos</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: === surface (0) vs pivot (aL=</span><span class="si">{0:.0f}</span><span class="s2">) ===&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aL</span><span class="p">))</span>
+            <span class="n">_tmpl_ihead</span> <span class="o">=</span> <span class="s2">&quot;INFO: </span><span class="si">{0:=^10}</span><span class="s2"> </span><span class="si">{1:=^12}</span><span class="s2"> </span><span class="si">{2:=^13}</span><span class="s2">&quot;</span>
+            <span class="n">_tmpl_idata</span> <span class="o">=</span> <span class="s2">&quot;INFO: </span><span class="si">{0:^ 10.5f}</span><span class="s2"> </span><span class="si">{1:^ 12.5f}</span><span class="s2"> </span><span class="si">{2:^ 13.5f}</span><span class="s2">&quot;</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">_tmpl_ihead</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;Chi&#39;</span><span class="p">,</span> <span class="s1">&#39;aXoff&#39;</span><span class="p">,</span> <span class="s1">&#39;SagOff&#39;</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">_tmpl_idata</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">rchi</span><span class="p">),</span> <span class="n">aXoff</span><span class="p">,</span> <span class="n">SagOff</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">_tmpl_ihead</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;Chi0&#39;</span><span class="p">,</span> <span class="s1">&#39;aXoff0&#39;</span><span class="p">,</span> <span class="s1">&#39;SagOff0&#39;</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">_tmpl_idata</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">rchi0</span><span class="p">),</span> <span class="n">aXoff0</span><span class="p">,</span> <span class="n">SagOff0</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">retAll</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">rchi</span><span class="p">),</span> <span class="n">aXoff</span><span class="p">,</span> <span class="n">SagOff</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">rchi0</span><span class="p">),</span> <span class="n">aXoff0</span><span class="p">,</span> <span class="n">SagOff0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">SagOff</span></div>
+
+<div class="viewcode-block" id="RowlandCircle.get_sag_off0"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RowlandCircle.get_sag_off0">[docs]</a>    <span class="k">def</span> <span class="nf">get_sag_off0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aXoff</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;quick wrap to get the sagittal offset at the analyser</span>
+<span class="sd">        surface, use get_sag_off() for full control!&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sag_off</span><span class="p">(</span><span class="n">aXoff</span><span class="p">,</span> <span class="n">retAll</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="RowlandCircle.get_sag_off_mots"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RowlandCircle.get_sag_off_mots">[docs]</a>    <span class="k">def</span> <span class="nf">get_sag_off_mots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aXoff</span><span class="p">,</span> <span class="n">degRot</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">pivotSide</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aL</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;motors positions for sagittal offset</span>
+<span class="sd">        TODO: not working yet, sagoff also negative</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;WARNING: deprecated/broken method!!!&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span></div>
+    
+        <span class="c1"># sagoffs = self.get_sag_off(aXoff, Rs=Rs, aL=aL, retAll=True)</span>
+        <span class="c1"># tS = sagoffs[2] / math.cos(math.radians(degRot))</span>
+        <span class="c1"># rS = sagoffs[0] - degRot</span>
+        <span class="c1"># tPS = pivotSide * math.sin(math.radians(rS))</span>
+        <span class="c1"># if self.showInfos:</span>
+        <span class="c1">#     print(&#39;Pivot center : {0}&#39;.format(tS))</span>
+        <span class="c1">#     print(&#39;Pivot side ({0}): +/- {1}&#39;.format(pivotSide, tPS))</span>
+        <span class="c1"># return tS + tPS, tS - tPS</span>
+
+<div class="viewcode-block" id="RowlandCircle.get_bender_pos"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RowlandCircle.get_bender_pos">[docs]</a>    <span class="k">def</span> <span class="nf">get_bender_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aN</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">bender</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aL</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rSext</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bender_version</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get the position (aXoff, SagOff) of the bender point (B)&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">aN</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ERROR: this method works only for aN&gt;=3&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">bender</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">bender</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bender</span>
+        <span class="k">if</span> <span class="n">Rs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">Rs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rs</span>
+        <span class="k">if</span> <span class="n">aL</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">aL</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aL</span>
+        <span class="k">if</span> <span class="n">rSext</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">rSext</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rSext</span>
+        <span class="k">if</span> <span class="n">bender_version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">bender_version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bender_version</span>
+
+        <span class="c1">#map last 3 pivot points positions</span>
+        <span class="n">_c2</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_chi2</span><span class="p">(</span><span class="n">_n</span><span class="p">)</span> <span class="k">for</span> <span class="n">_n</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span> <span class="nb">int</span><span class="p">(</span><span class="n">aN</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">aN</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="p">)]</span> <span class="c1">#CHIs</span>
+        <span class="n">dchi</span> <span class="o">=</span> <span class="n">_c2</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="n">_c2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">showInfos</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: == CHI ==&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: \chi</span><span class="si">{0:.0f}</span><span class="s1"> = </span><span class="si">{1:.5f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aN</span><span class="p">,</span> <span class="n">_c2</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: \Delta\chi</span><span class="si">{0}{1}</span><span class="s1"> = </span><span class="si">{2:.5f}</span><span class="s1"> deg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aN</span><span class="p">,</span> <span class="n">aN</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">dchi</span><span class="p">))</span>
+        <span class="n">_p</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_sag_off</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_axoff</span><span class="p">(</span><span class="n">_cn</span><span class="p">),</span> <span class="n">retAll</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">_cn</span> <span class="ow">in</span> <span class="n">_c2</span><span class="p">]</span> <span class="c1">#SagOffs</span>
+            
+        <span class="c1">#find the angle between the last pivot point _p[-1] and the bender point (B)</span>
+        <span class="c1">#we use for this the position of the end point of bender[1] (C)</span>
+        <span class="n">_R</span> <span class="o">=</span> <span class="n">Rs</span> <span class="o">+</span> <span class="n">aL</span>
+        <span class="n">rdch</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">dchi</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">_R</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">rdch</span><span class="p">))</span> <span class="c1">#chord between pivots 0 and -2</span>
+        <span class="n">chalf</span> <span class="o">=</span> <span class="n">_R</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rdch</span><span class="p">)</span> <span class="c1">#half the chord length from circular segment formula</span>
+        <span class="c1">#find coordinates of point B (pb) of the bender (anchor point with actuator[1])</span>
+        <span class="n">ra</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">chalf</span><span class="o">/</span><span class="n">bender</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">dc</span> <span class="o">=</span> <span class="n">bender</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span> <span class="o">-</span> <span class="n">h</span> <span class="c1">#aperture of the pantograph along radius</span>
+        <span class="k">if</span> <span class="n">bender_version</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">sc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_axoff</span><span class="p">(</span><span class="n">_c2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Rs</span><span class="o">=</span><span class="n">Rs</span><span class="o">+</span><span class="n">dc</span><span class="p">)</span> <span class="c1">#aXoff_point_C</span>
+            <span class="c1">#pc = self.get_sag_off(sc, retAll=True)</span>
+            <span class="n">axlp</span> <span class="o">=</span> <span class="n">_p</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="c1">#aXoff last pivot point</span>
+            <span class="n">rb</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span> <span class="p">(</span><span class="n">axlp</span><span class="o">-</span><span class="n">sc</span><span class="p">)</span> <span class="o">/</span> <span class="n">bender</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">rc</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">bender</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">-</span> <span class="n">rb</span>
+            <span class="n">pb_axoff</span> <span class="o">=</span> <span class="n">axlp</span> <span class="o">+</span> <span class="n">bender</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">rc</span><span class="p">)</span> <span class="c1">#aXoff_bender_point(B)</span>
+            <span class="n">pb_sagoff</span> <span class="o">=</span> <span class="n">axlp</span> <span class="o">-</span> <span class="n">bender</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rc</span><span class="p">)</span> <span class="c1">#SagOff_bender_point(B)</span>
+        <span class="k">elif</span> <span class="n">bender_version</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">adc</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span> <span class="p">(</span><span class="n">dc</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">bender</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span> <span class="c1">#angle opposite to dc</span>
+            <span class="n">pdc</span> <span class="o">=</span> <span class="n">bender</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">adc</span><span class="p">)</span> <span class="c1">#perpendicular to dc</span>
+            <span class="n">pb_ang</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan</span><span class="p">(</span><span class="n">pdc</span> <span class="o">/</span> <span class="p">(</span><span class="n">Rs</span> <span class="o">+</span> <span class="n">aL</span> <span class="o">+</span> <span class="n">dc</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span> <span class="c1">#angle between last analyzer and point B</span>
+            <span class="n">pb_h</span> <span class="o">=</span> <span class="n">_R</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">pb_ang</span><span class="p">))</span> <span class="c1">#chord for the anchoring point</span>
+            <span class="n">pb_chalf</span> <span class="o">=</span> <span class="n">_R</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">pb_ang</span><span class="p">)</span> <span class="c1">#from circular segment formula</span>
+            <span class="n">pb_ra</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">pb_chalf</span> <span class="o">/</span> <span class="n">bender</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">pb_dc</span> <span class="o">=</span> <span class="n">bender</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">pb_ra</span><span class="p">)</span> <span class="o">-</span> <span class="n">pb_h</span>
+            <span class="n">pb_chi</span> <span class="o">=</span> <span class="n">pb_ang</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_chi2</span><span class="p">(</span><span class="n">aN</span><span class="p">,</span> <span class="n">inDeg</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1">#radians</span>
+            <span class="n">pb_rs</span> <span class="o">=</span> <span class="n">Rs</span> <span class="o">+</span> <span class="n">aL</span> <span class="o">+</span> <span class="n">pb_dc</span>
+            <span class="n">pb_axoff</span> <span class="o">=</span> <span class="n">pb_rs</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">pb_chi</span><span class="p">)</span>
+            <span class="n">pb_sagoff</span> <span class="o">=</span> <span class="n">_R</span> <span class="o">-</span> <span class="p">(</span><span class="n">pb_rs</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">pb_chi</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">pb_axoff</span><span class="p">,</span> <span class="n">pb_sagoff</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;ERROR with bender_version&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">showInfos</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: bender point (B) coordinates (local sagittal reference)&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: aXoff=</span><span class="si">{0:.5f}</span><span class="s1">, SagOff=</span><span class="si">{1:.5f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pb_axoff</span><span class="p">,</span> <span class="n">pb_sagoff</span><span class="p">))</span> 
+        <span class="k">return</span> <span class="p">(</span><span class="n">pb_axoff</span><span class="p">,</span> <span class="n">pb_sagoff</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RowlandCircle.get_bender_mot"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RowlandCircle.get_bender_mot">[docs]</a>    <span class="k">def</span> <span class="nf">get_bender_mot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bender_pos</span><span class="p">,</span> <span class="n">actuator</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bender_version</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get the motor position of the bender, given its point</span>
+<span class="sd">        position (B) and the actuator specifications, plus the version of the mechanics</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        bender_pos : tuple of floats</span>
+<span class="sd">                     (bender_axoff_mm, bender_sagoff_mm)</span>
+
+<span class="sd">        actuator : tuple of floats, None</span>
+<span class="sd">                   (axoff_actuator_mm, length_actuator_mm)</span>
+
+<span class="sd">        bender_version : version of the mechanics</span>
+<span class="sd">                         0 -&gt; prototype</span>
+<span class="sd">                         1 -&gt; pantograph 2017</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">actuator</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">actuator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actuator</span>
+        <span class="k">if</span> <span class="n">bender_version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="n">bender_version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bender_version</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">bender_version</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">rd</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span> <span class="p">(</span><span class="n">actuator</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">bender_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">actuator</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">bender_version</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">rd</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">((</span><span class="n">actuator</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">bender</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">bender_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">actuator</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;ERROR with bender_version&quot;</span><span class="p">)</span>
+            <span class="n">mot_sagoff</span> <span class="o">=</span> <span class="n">actuator</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">rd</span><span class="p">)</span> <span class="o">+</span> <span class="n">bender_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">mot_sagoff</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ERROR with bender actuator position&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mf">0.</span></div>
+
+<div class="viewcode-block" id="RowlandCircle.get_az_off"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RowlandCircle.get_az_off">[docs]</a>    <span class="k">def</span> <span class="nf">get_az_off</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eDelta</span><span class="p">,</span> <span class="n">rtheta0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Rm</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get analyser Z offset for a given energy delta (eV)&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">eDelta</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">ED0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.</span>
+        <span class="k">if</span> <span class="n">rtheta0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rtheta0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rtheta0</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;give d-spacing&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Rm</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">Rm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rm</span>
+        <span class="n">_dth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dth</span><span class="p">(</span><span class="n">eDelta</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">showInfos</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: dth = </span><span class="si">{0:.1f}</span><span class="s1"> urad (</span><span class="si">{1:.5f}</span><span class="s1"> deg)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_dth</span><span class="o">*</span><span class="mf">1e6</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">_dth</span><span class="p">)))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: daz [tan(dth) ~ dth] = </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_dth</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">Rm</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rtheta0</span><span class="p">)</span> <span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: daz [tan(dth) ~ dth and sin(th) ~ 1 = </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_dth</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">Rm</span><span class="p">)</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">Rm</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rtheta0</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">_dth</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RowlandCircle.get_ay_off"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RowlandCircle.get_ay_off">[docs]</a>    <span class="k">def</span> <span class="nf">get_ay_off</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eDelta</span><span class="p">,</span> <span class="n">rtheta0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Rm</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get analyser Y offset for a given energy delta (eV)&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">eDelta</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">ED0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.</span>
+        <span class="k">if</span> <span class="n">rtheta0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rtheta0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rtheta0</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;give d-spacing&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Rm</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">Rm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rm</span>
+        <span class="n">_dth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dth</span><span class="p">(</span><span class="n">eDelta</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">showInfos</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: dth = </span><span class="si">{0:.1f}</span><span class="s1"> urad (</span><span class="si">{1:.5f}</span><span class="s1"> deg)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_dth</span><span class="o">*</span><span class="mf">1e6</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">_dth</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">Rm</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">rtheta0</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">_dth</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="RowlandCircle.get_ene_off"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RowlandCircle.get_ene_off">[docs]</a>    <span class="k">def</span> <span class="nf">get_ene_off</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aZoff</span><span class="p">,</span> <span class="n">rtheta0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Rm</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get analyser delta E for a given Z offset &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">aZoff</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">AZ0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.</span>
+        <span class="k">if</span> <span class="n">rtheta0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rtheta0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rtheta0</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;give d-spacing&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Rm</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">Rm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rm</span>
+        <span class="c1">#</span>
+        <span class="n">_dth</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan</span><span class="p">(</span> <span class="n">aZoff</span> <span class="o">/</span>  <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">Rm</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rtheta0</span><span class="p">))</span> <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">showInfos</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: dth = </span><span class="si">{0:.1f}</span><span class="s1"> urad (</span><span class="si">{1:.5f}</span><span class="s1"> deg)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_dth</span><span class="o">*</span><span class="mf">1e6</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">_dth</span><span class="p">)))</span>
+        <span class="n">_ene</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ene</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="n">rtheta0</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="n">d</span><span class="p">,</span> <span class="n">isDeg</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">_de</span> <span class="o">=</span> <span class="n">_ene</span> <span class="o">*</span> <span class="n">_dth</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">rtheta0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_de</span></div></div>
+
+            
+<div class="viewcode-block" id="RcVert"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RcVert">[docs]</a><span class="k">class</span> <span class="nc">RcVert</span><span class="p">(</span><span class="n">RowlandCircle</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Rowland circle vertical frame: sample-detector on XZ plane along Z axis</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;RowlandCircle init</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ==========</span>
+<span class="sd">        rotHor : boolean, rotate to horizontal [False]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rotHor</span> <span class="o">=</span> <span class="n">kws</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;rotHor&#39;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rotHor</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">RowlandCircle</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RcVert.get_pos"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RcVert.get_pos">[docs]</a>    <span class="k">def</span> <span class="nf">get_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vect</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;utility method: return &#39;vect&#39; or its rotated form if self.rotHor&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotHor</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">rotate</span><span class="p">(</span><span class="n">vect</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">rtheta0</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">vect</span></div>
+
+<div class="viewcode-block" id="RcVert.get_det_pos"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RcVert.get_det_pos">[docs]</a>    <span class="k">def</span> <span class="nf">get_det_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;detector center position [X,Y,Z]&quot;&quot;&quot;</span>
+        <span class="n">zDet</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rm</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rtheta0</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rtheta0</span><span class="p">)</span>
+        <span class="n">vDet</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">zDet</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(</span><span class="n">vDet</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RcVert.get_ana_pos"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RcVert.get_ana_pos">[docs]</a>    <span class="k">def</span> <span class="nf">get_ana_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;analyser XYZ center position for a given chi</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ==========</span>
+<span class="sd">        </span>
+<span class="sd">        chi : float, 0. [deg]</span>
+<span class="sd">              rotation angle on the sagittal plane (hor plane here)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">yAcen</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rm</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rtheta0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">zAcen</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rm</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rtheta0</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rtheta0</span><span class="p">)</span>
+        <span class="n">Acen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">yAcen</span><span class="p">,</span> <span class="n">zAcen</span><span class="p">])</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">chi</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(</span><span class="n">Acen</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Aside</span> <span class="o">=</span> <span class="n">rotate</span><span class="p">(</span><span class="n">Acen</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]),</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">chi</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(</span><span class="n">Aside</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RcVert.get_miscut_off"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RcVert.get_miscut_off">[docs]</a>    <span class="k">def</span> <span class="nf">get_miscut_off</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Rm</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;returns horizontal and vertical offsets for a given miscut angle</span>
+<span class="sd">        TODO: NOT CORRECT, CHECK THIS!</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">alpha</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">Rm</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">ralpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ralpha</span>
+            <span class="n">Rm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rm</span>
+        <span class="k">return</span> <span class="o">-</span> <span class="n">Rm</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ralpha</span><span class="p">)),</span> <span class="o">-</span> <span class="n">Rm</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ralpha</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="RcHoriz"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RcHoriz">[docs]</a><span class="k">class</span> <span class="nc">RcHoriz</span><span class="p">(</span><span class="n">RowlandCircle</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Rowland circle horizontal frame: sample-analyser on XY plane along</span>
+<span class="sd">Y axis</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;RowlandCircle init &quot;&quot;&quot;</span>
+        <span class="n">RowlandCircle</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RcHoriz.get_det_pos"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RcHoriz.get_det_pos">[docs]</a>    <span class="k">def</span> <span class="nf">get_det_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;detector position [X,Y,Z]&quot;&quot;&quot;</span>
+        <span class="n">yDet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">q</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rtheta0</span><span class="p">)</span>
+        <span class="n">zDet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rtheta0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">yDet</span><span class="p">,</span> <span class="n">zDet</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="RcHoriz.get_ana_pos"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RcHoriz.get_ana_pos">[docs]</a>    <span class="k">def</span> <span class="nf">get_ana_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;analyser XYZ center position for a given chi</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ==========</span>
+<span class="sd">        </span>
+<span class="sd">        chi : float, 0. [deg]</span>
+<span class="sd">              rotation angle on the sagittal plane (around sample-detector axis)</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Acen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">chi</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Acen</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">SDax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_det_pos</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampPos</span>
+            <span class="n">Aside</span> <span class="o">=</span> <span class="n">rotate</span><span class="p">(</span><span class="n">Acen</span><span class="p">,</span> <span class="n">SDax</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">chi</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">Aside</span></div>
+        
+<div class="viewcode-block" id="RcHoriz.get_miscut_off"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RcHoriz.get_miscut_off">[docs]</a>    <span class="k">def</span> <span class="nf">get_miscut_off</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;returns horizontal and vertical offsets for a given miscut angle</span>
+<span class="sd">        TODO: NOT CORRECT CHECK THIS!</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">alpha</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">p</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">ralpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ralpha</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span>
+        <span class="k">return</span> <span class="o">-</span> <span class="n">p</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ralpha</span><span class="o">/</span><span class="mf">2.</span><span class="p">),</span> <span class="o">-</span> <span class="n">p</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ralpha</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1">#tests/examples in rowland_tests.py</span>
+    <span class="k">pass</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014--2019, Mauro Rovezzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

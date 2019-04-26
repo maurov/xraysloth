@@ -10,18 +10,30 @@ Sloth is a collection of utilities (library) oriented to X-ray optics
 and data reduction/analysis for XAS (XANES/EXAFS), XES and RIXS
 techniques.
 
+Current version is |release|.
+
 .. toctree::
    :maxdepth: 2
    :caption: Full contents - hidden:
    :hidden:
 
+   modules/index.rst
    changelog.rst
+   todo.rst
 
+
+:doc:`modules/index`
+   Documentation (automagically built from docstrings) for the packages included in *sloth*.
+      
 :doc:`changelog`
-     List of changes
+   List of changes.
 
-Indices and tables
-==================
+:doc:`todo`
+   List of things to do (ideas, bugs, plans).
+
+     
+Indices
+-------
 
 * :ref:`genindex`
 * :ref:`modindex`

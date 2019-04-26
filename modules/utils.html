@@ -1,0 +1,706 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sloth.utils: utilities &mdash; Sloth 0.3.0-dev documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="sloth.dft: interacting with density functional theory (DFT) codes" href="dft.html" />
+    <link rel="prev" title="sloth.math: mathematical utilities" href="math.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Sloth
+          
+
+          
+            
+            <img src="../_static/xraysloth.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Full contents - hidden:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="io.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.io</span></code>: Input-output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collects.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects</span></code>: Data containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fit.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit</span></code>: fitting tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inst.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst</span></code>: working with instrumentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="raytracing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing</span></code>: x-ray raytracing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math</span></code>: mathematical utilities</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils</span></code>: utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-sloth.utils.xdata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.xdata</span></code>: x-ray databases</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#available-libraries-dbs">Available libraries/dbs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sloth.utils.bragg"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.bragg</span></code>: Bragg’s law</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sloth.utils.pymca"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.pymca</span></code>: working with PyMca5</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#utilities-for-daily-work-with-pymca">Utilities for daily work with PyMca</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sloth.utils.genericutils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.genericutils</span></code>: generic</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#generic-utilities-for-daily-work">Generic utilities for daily work</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dft.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.dft</span></code>: interacting with density functional theory (DFT) codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.gui</span></code>: GUI</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../todo.html">To Do</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Sloth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Reference</a> &raquo;</li>
+        
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils</span></code>: utilities</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/modules/utils.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-sloth.utils"></span><div class="section" id="sloth-utils-utilities">
+<h1><a class="reference internal" href="#module-sloth.utils" title="sloth.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils</span></code></a>: utilities<a class="headerlink" href="#sloth-utils-utilities" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-sloth.utils.xdata">
+<span id="sloth-utils-xdata-x-ray-databases"></span><h2><a class="reference internal" href="#module-sloth.utils.xdata" title="sloth.utils.xdata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.xdata</span></code></a>: x-ray databases<a class="headerlink" href="#module-sloth.utils.xdata" title="Permalink to this headline">¶</a></h2>
+<p>Simple utility to retrieve X-ray data from external
+libraries/databases</p>
+<div class="section" id="available-libraries-dbs">
+<h3>Available libraries/dbs<a class="headerlink" href="#available-libraries-dbs" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/tschoonj/xraylib">xraylib</a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">xraydb_plugin.py</span></code> in <a class="reference external" href="https://github.com/xraypy/xraylarch">Larch</a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Elements</span></code> in <a class="reference external" href="https://github.com/vasole/pymca">PyMca</a></p></li>
+</ul>
+<dl class="function">
+<dt id="sloth.utils.xdata.fwhm2sigma">
+<code class="descclassname">sloth.utils.xdata.</code><code class="descname">fwhm2sigma</code><span class="sig-paren">(</span><em>fwhm</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#fwhm2sigma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.fwhm2sigma" title="Permalink to this definition">¶</a></dt>
+<dd><p>get sigma from FWHM</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.sigma2fwhm">
+<code class="descclassname">sloth.utils.xdata.</code><code class="descname">sigma2fwhm</code><span class="sig-paren">(</span><em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#sigma2fwhm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.sigma2fwhm" title="Permalink to this definition">¶</a></dt>
+<dd><p>get FWHM from sigma</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.lorentzian">
+<code class="descclassname">sloth.utils.xdata.</code><code class="descname">lorentzian</code><span class="sig-paren">(</span><em>x</em>, <em>amplitude=1.0</em>, <em>center=0.0</em>, <em>sigma=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#lorentzian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.lorentzian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a 1-dimensional Lorentzian function.</p>
+<p>lorentzian(x, amplitude, center, sigma) = (amplitude/(1 +
+((1.0*x-center)/sigma)**2)) / (pi*sigma)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.mapLine2Trans">
+<code class="descclassname">sloth.utils.xdata.</code><code class="descname">mapLine2Trans</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#mapLine2Trans"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.mapLine2Trans" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns a tuple of strings mapping the transitions for a given line</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.get_element">
+<code class="descclassname">sloth.utils.xdata.</code><code class="descname">get_element</code><span class="sig-paren">(</span><em>elem</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#get_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.get_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a tuple for element name and number</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.find_edge">
+<code class="descclassname">sloth.utils.xdata.</code><code class="descname">find_edge</code><span class="sig-paren">(</span><em>emin</em>, <em>emax</em>, <em>shells=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#find_edge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.find_edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the edge energy in a given energy range [emin, emax] (eV)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.find_line">
+<code class="descclassname">sloth.utils.xdata.</code><code class="descname">find_line</code><span class="sig-paren">(</span><em>emin</em>, <em>emax</em>, <em>elements=None</em>, <em>lines=None</em>, <em>outDict=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#find_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.find_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the line energy in a given energy range [emin,emax] (eV)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>emax</strong> (<em>emin</em><em>,</em>) – [minimum, maximum] energy range (eV)</p></li>
+<li><p><strong>elements</strong> (<em>list of str</em>) – list of elements, [ELEMENTS (all)]</p></li>
+<li><p><strong>lines</strong> (<em>list of str</em>) – list of lines, [LINES (all)]</p></li>
+<li><p><strong>outDict</strong> (<em>boolean</em><em>, </em><em>False</em>) – returns a dictionary instead of printing to screen with keywords:
+_out[‘el’] : element symbol, list of strs
+_out[‘eln] : element number, list of ints
+_out[‘ln’] : line, list of strs
+_out[‘en’] : energy eV, list of floats
+_out[‘w’]  : width eV, list of floats</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None, prints to screen the results (unless outDict boolean given)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.ene_res">
+<code class="descclassname">sloth.utils.xdata.</code><code class="descname">ene_res</code><span class="sig-paren">(</span><em>emin, emax, shells=['K']</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#ene_res"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.ene_res" title="Permalink to this definition">¶</a></dt>
+<dd><p>used in spectro.py</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.fluo_width">
+<code class="descclassname">sloth.utils.xdata.</code><code class="descname">fluo_width</code><span class="sig-paren">(</span><em>elem=None</em>, <em>line=None</em>, <em>herfd=False</em>, <em>showInfos=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#fluo_width"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.fluo_width" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the line width in eV</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>elem</strong> (<em>string</em><em> or </em><em>int</em><em>, </em><em>given element</em>) – </p></li>
+<li><p><strong>line</strong> (<em>string</em><em>, </em><em>siegbahn notation for emission line</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>herfd=False (default)</strong> (<em>lw_xas + lw_xes</em>)</p></li>
+<li><p><strong>herfd=True</strong> (<em>1/(math.sqrt(lw_xas**2 + lw_xes**2))</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.fluo_amplitude">
+<code class="descclassname">sloth.utils.xdata.</code><code class="descname">fluo_amplitude</code><span class="sig-paren">(</span><em>elem</em>, <em>line</em>, <em>excitation=None</em>, <em>barn_unit=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#fluo_amplitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.fluo_amplitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the fluorescence cross section for given element/line</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>elem</strong> (<em>string</em><em> or </em><em>number</em>) – element</p></li>
+<li><p><strong>line</strong> (<em>string</em>) – emission line Siegban (e.g. ‘LA1’) or IUPAC (e.g. ‘L3M5’)</p></li>
+<li><p><strong>excitation</strong> (<em>float</em><em> [</em><em>None</em><em>]</em>) – excitation energy in eV</p></li>
+<li><p><strong>barn_unit</strong> (<em>boolean</em><em> [</em><em>False</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>fluo_amp (in ‘cm2/g’ or ‘barn/atom’ if barn_unit is True)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.xray_line">
+<code class="descclassname">sloth.utils.xdata.</code><code class="descname">xray_line</code><span class="sig-paren">(</span><em>element</em>, <em>line=None</em>, <em>initial_level=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#xray_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.xray_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the energy in eV for a given element/line or level</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>element</strong> – string or number</p></li>
+<li><p><strong>line</strong> – string, Siegbahn notation, e.g. ‘KA1’ [None]</p></li>
+<li><p><strong>initial_level</strong> – string, initial core level, e.g. ‘K’ [None]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionary {‘line’ : [], ‘ene’ : []} or a number</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.xray_edge">
+<code class="descclassname">sloth.utils.xdata.</code><code class="descname">xray_edge</code><span class="sig-paren">(</span><em>element</em>, <em>initial_level=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#xray_edge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.xray_edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the energy edge in eV for a given element</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>element</strong> – string or number</p></li>
+<li><p><strong>initial_level</strong> – string, initial core level, e.g. ‘K’ or list [None]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionary {‘edge’ : [], ‘ene’ : []} or a number</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.fluo_spectrum">
+<code class="descclassname">sloth.utils.xdata.</code><code class="descname">fluo_spectrum</code><span class="sig-paren">(</span><em>elem</em>, <em>line</em>, <em>xwidth=3</em>, <em>xstep=0.05</em>, <em>plot=False</em>, <em>showInfos=True</em>, <em>**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#fluo_spectrum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.fluo_spectrum" title="Permalink to this definition">¶</a></dt>
+<dd><p>generate a fluorescence spectrum for a given element/line</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>it generates a Lorentzian function with the following parameters:
+- center: emission energy (eV)
+- sigma: from FWHM of sum of atomic levels widths (XAS+XES)
+- amplitude: CS_FuorLine_Kissel_Cascade
+- xmin, xmax: center -+ xwidth*fwhm</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>elem</strong> (<em>string</em><em> or </em><em>int</em>) – </p></li>
+<li><p><strong>line</strong> (<em>string</em>) – emission line Siegban (e.g. ‘LA1’) or IUPAC (e.g. ‘L3M5’)</p></li>
+<li><p><strong>xwidth</strong> (<em>int</em><em> or </em><em>float</em><em> [</em><em>3</em><em>]</em>) – multiplication factor to establish xmin, xmax (= center -+ xwidth*fwhm)</p></li>
+<li><p><strong>xstep</strong> (<em>float</em><em> [</em><em>0.05</em><em>]</em>) – energy step in eV</p></li>
+<li><p><strong>showInfos</strong> (<em>boolean</em><em> [</em><em>True</em><em>]</em>) – print the <cite>info</cite> dict</p></li>
+<li><p><strong>plot</strong> (<em>boolean</em><em> [</em><em>False</em><em>]</em>) – plot the line before returning it</p></li>
+<li><p><strong>**kws</strong> (keyword arguments for <a class="reference internal" href="#sloth.utils.xdata.fluo_width" title="sloth.utils.xdata.fluo_width"><code class="xref py py-func docutils literal notranslate"><span class="pre">fluo_width()</span></code></a>, <a class="reference internal" href="#sloth.utils.xdata.fluo_amplitude" title="sloth.utils.xdata.fluo_amplitude"><code class="xref py py-func docutils literal notranslate"><span class="pre">fluo_amplitude()</span></code></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>xfluo, yfluo, info</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>XY arrays of floats, dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.fluo_lines">
+<code class="descclassname">sloth.utils.xdata.</code><code class="descname">fluo_lines</code><span class="sig-paren">(</span><em>elem</em>, <em>lines</em>, <em>**fluokws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#fluo_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.fluo_lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>generate the emission spectrum of a given element and list of lines</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>elem</strong> (<em>string</em><em> or </em><em>int</em>) – </p></li>
+<li><p><strong>lines</strong> (<em>list of strings</em>) – emission lines as Siegban (e.g. ‘LA1’) or IUPAC (e.g. ‘L3M5’)</p></li>
+<li><p><strong>**fluokws</strong> (keyword arguments for <a class="reference internal" href="#sloth.utils.xdata.fluo_spectrum" title="sloth.utils.xdata.fluo_spectrum"><code class="xref py py-func docutils literal notranslate"><span class="pre">fluo_spectrum()</span></code></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>xcom, ycom</strong> – energy/intensity of the whole spectrum</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>arrays of floats</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-sloth.utils.bragg">
+<span id="sloth-utils-bragg-bragg-s-law"></span><h2><a class="reference internal" href="#module-sloth.utils.bragg" title="sloth.utils.bragg"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.bragg</span></code></a>: Bragg’s law<a class="headerlink" href="#module-sloth.utils.bragg" title="Permalink to this headline">¶</a></h2>
+<p>braggutils: utilities around the Bragg’s law ($ n lambda = 2 d sin     heta $)</p>
+<dl class="function">
+<dt id="sloth.utils.bragg.ev2wlen">
+<code class="descclassname">sloth.utils.bragg.</code><code class="descname">ev2wlen</code><span class="sig-paren">(</span><em>energy</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/bragg.html#ev2wlen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.bragg.ev2wlen" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert photon energy (E, eV) to wavelength ($lambda$, AA$^{-1}$)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.bragg.wlen2ev">
+<code class="descclassname">sloth.utils.bragg.</code><code class="descname">wlen2ev</code><span class="sig-paren">(</span><em>wlen</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/bragg.html#wlen2ev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.bragg.wlen2ev" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert photon wavelength ($lambda$, AA$^{-1}$) to energy (E, eV)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.bragg.kev2wlen">
+<code class="descclassname">sloth.utils.bragg.</code><code class="descname">kev2wlen</code><span class="sig-paren">(</span><em>energy</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/bragg.html#kev2wlen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.bragg.kev2wlen" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert photon energy (E, keV) to wavelength ($lambda$, AA$^{-1}$)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.bragg.wlen2kev">
+<code class="descclassname">sloth.utils.bragg.</code><code class="descname">wlen2kev</code><span class="sig-paren">(</span><em>wlen</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/bragg.html#wlen2kev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.bragg.wlen2kev" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert photon wavelength ($lambda$, AA$^{-1}$) to energy (E, keV)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.bragg.kev2ang">
+<code class="descclassname">sloth.utils.bragg.</code><code class="descname">kev2ang</code><span class="sig-paren">(</span><em>ene</em>, <em>d=0</em>, <em>deg=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/bragg.html#kev2ang"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.bragg.kev2ang" title="Permalink to this definition">¶</a></dt>
+<dd><p>energy (keV) to Bragg angle (deg/rad) for given d-spacing (AA)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.bragg.ang2kev">
+<code class="descclassname">sloth.utils.bragg.</code><code class="descname">ang2kev</code><span class="sig-paren">(</span><em>theta</em>, <em>d=0</em>, <em>deg=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/bragg.html#ang2kev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.bragg.ang2kev" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bragg angle (deg/rad) to energy (keV) for given d-spacing (AA)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.bragg.bragg_ev">
+<code class="descclassname">sloth.utils.bragg.</code><code class="descname">bragg_ev</code><span class="sig-paren">(</span><em>d</em>, <em>theta</em>, <em>n=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/bragg.html#bragg_ev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.bragg.bragg_ev" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the Bragg energy (eV) for a given d-spacing (AA) and angle (deg)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.bragg.theta_b">
+<code class="descclassname">sloth.utils.bragg.</code><code class="descname">theta_b</code><span class="sig-paren">(</span><em>wlen</em>, <em>d</em>, <em>n=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/bragg.html#theta_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.bragg.theta_b" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the Bragg angle, $       heta_{B}$, (deg) for a given wavelength
+(AA$^{-1}$) and d-spacing (AA)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.bragg.bragg_th">
+<code class="descclassname">sloth.utils.bragg.</code><code class="descname">bragg_th</code><span class="sig-paren">(</span><em>ene</em>, <em>d</em>, <em>n=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/bragg.html#bragg_th"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.bragg.bragg_th" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the Bragg angle, $       heta_{B}$, (deg) for a given energy (eV)
+and d-spacing (AA)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.bragg.xray_bragg">
+<code class="descclassname">sloth.utils.bragg.</code><code class="descname">xray_bragg</code><span class="sig-paren">(</span><em>element</em>, <em>line</em>, <em>dspacing</em>, <em>retAll=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/bragg.html#xray_bragg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.bragg.xray_bragg" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the Bragg angle for a given element/line and crystal d-spacing</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.bragg.cotdeg">
+<code class="descclassname">sloth.utils.bragg.</code><code class="descname">cotdeg</code><span class="sig-paren">(</span><em>theta</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/bragg.html#cotdeg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.bragg.cotdeg" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the cotangent (= cos/sin) of theta given in degrees</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.bragg.de_bragg">
+<code class="descclassname">sloth.utils.bragg.</code><code class="descname">de_bragg</code><span class="sig-paren">(</span><em>theta</em>, <em>dth</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/bragg.html#de_bragg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.bragg.de_bragg" title="Permalink to this definition">¶</a></dt>
+<dd><p>energy resolution $
+rac{Delta E}{E}$ from derivative of Bragg’s law</p>
+<blockquote>
+<div><p>$|</p>
+</div></blockquote>
+<p>rac{Delta E}{E}| = |
+rac{Delta         heta}{  heta} = Delta  heta cot(      heta)|$</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.bragg.d_cubic">
+<code class="descclassname">sloth.utils.bragg.</code><code class="descname">d_cubic</code><span class="sig-paren">(</span><em>a</em>, <em>hkl</em>, <em>**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/bragg.html#d_cubic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.bragg.d_cubic" title="Permalink to this definition">¶</a></dt>
+<dd><p>d-spacing for a cubic lattice</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.bragg.d_tetragonal">
+<code class="descclassname">sloth.utils.bragg.</code><code class="descname">d_tetragonal</code><span class="sig-paren">(</span><em>a</em>, <em>c</em>, <em>hkl</em>, <em>**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/bragg.html#d_tetragonal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.bragg.d_tetragonal" title="Permalink to this definition">¶</a></dt>
+<dd><p>d-spacing for a tetragonal lattice</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.bragg.d_orthorhombic">
+<code class="descclassname">sloth.utils.bragg.</code><code class="descname">d_orthorhombic</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>c</em>, <em>hkl</em>, <em>**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/bragg.html#d_orthorhombic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.bragg.d_orthorhombic" title="Permalink to this definition">¶</a></dt>
+<dd><p>d-spacing for an orthorhombic lattice</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.bragg.d_hexagonal">
+<code class="descclassname">sloth.utils.bragg.</code><code class="descname">d_hexagonal</code><span class="sig-paren">(</span><em>a</em>, <em>c</em>, <em>hkl</em>, <em>**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/bragg.html#d_hexagonal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.bragg.d_hexagonal" title="Permalink to this definition">¶</a></dt>
+<dd><p>d-spacing for an hexagonal lattice</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.bragg.d_monoclinic">
+<code class="descclassname">sloth.utils.bragg.</code><code class="descname">d_monoclinic</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>c</em>, <em>beta</em>, <em>hkl</em>, <em>**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/bragg.html#d_monoclinic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.bragg.d_monoclinic" title="Permalink to this definition">¶</a></dt>
+<dd><p>d-spacing for a monoclinic lattice</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.bragg.d_triclinic">
+<code class="descclassname">sloth.utils.bragg.</code><code class="descname">d_triclinic</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>c</em>, <em>alpha</em>, <em>beta</em>, <em>gamma</em>, <em>hkl</em>, <em>**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/bragg.html#d_triclinic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.bragg.d_triclinic" title="Permalink to this definition">¶</a></dt>
+<dd><p>d-spacing for a triclinic lattice</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.bragg.get_dspacing">
+<code class="descclassname">sloth.utils.bragg.</code><code class="descname">get_dspacing</code><span class="sig-paren">(</span><em>mat</em>, <em>hkl</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/bragg.html#get_dspacing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.bragg.get_dspacing" title="Permalink to this definition">¶</a></dt>
+<dd><p>get d-spacing for Si or Ge and given reflection (hkl)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.bragg.findhkl">
+<code class="descclassname">sloth.utils.bragg.</code><code class="descname">findhkl</code><span class="sig-paren">(</span><em>energy=None</em>, <em>thetamin=65.0</em>, <em>crystal='all'</em>, <em>retAll=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/bragg.html#findhkl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.bragg.findhkl" title="Permalink to this definition">¶</a></dt>
+<dd><p>findhkl: for a given energy (eV) finds the Si and Ge reflections
+with relative Bragg angle</p>
+<p>findhkl(energy, thetamin, crystal, return_flag)</p>
+<p>energy (eV) [required]
+thetamin (deg) [optional, default: 65 deg]
+crystal (‘Si’, ‘Ge’, ‘all’) [optional, default: ‘all’]</p>
+<p>String: “Crystal(hkl), Bragg angle (deg)”</p>
+<p>if retAll: (“crystal”, h, k, l, bragg_angle_deg)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sloth.utils.pymca">
+<span id="sloth-utils-pymca-working-with-pymca5"></span><h2><a class="reference internal" href="#module-sloth.utils.pymca" title="sloth.utils.pymca"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.pymca</span></code></a>: working with PyMca5<a class="headerlink" href="#module-sloth.utils.pymca" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="utilities-for-daily-work-with-pymca">
+<h3>Utilities for daily work with PyMca<a class="headerlink" href="#utilities-for-daily-work-with-pymca" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="sloth.utils.pymca.getPyMcaMain">
+<code class="descclassname">sloth.utils.pymca.</code><code class="descname">getPyMcaMain</code><span class="sig-paren">(</span><em>fload=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/pymca.html#getPyMcaMain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.pymca.getPyMcaMain" title="Permalink to this definition">¶</a></dt>
+<dd><p>show PyMcaMain from a shell (e.g. IPython) and return its obj</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sloth.utils.pymca.myPyMcaMain">
+<em class="property">class </em><code class="descclassname">sloth.utils.pymca.</code><code class="descname">myPyMcaMain</code><span class="sig-paren">(</span><em>fload=None</em>, <em>name='slothPyMca'</em>, <em>**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/pymca.html#myPyMcaMain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.pymca.myPyMcaMain" title="Permalink to this definition">¶</a></dt>
+<dd><p>customized version of PyMcaMain to run within IPython shell</p>
+<dl class="method">
+<dt id="sloth.utils.pymca.myPyMcaMain.loadFile">
+<code class="descname">loadFile</code><span class="sig-paren">(</span><em>fload</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/pymca.html#myPyMcaMain.loadFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.pymca.myPyMcaMain.loadFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>load a file in the sourceWidget</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-sloth.utils.genericutils">
+<span id="sloth-utils-genericutils-generic"></span><h2><a class="reference internal" href="#module-sloth.utils.genericutils" title="sloth.utils.genericutils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.genericutils</span></code></a>: generic<a class="headerlink" href="#module-sloth.utils.genericutils" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="generic-utilities-for-daily-work">
+<h3>Generic utilities for daily work<a class="headerlink" href="#generic-utilities-for-daily-work" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="sloth.utils.genericutils.colorstr">
+<code class="descclassname">sloth.utils.genericutils.</code><code class="descname">colorstr</code><span class="sig-paren">(</span><em>instr, color='green', on_color=None, attrs=['bold']</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/genericutils.html#colorstr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.genericutils.colorstr" title="Permalink to this definition">¶</a></dt>
+<dd><p>colorized string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>color</strong> (<em>str</em><em>, </em><em>'green'</em>) – Available text colors:
+‘red’, ‘green’, ‘yellow’, ‘blue’, ‘magenta’, ‘cyan’,
+‘white’</p></li>
+<li><p><strong>on_color</strong> (<em>str</em><em>, </em><em>None</em>) – Available text highlights:
+‘on_red’, ‘on_green’, ‘on_yellow’, ‘on_blue’, ‘on_magenta’,
+‘on_cyan’, ‘on_white’</p></li>
+<li><p><strong>attrs</strong> (<em>list of str</em><em>, </em><em>[</em><em>'bold'</em><em>]</em>) – Available attributes:
+‘bold’, ‘dark’, ‘underline’, ‘blink’, ‘reverse’, ‘concealed’</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.genericutils.get_efermi">
+<code class="descclassname">sloth.utils.genericutils.</code><code class="descname">get_efermi</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/genericutils.html#get_efermi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.genericutils.get_efermi" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the Fermi level energy from a FDMNES out file</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.genericutils.imin">
+<code class="descclassname">sloth.utils.genericutils.</code><code class="descname">imin</code><span class="sig-paren">(</span><em>arr</em>, <em>check=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/genericutils.html#imin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.genericutils.imin" title="Permalink to this definition">¶</a></dt>
+<dd><p>index of minimum value</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.genericutils.imax">
+<code class="descclassname">sloth.utils.genericutils.</code><code class="descname">imax</code><span class="sig-paren">(</span><em>arr</em>, <em>check=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/genericutils.html#imax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.genericutils.imax" title="Permalink to this definition">¶</a></dt>
+<dd><p>index of maximum value</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.genericutils.ipythonAutoreload">
+<code class="descclassname">sloth.utils.genericutils.</code><code class="descname">ipythonAutoreload</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/genericutils.html#ipythonAutoreload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.genericutils.ipythonAutoreload" title="Permalink to this definition">¶</a></dt>
+<dd><p>force ipython to autoreload imported modules</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.genericutils.run_from_ipython">
+<code class="descclassname">sloth.utils.genericutils.</code><code class="descname">run_from_ipython</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/genericutils.html#run_from_ipython"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.genericutils.run_from_ipython" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if inside ipython</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.genericutils.is_in_notebook">
+<code class="descclassname">sloth.utils.genericutils.</code><code class="descname">is_in_notebook</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/genericutils.html#is_in_notebook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.genericutils.is_in_notebook" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if code is run from IPython notebook</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>code from StackOverflow <a href="#id1"><span class="problematic" id="id2">`https://stackoverflow.com/questions/15411967/how-can-i-check-if-code-is-executed-in-the-ipython-notebook/24937408#24937408`_</span></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.genericutils.mplSetPubFont">
+<code class="descclassname">sloth.utils.genericutils.</code><code class="descname">mplSetPubFont</code><span class="sig-paren">(</span><em>size=8</em>, <em>usetex=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/genericutils.html#mplSetPubFont"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.genericutils.mplSetPubFont" title="Permalink to this definition">¶</a></dt>
+<dd><p>very basic mpl set font for publication-quality figures</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.genericutils.qt_create_window">
+<code class="descclassname">sloth.utils.genericutils.</code><code class="descname">qt_create_window</code><span class="sig-paren">(</span><em>window_class</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/genericutils.html#qt_create_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.genericutils.qt_create_window" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a Qt window in Python, or interactively in IPython with Qt
+GUI event loop integration.</p>
+<p>Credits: <a class="reference external" href="http://cyrille.rossant.net/making-pyqt4-pyside-and-ipython-work-together/">http://cyrille.rossant.net/making-pyqt4-pyside-and-ipython-work-together/</a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.genericutils.qt_close_all_windows">
+<code class="descclassname">sloth.utils.genericutils.</code><code class="descname">qt_close_all_windows</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/genericutils.html#qt_close_all_windows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.genericutils.qt_close_all_windows" title="Permalink to this definition">¶</a></dt>
+<dd><p>close all qt windows!!!</p>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="dft.html" class="btn btn-neutral float-right" title="sloth.dft: interacting with density functional theory (DFT) codes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="math.html" class="btn btn-neutral float-left" title="sloth.math: mathematical utilities" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014--2019, Mauro Rovezzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

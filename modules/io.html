@@ -1,0 +1,433 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sloth.io: Input-output &mdash; Sloth 0.3.0-dev documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="sloth.collects: Data containers" href="collects.html" />
+    <link rel="prev" title="Reference" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Sloth
+          
+
+          
+            
+            <img src="../_static/xraysloth.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Full contents - hidden:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.io</span></code>: Input-output</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-sloth.io.specfile_reader"><code class="xref py py-mod docutils literal notranslate"><span class="pre">specfile_reader</span></code>: Wrapper on top of SpecFile reader</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#specfiledata-object-to-read-data-in-spec-format">SpecfileData object to read data in SPEC format</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="collects.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects</span></code>: Data containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fit.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit</span></code>: fitting tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inst.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst</span></code>: working with instrumentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="raytracing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing</span></code>: x-ray raytracing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math</span></code>: mathematical utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils</span></code>: utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dft.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.dft</span></code>: interacting with density functional theory (DFT) codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.gui</span></code>: GUI</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../todo.html">To Do</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Sloth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Reference</a> &raquo;</li>
+        
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.io</span></code>: Input-output</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/modules/io.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-sloth.io"></span><div class="section" id="sloth-io-input-output">
+<h1><a class="reference internal" href="#module-sloth.io" title="sloth.io"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.io</span></code></a>: Input-output<a class="headerlink" href="#sloth-io-input-output" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-sloth.io.specfile_reader">
+<span id="specfile-reader-wrapper-on-top-of-specfile-reader"></span><h2><code class="xref py py-mod docutils literal notranslate"><span class="pre">specfile_reader</span></code>: Wrapper on top of SpecFile reader<a class="headerlink" href="#module-sloth.io.specfile_reader" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="specfiledata-object-to-read-data-in-spec-format">
+<h3>SpecfileData object to read data in <a class="reference external" href="http://www.certif.com/content/spec">SPEC</a> format<a class="headerlink" href="#specfiledata-object-to-read-data-in-spec-format" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="requirements">
+<h4>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>silx (<a class="reference external" href="http://www.silx.org/doc/silx/dev/modules/io/specfilewrapper.html">http://www.silx.org/doc/silx/dev/modules/io/specfilewrapper.html</a>)</p></li>
+</ul>
+</div>
+</div>
+<dl class="class">
+<dt id="sloth.io.specfile_reader.SpecfileData">
+<em class="property">class </em><code class="descclassname">sloth.io.specfile_reader.</code><code class="descname">SpecfileData</code><span class="sig-paren">(</span><em>fname=None</em>, <em>cntx=1</em>, <em>cnty=None</em>, <em>csig=None</em>, <em>cmon=None</em>, <em>csec=None</em>, <em>norm=None</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/specfile_reader.html#SpecfileData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.specfile_reader.SpecfileData" title="Permalink to this definition">¶</a></dt>
+<dd><p>SpecfileData object</p>
+<dl class="method">
+<dt id="sloth.io.specfile_reader.SpecfileData.get_scan">
+<code class="descname">get_scan</code><span class="sig-paren">(</span><em>scan=None</em>, <em>scnt=None</em>, <em>**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/specfile_reader.html#SpecfileData.get_scan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.specfile_reader.SpecfileData.get_scan" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a single scan from a SPEC file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scan</strong> (<em>scan number to get</em><em> [</em><em>integer</em><em>]</em>) – </p></li>
+<li><p><strong>cntx</strong> (<em>counter for x axis</em><em>, </em><em>motor 1 scanned</em><em> [</em><em>string</em><em>]</em>) – </p></li>
+<li><p><strong>cnty</strong> (<em>counter for y axis</em><em>, </em><em>motor 2 steps</em><em> [</em><em>string</em><em>] </em><em>- used by get_map</em><em>(</em><em>)</em>) – </p></li>
+<li><p><strong>csig</strong> (<em>counter for signal</em><em> [</em><em>string</em><em>]</em>) – </p></li>
+<li><p><strong>cmon</strong> (<em>counter for monitor/normalization</em><em> [</em><em>string</em><em>]</em>) – </p></li>
+<li><p><strong>csec</strong> (<em>counter for time in seconds</em><em> [</em><em>string</em><em>]</em>) – </p></li>
+<li><p><strong>scnt</strong> (<em>scan type</em><em> [</em><em>string</em><em>]</em>) – </p></li>
+<li><p><strong>norm</strong> (<em>normalization</em><em> [</em><em>string</em><em>]</em>) – ‘max’ -&gt; z/max(z)
+‘max-min’ -&gt; (z-min(z))/(max(z)-min(z))
+‘area’ -&gt; (z-min(z))/trapz(z, x)
+‘sum’ -&gt; (z-min(z)/sum(z)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>scan_datx</strong> (<em>1D array with x data (scanned axis)</em>)</p></li>
+<li><p><strong>scan_datz</strong> (<em>1D array with z data (intensity axis)</em>)</p></li>
+<li><p><strong>scan_mots</strong> (<em>dictionary with all motors positions for the given scan</em>) – NOTE: if cnty is given, it will return only scan_mots[cnty]</p></li>
+<li><p><strong>scan_info</strong> (<em>dictionary with information on the scan</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="sloth.io.specfile_reader.SpecfileData.get_map">
+<code class="descname">get_map</code><span class="sig-paren">(</span><em>scans=None</em>, <em>**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/specfile_reader.html#SpecfileData.get_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.specfile_reader.SpecfileData.get_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a map composed of many scans repeated at different position of
+a given motor</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scans</strong> (<em>scans to load in the map</em><em> [</em><em>string</em><em>]</em><em>; the format of the</em>) – string is intended to be parsed by ‘_str2rng()’</p></li>
+<li><p><strong>**kws</strong> (<em>see get_scan</em><em>(</em><em>) </em><em>method</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>xcol, ycol, zcol</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>1D arrays representing the map</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="sloth.io.specfile_reader.SpecfileData.get_scans">
+<code class="descname">get_scans</code><span class="sig-paren">(</span><em>scans=None</em>, <em>motinfo=True</em>, <em>**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/specfile_reader.html#SpecfileData.get_scans"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.specfile_reader.SpecfileData.get_scans" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a list of scans</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scans</strong> (<em>string</em><em> or </em><em>list of scans to load</em><em> [</em><em>None</em><em>]</em><em>; the format of the</em>) – string is intended to be parsed by ‘_str2rng()’</p></li>
+<li><p><strong>motinfo</strong> (<em>boolean</em><em> [</em><em>True</em><em>] </em><em>returns also motors and scaninfo</em>) – dictionaries (see self.get_scan())</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>xdats, zdats</strong> (<em>list of arrays</em>)</p></li>
+<li><p><strong>if motinfo</strong> (<em>return also mdats, idats dictionaries</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="sloth.io.specfile_reader.SpecfileData.get_mrg">
+<code class="descname">get_mrg</code><span class="sig-paren">(</span><em>scans=None</em>, <em>action='average'</em>, <em>**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/specfile_reader.html#SpecfileData.get_mrg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.specfile_reader.SpecfileData.get_mrg" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a merged scan from a list of scans</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scans</strong> (<em>scans to load in the merge</em><em> [</em><em>string</em><em>]</em>) – the format of the string is intended to be parsed by ‘_str2rng()’</p></li>
+<li><p><strong>action</strong> (<em>action to perform on the loaded list of scans</em>) – ‘average’ -&gt; average the scans ( see _pymca_average() )
+‘sum’ -&gt; sum all zscans ( see _numpy_sum_list() )
+‘join’ -&gt; concatenate the scans
+‘single’ -&gt; scans_list[0] : equivalent to get_scan()</p></li>
+<li><p><strong>**kws</strong> (<em>see get_scan</em><em>(</em><em>) </em><em>method</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>xmrg, zmrg</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>1D arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="sloth.io.specfile_reader.SpecfileData.get_mrgs_by">
+<code class="descname">get_mrgs_by</code><span class="sig-paren">(</span><em>scans='all'</em>, <em>nbin=1</em>, <em>**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/specfile_reader.html#SpecfileData.get_mrgs_by"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.specfile_reader.SpecfileData.get_mrgs_by" title="Permalink to this definition">¶</a></dt>
+<dd><p>get merge by groups of scans</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scans</strong> (<em>string</em><em> [</em><em>'all'</em><em>] </em><em>to pass to _str2rng</em><em>, </em><em>if 'all'</em><em>,</em>) – sf.scanno() is taken</p></li>
+<li><p><strong>nbin</strong> (<em>int</em><em> [</em><em>1</em><em>]</em><em>, </em><em>number of scans to merge together</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>xmrgs, zmrgs</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>lists of merged arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="sloth.io.specfile_reader.SpecfileData.get_mrgs_rep">
+<code class="descname">get_mrgs_rep</code><span class="sig-paren">(</span><em>scns</em>, <em>nrep=3</em>, <em>**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/specfile_reader.html#SpecfileData.get_mrgs_rep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.specfile_reader.SpecfileData.get_mrgs_rep" title="Permalink to this definition">¶</a></dt>
+<dd><p>get merge by groups of repetitions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>scns</strong> (<em>string</em>) – string representing ALL the good scans (parsed by str2rng)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="sloth.io.specfile_reader.SpecfileData.get_det_dt">
+<code class="descname">get_det_dt</code><span class="sig-paren">(</span><em>zcts</em>, <em>tau</em>, <em>secs=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/specfile_reader.html#SpecfileData.get_det_dt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.specfile_reader.SpecfileData.get_det_dt" title="Permalink to this definition">¶</a></dt>
+<dd><p>get detector signal corrected by dead time</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>zcts</strong> (<em>array of floats</em>) – detector [counts], if ysecs=None [counts/s]</p></li>
+<li><p><strong>tau</strong> (<em>float</em>) – tau [s]</p></li>
+<li><p><strong>secs</strong> (<em>array of floats</em><em>, </em><em>None</em>) – normalization time [s]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>zcts_corr</strong> – zcps = zcts/secs
+zcps_corr = zcps / (1 - zcps * tau)
+zcts_corr = zcps_corr * secs</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array of floats</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="sloth.io.specfile_reader.SpecfileData.get_filter">
+<code class="descname">get_filter</code><span class="sig-paren">(</span><em>ydats</em>, <em>method='scipySG'</em>, <em>**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/specfile_reader.html#SpecfileData.get_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.specfile_reader.SpecfileData.get_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>get filtered data using a list of ydats and given method</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ydats</strong> (<em>list of 1D arrays</em>) – </p></li>
+<li><p><strong>method</strong> (<em>'scipySG' -&gt; Savitsky Golay filter from Scipy</em>) – <p>(see savitzky_golay())
+‘pymcaSG’ -&gt; Savitsky Golay filter from PyMca</p>
+<blockquote>
+<div><p>(see _pymca_SG())</p>
+</div></blockquote>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ysdats</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of 1D smoothed arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="sloth.io.specfile_reader.SpecfileData.write_ascii">
+<code class="descname">write_ascii</code><span class="sig-paren">(</span><em>scans</em>, <em>**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/specfile_reader.html#SpecfileData.write_ascii"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.specfile_reader.SpecfileData.write_ascii" title="Permalink to this definition">¶</a></dt>
+<dd><p>export single scans to separate ascii files</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="collects.html" class="btn btn-neutral float-right" title="sloth.collects: Data containers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014--2019, Mauro Rovezzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

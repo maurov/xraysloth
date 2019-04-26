@@ -1,61 +1,242 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Change Log &#8212; Sloth 0.2.0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.2.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Change Log &mdash; Sloth 0.3.0-dev documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Sloth: slowly evolving utilities for x-ray spectroscopists" href="index.html" />
+    <link rel="next" title="To Do" href="todo.html" />
+    <link rel="prev" title="sloth.gui: GUI" href="modules/gui.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
    
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
 
-  </head>
-  <body>
-  
+          
+            <a href="index.html" class="icon icon-home"> Sloth
+          
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+          
+            
+            <img src="_static/xraysloth.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Full contents - hidden:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="modules/index.html">Reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Change Log</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#v-0-3-0-dev">v.0.3.0 (dev)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#new-features">New features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bug-fixes">Bug fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#broken-backward-compatibility">Broken backward compatibility</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v-0-2-1-2018-07-04">v.0.2.1 (2018-07-04)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-2-0-2017-06-29">v0.2.0 (2017-06-29)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-1-0-2016-11-16">v0.1.0 (2016-11-16)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">To Do</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Sloth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Change Log</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/changelog.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <div class="section" id="change-log">
 <h1>Change Log<a class="headerlink" href="#change-log" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="v-0-2-1-current">
-<h2>v.0.2.1 (current)<a class="headerlink" href="#v-0-2-1-current" title="Permalink to this headline">¶</a></h2>
-<p><em>Not released yet</em></p>
+<div class="section" id="v-0-3-0-dev">
+<h2>v.0.3.0 (dev)<a class="headerlink" href="#v-0-3-0-dev" title="Permalink to this headline">¶</a></h2>
+<p><em>master branch (not released/tagged yet)</em></p>
+<div class="section" id="new-features">
+<h3>New features<a class="headerlink" href="#new-features" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst.spectro14</span></code></p>
 <ul>
-<li><p class="first"><cite>sloth.inst</cite></p>
+<li><p>simple geometry calculations of the FAME-UHD (BM16 at ESRF) X-ray
+emission spectrometer (2 rows of 7 spherically bent crystal
+analyzers arranged in a _mixed_ Rowland circle)</p></li>
+</ul>
+</li>
+<li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.gui.sloth_main</span></code></p>
+<ul>
+<li><p>initial GUI layout (mainly an IPython embedded shell).</p></li>
+</ul>
+</li>
+<li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing.shadow_utils</span></code></p>
+<ul>
+<li><p>utilities for running SHADOW3 simulations (specific cases).</p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="modules/utils.html#module-sloth.utils.xdata" title="sloth.utils.xdata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.xdata</span></code></a></p>
+<ul>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">xray_edge()</span></code> + cleaning output of <code class="xref py py-func docutils literal notranslate"><span class="pre">xray_line()</span></code></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="bug-fixes">
+<h3>Bug fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="modules/inst.html#sloth.inst.rowland.RcVert" title="sloth.inst.rowland.RcVert"><code class="xref py py-class docutils literal notranslate"><span class="pre">sloth.inst.rowland.RcVert</span></code></a> -&gt; bug in <cite>chi</cite> calculation.</p></li>
+<li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.__init__</span></code></p>
+<ul>
+<li><p>re-enable larch imports in <a href="#id1"><span class="problematic" id="id2">:var:`_slothKit`</span></a> (currently disabled
+because loading seems too slow!!!)</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="broken-backward-compatibility">
+<h3>Broken backward compatibility<a class="headerlink" href="#broken-backward-compatibility" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collect</span></code></p>
+<ul>
+<li><p><cite>DataGroup</cite> objects and derivative have methods with <cite>_</cite>
+(e.g. <cite>self.getkwsd</cite> -&gt; <cite>self.get_kwsd</cite>)</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="v-0-2-1-2018-07-04">
+<h2>v.0.2.1 (2018-07-04)<a class="headerlink" href="#v-0-2-1-2018-07-04" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p><a class="reference internal" href="modules/inst.html#module-sloth.inst" title="sloth.inst"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst</span></code></a></p>
 <blockquote>
 <div><ul class="simple">
-<li>TEXS pantograph final version.</li>
+<li><p>TEXS pantograph final version.</p></li>
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first"><cite>sloth.raytracing</cite></p>
+<li><p><a class="reference internal" href="modules/raytracing.html#module-sloth.raytracing" title="sloth.raytracing"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing</span></code></a></p>
 <ul class="simple">
-<li>Added <cite>shadow3</cite> test with a real SBCA to carefully check its installation.</li>
+<li><p>Added <cite>shadow3</cite> test with a real SBCA to carefully check its installation.</p></li>
 </ul>
 </li>
 </ul>
@@ -64,7 +245,7 @@
 <h2>v0.2.0 (2017-06-29)<a class="headerlink" href="#v0-2-0-2017-06-29" title="Permalink to this headline">¶</a></h2>
 <p>First <em>stable</em> release:</p>
 <ul class="simple">
-<li>published to Zenodo <a class="reference external" href="https://doi.org/10.5281/zenodo.821221">DOI:10.5281/zenodo.821221</a></li>
+<li><p>published to Zenodo <a class="reference external" href="https://doi.org/10.5281/zenodo.821221">DOI:10.5281/zenodo.821221</a></p></li>
 </ul>
 </div>
 <div class="section" id="v0-1-0-2016-11-16">
@@ -74,63 +255,52 @@
 </div>
 
 
+           </div>
+           
           </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="todo.html" class="btn btn-neutral float-right" title="To Do" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="modules/gui.html" class="btn btn-neutral float-left" title="sloth.gui: GUI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014--2019, Mauro Rovezzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Change Log</a><ul>
-<li><a class="reference internal" href="#v-0-2-1-current">v.0.2.1 (current)</a></li>
-<li><a class="reference internal" href="#v0-2-0-2017-06-29">v0.2.0 (2017-06-29)</a></li>
-<li><a class="reference internal" href="#v0-1-0-2016-11-16">v0.1.0 (2016-11-16)</a></li>
-</ul>
-</li>
-</ul>
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">Sloth: slowly evolving utilities for x-ray spectroscopists</a></li>
-  </ul></li>
-</ul>
-</div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/changelog.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2014--2018, Mauro Rovezzi.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
-      
-      |
-      <a href="_sources/changelog.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
 
-    
+    </section>
 
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
     
-  </body>
+   
+
+</body>
 </html>

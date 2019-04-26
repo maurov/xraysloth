@@ -1,0 +1,513 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sloth.inst.dthetaxz_plot &mdash; Sloth 0.3.0-dev documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Sloth
+          
+
+          
+            
+            <img src="../../../_static/xraysloth.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Full contents - hidden:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../todo.html">To Do</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Sloth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sloth.inst.dthetaxz_plot</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sloth.inst.dthetaxz_plot</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;plots related to dthetaxz&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy.ma</span> <span class="k">as</span> <span class="nn">ma</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.cm</span> <span class="k">as</span> <span class="nn">cm</span>
+<span class="kn">import</span> <span class="nn">matplotlib.gridspec</span> <span class="k">as</span> <span class="nn">gridspec</span>
+<span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="k">import</span> <span class="n">MaxNLocator</span><span class="p">,</span> <span class="n">AutoLocator</span><span class="p">,</span> <span class="n">MultipleLocator</span>
+
+<span class="kn">from</span> <span class="nn">sloth.inst.dthetaxz</span> <span class="k">import</span> <span class="n">dThetaXZ</span><span class="p">,</span> <span class="n">mapCase2Num</span><span class="p">,</span> <span class="n">mapNum2Case</span><span class="p">,</span> <span class="n">getMeshMasked</span><span class="p">,</span> <span class="n">getDthetaDats</span><span class="p">,</span> <span class="n">writeScanDats</span>
+<span class="kn">from</span> <span class="nn">sloth.io.specfile_reader</span> <span class="k">import</span> <span class="n">SpecfileData</span>
+
+<div class="viewcode-block" id="plotEffScatt"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.dthetaxz_plot.plotEffScatt">[docs]</a><span class="k">def</span> <span class="nf">plotEffScatt</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="n">zz</span><span class="p">,</span> <span class="n">wrc</span><span class="o">=</span><span class="mf">1.25E-4</span><span class="p">,</span>\
+                 <span class="n">cases</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Johann&#39;</span><span class="p">,</span> <span class="s1">&#39;Johansson&#39;</span><span class="p">,</span> <span class="s1">&#39;Spherical plate&#39;</span><span class="p">,</span> <span class="s1">&#39;Wittry&#39;</span><span class="p">],</span>\
+                 <span class="n">casesLabels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>\
+                 <span class="n">angles</span><span class="o">=</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">75</span><span class="p">],</span> <span class="n">xyFigHalfRange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xyTicks</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>\
+                 <span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;x, mer. (R$_</span><span class="si">{m}</span><span class="s1">^{\prime}$)&#39;</span><span class="p">,</span>\
+                 <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;z, sag. (R$_</span><span class="si">{m}</span><span class="s1">^{\prime}$)&#39;</span><span class="p">,</span>\
+                 <span class="n">figName</span><span class="o">=</span><span class="s1">&#39;fig1&#39;</span><span class="p">,</span> <span class="n">xyFigSize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="mi">150</span><span class="p">,</span> <span class="mi">6</span><span class="o">*</span><span class="mi">150</span><span class="p">),</span> <span class="n">figDpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">fontSize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>\
+                 <span class="n">nlevels</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">rowSpan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">colSpan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">xylab</span><span class="o">=</span><span class="p">(</span><span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.97</span><span class="p">),</span> <span class="n">ylabshift</span><span class="o">=-</span><span class="mf">0.3</span><span class="p">,</span>\
+                 <span class="n">plotMask</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plotVert</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">absWrc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cbarShow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>\
+                 <span class="n">cbarTicks</span><span class="o">=</span><span class="mf">2.5E-5</span><span class="p">,</span> <span class="n">cbarOrientation</span><span class="o">=</span><span class="s1">&#39;vertical&#39;</span><span class="p">,</span>\
+                 <span class="n">cbarLabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$\Delta \theta$&#39;</span><span class="p">,</span>\
+                 <span class="n">figCmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">RdYlGn</span><span class="p">,</span> <span class="n">figOut</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;plots the effective scattering angle given a masked array</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xx, zz : 2D masked arrays of floats</span>
+<span class="sd">             dThetaXZ() is calculated over them</span>
+
+<span class="sd">    wrc : float, 1.25E-4</span>
+<span class="sd">        maximum accepted angular range</span>
+
+<span class="sd">    cases : list of str, [&#39;Johann&#39;, &#39;Johansson&#39;, &#39;Spherical plate&#39;, &#39;Wittry&#39;]</span>
+<span class="sd">            accepted cases by dThetaXZ (tip: nicely shows for 4 items)</span>
+
+<span class="sd">    casesLabels : list of str, None</span>
+<span class="sd">                  labels for the cases (if none, it takes cases</span>
+<span class="sd">                  strings)</span>
+
+<span class="sd">    angles : list of floats, [15, 45, 75]</span>
+<span class="sd">             theta angles (tip: nicely shows for 3 items)</span>
+
+<span class="sd">    figName : str, &#39;fig1&#39;</span>
+<span class="sd">              name of the figure</span>
+
+<span class="sd">    xyFigHalfRange : float, None</span>
+<span class="sd">                     set figure dimensions in units of r1p (crystal</span>
+<span class="sd">                     bending radius) and shows a reference circle with</span>
+<span class="sd">                     this radius</span>
+
+<span class="sd">    xyTicks : float, 0.1</span>
+<span class="sd">              spacing between major ticks (labels) in x and y - units</span>
+<span class="sd">              of r1p</span>
+
+<span class="sd">    xlabel : str, r&#39;x, mer. (R$_{m}^{\prime}$)&#39;</span>
+<span class="sd">             label x axis</span>
+
+<span class="sd">    ylabel : str, r&#39;z, sag. (R$_{m}^{\prime}$)&#39;</span>
+<span class="sd">             label y axis</span>
+
+<span class="sd">    xyFigSize : list of int or floats, [10*dpi, 6*dpi]</span>
+<span class="sd">                x, y size of the figure</span>
+
+<span class="sd">    figDpi : int, 150</span>
+<span class="sd">             figure resolution</span>
+
+<span class="sd">    figOut : [None]</span>
+<span class="sd">             figure to save</span>
+
+<span class="sd">    fontSize : int, 8</span>
+
+
+<span class="sd">    nlevels : int, 15</span>
+<span class="sd">              number of color levels</span>
+
+<span class="sd">    colSpan : int, 2</span>
+<span class="sd">              number of columns to span for each subplot (useful if cbarOrientation==&#39;vertical&#39;)</span>
+
+<span class="sd">    rowSpan : int, 2</span>
+<span class="sd">              number of row to span for each subplot (useful if cbarOrientation==&#39;horizontal&#39;)</span>
+
+<span class="sd">    xylab : tuple of floats, (0.025, 0.97)</span>
+<span class="sd">            position of the angles label (showing theta) in &#39;figure</span>
+<span class="sd">            fraction&#39; units</span>
+
+<span class="sd">    xylabshift : float, -0.3</span>
+<span class="sd">                 shift (&#39;figure fraction&#39; units) xylab[1] each subplot</span>
+
+<span class="sd">    plotMask : boolean, True</span>
+<span class="sd">               to show the mask</span>
+
+<span class="sd">    plotVert: boolean, False</span>
+<span class="sd">              plot vertical scattering</span>
+
+<span class="sd">    absWrc : boolean, False</span>
+<span class="sd">             to show absolute $\Delta \theta$</span>
+
+<span class="sd">    cbarShow : boolean, True</span>
+<span class="sd">               to show the color bar</span>
+
+<span class="sd">    cbarTicks : float, 2.5E-5</span>
+<span class="sd">                spacing between color bar ticks</span>
+
+<span class="sd">    cbarOrientation : str, &#39;vertical&#39;</span>
+<span class="sd">                      orientation of the colorbar: &#39;vertical&#39; or &#39;horizontal&#39;</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ion</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fontSize</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.usetex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="c1">#wrc as multi-values</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">wrc</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">wrc</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">angles</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;len(wrc) not as angles&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">wrc_angles</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">wrc</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">wrc_angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span><span class="o">*</span><span class="n">wrc</span>
+    <span class="n">wrc</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">wrc_angles</span><span class="p">)</span>
+    <span class="c1">#check if there is a common or separated grid for each case</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">xx</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">zz</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xx</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">cases</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">zz</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">cases</span><span class="p">)):</span>
+            <span class="n">hasMasks</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">_xx</span> <span class="o">=</span> <span class="n">xx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">_zz</span> <span class="o">=</span> <span class="n">zz</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">hasMasks</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">_xx</span> <span class="o">=</span> <span class="n">xx</span>
+        <span class="n">_zz</span> <span class="o">=</span> <span class="n">zz</span>
+    <span class="n">nangles</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
+    <span class="n">ncases</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cases</span><span class="p">)</span>
+    <span class="n">extent</span> <span class="o">=</span> <span class="p">(</span><span class="n">_xx</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">_xx</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">_zz</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">_zz</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="n">figName</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">xyFigSize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">figDpi</span><span class="p">,</span> <span class="n">xyFigSize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">figDpi</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="n">figDpi</span><span class="p">,</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cbarOrientation</span> <span class="o">==</span> <span class="s1">&#39;horizontal&#39;</span><span class="p">:</span>
+        <span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="n">rowSpan</span><span class="o">*</span><span class="n">nangles</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">ncases</span><span class="p">,</span> <span class="n">figure</span><span class="o">=</span><span class="n">fig</span><span class="p">)</span> <span class="c1">#iN+1xM grid +1 is for the colorbar</span>
+        <span class="n">gsx_rng</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">rowSpan</span><span class="o">*</span><span class="n">nangles</span><span class="p">,</span> <span class="n">rowSpan</span><span class="p">)</span>
+        <span class="n">gsy_rng</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">ncases</span><span class="p">)</span>
+        <span class="n">cplt</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GriSpec</span><span class="p">(</span><span class="n">nangles</span><span class="p">,</span> <span class="n">colSpan</span><span class="o">*</span><span class="n">ncases</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">figure</span><span class="o">=</span><span class="n">fig</span><span class="p">)</span> <span class="c1">#NxjM+1 grid +1 is for the colorbar</span>
+        <span class="n">gsx_rng</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">nangles</span><span class="p">)</span>
+        <span class="n">gsy_rng</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">colSpan</span><span class="o">*</span><span class="n">ncases</span><span class="p">,</span> <span class="n">colSpan</span><span class="p">)</span>
+        <span class="n">cplt</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">xlab</span> <span class="o">=</span> <span class="n">xylab</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ylab</span> <span class="o">=</span> <span class="n">xylab</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">casesLabels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">casesLabels</span> <span class="o">=</span> <span class="n">cases</span>
+    <span class="k">for</span> <span class="n">th</span><span class="p">,</span> <span class="n">gsx</span><span class="p">,</span> <span class="n">_wrc</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">gsx_rng</span><span class="p">,</span> <span class="n">wrc_angles</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">ic</span><span class="p">,</span> <span class="p">(</span><span class="n">cs</span><span class="p">,</span> <span class="n">cl</span><span class="p">,</span> <span class="n">gsy</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">cases</span><span class="p">,</span> <span class="n">casesLabels</span><span class="p">,</span> <span class="n">gsy_rng</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">hasMasks</span><span class="p">:</span>
+                <span class="n">_xx</span> <span class="o">=</span> <span class="n">xx</span><span class="p">[</span><span class="n">ic</span><span class="p">]</span>
+                <span class="n">_zz</span> <span class="o">=</span> <span class="n">zz</span><span class="p">[</span><span class="n">ic</span><span class="p">]</span>
+            <span class="n">dth</span> <span class="o">=</span> <span class="n">dThetaXZ</span><span class="p">(</span><span class="n">_xx</span><span class="p">,</span> <span class="n">_zz</span><span class="p">,</span> <span class="n">th</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="n">cs</span><span class="p">)</span>
+            <span class="n">mdth</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">masked_where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dth</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">_wrc</span><span class="p">,</span> <span class="n">dth</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">absWrc</span><span class="p">:</span> <span class="n">mdth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mdth</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">cbarOrientation</span> <span class="o">==</span> <span class="s1">&#39;horizontal&#39;</span><span class="p">:</span>
+                <span class="n">gsplt</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="n">gsx</span><span class="p">:</span><span class="n">gsx</span><span class="o">+</span><span class="n">rowSpan</span><span class="p">,</span> <span class="n">gsy</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">gsplt</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="n">gsx</span><span class="p">,</span> <span class="n">gsy</span><span class="p">:</span><span class="n">gsy</span><span class="o">+</span><span class="n">colSpan</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">xyFigHalfRange</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">gsplt</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="n">xyFigHalfRange</span><span class="p">,</span> <span class="n">xyFigHalfRange</span><span class="p">)</span>
+                <span class="n">gsplt</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="n">xyFigHalfRange</span><span class="p">,</span> <span class="n">xyFigHalfRange</span><span class="p">)</span>
+                <span class="n">refCircle</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Circle</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="n">xyFigHalfRange</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">gsplt</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">refCircle</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">plotVert</span><span class="p">:</span>
+                <span class="n">_xxplot</span> <span class="o">=</span> <span class="n">_zz</span>
+                <span class="n">_zzplot</span> <span class="o">=</span> <span class="n">_xx</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_xxplot</span> <span class="o">=</span> <span class="n">_xx</span>
+                <span class="n">_zzplot</span> <span class="o">=</span> <span class="n">_zz</span>
+            <span class="n">norm</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=-</span><span class="mi">2</span><span class="o">*</span><span class="n">wrc</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="n">wrc</span><span class="p">)</span> <span class="c1">#NOT WORKING (NOT USED)!!!</span>
+            <span class="k">if</span> <span class="n">absWrc</span><span class="p">:</span>
+                <span class="n">levels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">wrc</span><span class="p">,</span> <span class="n">nlevels</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">levels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">wrc</span><span class="p">,</span> <span class="n">wrc</span><span class="p">,</span> <span class="n">nlevels</span><span class="p">)</span>
+            <span class="c1">#cntf = gsplt.contourf(_xxplot, _zzplot, mdth, levels, cmap=cm.get_cmap(figCmap, len(levels)-1), norm=norm)</span>
+            <span class="c1">#cntf = gsplt.contourf(_xxplot, _zzplot, mdth, levels, cmap=cm.get_cmap(figCmap, len(levels)-1))</span>
+            <span class="n">cntf</span> <span class="o">=</span> <span class="n">gsplt</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">_xxplot</span><span class="p">,</span> <span class="n">_zzplot</span><span class="p">,</span> <span class="n">mdth</span><span class="p">,</span> <span class="n">nlevels</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="n">figCmap</span><span class="p">,</span> <span class="n">nlevels</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+            <span class="c1">#gsplt.imshow(_zzplot, origin=&#39;lower&#39;, extent=extent, cmap=cm.get_cmap(figCmap), norm=norm)</span>
+            <span class="c1"># gsplt.xaxis.set_major_locator(MaxNLocator(4))</span>
+            <span class="c1"># gsplt.xaxis.set_minor_locator(MaxNLocator(5))</span>
+            <span class="c1"># gsplt.yaxis.set_major_locator(MaxNLocator(4))</span>
+            <span class="c1"># gsplt.yaxis.set_minor_locator(MaxNLocator(5))</span>
+            <span class="n">gsplt</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">xyTicks</span><span class="p">))</span>
+            <span class="n">gsplt</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">xyTicks</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">plotMask</span><span class="p">:</span>
+                <span class="n">mm</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">_zzplot</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+                <span class="n">mm</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">_zzplot</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+                <span class="n">gsplt</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">_xxplot</span><span class="p">,</span> <span class="n">_zzplot</span><span class="p">,</span> <span class="n">mm</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">Greys</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">gsx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">gsplt</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">cl</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">gsx</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">gsplt</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">gsy</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">gsplt</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
+                <span class="n">gsplt</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">$^\circ$&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">th</span><span class="p">),</span>
+                               <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
+                               <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
+                               <span class="n">fontsize</span><span class="o">=</span><span class="n">fontSize</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span>
+                               <span class="n">bbox</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">boxstyle</span><span class="o">=</span><span class="s2">&quot;round4&quot;</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">),</span>
+                               <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">xlab</span><span class="p">,</span> <span class="n">ylab</span><span class="p">),</span> <span class="n">xycoords</span><span class="o">=</span><span class="s1">&#39;figure fraction&#39;</span><span class="p">)</span>
+                <span class="n">ylab</span> <span class="o">+=</span> <span class="n">ylabshift</span>
+    <span class="c1"># colorbar</span>
+    <span class="k">if</span> <span class="n">cbarShow</span><span class="p">:</span>
+        <span class="n">cb</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">cntf</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cplt</span><span class="p">,</span> <span class="n">use_gridspec</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="n">cbarOrientation</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%.1E</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="c1">#cb.set_ticks(AutoLocator())</span>
+        <span class="n">cb</span><span class="o">.</span><span class="n">set_ticks</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">cbarTicks</span><span class="p">))</span>
+        <span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">cbarLabel</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">figOut</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.pdf&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">figOut</span><span class="p">),</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.png&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">figOut</span><span class="p">),</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.svg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">figOut</span><span class="p">),</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="plotScanThetaFile"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.dthetaxz_plot.plotScanThetaFile">[docs]</a><span class="k">def</span> <span class="nf">plotScanThetaFile</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="n">signal</span><span class="o">=</span><span class="s1">&#39;eres&#39;</span><span class="p">,</span> <span class="n">xlims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ylims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ylog</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                      <span class="n">yscale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">caseScale</span><span class="o">=</span><span class="s1">&#39;Js&#39;</span><span class="p">,</span> <span class="n">plotDeeShells</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">showLegend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                      <span class="n">figName</span><span class="o">=</span><span class="s1">&#39;fig1&#39;</span><span class="p">,</span> <span class="n">figSize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">figDpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">fontSize</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;plot 1D $\theta_{B}$ scans from SPEC file</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fname : SPEC file name (refer writeScanDats)</span>
+<span class="sd">    scans : list of scans</span>
+<span class="sd">    signal : string, &#39;eres&#39;</span>
+<span class="sd">    xlims : tuple, None</span>
+<span class="sd">    ylims : tuple, None</span>
+<span class="sd">    ylog : boolean, True</span>
+<span class="sd">           sets y in log scale</span>
+<span class="sd">    yscale : int or float, 1</span>
+<span class="sd">             scale factor for y</span>
+<span class="sd">    caseScale : str, &#39;Js&#39;</span>
+<span class="sd">                case to apply yscale</span>
+<span class="sd">    plotDeeShells : boolean, True</span>
+<span class="sd">                    plots the energy resolution for K, L$_{2,3}$ and M$_{4,5}$ shells</span>
+<span class="sd">    showLegend : boolean, True</span>
+<span class="sd">                 show the legend on the plot</span>
+<span class="sd">    figName : str, &#39;fig1&#39;</span>
+<span class="sd">    figSize : tuple, (5,5)</span>
+<span class="sd">    figDpi : int or float, 150</span>
+<span class="sd">    fontSize : int or float, 10</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fontSize</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="n">figName</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">figSize</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">figDpi</span><span class="p">)</span>
+    <span class="n">gs</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">gsplt</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="bp">cls</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Js&#39;</span> <span class="p">:</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;SphJn&#39;</span> <span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;TorJs&#39;</span> <span class="p">:</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;JsFocus&#39;</span> <span class="p">:</span> <span class="s1">&#39;violet&#39;</span><span class="p">}</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">SpecfileData</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scans</span><span class="p">:</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mots</span><span class="p">,</span> <span class="n">infos</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get_scan</span><span class="p">(</span><span class="n">scan</span><span class="p">,</span> <span class="n">csig</span><span class="o">=</span><span class="n">signal</span><span class="p">)</span>
+        <span class="n">lab</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">mots</span><span class="p">[</span><span class="s1">&#39;r1p&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">1000.0</span><span class="p">):</span>
+            <span class="n">_ms</span> <span class="o">=</span> <span class="mi">5</span>
+            <span class="n">_mk</span> <span class="o">=</span> <span class="s1">&#39;v&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_ms</span> <span class="o">=</span> <span class="mi">5</span>
+            <span class="n">_mk</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span>
+        <span class="n">case</span> <span class="o">=</span> <span class="n">mapNum2Case</span><span class="p">(</span><span class="n">mots</span><span class="p">[</span><span class="s1">&#39;case&#39;</span><span class="p">])</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cl</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">[</span><span class="n">case</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">cl</span> <span class="o">=</span> <span class="s1">&#39;gray&#39;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">mapNum2Case</span><span class="p">(</span><span class="n">mots</span><span class="p">[</span><span class="s1">&#39;case&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="n">caseScale</span><span class="p">):</span>
+            <span class="n">ys</span> <span class="o">=</span> <span class="n">yscale</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ys</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">gsplt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">*</span><span class="n">ys</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">lab</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">cl</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="n">_mk</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="n">_ms</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">plotDeeShells</span><span class="p">:</span>
+        <span class="n">gsplt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mf">2E-4</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;K&#39;</span><span class="p">)</span>
+        <span class="n">gsplt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mf">6E-4</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;L$_{2,3}$&#39;</span><span class="p">)</span>
+        <span class="n">gsplt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mf">8E-4</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;M$_{4,5}$&#39;</span><span class="p">)</span>
+    <span class="c1">#gsplt.set_title(r&#39;title&#39;)</span>
+    <span class="n">gsplt</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Bragg angle $\theta_B$ (deg)&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;eres&#39;</span> <span class="ow">in</span> <span class="n">signal</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+        <span class="n">gsplt</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Energy resolution, $\Delta$ E/E&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="s1">&#39;sa&#39;</span> <span class="ow">in</span> <span class="n">signal</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+        <span class="n">gsplt</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Effective solid angle (sr)&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">gsplt</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">ylog</span><span class="p">:</span> <span class="n">gsplt</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">xlims</span><span class="p">:</span> <span class="n">gsplt</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xlims</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ylims</span><span class="p">:</span> <span class="n">gsplt</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ylims</span><span class="p">)</span>
+    <span class="n">gsplt</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+    <span class="n">gsplt</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+    <span class="c1">#gsplt.yaxis.set_major_locator(MultipleLocator(1E-4))</span>
+    <span class="c1">#gsplt.yaxis.set_minor_locator(MultipleLocator(0.25E-4))</span>
+    <span class="n">gsplt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">showLegend</span><span class="p">:</span>
+        <span class="n">gsplt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;expand&quot;</span><span class="p">,</span> <span class="n">borderaxespad</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
+                     <span class="n">numpoints</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fancybox</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># TESTS in xraysloth/examples/dthetaxz_tests.py</span>
+    <span class="k">pass</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014--2019, Mauro Rovezzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

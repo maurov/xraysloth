@@ -1,0 +1,369 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sloth.raytracing: x-ray raytracing &mdash; Sloth 0.3.0-dev documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="sloth.math: mathematical utilities" href="math.html" />
+    <link rel="prev" title="sloth.inst: working with instrumentation" href="inst.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Sloth
+          
+
+          
+            
+            <img src="../_static/xraysloth.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Full contents - hidden:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="io.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.io</span></code>: Input-output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collects.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects</span></code>: Data containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fit.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit</span></code>: fitting tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inst.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst</span></code>: working with instrumentation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing</span></code>: x-ray raytracing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-sloth.raytracing.crystal_box"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing.crystal_box</span></code>: reflectivity of bent crystals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sloth-raytracing-shadow-utils-shadow3-utilities"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing.shadow_utils</span></code>: SHADOW3 utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sloth-raytracing-shadow-utils-johansson-cylindrical-analyzers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing.shadow_utils</span></code>: Johansson cylindrical analyzers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="math.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math</span></code>: mathematical utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils</span></code>: utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dft.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.dft</span></code>: interacting with density functional theory (DFT) codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.gui</span></code>: GUI</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../todo.html">To Do</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Sloth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Reference</a> &raquo;</li>
+        
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing</span></code>: x-ray raytracing</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/modules/raytracing.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-sloth.raytracing"></span><div class="section" id="sloth-raytracing-x-ray-raytracing">
+<h1><a class="reference internal" href="#module-sloth.raytracing" title="sloth.raytracing"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing</span></code></a>: x-ray raytracing<a class="headerlink" href="#sloth-raytracing-x-ray-raytracing" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-sloth.raytracing.crystal_box">
+<span id="sloth-raytracing-crystal-box-reflectivity-of-bent-crystals"></span><h2><a class="reference internal" href="#module-sloth.raytracing.crystal_box" title="sloth.raytracing.crystal_box"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing.crystal_box</span></code></a>: reflectivity of bent crystals<a class="headerlink" href="#module-sloth.raytracing.crystal_box" title="Permalink to this headline">¶</a></h2>
+<p>crystal_box: a toolbox to work with <a href="#id1"><span class="problematic" id="id2">CRYSTAL_</span></a> from Python via a system
+call to diff_pat</p>
+<p>.._CRYSTAL: <a class="reference external" href="https://github.com/srio/CRYSTAL">https://github.com/srio/CRYSTAL</a></p>
+<dl class="class">
+<dt id="sloth.raytracing.crystal_box.XCrystalBox">
+<em class="property">class </em><code class="descclassname">sloth.raytracing.crystal_box.</code><code class="descname">XCrystalBox</code><span class="sig-paren">(</span><em>opts=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/crystal_box.html#XCrystalBox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.crystal_box.XCrystalBox" title="Permalink to this definition">¶</a></dt>
+<dd><p>bragg_file : Name of file with crystal data (from BRAGG)</p>
+<dl>
+<dt>crys_type<span class="classifier">What kind of crystal you want to use:</span></dt><dd><p>[0] Perfect crystal
+[1] Mosaic crystal
+[2] Bent Multilamellar (ML)
+[3] Bent Penning-Polder (PP)
+[4] Bent Takagi-Taupin =&gt; NOT IMPLEMENTED YET</p>
+</dd>
+<dt>geom<span class="classifier">Reflection (Bragg) or Transmission (Laue) geometry. If the</span></dt><dd><p>crystal is perfect allow to calculate the transmitted (not
+diffracted beams.</p>
+<p>[0] Diffracted beam in Reflection (Bragg) geometry
+[1] Diffracted beam in Transmission (Laue) geometry
+[2] Transmitted beam in Bragg case
+[3] Transmitted beam in Laue case</p>
+</dd>
+</dl>
+<p>mos_spread : mosaicity, mosaic angle spread (FWHM) [deg]</p>
+<dl class="simple">
+<dt>thickness<span class="classifier">crystal thickness [cm]. In the Perfect crystal case,</span></dt><dd><p>the thick crystal approximation is allowed. In such
+case, the user must input any negative value.</p>
+</dd>
+<dt>asym<span class="classifier">asymmetric cut angle [deg] between face and bragg planes</span></dt><dd><p>(clock-wise, CW)</p>
+</dd>
+<dt>scan_mode<span class="classifier">scanning variable</span></dt><dd><p>[1] Incident/Reflected angle [absolute]
+[2] Incident/Reflected angle minus theta Bragg corrected
+[3] Incident/Reflected angle minus theta Bragg
+[4] Photon energy
+[5] y variable [Zachariasen]</p>
+</dd>
+<dt>scan_pos<span class="classifier">at what position?</span></dt><dd><p>in energy [eV] for scan_mode &lt; 4 or 5
+in grazing angle [deg] for scan_mode == 4</p>
+</dd>
+<dt>scan_ang_unit<span class="classifier">units for the angular scanning variable</span></dt><dd><p>[0] radians
+[1] microradians
+[2] degrees
+[3] arcsec</p>
+</dd>
+</dl>
+<p>scan_min / scan_max : scanning variable limits in the chosen units</p>
+<p>scan_npts : number of scanning points</p>
+<p>r_sag : sagittal bending radius [cm]</p>
+<p>r_mer : meridional radius [cm]</p>
+<p>elast_prompt : input 0 to call elasticity_prompt</p>
+<dl class="simple">
+<dt>elast_info<span class="classifier">Elasticity info. Obtain compliance tensor (CT) from:</span></dt><dd><p>[0] Poisson ratio (isotropic crystal)
+[1] hkl (for Si/Ge/C)
+[2] crystallographic directions (for Si/Ge/C)
+[3] external file</p>
+</dd>
+</dl>
+<p>poisson_ratio : Poisson ratio</p>
+<p>crys_idx : CrystalIndex: 0,1,2=Si,3=Ge,4=Diamond</p>
+<dl class="method">
+<dt id="sloth.raytracing.crystal_box.XCrystalBox.check_opts">
+<code class="descname">check_opts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/crystal_box.html#XCrystalBox.check_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.crystal_box.XCrystalBox.check_opts" title="Permalink to this definition">¶</a></dt>
+<dd><p>performs a global check on setted options</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sloth.raytracing.crystal_box.XCrystalBox.set_opt">
+<code class="descname">set_opt</code><span class="sig-paren">(</span><em>opt</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/crystal_box.html#XCrystalBox.set_opt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.crystal_box.XCrystalBox.set_opt" title="Permalink to this definition">¶</a></dt>
+<dd><p>set option and run global check</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sloth.raytracing.crystal_box.XCrystalBox.write_inp_file">
+<code class="descname">write_inp_file</code><span class="sig-paren">(</span><em>fname='xcrystal.inp'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/crystal_box.html#XCrystalBox.write_inp_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.crystal_box.XCrystalBox.write_inp_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>write xcrystal.inp</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sloth.raytracing.crystal_box.XCrystalBox.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/crystal_box.html#XCrystalBox.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.crystal_box.XCrystalBox.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>runs diff_pat</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sloth.raytracing.crystal_box.XCrystalBox.load_refl">
+<code class="descname">load_refl</code><span class="sig-paren">(</span><em>fname='diff_pat.dat'</em>, <em>pol='s'</em>, <em>kind='cubic'</em>, <em>fill_value=0.0</em>, <em>plot=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/crystal_box.html#XCrystalBox.load_refl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.crystal_box.XCrystalBox.load_refl" title="Permalink to this definition">¶</a></dt>
+<dd><p>load reflectivity curve and interpolate</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> (<em>string</em><em>, </em><em>[</em><em>diff_path.dat</em><em>]</em>) – file with reflectivity curve (SPEC format!)</p></li>
+<li><p><strong>pol</strong> (<em>string</em><em>, </em><em>polarization</em><em> [</em><em>'s'</em><em>]</em>) – ‘s’ sigma
+‘p’ pi
+‘circ’ circular</p></li>
+<li><p><strong>kind</strong> (<em>str</em><em> or </em><em>int</em><em> [</em><em>'cubic'</em><em>] </em><em>the kind of interpolation as a</em>) – string (‘linear’, ‘nearest’, ‘zero’, ‘slinear’,
+‘quadratic, ‘cubic’ where ‘slinear’, ‘quadratic’ and
+‘cubic’ refer to a spline interpolation of first, second
+or third order) or as an integer specifying the order of
+the spline interpolator to use.</p></li>
+<li><p><strong>fill_value</strong> (<em>float</em><em>, </em><em>[</em><em>0</em><em>] </em><em>this value will be used to fill in for</em>) – requested points outside of the data range</p></li>
+<li><p><strong>plot</strong> (<em>boolean</em><em> [</em><em>False</em><em>] </em><em>plot the loaded reflectivity</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="sloth.raytracing.crystal_box.XCrystalBox.fit_refl">
+<code class="descname">fit_refl</code><span class="sig-paren">(</span><em>fname='diff_pat.dat'</em>, <em>pol='s'</em>, <em>plot=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/crystal_box.html#XCrystalBox.fit_refl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.crystal_box.XCrystalBox.fit_refl" title="Permalink to this definition">¶</a></dt>
+<dd><p>evaluate diff_pat.dat</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sloth.raytracing.crystal_box.XCrystalBox.load_pars">
+<code class="descname">load_pars</code><span class="sig-paren">(</span><em>fname='diff_pat.par'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/crystal_box.html#XCrystalBox.load_pars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.crystal_box.XCrystalBox.load_pars" title="Permalink to this definition">¶</a></dt>
+<dd><p>load DIFF_PAT output (.par file) into self.pars (dictionary)</p>
+<p>‘ext_len_amp_s’ : Extinction length (amplitude) sigma [microns]
+‘ext_len_amp_p’ : Extinction length (amplitude) pi [microns]
+‘ext_dep_amp_s’ : Extinction depth (amplitude) sigma [microns]
+‘ext_dep_amp_p’ : Extinction depth (amplitude) pi [microns]</p>
+<p class="rubric">Notes</p>
+<p>Extinction lengths and depths given amplitude
+(for intensities, consider half value).</p>
+<p>DEPTH -&gt; perpendicular to the crystal surface
+LENGTH -&gt; along the incident beam path</p>
+<p>Pendellosung period (amplitude) pi = Extinction depth pi times 2 pi</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="sloth-raytracing-shadow-utils-shadow3-utilities">
+<h2><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing.shadow_utils</span></code>: SHADOW3 utilities<a class="headerlink" href="#sloth-raytracing-shadow-utils-shadow3-utilities" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="sloth-raytracing-shadow-utils-johansson-cylindrical-analyzers">
+<h2><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing.shadow_utils</span></code>: Johansson cylindrical analyzers<a class="headerlink" href="#sloth-raytracing-shadow-utils-johansson-cylindrical-analyzers" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="math.html" class="btn btn-neutral float-right" title="sloth.math: mathematical utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="inst.html" class="btn btn-neutral float-left" title="sloth.inst: working with instrumentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014--2019, Mauro Rovezzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

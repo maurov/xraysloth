@@ -1,0 +1,329 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sloth.math.geometry3D &mdash; Sloth 0.3.0-dev documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Sloth
+          
+
+          
+            
+            <img src="../../../_static/xraysloth.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Full contents - hidden:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../todo.html">To Do</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Sloth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sloth.math.geometry3D</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sloth.math.geometry3D</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;Collection of simple 3D geometry utilities</span>
+
+<span class="sd">Sources</span>
+<span class="sd">=======</span>
+
+<span class="sd">The following functions are simply grabbed for the net. In this case,</span>
+<span class="sd">their own license apply.</span>
+
+
+<span class="sd">.. _src_geom3 : https://github.com/phire/Python-Ray-tracer/blob/master/geom3.py</span>
+
+<span class="sd">.. _src_circle_3p : http://stackoverflow.com/questions/20314306/find-arc-circle-equation-given-three-points-in-space-3d</span>
+
+<span class="sd">.. _src_point_on_plane_projection : http://stackoverflow.com/questions/7565748/3d-orthogonal-projection-on-a-plane</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Mauro Rovezzi&quot;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s2">&quot;mauro.rovezzi@gmail.com&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;BSD license &lt;http://opensource.org/licenses/BSD-3-Clause&gt;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1.E-10</span> <span class="c1"># Default epsilon for equality testing of points and vectors</span>
+
+<span class="c1">#############################</span>
+<span class="c1">### dot/cross/length/unit ###</span>
+<span class="c1">#############################</span>
+
+<div class="viewcode-block" id="dot"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.geometry3D.dot">[docs]</a><span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Dot product of two vectors&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">v1</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="cross"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.geometry3D.cross">[docs]</a><span class="k">def</span> <span class="nf">cross</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Cross product of two vectors&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">v1</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="length"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.geometry3D.length">[docs]</a><span class="k">def</span> <span class="nf">length</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Length of vector&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="unit"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.geometry3D.unit">[docs]</a><span class="k">def</span> <span class="nf">unit</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A unit vector in the direction of v&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">v</span> <span class="o">/</span> <span class="n">length</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
+
+<span class="c1">########################</span>
+<span class="c1">### SIMPLE FUNCTIONS ###</span>
+<span class="c1">########################</span>
+
+<div class="viewcode-block" id="circle_3p"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.geometry3D.circle_3p">[docs]</a><span class="k">def</span> <span class="nf">circle_3p</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;get center and radius of a circle given 3 points in space&quot;&quot;&quot;</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">C</span> <span class="o">-</span> <span class="n">B</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">C</span> <span class="o">-</span> <span class="n">A</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">B</span> <span class="o">-</span> <span class="n">A</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">c</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">a</span><span class="o">*</span><span class="n">b</span><span class="o">*</span><span class="n">c</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">s</span> <span class="o">*</span> <span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="n">c</span><span class="p">))</span>
+    <span class="n">b1</span> <span class="o">=</span> <span class="n">a</span><span class="o">*</span><span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="n">b</span><span class="o">*</span><span class="n">b</span> <span class="o">+</span> <span class="n">c</span><span class="o">*</span><span class="n">c</span> <span class="o">-</span> <span class="n">a</span><span class="o">*</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">b2</span> <span class="o">=</span> <span class="n">b</span><span class="o">*</span><span class="n">b</span> <span class="o">*</span> <span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">a</span> <span class="o">+</span> <span class="n">c</span><span class="o">*</span><span class="n">c</span> <span class="o">-</span> <span class="n">b</span><span class="o">*</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">b3</span> <span class="o">=</span> <span class="n">c</span><span class="o">*</span><span class="n">c</span> <span class="o">*</span> <span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="o">*</span><span class="n">b</span> <span class="o">-</span> <span class="n">c</span><span class="o">*</span><span class="n">c</span><span class="p">)</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">))</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">b1</span><span class="p">,</span> <span class="n">b2</span><span class="p">,</span> <span class="n">b3</span><span class="p">)))</span>
+    <span class="n">P</span> <span class="o">/=</span> <span class="n">b1</span> <span class="o">+</span> <span class="n">b2</span> <span class="o">+</span> <span class="n">b3</span>
+    <span class="k">return</span> <span class="n">R</span><span class="p">,</span> <span class="n">P</span></div>
+
+<div class="viewcode-block" id="plane_3p"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.geometry3D.plane_3p">[docs]</a><span class="k">def</span> <span class="nf">plane_3p</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">p3</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;get the plane ax+by+cz+d=0 given 3 points, p1, p2, p3&quot;&quot;&quot;</span>
+    <span class="n">v1</span> <span class="o">=</span> <span class="n">p3</span> <span class="o">-</span> <span class="n">p1</span>
+    <span class="n">v2</span> <span class="o">=</span> <span class="n">p2</span> <span class="o">-</span> <span class="n">p1</span>
+    <span class="n">cp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">cp</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span> <span class="n">p3</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">])</span></div>
+    
+<div class="viewcode-block" id="circle_radius"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.geometry3D.circle_radius">[docs]</a><span class="k">def</span> <span class="nf">circle_radius</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">center</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;get circle radius given a point and center as 3D arrays&quot;&quot;&quot;</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">point</span><span class="p">[:]</span>
+    <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">z0</span> <span class="o">=</span> <span class="n">center</span><span class="p">[:]</span>
+    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">x</span><span class="o">-</span><span class="n">x0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">y0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="n">z0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="lines2_intersect"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.geometry3D.lines2_intersect">[docs]</a><span class="k">def</span> <span class="nf">lines2_intersect</span><span class="p">(</span><span class="n">p10</span><span class="p">,</span> <span class="n">p11</span><span class="p">,</span> <span class="n">p20</span><span class="p">,</span> <span class="n">p21</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;get intesection point, assuming line1 and line2 intersect and</span>
+<span class="sd">    represented by two points each line, respectively, (p10, p11)</span>
+<span class="sd">    and (p20, p21)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">p20</span> <span class="o">-</span> <span class="n">p10</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">p11</span> <span class="o">-</span> <span class="n">p10</span> <span class="o">-</span> <span class="n">p21</span> <span class="o">+</span> <span class="n">p20</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">p10</span> <span class="o">+</span> <span class="n">t</span> <span class="o">*</span> <span class="p">(</span><span class="n">p11</span> <span class="o">-</span> <span class="n">p10</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="angle_3p"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.geometry3D.angle_3p">[docs]</a><span class="k">def</span> <span class="nf">angle_3p</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;get the angle between three 3D points, p0 is the intersection point&quot;&quot;&quot;</span>
+    <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">p1</span><span class="o">-</span><span class="n">p0</span><span class="p">,</span> <span class="n">p2</span><span class="o">-</span><span class="n">p0</span>
+    <span class="n">costheta</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">costheta</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="point_on_plane_projection"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.geometry3D.point_on_plane_projection">[docs]</a><span class="k">def</span> <span class="nf">point_on_plane_projection</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">plane</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;get the orthogonal projection of a 3d point on plane</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    point : 3d P(x,y,z) =&gt; np.array([x,y,z])</span>
+<span class="sd">    </span>
+<span class="sd">    plane : Ax+By+Cz+d=0, norm = (A,B,C)</span>
+<span class="sd">            =&gt; np.array([norm_x, norm_y, norm_z, d])</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    proj_pt : projected point = point - norm * offset</span>
+<span class="sd">              =&gt; np.array([proj_x, proj_y, proj_z])</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">plane</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">plane</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="n">point</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">norm</span><span class="p">)</span> <span class="o">+</span> <span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="n">norm</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">norm</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;something wrong in point_on_plane_projection&#39;</span><span class="p">)</span>
+    <span class="n">proj_pt</span> <span class="o">=</span> <span class="n">point</span> <span class="o">-</span> <span class="n">norm</span> <span class="o">*</span> <span class="n">offset</span>
+    <span class="k">if</span> <span class="n">test</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="n">norm</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">proj_pt</span><span class="p">)</span> <span class="o">+</span> <span class="n">d</span> <span class="o">&lt;=</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">proj_pt</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014--2019, Mauro Rovezzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
