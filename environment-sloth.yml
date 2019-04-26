@@ -1,0 +1,13 @@
+#Python environment for: https://github.com/maurov/xraysloth
+#Target: base environment for sloth
+#Usage: conda env create -f environment.yml
+name: sloth
+channels:
+    - defaults
+    #NOTE: specific channels are given per-package, not here!
+dependencies:
+    - python=3.6
+    - conda-forge::xraylib
+    - pip:
+        - -r requirements.txt
+        - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl; sys_platform == 'linux'
