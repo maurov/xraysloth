@@ -6,12 +6,6 @@ sudo: false
 python:
     - 3.6
 
-branches:
-    only:
-        - master
-
-node_js: 6
-
 before_install:
     - wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
     - bash miniconda.sh -b -p $HOME/xraysloth
@@ -24,15 +18,12 @@ before_install:
 install:
     - conda create -q -n sloth python=$TRAVIS_PYTHON_VERSION
     - source activate sloth
-    - conda install -y pip
+    - conda install pip
     - pip install -r requirements.txt
     - pip install -r requirements_docs.txt
-    - pip install -e .
+    - pip install .
 
-#script:
-#   - python -m unittest
-
-after_success:
+script:
   - cd docs && make html
 
 deploy:
