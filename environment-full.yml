@@ -1,0 +1,112 @@
+#Python environment for: https://github.com/maurov/xraysloth
+#Target: basic usage as user (larch from GSECARS, silx with pip, OASYS)
+#Usage: conda env create -f environment.yml
+name: sloth-env
+channels:
+    - defaults
+    #NOTE: specific channels are given per-package, not here!
+dependencies:
+    #<Basics bulding blocks>
+    - python=3.6
+    - git=2.11 #as Debian9
+    - pip=19.0.3 #18.1 fails!
+    - setuptools>=36.3
+    - cython>0.21.1
+    - libgfortran
+    - pyopengl #>>> NO VIRTUALBOX
+    - conda-forge::pyopencl #>>> NO VIRTUALBOX
+    - conda-forge::pocl #or conda-forge::oclgrid
+    - six>=1.10
+    - patchelf
+    #<Qt/Wx>
+    - qt>=5.7
+    - pyqt=5
+    - anyqt>=0.0.8 #PyQt4/PyQt5 compatibility layer
+    - pyqtgraph>=0.10.0
+    - wxpython>=4.0.3
+    #<Numpy & friends>
+    - numpy>=1.16
+    - scipy>=1.2.0
+    - matplotlib>=2.0
+    - h5py>=2.7
+    - sqlalchemy>=0.9
+    - scikit-learn>=0.20.0
+    - bottleneck>=1.0.0
+    - scikit-image
+    - pillow>=3.4
+    - pandas
+    - psutil
+    - lxml
+    - yaml
+    - requests
+    #- luigi #tomwer-dev
+    - xlrd>=0.9.2 #Reading Excel files
+    #<Jupyter project>
+    - qtconsole
+    - ipython
+    - ipykernel
+    - jupyter
+    - ipywidgets
+    - conda-forge::ipympl
+    - conda-forge::widgetsnbextension
+    - conda-forge::jupyterlab
+    #<Sphinx & friends>
+    - sphinx>=1.5
+    - sphinxcontrib
+    - conda-forge::nbsphinx
+    - reportlab
+    - natsort
+    - docutils
+    - pylint
+    #<Scisoft>
+    - conda-forge::xraylib
+    - conda-forge::ase
+    - conda-forge::peakutils>=1.0.0
+    - conda-forge::lmfit>=0.9.12
+    - conda-forge::asteval>=0.9.12
+    - conda-forge::psutil
+    - conda-forge::pytest
+    - conda-forge::uncertainties>=3.0
+    - conda-forge::pycifrw
+    - GSECARS::wxmplot>=0.9.33
+    - GSECARS::wxutils>=0.2.3
+    - GSECARS::pyshortcuts>=1.3
+    - GSECARS::xraylarch>=0.9.42
+    - nexpy::nexusformat
+    - nexpy::nexpy
+    #<Orange3-core>
+    #- chardet>=3.0.2 #Encoding detection
+    #- joblib>=0.9.4 #Multiprocessing abstraction
+    #- keyring
+    #- keyrings.alt #alternative keyring implementations
+    #- serverfiles #for Data Sets synchronization
+    #- networkx
+    #- python-louvain
+    #- conda-forge::orange3
+    #<<<PIP PART>>>
+    - pip:
+        #<SILX & friends>
+        - fisx>=1.1.6
+        - fabio>=0.8.0
+        - silx>=0.10.0
+        - pymca>=5.4.3
+        #<various utils>
+        - colorlog
+        - hdf5plugin
+        - spec2nexus
+        - palettable
+        #- radon #orange-dev
+        #- graypy #tomwer
+        #- requests-unixsocket #tomwer-dev
+        #- recommonmark #Orange3 make htmlhelp
+        #<Shadow & OASYS>
+        - resources
+        - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl; sys_platform == 'linux'
+        - oasys-canvas-core
+        - oasys-widget-core
+        - oasys1
+        - srxraylib
+        - syned
+        - wofry
+        - OASYS1-ShadowOui
+        - OASYS1-XOPPY

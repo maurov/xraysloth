@@ -1,3 +1,0 @@
-numpy
-matplotlib
-silx>=0.8.0
