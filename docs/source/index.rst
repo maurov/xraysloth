@@ -14,24 +14,26 @@ Current version is |release|.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Full contents - hidden:
+   :caption: Contents
    :hidden:
 
+   installation.rst
    modules/index.rst
    changelog.rst
    todo.rst
 
+:doc:`installation`
 
 :doc:`modules/index`
    Documentation (automagically built from docstrings) for the packages included in *sloth*.
-      
+
 :doc:`changelog`
    List of changes.
 
 :doc:`todo`
    List of things to do (ideas, bugs, plans).
 
-     
+
 Indices
 -------
 
