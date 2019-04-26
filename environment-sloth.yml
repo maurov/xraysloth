@@ -7,7 +7,19 @@ channels:
     #NOTE: specific channels are given per-package, not here!
 dependencies:
     - python=3.6
+    - pyqt=5
+    - numpy>=1.16
+    - matplotlib>=2.0
+    - scipy>=1.2.0
+    - qtconsole
+    - ipython
+    - ipykernel
+    - sphinx>=1.5
     - conda-forge::xraylib
+    - conda-forge::lmfit>=0.9.13
     - pip:
-        - -r requirements.txt
+        - silx>=0.10.1
+        - pymca>=5.4.3
+        - sphinxcontrib-napoleon
+        - sphinx_rtd_theme
         - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl; sys_platform == 'linux'
