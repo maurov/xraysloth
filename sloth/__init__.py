@@ -13,7 +13,7 @@ Naming
 from __future__ import (absolute_import, print_function, division,
                         unicode_literals)
 import os
-### filter annoying numpy<1.8 warnings ###
+# filter annoying numpy<1.8 warnings
 import warnings
 warnings.filterwarnings("ignore", message="numpy.dtype size changed")
 warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
@@ -25,16 +25,16 @@ _libDir = os.path.dirname(os.path.realpath(__file__))
 _resourcesPath = os.path.join(_libDir, 'resources')
 
 __pkgs__ = ['sloth',
-            'sloth.test',       #test suite (main)
-            'sloth.utils',      #utilities (generic)
-            'sloth.math',       #math&friends
-            'sloth.collects',   #data containers (1D, 2D, EXA, XAN, XES, RIXS)
-            'sloth.fit',        #fit utilities
-            'sloth.gui',        #graphical user interface widgets
-            'sloth.io',         #input-output
-            'sloth.inst',       #instrumentation
-            'sloth.raytracing', #ray tracing (shadow)
-            ]
+            'sloth.test',        # main test suite
+            'sloth.utils',       # utilities (generic)
+            'sloth.math',        # math&friends
+            'sloth.collects',    # data containers (1D, 2D, EXA, XAN, XES, RIXS)
+            'sloth.fit',         # fit utilities
+            'sloth.gui',         # graphical user interface widgets
+            'sloth.io',          # input-output
+            'sloth.inst',        # instrumentation
+            'sloth.raytracing']  # ray tracing (shadow)
+
 
 class NullClass(object):
     """Null object reliably doing nothing."""
@@ -47,6 +47,7 @@ class NullClass(object):
     def __getattr__(self, name): return self
     def __setattr__(self, name, value): return self
     def __delattr__(self, name): return self
+
 
 if __name__ == '__main__':
     pass
