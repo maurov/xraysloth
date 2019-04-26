@@ -1,4 +1,5 @@
+# pip minimum requirements for sloth
 numpy
-scipy
 matplotlib
+scipy
 silx

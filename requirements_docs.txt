@@ -1,3 +1,4 @@
+# pip requirements for building sloth documentation
 sphinx>=1.5
 sphinx_rtd_theme
 sphinxcontrib-napoleon
