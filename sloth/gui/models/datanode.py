@@ -11,8 +11,8 @@ CREDITS
 - Riverbank Computing Limited, PyQt5 examples
 
 """
-
 from silx.gui import qt
+
 
 class DataNode(qt.QObject):
 
@@ -78,6 +78,7 @@ class DataNode(qt.QObject):
 
     def __repr__(self):
         return self.log()
+
 
 if __name__ == '__main__':
 

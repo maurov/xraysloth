@@ -5,17 +5,17 @@ Created on Mon Oct 29 17:34:01 2018
 
 @author: mauro
 """
-
 from silx.gui import qt
 from sloth.gui.models.datanode import DataNode
 
 
 class DataModel(qt.QAbstractItemModel):
 
-    sortRole   = qt.Qt.UserRole
+    sortRole = qt.Qt.UserRole
     filterRole = qt.Qt.UserRole + 1
 
     """INPUTS: Node, QObject"""
+
     def __init__(self, root, parent=None):
         super(DataModel, self).__init__(parent=parent)
         self._header = ['Name', 'TypeInfo', 'AnotherHeader']
@@ -23,6 +23,7 @@ class DataModel(qt.QAbstractItemModel):
 
     """INPUTS: QModelIndex"""
     """OUTPUT: int"""
+
     def rowCount(self, parent):
         if not parent.isValid():
             parentNode = self._rootNode
@@ -33,11 +34,13 @@ class DataModel(qt.QAbstractItemModel):
 
     """INPUTS: QModelIndex"""
     """OUTPUT: int"""
+
     def columnCount(self, parent):
         return len(self._header)
 
     """INPUTS: QModelIndex, int"""
     """OUTPUT: QVariant, strings are cast to QString which is a QVariant"""
+
     def data(self, index, role):
         if not index.isValid():
             return None
@@ -57,6 +60,7 @@ class DataModel(qt.QAbstractItemModel):
             return node.typeInfo()
 
     """INPUTS: QModelIndex, QVariant, int (flag)"""
+
     def setData(self, index, value, role=qt.Qt.EditRole):
         if index.isValid():
             node = index.internalPointer()
@@ -69,6 +73,7 @@ class DataModel(qt.QAbstractItemModel):
 
     """INPUTS: int, Qt::Orientation, int"""
     """OUTPUT: QVariant, strings are cast to QString which is a QVariant"""
+
     def headerData(self, section, orientation, role):
         if role == qt.Qt.DisplayRole:
             if orientation == qt.Qt.Horizontal:
@@ -78,15 +83,18 @@ class DataModel(qt.QAbstractItemModel):
 
     """INPUTS: QModelIndex"""
     """OUTPUT: int (flag)"""
+
     def flags(self, index):
         if not index.isValid():
             return
-        activeFlags = (qt.Qt.ItemIsEnabled | qt.Qt.ItemIsSelectable | qt.Qt.ItemIsEditable | qt.Qt.ItemIsUserCheckable)
+        activeFlags = (qt.Qt.ItemIsEnabled | qt.Qt.ItemIsSelectable |
+                       qt.Qt.ItemIsEditable | qt.Qt.ItemIsUserCheckable)
         return activeFlags
 
     """INPUTS: QModelIndex"""
     """OUTPUT: QModelIndex"""
     """Should return the parent of the node with the given QModelIndex"""
+
     def parent(self, index):
 
         node = self.getNode(index)
@@ -99,7 +107,9 @@ class DataModel(qt.QAbstractItemModel):
 
     """INPUTS: int, int, QModelIndex"""
     """OUTPUT: QModelIndex"""
-    """Should return a QModelIndex that corresponds to the given row, column and parent node"""
+    """Should return a QModelIndex that corresponds to the given row, column
+     and parent node"""
+
     def index(self, row, column, parent):
         parentNode = self.getNode(parent)
         childItem = parentNode.child(row)
@@ -110,6 +120,7 @@ class DataModel(qt.QAbstractItemModel):
 
     """CUSTOM"""
     """INPUTS: QModelIndex"""
+
     def getNode(self, index):
         if index.isValid():
             node = index.internalPointer()
@@ -118,6 +129,7 @@ class DataModel(qt.QAbstractItemModel):
         return self._rootNode
 
     """INPUTS: int, int, QModelIndex"""
+
     def insertRows(self, position, rows, parent=qt.QModelIndex()):
         parentNode = self.getNode(parent)
         self.beginInsertRows(parent, position, position + rows - 1)
@@ -129,6 +141,7 @@ class DataModel(qt.QAbstractItemModel):
         return success
 
     """INPUTS: int, int, QModelIndex"""
+
     def removeRows(self, position, rows, parent=qt.QModelIndex()):
         parentNode = self.getNode(parent)
         self.beginRemoveRows(parent, position, position + rows - 1)
@@ -137,10 +150,14 @@ class DataModel(qt.QAbstractItemModel):
         self.endRemoveRows()
         return success
 
+
 SUBJECT, SENDER, DATE = range(3)
+
 # Work around the fact that QSortFilterProxyModel always filters datetime
 # values in QtCore.Qt.ISODate format, but the tree views display using
 # QtCore.Qt.DefaultLocaleShortDate format.
+
+
 class SortFilterProxyModel(qt.QSortFilterProxyModel):
     def filterAcceptsRow(self, sourceRow, sourceParent):
         # Do we filter for the date column?
@@ -150,10 +167,13 @@ class SortFilterProxyModel(qt.QSortFilterProxyModel):
             data = self.sourceModel().data(index)
 
             # Return, if regExp match in displayed format.
-            return (self.filterRegExp().indexIn(data.toString(qt.Qt.DefaultLocaleShortDate)) >= 0)
+            return (self.filterRegExp().indexIn(data.toString(
+                qt.Qt.DefaultLocaleShortDate)) >= 0)
 
         # Not our business.
-        return super(SortFilterProxyModel, self).filterAcceptsRow(sourceRow, sourceParent)
+        return super(SortFilterProxyModel, self).filterAcceptsRow(sourceRow,
+                                                                  sourceParent)
+
 
 class TestWindow(qt.QWidget):
     def __init__(self):
@@ -175,17 +195,21 @@ class TestWindow(qt.QWidget):
         self.proxyView.setModel(self.proxyModel)
         self.proxyView.setSortingEnabled(True)
 
-        self.sortCaseSensitivityCheckBox = qt.QCheckBox("Case sensitive sorting")
-        self.filterCaseSensitivityCheckBox = qt.QCheckBox("Case sensitive filter")
+        self.sortCaseSensitivityCheckBox = qt.QCheckBox("Case sensitive\
+                                                        sorting")
+        self.filterCaseSensitivityCheckBox = qt.QCheckBox("Case sensitive\
+                                                          filter")
 
         self.filterPatternLineEdit = qt.QLineEdit()
         self.filterPatternLabel = qt.QLabel("&Filter pattern:")
         self.filterPatternLabel.setBuddy(self.filterPatternLineEdit)
 
         self.filterSyntaxComboBox = qt.QComboBox()
-        self.filterSyntaxComboBox.addItem("Regular expression", qt.QRegExp.RegExp)
+        self.filterSyntaxComboBox.addItem("Regular expression",
+                                          qt.QRegExp.RegExp)
         self.filterSyntaxComboBox.addItem("Wildcard", qt.QRegExp.Wildcard)
-        self.filterSyntaxComboBox.addItem("Fixed string", qt.QRegExp.FixedString)
+        self.filterSyntaxComboBox.addItem("Fixed string",
+                                          qt.QRegExp.FixedString)
         self.filterSyntaxLabel = qt.QLabel("Filter &syntax:")
         self.filterSyntaxLabel.setBuddy(self.filterSyntaxComboBox)
 
@@ -196,10 +220,14 @@ class TestWindow(qt.QWidget):
         self.filterColumnLabel = qt.QLabel("Filter &column:")
         self.filterColumnLabel.setBuddy(self.filterColumnComboBox)
 
-        self.filterPatternLineEdit.textChanged.connect(self.filterRegExpChanged)
-        self.filterSyntaxComboBox.currentIndexChanged.connect(self.filterRegExpChanged)
-        self.filterColumnComboBox.currentIndexChanged.connect(self.filterColumnChanged)
-        self.filterCaseSensitivityCheckBox.toggled.connect(self.filterRegExpChanged)
+        self.filterPatternLineEdit.textChanged.connect(
+            self.filterRegExpChanged)
+        self.filterSyntaxComboBox.currentIndexChanged.connect(
+            self.filterRegExpChanged)
+        self.filterColumnComboBox.currentIndexChanged.connect(
+            self.filterColumnChanged)
+        self.filterCaseSensitivityCheckBox.toggled.connect(
+            self.filterRegExpChanged)
         self.sortCaseSensitivityCheckBox.toggled.connect(self.sortChanged)
 
         sourceLayout = qt.QHBoxLayout()
@@ -238,7 +266,8 @@ class TestWindow(qt.QWidget):
         self.sourceView.setModel(model)
 
     def filterRegExpChanged(self):
-        syntax_nr = self.filterSyntaxComboBox.itemData(self.filterSyntaxComboBox.currentIndex())
+        syntax_nr = self.filterSyntaxComboBox.itemData(
+            self.filterSyntaxComboBox.currentIndex())
         syntax = qt.QRegExp.PatternSyntax(syntax_nr)
 
         if self.filterCaseSensitivityCheckBox.isChecked():
@@ -247,11 +276,12 @@ class TestWindow(qt.QWidget):
             caseSensitivity = qt.Qt.CaseInsensitive
 
         regExp = qt.QRegExp(self.filterPatternLineEdit.text(),
-                caseSensitivity, syntax)
+                            caseSensitivity, syntax)
         self.proxyModel.setFilterRegExp(regExp)
 
     def filterColumnChanged(self):
-        self.proxyModel.setFilterKeyColumn(self.filterColumnComboBox.currentIndex())
+        self.proxyModel.setFilterKeyColumn(
+            self.filterColumnComboBox.currentIndex())
 
     def sortChanged(self):
         if self.sortCaseSensitivityCheckBox.isChecked():
@@ -261,9 +291,11 @@ class TestWindow(qt.QWidget):
 
         self.proxyModel.setSortCaseSensitivity(caseSensitivity)
 
+
 def addData(model, name):
     model.insertRow(0)
     model.setData(model.index(0, 0, qt.QModelIndex()), name)
+
 
 if __name__ == '__main__':
     from silx import sx
@@ -274,7 +306,7 @@ if __name__ == '__main__':
     app = qt.QApplication(sys.argv)
     app.setStyle("plastique")
 
-    rootNode   = DataNode("data1")
+    rootNode = DataNode("data1")
     childNode0 = DataNode("subdata1", rootNode)
     childNode1 = DataNode("subdata2", rootNode)
     childNode2 = DataNode("subsubdata1", childNode1)
