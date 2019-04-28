@@ -17,12 +17,50 @@ class Plot2D(silxPlot2D):
         super(Plot2D, self).__init__(parent=parent, backend=backend)
         self._index = None
         self._image = None
+        self._mask = None
         self._origin = (0, 0)
         self._scale = (1, 1)
         self.setKeepDataAspectRatio(True)
         self.getDefaultColormap().setName('viridis')
 
-    def addContours(self, nlevels, color='gray', linestyle='-', linewidth=1):
+    def _drawContours(self, values, lineStyleCallback=None):
+        """Draw iso contours for given values
+
+        Parameters
+        ----------
+        values : list or array
+            intensities at which to find contours
+        lineStyleCallback : function or None (optional)
+            a function that return a dictionary of
+            linestyle, linewidth and color for
+            value, ivalue and ipolygon
+        """
+        if self._ms is None:
+            return
+        nbPolygons = 0
+        nbPoints = 0
+        # iso contours
+        ipolygon = 0
+        for ivalue, value in enumerate(values):
+            polygons = self._ms.find_contours(value)
+            for polygon in polygons:
+                if len(polygon) == 0:
+                    continue
+                isClosed = np.allclose(polygon[0], polygon[-1])
+                x = polygon[:, 1] + 0.5
+                y = polygon[:, 0] + 0.5
+                legend = "polygon-%d" % ipolygon
+                if lineStyleCallback is not None:
+                    extraStyle = lineStyleCallback(value, ivalue, ipolygon)
+                else:
+                    extraStyle = {"linestyle": "-",
+                                  "linewidth": 1.0,
+                                  "color": "black"}
+                self.addCurve(x=x, y=y, legend=legend, resetzoom=False,
+                              **extraStyle)
+                ipolygon += 1
+
+    def addContours(self, nlevels, algo='silx'):
         """Add contour lines to plot
 
         Parameters
@@ -41,25 +79,17 @@ class Plot2D(silxPlot2D):
         None
         """
         image = self._image
+        mask = self._mask
         if image is None:
             print('ERROR: add image first!')
-        imgmin, imgmax = np.min(image), np.max(image)
-        levels = np.linspace(imgmin, imgmax, nlevels)
-        ms = MarchingSquaresMergeImpl(image)
-        for ilevel, level in enumerate(levels):
-            contours = ms.find_contours(level=level)
-            try:
-                xcontours = contours[0][:, 1]
-                ycontours = contours[0][:, 0]
-                # xcontours = self._origin[0]*np.ones_like(contours[0][:, 1]) + self._scale[0]*contours[0][:, 1]
-                # ycontours = self._origin[1]*np.ones_like(contours[0][:, 0]) + self._scale[1]*contours[0][:, 0]
-                self.addCurve(xcontours, ycontours,
-                              legend='contour {0}'.format(ilevel),
-                              color=color, linestyle=linestyle,
-                              linewidth=linewidth)
-            except IndexError:
-                print(f"error at level {ilevel}")
-                pass
+        if algo == 'silx':
+            self._ms = MarchingSquaresMergeImpl(image, mask=mask)
+        else:
+            self._ms = None
+        imgmin, imgmax = image.min(), image.max()
+        delta = (imgmax - imgmin) / nlevels
+        values = np.arange(imgmin, imgmax, delta)
+        self._drawContours(values)
 
     def index(self):
         if self._index is None:
@@ -122,7 +152,7 @@ def main():
     p = Plot2D()
     p.addImage(signal)
     # p.addImage(signal, x=x, y=y, xlabel='X', ylabel='Y')
-    # p.addContours(10)  # TODO: currently broken!!!
+    p.addContours(10)  # TODO: currently broken!!!
     p.show()
     input("Press enter to close window")
 
