@@ -9,8 +9,8 @@ A custom QMdiArea where to add custom PlotWindows
 import numpy as np
 from silx.utils.weakref import WeakList
 from silx.gui import qt
-from .plot1D import SlothPlot1D
-from .plot2D import SlothPlot2D
+from .plot1D import Plot1D
+from .plot2D import Plot2D
 
 __authors__ = ["Marius Retegan", "Mauro Rovezzi"]
 
@@ -91,9 +91,9 @@ class PlotArea(qt.QMdiArea):
         """
         subWindow = MdiSubWindow(parent=self)
         if plotType == '2D':
-            plotWindow = SlothPlot2D(parent=subWindow)
+            plotWindow = Plot2D(parent=subWindow)
         else:
-            plotWindow = SlothPlot1D(parent=subWindow)
+            plotWindow = Plot1D(parent=subWindow)
         plotWindow.setIndex(len(self.plotWindows()))
         subWindow.setWidget(plotWindow)
         subWindow.show()

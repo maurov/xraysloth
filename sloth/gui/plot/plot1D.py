@@ -87,20 +87,19 @@ class CustomCurveLegendsWidget(CurveLegendsWidget):
             menu.exec_(globalPosition)
 
 
-class SlothPlot1D(PlotWindow):
+class Plot1D(PlotWindow):
     """Custom PlotWindow instance targeted to 1D curves"""
 
     def __init__(self, parent=None, backend=None):
 
-        super(SlothPlot1D, self).__init__(parent=parent, backend=backend,
-                                          resetzoom=True, autoScale=True,
-                                          logScale=True, grid=False,
-                                          curveStyle=True, colormap=False,
-                                          aspectRatio=False, yInverted=False,
-                                          copy=True, save=True, print_=True,
-                                          control=False, position=True,
-                                          roi=False, mask=False, fit=True
-                                          )
+        super(Plot1D, self).__init__(parent=parent, backend=backend,
+                                     resetzoom=True, autoScale=True,
+                                     logScale=True, grid=False,
+                                     curveStyle=True, colormap=False,
+                                     aspectRatio=False, yInverted=False,
+                                     copy=True, save=True, print_=True,
+                                     control=False, position=True,
+                                     roi=False, mask=False, fit=True)
         self._index = None
 
         # Active curve behaviour
@@ -145,7 +144,7 @@ class SlothPlot1D(PlotWindow):
 def main():
     """Run a Qt app with the widget"""
     app = qt.QApplication([])
-    widget = SlothPlot1D()
+    widget = Plot1D()
     widget.show()
     app.exec_()
 
