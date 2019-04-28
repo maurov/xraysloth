@@ -1,16 +1,18 @@
 #Python environment for: https://github.com/maurov/xraysloth
 #Target: base environment for sloth
 #Usage: conda env create -f environment.yml
-name: sloth
+name: sloth-env
 channels:
     - defaults
     #NOTE: specific channels are given per-package, not here!
 dependencies:
     - python=3.6
-    - pyqt=5
+    - pip
     - numpy>=1.16
-    - matplotlib>=2.0
     - scipy>=1.2.0
+    - matplotlib>=2.0
+    - h5py>=2.7
+    - pyqt=5
     - qtconsole
     - ipython
     - ipykernel

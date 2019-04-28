@@ -27,13 +27,14 @@ _resourcesPath = os.path.join(_libDir, 'resources')
 __pkgs__ = ['sloth',
             'sloth.test',        # main test suite
             'sloth.utils',       # utilities (generic)
-            'sloth.math',        # math&friends
-            'sloth.collects',    # data containers (1D, 2D, EXA, XAN, XES, RIXS)
-            'sloth.fit',         # fit utilities
-            'sloth.gui',         # graphical user interface widgets
             'sloth.io',          # input-output
+            'sloth.math',        # math&friends
+            'sloth.collects',    # data containers
+            'sloth.fit',         # fit utilities
+            'sloth.gui',         # graphical user interface
             'sloth.inst',        # instrumentation
-            'sloth.raytracing']  # ray tracing (shadow)
+            'sloth.raytracing',  # ray tracing (shadow)
+            'sloth.examples']    # examples
 
 
 class NullClass(object):

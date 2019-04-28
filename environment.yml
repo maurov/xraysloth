@@ -7,7 +7,7 @@ channels:
     #NOTE: specific channels are given per-package, not here!
 dependencies:
     - python=3.6
-    - pip=19.0.3
+    - pip
     - numpy>=1.16
     - scipy>=1.2.0
     - matplotlib>=2.0
@@ -19,5 +19,5 @@ dependencies:
     - conda-forge::xraylib
     - conda-forge::lmfit>=0.9.13
     - pip:
-        - silx>=0.10.0
+        - silx>=0.10.1
         - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl; sys_platform == 'linux'
