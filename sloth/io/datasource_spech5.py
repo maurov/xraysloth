@@ -12,7 +12,7 @@ Requirements
 import os
 import logging
 import numpy as np
-import silx
+from silx.io import open as silx_open
 
 
 class DataSourceSpecH5(object):
@@ -23,19 +23,19 @@ class DataSourceSpecH5(object):
         """init with file name and default attributes"""
         try:
             _logger_name = fname.split(os.sep)[-1]
-        except:
+        except SyntaxError:
             _logger_name = "DataSourceSpecH5"
         self._logger = logging.getLogger(_logger_name)
         self._logger.setLevel(logging.INFO)
         self.fname = fname
         try:
-            self._sf = silx.io.open(fname)
-        except:
+            self._sf = silx_open(fname)
+        except IOError:
             self._logger.error(f"cannot open {self.fname}")
             self._sf = None
         self._scan_n = None
         self._scan_str = None
-        self._sg = None #ScanGroup
+        self._sg = None  # ScanGroup
         self._set_urls()
         self.set_group()
 
@@ -50,6 +50,13 @@ class DataSourceSpecH5(object):
         self._mots_url = 'instrument/positioners'
         self._cnts_url = 'measurement'
         self._title_url = 'title'
+
+    def _get_sg(self):
+        """safe get self._sg"""
+        if self._sg is None:
+            raise AttributeError("group not selected yet")
+        else:
+            return self._sg
 
     def set_group(self, group_url=None):
         """select group url
@@ -91,10 +98,15 @@ class DataSourceSpecH5(object):
             self._scan_url = f"{self._group_url}/{self._scan_str}"
         else:
             self._scan_url = f"{self._scan_str}"
-        self._sg = self._sf[self._scan_url]
-        self._scan_title = self.get_title()
-        self._logger.info(f"selected scan {self._scan_url}:\
-                          '{self._scan_title}'")
+        try:
+            self._sg = self._sf[self._scan_url]
+            self._scan_title = self.get_title()
+            self._logger.info(f"selected scan {self._scan_url}:\
+                              '{self._scan_title}'")
+        except KeyError:
+            self._sg = None
+            self._scan_title = None
+            self._logger.error(f"'{self._scan_url}' is not a valid key")
 
     def _list_from_url(self, url_str):
         """utility method to get a list from a scan url
@@ -103,9 +115,10 @@ class DataSourceSpecH5(object):
 
         """
         try:
-            return [i for i in self._sg[url_str].keys()]
+            return [i for i in self._get_sg()[url_str].keys()]
         except:
-            self._logger.error(f"'{url_str}' not found. Hint: use set_scan method first")
+            self._logger.error(f"'{url_str}' not found.\n\
+                               Hint: use set_scan method first")
 
     def get_motors(self):
         """get list of motors names"""
@@ -129,7 +142,7 @@ class DataSourceSpecH5(object):
         """
         if scan_n is not None:
             self.set_scan(scan_n)
-        return self._sg[self._title_url][()]
+        return self._get_sg()[self._title_url][()]
 
     def get_scan_axis(self):
         """get the name of the scanned axis from title"""
@@ -169,11 +182,11 @@ class DataSourceSpecH5(object):
             self._logger.info(f"selected counter '{cnt}'")
         if cnt in cnts:
             sel_cnt = f'{self._cnts_url}/{cnt}'
-            return self._sg[sel_cnt][()]
+            return self._get_sg()[sel_cnt][()]
         else:
             self._logger.error(f"'{cnt}' not found among the available counters:\n {cnts}")
             sel_cnt = f'{self._cnts_url}/{cnts[0]}'
-            return np.zeros_like(self._sg[sel_cnt][()])
+            return np.zeros_like(self._get_sg()[sel_cnt][()])
 
     def get_value(self, mot, scan_n=None, group_url=None):
         """get motor position
@@ -201,8 +214,22 @@ class DataSourceSpecH5(object):
             self._logger.info(f"selected motor '{mot}'")
         if mot in mots:
             sel_mot = f'{self._mots_url}/{mot}'
-            return self._sg[sel_mot][()]
+            return self._get_sg()[sel_mot][()]
         else:
             self._logger.error(f"'{mot}' not found in available motors:\n\
                                {mots}")
             return 0
+
+
+def main():
+    """test"""
+    from sloth.examples import _examplesDir
+    test_specfile = os.path.join(_examplesDir, "specfiledata_tests.dat")
+    test_ds = DataSourceSpecH5(test_specfile)
+    test_ds.set_scan(1)
+    print(test_ds.get_motors())
+    return test_ds
+
+
+if __name__ == '__main__':
+    t = main()

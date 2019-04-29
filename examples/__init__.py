@@ -11,12 +11,9 @@ TODO
 - move to sloth.test
 
 """
-# compatibility with sloth 0.1 (DEPRECATED!)
-# import os, sys
-# _curDir = os.path.dirname(os.path.realpath(__file__))
-# _parDir = os.path.realpath(os.path.join(_curDir, os.path.pardir))
-# _libDir = os.path.join(_parDir, 'sloth')
-# sys.path.append(_libDir)
+import os
+
+_examplesDir = os.path.dirname(os.path.realpath(__file__))
 
 if __name__ == '__main__':
     pass
