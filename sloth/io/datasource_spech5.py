@@ -101,8 +101,7 @@ class DataSourceSpecH5(object):
         try:
             self._sg = self._sf[self._scan_url]
             self._scan_title = self.get_title()
-            self._logger.info(f"selected scan {self._scan_url}:\
-                              '{self._scan_title}'")
+            self._logger.info(f"selected scan {self._scan_url}: '{self._scan_title}'")
         except KeyError:
             self._sg = None
             self._scan_title = None
@@ -117,8 +116,7 @@ class DataSourceSpecH5(object):
         try:
             return [i for i in self._get_sg()[url_str].keys()]
         except:
-            self._logger.error(f"'{url_str}' not found.\n\
-                               Hint: use set_scan method first")
+            self._logger.error(f"'{url_str}' not found.\n Hint: use set_scan method first")
 
     def get_motors(self):
         """get list of motors names"""
@@ -152,8 +150,7 @@ class DataSourceSpecH5(object):
             _axisout = _title_splitted[2]
         _mots, _cnts = self.get_motors(), self.get_counters()
         if not ((_axisout in _mots) and (_axisout in _cnts)):
-            self._logger.warning(f"'{_axisout}' not present\
-                                 in counters and motors")
+            self._logger.warning(f"'{_axisout}' not present in counters and motors")
         return _axisout
 
     def get_array(self, cnt, scan_n=None, group_url=None):
@@ -216,8 +213,7 @@ class DataSourceSpecH5(object):
             sel_mot = f'{self._mots_url}/{mot}'
             return self._get_sg()[sel_mot][()]
         else:
-            self._logger.error(f"'{mot}' not found in available motors:\n\
-                               {mots}")
+            self._logger.error(f"'{mot}' not found in available motors:\n {mots}")
             return 0
 
 
