@@ -9,7 +9,7 @@ dependencies:
     #<Basics bulding blocks>
     - python=3.6
     - git=2.11 #as Debian9
-    - pip=19.0.3 #18.1 fails!
+    - pip=19.1
     - setuptools>=36.3
     - cython>0.21.1
     - libgfortran
@@ -62,7 +62,7 @@ dependencies:
     - conda-forge::xraylib
     - conda-forge::ase
     - conda-forge::peakutils>=1.0.0
-    - conda-forge::lmfit>=0.9.12
+    - conda-forge::lmfit>=0.9.13
     - conda-forge::asteval>=0.9.12
     - conda-forge::psutil
     - conda-forge::pytest
