@@ -8,18 +8,12 @@ TODO
 - collect all bits and pieces here
 
 """
-import sys, os
-import numpy as np
+import sys
 
-########################
-### COLORIZED OUTPUT ###
-########################
-HAS_TERMCOLOR = False
-try:
-    from termcolor import colored
-    HAS_TERMCOLOR = True
-except:
-    pass
+####################
+# COLORIZED OUTPUT #
+####################
+
 
 def colorstr(instr, color='green', on_color=None, attrs=['bold']):
     """colorized string
@@ -30,19 +24,18 @@ def colorstr(instr, color='green', on_color=None, attrs=['bold']):
             Available text colors:
             'red', 'green', 'yellow', 'blue', 'magenta', 'cyan',
             'white'
-
     on_color : str, None
                Available text highlights:
                'on_red', 'on_green', 'on_yellow', 'on_blue', 'on_magenta',
                'on_cyan', 'on_white'
-
     attrs : list of str, ['bold']
             Available attributes:
             'bold', 'dark', 'underline', 'blink', 'reverse', 'concealed'
     """
-    if HAS_TERMCOLOR:
+    try:
+        from termcolor import colored
         return colored(instr, color=color, on_color=None, attrs=attrs)
-    else:
+    except ImportError:
         return instr
 
 
@@ -52,38 +45,24 @@ def get_efermi(fn):
         f = open(fn)
     except:
         return 0
-    l = f.readline()
+    line = f.readline()
     f.close()
-    ef = float(l.split()[6])
-    if DEBUG: print('Calculated Fermi level: {0}'.format(ef))
+    ef = float(line.split()[6])
+    print('Calculated Fermi level: {0}'.format(ef))
     return ef
 
-#############
-### NUMPY ###
-#############
-def imin(arr, check=False):
-    """index of minimum value"""
-    _im = np.argmin(arr)
-    if check:
-        print('Check: {0} = {1}'.format(np.min(arr), arr[_im]))
-    return _im
+###########
+# IPython #
+###########
 
-def imax(arr, check=False):
-    """index of maximum value"""
-    _im = np.argmax(arr)
-    if check:
-        print('Check: {0} = {1}'.format(np.max(arr), arr[_im]))
-    return _im
 
-###############
-### IPython ###
-###############
 def ipythonAutoreload():
     """force ipython to autoreload imported modules"""
     from IPython import get_ipython
     mgc = get_ipython().magic
     mgc(u'%load_ext autoreload')
     mgc(u'%autoreload 2')
+
 
 def run_from_ipython():
     """check if inside ipython"""
@@ -92,6 +71,7 @@ def run_from_ipython():
         return True
     except NameError:
         return False
+
 
 def is_in_notebook():
     """check if code is run from IPython notebook
@@ -109,18 +89,22 @@ def is_in_notebook():
     except NameError:
         return False      # Probably standard Python interpreter
 
-##################
-### Matplotlib ###
-##################
+##############
+# Matplotlib #
+##############
+
+
 def mplSetPubFont(size=8, usetex=True):
     """very basic mpl set font for publication-quality figures"""
     from matplotlib import rc
     rc('font',**{'family':'sans-serif','sans-serif':['Helvetica'], 'size':size})
     rc('text', usetex=usetex)
 
-##########
-### Qt ###
-##########
+######
+# Qt #
+######
+
+
 def qt_create_window(window_class):
     """Create a Qt window in Python, or interactively in IPython with Qt
     GUI event loop integration.
@@ -142,10 +126,12 @@ def qt_create_window(window_class):
         app.exec_()
     return window
 
+
 def qt_close_all_windows():
     """close all qt windows!!!"""
     from silx.gui import qt
     qt.QApplication.closeAllWindows()
+
 
 def qt_get_version():
     from silx.gui import qt
