@@ -8,8 +8,18 @@ v.0.3.0 (dev)
 
 *master branch (not released/tagged yet)*
 
+.. warning:: This version is extremely **UNSTABLE** and going under **CONTINUOUS REFACTORING**. Use it at your own risk.
+
 New features
 ''''''''''''
+
+* :mod:`sloth.io.datasource_spech5`
+
+  - unified way of reading Spec, HDF5 and NeXus files via :mod:`silx.io`
+
+* :mod:`sloth.utils`
+
+  - strong refactoring!
 
 * :mod:`sloth.inst.spectro14`
 
@@ -28,7 +38,7 @@ New features
 * :mod:`sloth.utils.xdata`
 
   - :func:`xray_edge` + cleaning output of :func:`xray_line`
-  
+
 Bug fixes
 '''''''''
 
@@ -41,6 +51,8 @@ Bug fixes
 
 Broken backward compatibility
 '''''''''''''''''''''''''''''
+
+* The whole library is not backward compatible at this stage!
 
 * :mod:`sloth.collect`
 
