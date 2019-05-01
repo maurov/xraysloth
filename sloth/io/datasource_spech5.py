@@ -41,7 +41,7 @@ class DataSourceSpecH5(object):
         self._set_urls()
         self.set_group()
         # show data in a TreeView
-        # self._initTreeView()
+        # self.view()
 
     def open(self, mode='r'):
         """Open the source file object with h5py in given mode"""
@@ -73,7 +73,6 @@ class DataSourceSpecH5(object):
     def _initTreeView(self):
         """Init TreeView GUI"""
         from silx.gui.hdf5 import Hdf5TreeView
-        from silx.gui.hdf5 import Hdf5TreeModel
         self._view = Hdf5TreeView()
         self._model = self._view.findHdf5TreeModel()
         # customization
@@ -84,6 +83,10 @@ class DataSourceSpecH5(object):
         # Allow the user to reorder files with drag-and-drop
         self._model.setFileMoveEnabled(True)
         self._model.insertH5pyObject(self._sf)
+
+    def view(self):
+        """Init the TreeView and show"""
+        self._initTreeView()
         self._view.show()
 
     def set_group(self, group_url=None):
