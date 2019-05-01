@@ -12,6 +12,7 @@ Requirements
 import os
 import logging
 import numpy as np
+import h5py
 from silx.io.utils import open as silx_open
 
 
@@ -28,6 +29,7 @@ class DataSourceSpecH5(object):
         self._logger = logging.getLogger(_logger_name)
         self._logger.setLevel(logging.INFO)
         self.fname = fname
+        # source file object (h5py-like)
         try:
             self._sf = silx_open(fname)
         except OSError:
@@ -38,28 +40,54 @@ class DataSourceSpecH5(object):
         self._sg = None  # ScanGroup
         self._set_urls()
         self.set_group()
+        # show data in a TreeView
+        # self._initTreeView()
+
+    def open(self, mode='r'):
+        """Open the source file object with h5py in given mode"""
+        try:
+            self._sf = h5py.File(self.fname, mode)
+        except OSError:
+            self._logger.error(f"Cannot open {self.fname}")
+            pass
 
     def close(self):
-        """close silx.io.spech5.SpecH5"""
+        """Close source file silx.io.spech5.SpecH5"""
         self._sf.close()
         self._sf = None
 
     def _set_urls(self):
-        """set default SpecH5 urls
+        """Set default SpecH5 urls
         """
         self._mots_url = 'instrument/positioners'
         self._cnts_url = 'measurement'
         self._title_url = 'title'
 
     def _get_sg(self):
-        """safe get self._sg"""
+        """Safe get self._sg"""
         if self._sg is None:
             raise AttributeError("group not selected yet")
         else:
             return self._sg
 
+    def _initTreeView(self):
+        """Init TreeView GUI"""
+        from silx.gui.hdf5 import Hdf5TreeView
+        from silx.gui.hdf5 import Hdf5TreeModel
+        self._view = Hdf5TreeView()
+        self._model = self._view.findHdf5TreeModel()
+        # customization
+        self._view.setWindowTitle("DataSourceSpecH5 - view")
+        self._view.setSortingEnabled(False)
+        # Avoid the user to drop file in the widget
+        self._model.setFileDropEnabled(False)
+        # Allow the user to reorder files with drag-and-drop
+        self._model.setFileMoveEnabled(True)
+        self._model.insertH5pyObject(self._sf)
+        self._view.show()
+
     def set_group(self, group_url=None):
-        """select group url
+        """Select group url
 
         Parameters
         ----------
@@ -75,7 +103,7 @@ class DataSourceSpecH5(object):
             self._logger.info(f"selected group {self._group_url}")
 
     def set_scan(self, scan_n, scan_idx=1, group_url=None):
-        """select a given scan number
+        """Select a given scan number
 
         Parameters
         ----------
@@ -109,7 +137,7 @@ class DataSourceSpecH5(object):
             self._logger.error(f"'{self._scan_url}' is not valid")
 
     def _list_from_url(self, url_str):
-        """utility method to get a list from a scan url
+        """Utility method to get a list from a scan url
 
         .. warning:: the list is **not ordered**
 
@@ -120,15 +148,15 @@ class DataSourceSpecH5(object):
             self._logger.error(f"'{url_str}' not found.\n Hint: use set_scan method first")
 
     def get_motors(self):
-        """get list of motors names"""
+        """Get list of motors names"""
         return self._list_from_url(self._mots_url)
 
     def get_counters(self):
-        """get list of motors names"""
+        """Get list of motors names"""
         return self._list_from_url(self._cnts_url)
 
     def get_title(self, scan_n=None):
-        """get title str for a given scan
+        """Get title str for a given scan
 
         Parameters
         ----------
@@ -144,7 +172,7 @@ class DataSourceSpecH5(object):
         return self._get_sg()[self._title_url][()]
 
     def get_scan_axis(self):
-        """get the name of the scanned axis from title"""
+        """Get the name of the scanned axis from title"""
         _title_splitted = self.get_title().split(' ')
         _axisout = _title_splitted[1]
         if _axisout == '':
@@ -155,7 +183,7 @@ class DataSourceSpecH5(object):
         return _axisout
 
     def get_array(self, cnt, scan_n=None, group_url=None):
-        """get array of a given counter
+        """Get array of a given counter
 
         Parameters
         ----------
@@ -187,7 +215,7 @@ class DataSourceSpecH5(object):
             return np.zeros_like(self._get_sg()[sel_cnt][()])
 
     def get_value(self, mot, scan_n=None, group_url=None):
-        """get motor position
+        """Get motor position
 
         Parameters
         ----------
