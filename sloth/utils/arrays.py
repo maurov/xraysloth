@@ -7,7 +7,7 @@
 Basic array manipulation using Numpy & Scipy
 """
 import numpy as np
-from scipy import interp1d
+from scipy.interpolate import interp1d
 
 import logging
 _logger = logging.getLogger('sloth.utils.arrays')

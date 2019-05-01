@@ -1,10 +1,12 @@
-"""
-###############
-### STRINGS ###
-###############
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
+"""STRINGS
+----------
 :mod:`sloth.utils.strings`
 """
+
+
 def str2rng(rngstr, keeporder=True, rebin=None):
     """simple utility to convert a generic string representing a compact
     list of scans to a sorted list of integers
@@ -23,7 +25,7 @@ def str2rng(rngstr, keeporder=True, rebin=None):
 
     """
     _rng = []
-    for _r in rngstr.split(', '): #the space is important!
+    for _r in rngstr.split(', '):  # the space is important!
         if (len(_r.split(',')) > 1):
             raise NameError("Space after comma(s) is missing in '{0}'".format(_r))
         _rsplit2 = _r.split(':')
@@ -40,7 +42,7 @@ def str2rng(rngstr, keeporder=True, rebin=None):
         else:
             raise NameError("Too many colon in {0}".format(_r))
 
-    #create the list and return it (removing the duplicates)
+    # create the list and return it (removing the duplicates)
     _rngout = [int(x) for x in _rng]
 
     if rebin is not None:
@@ -59,8 +61,12 @@ def str2rng(rngstr, keeporder=True, rebin=None):
     else:
         return list(set(_rngout))
 
+
 def get_timestamp() -> str:
     """return a custom time stamp string: YYY-MM-DD_HHMM"""
     import time
     return '{0:04d}-{1:02d}-{2:02d}_{3:02d}{4:02d}'.format(*time.localtime())
-    
+
+
+if __name__ == '__main__':
+    pass

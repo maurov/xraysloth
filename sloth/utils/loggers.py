@@ -43,3 +43,8 @@ def test_logger(logger):
 def getLogger(name=None, level=logging.INFO):
     logger = logging.getLogger(name)
     logger.setLevel(level)
+    return logger
+
+
+if __name__ == '__main__':
+    pass
