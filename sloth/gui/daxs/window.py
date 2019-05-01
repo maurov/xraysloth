@@ -38,7 +38,8 @@ from silx.gui import qt
 from .items import ScanItem
 from .model import TreeModel, HeaderSection
 from .view import TreeView
-from .plot import PlotArea
+# from .plot import PlotArea  # original DAXS version
+from sloth.gui.plot.plotarea import PlotArea  # sloth version
 from .config import Config
 from .delegates import ComboBoxDelegate
 from .console import InternalIPyKernel
