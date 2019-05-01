@@ -44,6 +44,7 @@ from .config import Config
 from .delegates import ComboBoxDelegate
 from .console import InternalIPyKernel
 from .profiling import timeit # noqa
+from sloth import _resourcesPath
 
 logger = logging.getLogger(__name__)
 
@@ -63,6 +64,12 @@ class MainWindow(qt.QMainWindow):
         # Add (empty) menu bar -> contents added later
         self.menuBar = qt.QMenuBar()
         self.setMenuBar(self.menuBar)
+
+        # Add icon to the application
+        ico = qt.QIcon(os.path.join(_resourcesPath, "logo",
+                                    "xraysloth_logo_04.svg"))
+        self.setWindowIcon(ico)
+        self.setWindowTitle("sloth-daxs")
 
         # Add additional sections to the header.
         values = [
