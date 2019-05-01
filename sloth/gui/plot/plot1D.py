@@ -138,7 +138,6 @@ class Plot1D(PlotWindow):
         # self.setGraphXLimits(0, 100)
         self.setGraphYLabel('Y')
         # self.setGraphYLimits(0, 100)
-        self.keepDataAspectRatio(False)
 
 
 def main():
