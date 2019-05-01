@@ -12,7 +12,7 @@ Requirements
 import os
 import logging
 import numpy as np
-from silx.io import open as silx_open
+from silx.io.utils import open as silx_open
 
 
 class DataSourceSpecH5(object):
@@ -30,8 +30,8 @@ class DataSourceSpecH5(object):
         self.fname = fname
         try:
             self._sf = silx_open(fname)
-        except IOError:
-            self._logger.error(f"cannot open {self.fname}")
+        except OSError:
+            self._logger.error(f"Cannot open {self.fname}")
             self._sf = None
         self._scan_n = None
         self._scan_str = None
@@ -88,7 +88,8 @@ class DataSourceSpecH5(object):
 
         Returns
         -------
-        none: set attributes self._scan_n, self._scan_str, self._scan_url, self._sg
+        none: set attributes
+            self._scan_n, self._scan_str, self._scan_url, self._sg
         """
         self._scan_n = scan_n
         self._scan_str = f"{scan_n}.{scan_idx}"
@@ -101,11 +102,11 @@ class DataSourceSpecH5(object):
         try:
             self._sg = self._sf[self._scan_url]
             self._scan_title = self.get_title()
-            self._logger.info(f"selected scan {self._scan_url}: '{self._scan_title}'")
+            self._logger.info(f"Selected scan {self._scan_url}: '{self._scan_title}'")
         except KeyError:
             self._sg = None
             self._scan_title = None
-            self._logger.error(f"'{self._scan_url}' is not a valid key")
+            self._logger.error(f"'{self._scan_url}' is not valid")
 
     def _list_from_url(self, url_str):
         """utility method to get a list from a scan url
@@ -215,6 +216,49 @@ class DataSourceSpecH5(object):
         else:
             self._logger.error(f"'{mot}' not found in available motors:\n {mots}")
             return 0
+
+    def write_scans_to_h5(self, scans, fname_out, h5path=None,
+                          overwrite=False):
+        """Export a selected range of scans to HDF5 file
+
+        .. note:: This is a simple wrapper to
+            :func:`silx.io.convert.write_to_h5`
+
+        Parameters
+        ----------
+        scans : list of ints
+            scan numbers to export
+        fname_out : str
+            output file name
+        h5path : str (optional)
+            path inside HDF5 [None -> '/']
+        overwrite : boolean (optional)
+            force overwrite if the file exists [False]
+        """
+        from silx.io.convert import write_to_h5
+        self._fname_out = fname_out
+        self._logger.info(f"Output file: {self._fname_out}")
+        if os.path.isfile(self._fname_out) and os.access(self._fname_out, os.R_OK):
+            self._logger.info(f"Output file exists (overwrite is {overwrite})")
+            _fileExists = True
+        else:
+            _fileExists = False
+        for iscan, scan in enumerate(scans):
+            if (iscan == 0) and (overwrite or (not _fileExists)):
+                mode = 'w'  # overwrite
+            else:
+                mode = 'a'
+            self.set_scan(scan)
+            if self._sg is None:
+                continue
+            if h5path is not None:
+                _h5path = f'/{h5path}/{self._scan_str}/'
+            else:
+                _h5path = f'/{t._scan_str}/'
+            write_to_h5(self._sg, self._fname_out, h5path=_h5path,
+                        mode=mode, overwrite_data=True,
+                        create_dataset_args=dict(track_order=True))
+            self._logger.info(f'Written {_h5path}')
 
 
 def main():
