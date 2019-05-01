@@ -71,3 +71,7 @@ def show():
         window._ipykernel.kernel.start()
 
     sys.exit(app.exec_())
+
+
+if __name__ == '__main__':
+    show()

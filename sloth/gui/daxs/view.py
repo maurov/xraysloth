@@ -39,7 +39,7 @@ import logging
 import silx.io
 from silx.gui import qt
 
-from .items import ExperimentItem, FileItem, ScanItem
+from .items import ExperimentItem, GroupItem, DatasetItem, FileItem, ScanItem
 
 logger = logging.getLogger(__name__)
 
@@ -125,7 +125,10 @@ class TreeView(qt.QTreeView):
         index = self.indexAt(position)
         item = self.model().itemFromIndex(index)
 
-        if isinstance(item, ExperimentItem):
+        if isinstance(item, ExperimentItem) or isinstance(item, GroupItem):
+            action = qt.QAction('Add Group', self, triggered=self.addGroup)
+            menu.addAction(action)
+
             action = qt.QAction('Load Files', self, triggered=self.loadFiles)
             menu.addAction(action)
 
@@ -174,6 +177,20 @@ class TreeView(qt.QTreeView):
         item = ExperimentItem(name=name, parentItem=rootItem)
         self.model().appendRow(item)
         return item
+
+    def addGroup(self, name=None, parentItem=None):
+        """Add a generic GroupItem at a given parentItem"""
+        # Add the file to the last added item.
+        if parentItem is None:
+            parent = self.selectionModel().selectedRows().pop()
+            parentItem = self.model().itemFromIndex(parent)
+        row = parentItem.childCount()
+
+        if name is None or not name:
+            name = 'Group{}'.format(row)
+
+        item = GroupItem(name, parentItem)
+        self.model().appendRow(item)
 
     def addFile(self, path=None, parentItem=None):
         if path is None:

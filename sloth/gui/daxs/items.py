@@ -176,6 +176,20 @@ class TreeItem(object):
     def flags(self, column):
         return Qt.ItemIsEnabled | Qt.ItemIsSelectable
 
+    @property
+    def legend(self):
+        tokens = list()
+        tokens.append(self.name)
+
+        parentItem = self.parentItem
+        while parentItem is not None:
+            if parentItem.name is not None:
+                tokens.append(parentItem.name)
+            parentItem = parentItem.parentItem
+
+        tokens.reverse()
+        return '/'.join(tokens)
+
 
 class RootItem(TreeItem):
 
@@ -187,6 +201,18 @@ class ExperimentItem(TreeItem):
 
     def __init__(self, name=None, parentItem=None):
         super(ExperimentItem, self).__init__(name, parentItem)
+
+
+class GroupItem(TreeItem):
+
+    def __init__(self, name=None, parentItem=None):
+        super(GroupItem, self).__init__(name, parentItem)
+
+
+class DatasetItem(TreeItem):
+
+    def __init__(self, name=None, parentItem=None):
+        super(DatasetItem, self).__init__(name, parentItem)
 
 
 class FileItem(TreeItem):
@@ -339,20 +365,6 @@ class ScanItem(TreeItem):
             return self.counters[self.monitorLabel].value
         except KeyError:
             return None
-
-    @property
-    def legend(self):
-        tokens = list()
-        tokens.append(self.name)
-
-        parentItem = self.parentItem
-        while parentItem is not None:
-            if parentItem.name is not None:
-                tokens.append(parentItem.name)
-            parentItem = parentItem.parentItem
-
-        tokens.reverse()
-        return '/'.join(tokens)
 
     def plot(self):
         if self.x is None or self.signal is None:

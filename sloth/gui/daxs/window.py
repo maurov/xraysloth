@@ -256,4 +256,3 @@ class MainWindow(qt.QMainWindow):
     def onClose(self):
         self._ipykernel.cleanup_consoles()
         self.app.lastWindowClosed.connect(qt.pyqtSignal(quit()))
- 
