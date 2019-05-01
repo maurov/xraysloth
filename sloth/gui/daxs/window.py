@@ -139,15 +139,13 @@ class MainWindow(qt.QMainWindow):
 
         # Add two plot windows to the plot area.
         self.plotArea.addPlotWindow()
-        self.plotArea.addPlotWindow()
 
         if self._with_ipykernel:
             # Initialize internal ipykernel
             self._ipykernel = InternalIPyKernel()
             self._ipykernel.init_kernel(backend='qt')
-            self._ipykernel.add_to_namespace('main', self)
+            self._ipykernel.add_to_namespace('app', self)
             self._ipykernel.add_to_namespace('view', self.view)
-            self._ipykernel.add_to_namespace('model', self.model)
             self._ipykernel.add_to_namespace('plotArea', self.plotArea)
             # Add IPython console at menu
             self._initConsoleMenu()
