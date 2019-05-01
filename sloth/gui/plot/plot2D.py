@@ -7,8 +7,6 @@
 import time
 import numpy as np
 from silx.gui.plot import Plot2D as silxPlot2D
-from silx.image.marchingsquares._mergeimpl import MarchingSquaresMergeImpl
-from silx.image.marchingsquares._skimage import MarchingSquaresSciKitImage
 import logging
 
 
@@ -115,11 +113,14 @@ class Plot2D(silxPlot2D):
         if image is None:
             self._logger.error('add image first!')
         if algo == 'merge':
+            from silx.image.marchingsquares._mergeimpl import MarchingSquaresMergeImpl
             self._ms = MarchingSquaresMergeImpl(image, mask=mask)
         elif algo == 'skimage':
-            self._ms = MarchingSquaresSciKitImage(image, mask=mask)
             try:
                 import skimage
+                from silx.image.marchingsquares._skimage import MarchingSquaresSciKitImage
+                self._ms = MarchingSquaresSciKitImage(image,
+                                                      mask=mask)
             except ImportError:
                 self._logger.error('skimage not found')
                 self._ms = None
