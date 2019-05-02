@@ -38,5 +38,5 @@ Resources
     :alt: Documentation Status
 
 .. |binder| image:: https://img.shields.io/badge/launch-sloth-579ACA.svg
-    :target: https://mybinder.org/v2/gh/maurov/xraysloth/master
+    :target: https://mybinder.org/v2/gh/maurov/xraysloth/master?filepath=notebooks%2Findex.ipynb
     :alt: Launch Sloth on Binder
