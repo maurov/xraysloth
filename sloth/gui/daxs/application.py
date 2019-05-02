@@ -35,8 +35,8 @@ import argparse
 
 from silx.gui import qt
 
-from .window import MainWindow
-
+#from .window import MainWindow
+from .windowHdf5Tree import MainWindowHdf5Tree as MainWindow
 
 # The logger object has a setLevel method, but the level of the handler
 # must also be changed to actually display messages lower that the default
