@@ -35,16 +35,11 @@ import argparse
 
 from silx.gui import qt
 
-from .window import MainWindow
+#from .window import MainWindow
+from .windowHdf5Tree import MainWindowHdf5Tree as MainWindow
 
-
-# The logger object has a setLevel method, but the level of the handler
-# must also be changed to actually display messages lower that the default
-# level which is logging.WARNING.
-# See https://fangpenlin.com/posts/2012/08/26/good-logging-practice-in-python.
-# We use the module function to set the log data.
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from sloth.utils.logging import getLogger
+logger = getLogger('sloth.gui.daxs.application')
 
 
 def show():

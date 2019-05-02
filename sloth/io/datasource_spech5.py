@@ -14,6 +14,7 @@ import logging
 import numpy as np
 import h5py
 from silx.io.utils import open as silx_open
+from sloth.utils.logging import getLogger
 
 
 class DataSourceSpecH5(object):
@@ -22,11 +23,8 @@ class DataSourceSpecH5(object):
 
     def __init__(self, fname=None):
         """init with file name and default attributes"""
-        try:
-            _logger_name = fname.split(os.sep)[-1]
-        except SyntaxError:
-            _logger_name = "DataSourceSpecH5"
-        self._logger = logging.getLogger(_logger_name)
+        _logger_name = "sloth.io.DataSourceSpecH5"
+        self._logger = getLogger(_logger_name)
         self._logger.setLevel(logging.INFO)
         self.fname = fname
         # source file object (h5py-like)

@@ -1,101 +1,117 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-""" Simple color print """
+"""Simple color print """
 
 from __future__ import print_function
 
 # settings
 CPRINT_PAR = {}
 
+
 def cprint_set_light_background():
     CPRINT_PAR["light_background"] = 1
-    CPRINT_PAR["dark_background"]  = 0
+    CPRINT_PAR["dark_background"] = 0
+
 
 def cprint_set_dark_background():
-    CPRINT_PAR["dark_background"]  = 1
+    CPRINT_PAR["dark_background"] = 1
     CPRINT_PAR["light_background"] = 0
 
+
 def cprint_colors_enabled():
-    """ Check if usage of colors with cprint* functions is enabled """
+    """Check if usage of colors with cprint* functions is enabled """
     return (CPRINT_PAR["colors"])
+
 
 def cprint_enable_colors():
     CPRINT_PAR["colors"] = 1
 
+
 def cprint_disable_colors():
     CPRINT_PAR["colors"] = 0
 
-### CONTRAST CHECKS ###
-def _cprint_bad_contrast(fgcolor, bgcolor, bold, underlined):
-    """ Returns 1 if one of the conditions of poor contrast is matched """
+# CONTRAST CHECKS #
 
-    #### ALL BG
+
+def _cprint_bad_contrast(fgcolor, bgcolor, bold, underlined):
+    """Return 1 if one of the conditions of poor contrast is matched """
+
+    # ALL BG
     _c0 = (fgcolor == bgcolor)
     _c5 = (fgcolor == 1) and (bgcolor == 5)
     _c6 = (fgcolor == 2) and (bgcolor == 6)
 
-    #### DARK BG
-    _c1 = (fgcolor==4) and ((bgcolor==8) or (bgcolor==0))
+    # DARK BG
+    _c1 = (fgcolor == 4) and ((bgcolor == 8) or (bgcolor == 0))
     _c2 = (fgcolor == 5) and (bgcolor == 1) and (CPRINT_PAR["dark_background"])
     _c3 = (fgcolor == 6) and (bgcolor == 2) and (CPRINT_PAR["dark_background"])
     _c4 = (fgcolor == 8) and (bgcolor == 7) and (CPRINT_PAR["dark_background"])
     _c7 = (fgcolor == 4) and (bgcolor == 6) and (CPRINT_PAR["dark_background"])
 
-    if ( _c0 or _c1 or _c2 or _c3 or _c4 or _c5 or _c6 or _c7):
+    if (_c0 or _c1 or _c2 or _c3 or _c4 or _c5 or _c6 or _c7):
         return 1
     else:
         return 0
 
-def _cprint_bad_contrast2(fgcolor, bgcolor, bold, underlined):
-    """Returns 1 if one of the conditions of poor contrast is matched """
 
-    #### LIGHT BG
+def _cprint_bad_contrast2(fgcolor, bgcolor, bold, underlined):
+    """Return 1 if one of the conditions of poor contrast is matched """
+
+    # LIGHT BG
     _c1 = (fgcolor == 3) and (bgcolor == 8) and (bold == 1) and (CPRINT_PAR["light_background"])
     _c2 = (fgcolor == 7) and (bgcolor == 8) and (bold == 1) and (CPRINT_PAR["light_background"])
 
-    if ( _c1 or _c2):
+    if (_c1 or _c2):
         return 1
     else:
         return 0
+
 
 def _cprint_bad_contrast3(fgcolor, bgcolor, bold, underlined):
     """Returns 1 if one of the conditions of poor contrast is matched """
 
-    #### black on black with LIGHT BG
+    # black on black with LIGHT BG
     _c1 = (fgcolor == 8) and (bgcolor == 0) and (CPRINT_PAR["light_background"])
 
-    if ( _c1 ):
+    if (_c1 ):
         return 1
     else:
         return 0
 
-### COLOR PRINT ###
+# COLOR PRINT ###
+
 
 def bprint(str):
-    """returns a bold <str>"""
-    return "\033[1m{0}\033[0m".format (str)
+    """Returns a bold <str>"""
+    return "\033[1m{0}\033[0m".format(str)
+
 
 def cprint_bold(str):
-    """Prints <str> in bold """
+    """Print <str> in bold """
     print(bprint(str))
 
+
 def buprint(str):
-    """returns underlined bold <str>"""
+    """Underlined bold <str>"""
     return "\033[1m\033[4m{0}\033[0m".format(str)
 
+
 def cprint_bold_underlined(str):
-    """prints underlined bold <str>"""
+    """Print underlined bold <str>"""
     print(buprint(str))
 
+
 def uprint(str):
-    """returns underlined <str> """
+    """Underlined <str> """
     return "\033[4m{0}\033[0m".format(str)
 
+
 def cprint_underlined(str):
-    """prints underlined <str>"""
+    """Print underlined <str>"""
     print(uprint(str))
 
-def cprint(_str, fgcolor, bgcolor, bold, underlined, st):
+
+def cprint(_str, fgcolor, bgcolor, bold, underlined, st, retStr=False):
     """
     Prints <str> with color and attributes.
     <fgcolor>    : foreground color : 0..8   (0=black 8=current fg color)
@@ -104,15 +120,16 @@ def cprint(_str, fgcolor, bgcolor, bold, underlined, st):
     <underlined> : +underlined
     <st>         : +Strikethrough
     """
+    cprint_enable_colors()
 
-    _bad_contrast  = _cprint_bad_contrast(fgcolor, bgcolor, bold, underlined)
+    _bad_contrast = _cprint_bad_contrast(fgcolor, bgcolor, bold, underlined)
     _bad_contrast2 = _cprint_bad_contrast2(fgcolor, bgcolor, bold, underlined)
     _bad_contrast3 = _cprint_bad_contrast3(fgcolor, bgcolor, bold, underlined)
 
     # Bold
-    _b_str  = "\033[1m"
+    _b_str = "\033[1m"
     # Underlined
-    _u_str  = "\033[4m"
+    _u_str = "\033[4m"
     # Striked-trougth
     _st_str = "\033[9m"
 
@@ -128,7 +145,7 @@ def cprint(_str, fgcolor, bgcolor, bold, underlined, st):
     else:
         _bg_str = ""
 
-    if ( CPRINT_PAR["colors"] == 0 ):
+    if (CPRINT_PAR["colors"] == 0):
         _fg_str = ""
         _bg_str = ""
 
@@ -148,25 +165,34 @@ def cprint(_str, fgcolor, bgcolor, bold, underlined, st):
 
     print(_colored_str)
 
+    if retStr:
+        return _colored_str
+
+
 def cprint_examples():
-    """prints 'Ab1' string in many colored and modified typos"""
+    """Print 'Ab1' string in many colored and modified typos"""
 
     mystr = "Ab1 "
 
     print("        color print")
     print("usage : cprint(str, <p1>, <p2>, <p3>, <p4>)")
     print("")
-    print("p1\\p2-> 0               1               2               3           "      \
-          "    4               5               6               7               8     ")
+    print("p1\\p2-> 0  1  2  3  4  5  6 7  8")
 
     for ii in range(9):
         print("{0}--".format(ii))
         for jj in range(9):
-            cprint("{0}{1}".format(mystr,ii), ii , jj, 0, 0, 0)
-            cprint("{0}{1}".format(mystr,ii), ii , jj, 1, 0, 0)
-            cprint("{0}{1}".format(mystr,ii), ii , jj, 0, 1, 0)
-            cprint("{0}{1}".format(mystr,ii), ii , jj, 1, 1, 0)
+            cprint("{0}{1}".format(mystr, ii), ii, jj, 0, 0, 0)
+            cprint("{0}{1}".format(mystr, ii), ii, jj, 1, 0, 0)
+            cprint("{0}{1}".format(mystr, ii), ii, jj, 0, 1, 0)
+            cprint("{0}{1}".format(mystr, ii), ii, jj, 1, 1, 0)
 
-if __name__ == '__main__':
+
+def main():
     cprint_enable_colors()
     cprint_set_light_background()
+    cprint_examples()
+
+
+if __name__ == '__main__':
+    main()

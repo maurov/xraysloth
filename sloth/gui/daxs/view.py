@@ -41,7 +41,8 @@ from silx.gui import qt
 
 from .items import ExperimentItem, GroupItem, DatasetItem, FileItem, ScanItem
 
-logger = logging.getLogger(__name__)
+from sloth.utils.logging import getLogger
+logger = getLogger('sloth.gui.daxs.view')
 
 
 class HorizontalHeaderView(qt.QHeaderView):

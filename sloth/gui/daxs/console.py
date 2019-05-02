@@ -34,6 +34,7 @@ from __future__ import absolute_import, division
 __authors__ = ['Mauro Rovezzi']
 __license__ = 'MIT'
 
+import sys
 from ipykernel import connect_qtconsole
 from ipykernel.kernelapp import IPKernelApp
 
@@ -54,6 +55,13 @@ class InternalIPyKernel(object):
         # This application will also act on the shell user namespace
         self.namespace = self.kernel.shell.user_ns
         self.add_to_namespace('kernel', self.kernel)
+
+    def print_namespace(self, evt=None):
+        print("\n***Variables in User namespace***")
+        for k, v in self.namespace.items():
+            if not k.startswith('_'):
+                print('%s -> %r' % (k, v))
+        sys.stdout.flush()
 
     def add_to_namespace(self, namestr, nameobj):
         """Extend kernel namespace."""

@@ -38,13 +38,16 @@ from silx.gui import qt
 from .items import ScanItem
 from .model import TreeModel, HeaderSection
 from .view import TreeView
-from .plot import PlotArea
+# from .plot import PlotArea  # original DAXS version
+from sloth.gui.plot.plotarea import PlotArea  # sloth version
 from .config import Config
 from .delegates import ComboBoxDelegate
 from .console import InternalIPyKernel
 from .profiling import timeit # noqa
+from sloth import _resourcesPath
 
-logger = logging.getLogger(__name__)
+from sloth.utils.logging import getLogger
+logger = getLogger('sloth.gui.daxs.window')
 
 
 class MainWindow(qt.QMainWindow):
@@ -62,6 +65,12 @@ class MainWindow(qt.QMainWindow):
         # Add (empty) menu bar -> contents added later
         self.menuBar = qt.QMenuBar()
         self.setMenuBar(self.menuBar)
+
+        # Add icon to the application
+        ico = qt.QIcon(os.path.join(_resourcesPath, "logo",
+                                    "xraysloth_logo_04.svg"))
+        self.setWindowIcon(ico)
+        self.setWindowTitle("sloth-daxs")
 
         # Add additional sections to the header.
         values = [
@@ -131,15 +140,13 @@ class MainWindow(qt.QMainWindow):
 
         # Add two plot windows to the plot area.
         self.plotArea.addPlotWindow()
-        self.plotArea.addPlotWindow()
 
         if self._with_ipykernel:
             # Initialize internal ipykernel
             self._ipykernel = InternalIPyKernel()
             self._ipykernel.init_kernel(backend='qt')
-            self._ipykernel.add_to_namespace('main', self)
+            self._ipykernel.add_to_namespace('app', self)
             self._ipykernel.add_to_namespace('view', self.view)
-            self._ipykernel.add_to_namespace('model', self.model)
             self._ipykernel.add_to_namespace('plotArea', self.plotArea)
             # Add IPython console at menu
             self._initConsoleMenu()
