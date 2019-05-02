@@ -39,10 +39,10 @@
 .. automodule:: sloth.utils.strings
   :members:
 
-:mod:`sloth.utils.loggers`: loggers
+:mod:`sloth.utils.logging`: loggers
 -----------------------------------
 
-.. automodule:: sloth.utils.loggers
+.. automodule:: sloth.utils.logging
   :members:
 
 :mod:`sloth.utils.exceptions`: handling exceptions

@@ -13,9 +13,20 @@ v.0.3.0 (dev)
 New features
 ''''''''''''
 
+* :mod:`sloth.gui.daxs`
+
+  - Qt-based GUI application featuring a TreeModel/View from **Marius Retegan**
+    and the SILX group at ESRF. The GUI has an internal Jupyter kernel that give
+    access to core components directly from a Qtconsole.
+
+  .. note::
+
+        DAXS stands for **Data Analysis in X-ray Spectroscopy**. It has its own
+        name because this GUI-project may be consider as a submodule of Sloth.
+
 * :mod:`sloth.io.datasource_spech5`
 
-  - unified way of reading Spec, HDF5 and NeXus files via :mod:`silx.io`
+  - unified way of reading Spec, HDF5 and NeXus files via :mod:`silx.io.open`
 
 * :mod:`sloth.utils`
 
@@ -58,8 +69,6 @@ Broken backward compatibility
 
   - `DataGroup` objects and derivative have methods with `_`
     (e.g. `self.getkwsd` -> `self.get_kwsd`)
-
-
 
 
 v.0.2.1 (2018-07-04)

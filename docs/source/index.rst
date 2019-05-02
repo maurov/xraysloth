@@ -12,6 +12,16 @@ techniques.
 
 Current version is |release|.
 
+.. warning::
+
+  In the current status, the library is **not stable enough to be used in
+  production environments**. It performs as a partial random snapshot of daily
+  research in X-ray instrumentation and still-to-implement ideas (mainly due to
+  lack of time). Feel free to use/hack it and do not hesitate to drop me a line
+  if you find them useful. Furthermore, I appreciate if you could report bugs,
+  enhancements or comments directly in `Github Issues
+  <https://github.com/maurov/xraysloth/issues>`_
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents
@@ -23,6 +33,7 @@ Current version is |release|.
    todo.rst
 
 :doc:`installation`
+  Step-by-step guide to installation.
 
 :doc:`modules/index`
    Documentation (automagically built from docstrings) for the packages included in *sloth*.
