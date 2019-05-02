@@ -3,36 +3,61 @@
 """
 Handling loggers
 """
+import sys
 import logging
+import tempfile
+
+# set up basic logging configureation to temporary file
+_default_format = '%(asctime)s | %(name)-12s | %(levelname)-8s | %(message)s'
+# needs colorlog, not enabled yet!
+_default_colors = {'DEBUG': 'cyan',
+                   'INFO': 'green',
+                   'WARNING': 'yellow',
+                   'ERROR':    'red',
+                   'CRITICAL': 'red'}
+
+logging.basicConfig(level=logging.DEBUG,
+                    format=_default_format,
+                    datefmt='%m-%d %H:%M',
+                    filename='{0}.log'.format(tempfile.mktemp()),
+                    filemode='w')
 
 
-def setup_logger(logger):
-    """Return a logger with a default ColoredFormatter."""
-    try:
-        from colorlog import ColoredFormatter
-    except ModuleNotFoundError:
-        return logger
-    formatter = ColoredFormatter(
-        "%(log_color)s%(levelname)-8s%(reset)s %(blue)s%(message)s",
-        datefmt=None,
-        reset=True,
-        log_colors={
-            'DEBUG':    'cyan',
-            'INFO':     'green',
-            'WARNING':  'yellow',
-            'ERROR':    'red',
-            'CRITICAL': 'red',
-        }
-    )
-    handler = logging.StreamHandler()
+def getLogger(name, level=logging.INFO):
+    """Utility function to get the logger with customization
+
+    Parameters
+    ----------
+    name : str
+        name of the logger
+    level : int (optional)
+        logging level [logging.INFO]
+    profile : str (optional)
+        specific profile [None]
+        - None
+            stream=sys.stderr
+        - 'notebook'
+            stream=sys.stdout
+    """
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
+
+    handler = logging.StreamHandler(sys.stderr)
+    """stderr handler (needed to show log in Jupyter notebook)"""
+
+    formatter = logging.Formatter('%(name)-12s : %(levelname)8s : %(message)s')
     handler.setFormatter(formatter)
-    logger.addHandler(handler)
+    """Create formatter and add it to the handler"""
+
+    # Set STDERR handler as the only handler
+    logger.handlers = [handler]
+
     return logger
 
 
-def test_logger(logger):
+def test_logger():
     """Test custom logger"""
-    logger = setup_logger(logger)
+    logger = getLogger('test', level=logging.DEBUG)
     logger.debug('a debug message')
     logger.info('an info message')
     logger.warning('a warning message')
@@ -40,11 +65,5 @@ def test_logger(logger):
     logger.critical('a critical message')
 
 
-def getLogger(name=None, level=logging.INFO):
-    logger = logging.getLogger(name)
-    logger.setLevel(level)
-    return logger
-
-
 if __name__ == '__main__':
-    pass
+    test_logger()
