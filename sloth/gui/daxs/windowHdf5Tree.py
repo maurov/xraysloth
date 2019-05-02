@@ -12,6 +12,9 @@ from sloth.gui.plot.plotarea import PlotArea  # sloth version
 from .console import InternalIPyKernel
 from .config import Config
 
+from sloth.utils.logging import getLogger
+logger = getLogger('sloth.gui.daxs.windowHdf5Tree')
+
 
 class MainWindowHdf5Tree(qt.QMainWindow):
     """MainWindow based on Hdf5TreeView

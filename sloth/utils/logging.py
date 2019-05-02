@@ -8,7 +8,7 @@ import logging
 import tempfile
 
 # set up basic logging configureation to temporary file
-_default_format = '%(asctime)s | %(name)-12s | %(levelname)-8s | %(message)s'
+_default_format = '%(asctime)s [%(name)-s] %(levelname)-s : %(message)s'
 # needs colorlog, not enabled yet!
 _default_colors = {'DEBUG': 'cyan',
                    'INFO': 'green',
@@ -45,7 +45,7 @@ def getLogger(name, level=logging.INFO):
     handler = logging.StreamHandler(sys.stderr)
     """stderr handler (needed to show log in Jupyter notebook)"""
 
-    formatter = logging.Formatter('%(name)-12s : %(levelname)8s : %(message)s')
+    formatter = logging.Formatter('[%(name)-s] %(levelname)-s : %(message)s')
     handler.setFormatter(formatter)
     """Create formatter and add it to the handler"""
 

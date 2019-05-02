@@ -33,14 +33,13 @@ from __future__ import absolute_import, division
 __authors__ = ['Marius Retegan', 'Mauro Rovezzi']
 __license__ = 'MIT'
 
-
-import logging
 import weakref
 
 from silx.gui.qt import Qt
 from silx.utils.weakref import WeakList
 
-logger = logging.getLogger(__name__)
+from sloth.utils.logging import getLogger
+logger = getLogger('sloth.gui.daxs.items')
 
 
 class Signal(object):

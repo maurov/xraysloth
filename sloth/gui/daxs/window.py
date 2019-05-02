@@ -46,7 +46,8 @@ from .console import InternalIPyKernel
 from .profiling import timeit # noqa
 from sloth import _resourcesPath
 
-logger = logging.getLogger(__name__)
+from sloth.utils.logging import getLogger
+logger = getLogger('sloth.gui.daxs.window')
 
 
 class MainWindow(qt.QMainWindow):

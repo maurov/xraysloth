@@ -9,15 +9,14 @@ Basic array manipulation using Numpy & Scipy
 import numpy as np
 from scipy.interpolate import interp1d
 
-import logging
-_logger = logging.getLogger('sloth.utils.arrays')
+from .logging import getLogger
+_logger = getLogger('sloth.utils.arrays')
 
 
 def imin(arr, debug=False):
     """index of minimum value"""
     _im = np.argmin(arr)
     if debug:
-        _logger.setLevel(logging.DEBUG)
         _logger.debug('Check: {0} = {1}'.format(np.min(arr), arr[_im]))
     return _im
 
@@ -26,7 +25,6 @@ def imax(arr, debug=False):
     """index of maximum value"""
     _im = np.argmax(arr)
     if debug:
-        _logger.setLevel(logging.DEBUG)
         _logger.debug('Check: {0} = {1}'.format(np.max(arr), arr[_im]))
     return _im
 
