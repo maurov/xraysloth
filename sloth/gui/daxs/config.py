@@ -38,9 +38,9 @@ class Config(object):
 
     def __init__(self):
         if sys.platform in ('win32'):
-            self.name = 'Daxs'
+            self.name = 'Sloth'
         else:
-            self.name = 'daxs'
+            self.name = 'sloth'
 
     def read(self):
         return qt.QSettings(qt.QSettings.IniFormat, qt.QSettings.UserScope,

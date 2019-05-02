@@ -73,21 +73,32 @@ class MainWindowHdf5Tree(qt.QMainWindow):
         self._dockWidget = qt.QDockWidget(parent=self)
         self._dockWidget.setObjectName('Data TreeView')
         self._dockWidget.setWidget(self._view)
-        self.addDockWidget(qt.Qt.LeftDockWidgetArea, self._dockWidget)
+        self.addDockWidget(qt.Qt.TopDockWidgetArea, self._dockWidget)
         """TreeView dock widget"""
 
         if self._with_ipykernel:
             # Initialize internal ipykernel
             self._ipykernel = InternalIPyKernel()
             self._ipykernel.init_kernel(backend='qt')
+            """IPython kernel part of the GUI application (= internal)"""
+
             self._ipykernel.add_to_namespace('app', self)
             self._ipykernel.add_to_namespace('view', self._view)
             self._ipykernel.add_to_namespace('model', self._model)
-            self._ipykernel.add_to_namespace('plotArea', self._plotArea)
-            # Add IPython console at menu
+            self._ipykernel.add_to_namespace('plot', self._plotArea)
+            """Namespaces added to the kernel are visible in the consoles"""
+
             self._initConsoleMenu()
+            """Add console menu"""
         else:
             self._ipykernel = None
+
+        if self._ipykernel is not None:
+            self._ipykernel.new_qt_console()
+            """Open one console"""
+
+        self._plotArea.addPlotWindow()
+        """Add one plot window"""
 
     def showEvent(self, event):
         self.loadSettings()
