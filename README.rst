@@ -15,7 +15,8 @@ to drop me a line if you find them useful. Furthermore, I appreciate if you coul
 Resources
 ---------
 
-- Documentation: http://mauro.rovezzi.it/xraysloth |travis| or at https://xraysloth.readthedocs.io |rtd|
+- **Documentation**: https://xraysloth.readthedocs.io |rtd|
+- Documentation (*backup*): http://mauro.rovezzi.it/xraysloth |travis|
 - Citation: |zenodo|
 - License: |license|
 - BinderHub (*experimental*): |binder|
