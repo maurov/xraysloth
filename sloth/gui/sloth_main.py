@@ -18,18 +18,17 @@ import os
 import sys
 
 from silx.gui import qt
-from silx.gui.widgets.PeriodicTable import PeriodicTable
+# from silx.gui.widgets.PeriodicTable import PeriodicTable
 
 import sloth
-from sloth.gui.widgets.console import (HAS_XRAYLIB, HAS_LARCH,
-                                       _pushDict, _pushInfos,
+from sloth.gui.widgets.console import (_pushDict, _pushInfos,
                                        _slothKit)
 
 from sloth.gui.widgets.console import customIPythonWidget
 from sloth.gui.widgets.plot1D import SlothPlot1D
 
 # from .models.list_model import PaletteListModel
-#_resourcesPath = os.path.join(os.path.split(sloth.__file__)[0], 'resources')
+# _resourcesPath = os.path.join(os.path.split(sloth.__file__)[0], 'resources')
 
 
 class SlothMainWindow(qt.QMainWindow):
@@ -88,8 +87,7 @@ class SlothMainWindow(qt.QMainWindow):
         # self._fname = None
         # self.buttonSelectFname.clicked.connect(self.selectFile)
 
-
-        # #Loaded data
+        # Loaded data
         # red   = qt.QColor(255,0,0)
         # green = qt.QColor(0,255,0)
         # blue  = qt.QColor(0,0,255)
@@ -100,7 +98,6 @@ class SlothMainWindow(qt.QMainWindow):
         # model = PaletteListModel([red, green, blue])
         # model.insertRows(0, 5)
         # self.listViewData.setModel(model)
-
 
     def click_table(self, element):
         self.ptInfoListWidget.addItem(element.name)

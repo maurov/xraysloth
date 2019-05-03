@@ -5,22 +5,22 @@ Handling loggers
 """
 import sys
 import logging
-import tempfile
+# import tempfile
 
-# set up basic logging configureation to temporary file
-_default_format = '%(asctime)s [%(name)-s] %(levelname)-s : %(message)s'
-# needs colorlog, not enabled yet!
-_default_colors = {'DEBUG': 'cyan',
-                   'INFO': 'green',
-                   'WARNING': 'yellow',
-                   'ERROR':    'red',
-                   'CRITICAL': 'red'}
-
-logging.basicConfig(level=logging.DEBUG,
-                    format=_default_format,
-                    datefmt='%m-%d %H:%M',
-                    filename='{0}.log'.format(tempfile.mktemp()),
-                    filemode='w')
+# # set up basic logging configureation to temporary file
+# _default_format = '%(asctime)s [%(name)-s] %(levelname)-s : %(message)s'
+# # needs colorlog, not enabled yet!
+# _default_colors = {'DEBUG': 'cyan',
+#                    'INFO': 'green',
+#                    'WARNING': 'yellow',
+#                    'ERROR':    'red',
+#                    'CRITICAL': 'red'}
+#
+# logging.basicConfig(level=logging.DEBUG,
+#                     format=_default_format,
+#                     datefmt='%m-%d %H:%M',
+#                     filename='{0}.log'.format(tempfile.mktemp()),
+#                     filemode='w')
 
 
 def getLogger(name, level=logging.INFO):

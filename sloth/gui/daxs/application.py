@@ -28,15 +28,11 @@ from __future__ import absolute_import, division
 
 __authors__ = ['Marius Retegan', 'Mauro Rovezzi']
 __license__ = 'MIT'
-
-import logging
+import time
 import sys
 import argparse
 
 from silx.gui import qt
-
-#from .window import MainWindow
-from .windowHdf5Tree import MainWindowHdf5Tree as MainWindow
 
 from sloth.utils.logging import getLogger
 logger = getLogger('sloth.gui.daxs.application')
@@ -51,13 +47,28 @@ def show():
         default=False,
         help='start an IPython kernel within the application')
 
+    parser.add_argument(
+            '-m0', '--model-v0',
+            dest='model_v0',
+            action='store_true',
+            default=False,
+            help='import MainWindow based on original TreeView model')
+
     options = parser.parse_args()
 
+    tstartInit = time.time()
     logger.info('Starting application')
+
+    if options.model_v0:
+        from .window import MainWindow
+    else:
+        from .windowHdf5Tree import MainWindowHdf5Tree as MainWindow
+
     app = qt.QApplication([])
     window = MainWindow(app, with_ipykernel=options.with_ipykernel)
     window.show()
-    logger.info('Finished initialization')
+    tendInit = time.time()
+    logger.info('Finished initialization (took %.3f s)', tendInit-tstartInit)
 
     if options.with_ipykernel:
         # Very important, IPython-specific step: this gets GUI event loop
