@@ -56,34 +56,63 @@ class Plot2D(silxPlot2D):
             polTime = time.time()
             self._logger.debug(f"Found {len(polygons)} polygon at level {value}")
             totTime += polTime - startTime
-            for polygon in polygons:
-                legend = "polygon-%d" % ipolygon
-                if len(polygon) == 0:
-                    continue
+            if len(polygons) > 1:
+                polygon = np.concatenate(polygons, axis=0)
+            else:
+                polygon = polygons[0]
+            legend = "polygon-%d" % ipolygon
+            xpoly = polygon[:, 1]
+            ypoly = polygon[:, 0]
+            xscale = np.ones_like(xpoly) * self._scale[0]
+            yscale = np.ones_like(ypoly) * self._scale[1]
+            xorigin = np.ones_like(xpoly) * self._origin[0]
+            yorigin = np.ones_like(ypoly) * self._origin[1]
+            x = xpoly * xscale + xorigin
+            y = ypoly * yscale + yorigin
+            if lineStyleCallback is not None:
+                extraStyle = lineStyleCallback(value, ivalue, ipolygon)
+            else:
+                extraStyle = {"linestyle": "-",
+                              "linewidth": 0.5,
+                              "color": "gray"}
+            if totTime > plot_timeout:
+                self._logger.warning("Plot contours time out reached!")
+                break
+            self.addCurve(x=x, y=y, legend=legend, resetzoom=False,
+                          **extraStyle)
+            pltTime = time.time()
+            totTime += pltTime - polTime
+            ipolygon += 1
 
-                xpoly = polygon[:, 1]
-                ypoly = polygon[:, 0]
-                xscale = np.ones_like(xpoly) * self._scale[0]
-                yscale = np.ones_like(ypoly) * self._scale[1]
-                xorigin = np.ones_like(xpoly) * self._origin[0]
-                yorigin = np.ones_like(ypoly) * self._origin[1]
-                x = xpoly * xscale + xorigin
-                y = ypoly * yscale + yorigin
+            # self.addScatter(x, y, value, symbol='.')
+            # for polygon in polygons:
+            #     legend = "polygon-%d" % ipolygon
+            #     if len(polygon) == 0:
+            #         continue
 
-                if lineStyleCallback is not None:
-                    extraStyle = lineStyleCallback(value, ivalue, ipolygon)
-                else:
-                    extraStyle = {"linestyle": "-",
-                                  "linewidth": 0.5,
-                                  "color": "gray"}
-                if totTime > plot_timeout:
-                    self._logger.warning("Plot contours time out reached!")
-                    break
-                self.addCurve(x=x, y=y, legend=legend, resetzoom=False,
-                              **extraStyle)
-                pltTime = time.time()
-                totTime += pltTime - polTime
-                ipolygon += 1
+            #     xpoly = polygon[:, 1]
+            #     ypoly = polygon[:, 0]
+            #     xscale = np.ones_like(xpoly) * self._scale[0]
+            #     yscale = np.ones_like(ypoly) * self._scale[1]
+            #     xorigin = np.ones_like(xpoly) * self._origin[0]
+            #     yorigin = np.ones_like(ypoly) * self._origin[1]
+            #     x = xpoly * xscale + xorigin
+            #     y = ypoly * yscale + yorigin
+
+            #     if lineStyleCallback is not None:
+            #         extraStyle = lineStyleCallback(value, ivalue, ipolygon)
+            #     else:
+            #         extraStyle = {"linestyle": "-",
+            #                       "linewidth": 0.5,
+            #                       "color": "gray"}
+            #     if totTime > plot_timeout:
+            #         self._logger.warning("Plot contours time out reached!")
+            #         break
+            #     self.addCurve(x=x, y=y, legend=legend, resetzoom=False,
+            #                   **extraStyle)
+            #     pltTime = time.time()
+            #     totTime += pltTime - polTime
+            #     ipolygon += 1
 
     def addContours(self, nlevels, algo='merge'):
         """Add contour lines to plot
@@ -212,7 +241,7 @@ def main(contour_levels=5, noise=0.01, compare_with_matplolib=False):
         ax.set_title("pure matplotlib")
         plt.show()
 
-    input("Press enter to close window")
+    #input("Press enter to close window")
 
 
 if __name__ == '__main__':
