@@ -7,7 +7,7 @@
 import time
 import numpy as np
 from silx.gui.plot import Plot2D as silxPlot2D
-import logging
+from sloth.utils.logging import getLogger
 
 
 class Plot2D(silxPlot2D):
@@ -16,7 +16,7 @@ class Plot2D(silxPlot2D):
     def __init__(self, parent=None, backend=None):
 
         super(Plot2D, self).__init__(parent=parent, backend=backend)
-        self._logger = logging.getLogger("Plot2D")
+        self._logger = getLogger("Plot2D", level='DEBUG')
         self._index = None
         self._image = None
         self._mask = None
@@ -26,10 +26,6 @@ class Plot2D(silxPlot2D):
         self._ylabel = 'Y'
         self.setKeepDataAspectRatio(True)
         self.getDefaultColormap().setName('viridis')
-
-    def setLogLevel(self, level=logging.INFO):
-        """Set report level of the logger"""
-        self._logger.setLevel(level)
 
     def _drawContours(self, values, lineStyleCallback=None,
                       plot_timeout=10):
