@@ -28,7 +28,7 @@ class Plot2D(silxPlot2D):
         self.getDefaultColormap().setName('viridis')
 
     def _drawContours(self, values, lineStyleCallback=None,
-                      plot_timeout=10):
+                      plot_timeout=10, plot_method='scatter'):
         """Draw iso contours for given values
 
         Parameters
@@ -39,8 +39,12 @@ class Plot2D(silxPlot2D):
             a function that return a dictionary of
             linestyle, linewidth and color for
             value, ivalue and ipolygon
-        plot_timeout : int (optionale)
+        plot_timeout : int (optional)
             time in seconds befor the plot is interrupted
+        plot_method : str (optional)
+            method to use for the contour plot
+            'curve' -> self.addCurve
+            'scatter' -> self.addScatter
         """
         if self._ms is None:
             return
@@ -52,7 +56,12 @@ class Plot2D(silxPlot2D):
             polTime = time.time()
             self._logger.debug(f"Found {len(polygons)} polygon at level {value}")
             totTime += polTime - startTime
+            if len(polygons) == 0:
+                continue
             if len(polygons) > 1:
+                # from sloth.utils.arrays import imax
+                # lengths = [len(x) for x in polygons]
+                # polygon = polygons[imax(lengths)]
                 polygon = np.concatenate(polygons, axis=0)
             else:
                 polygon = polygons[0]
@@ -65,17 +74,24 @@ class Plot2D(silxPlot2D):
             yorigin = np.ones_like(ypoly) * self._origin[1]
             x = xpoly * xscale + xorigin
             y = ypoly * yscale + yorigin
-            if lineStyleCallback is not None:
-                extraStyle = lineStyleCallback(value, ivalue, ipolygon)
+            if plot_method == 'scatter':
+                from silx.gui.colors import Colormap
+                cm = Colormap()
+                cm.setColormapLUT([[0., 0., 0., 0.2]])
+                arrval = np.ones_like(x)*value
+                self.addScatter(x, y, arrval, symbol='.', colormap=cm)
             else:
-                extraStyle = {"linestyle": "-",
-                              "linewidth": 0.5,
-                              "color": "gray"}
-            if totTime > plot_timeout:
-                self._logger.warning("Plot contours time out reached!")
-                break
-            self.addCurve(x=x, y=y, legend=legend, resetzoom=False,
-                          **extraStyle)
+                if lineStyleCallback is not None:
+                    extraStyle = lineStyleCallback(value, ivalue, ipolygon)
+                else:
+                    extraStyle = {"linestyle": "-",
+                                  "linewidth": 0.5,
+                                  "color": "gray"}
+                if totTime > plot_timeout:
+                    self._logger.warning("Plot contours time out reached!")
+                    break
+                self.addCurve(x=x, y=y, legend=legend, resetzoom=False,
+                              **extraStyle)
             pltTime = time.time()
             totTime += pltTime - polTime
             ipolygon += 1
@@ -110,7 +126,7 @@ class Plot2D(silxPlot2D):
             #     totTime += pltTime - polTime
             #     ipolygon += 1
 
-    def addContours(self, nlevels, algo='merge'):
+    def addContours(self, nlevels, algo='merge', **draw_kwars):
         """Add contour lines to plot
 
         Parameters
@@ -154,7 +170,7 @@ class Plot2D(silxPlot2D):
         imgmin, imgmax = image.min(), image.max()
         delta = (imgmax - imgmin) / nlevels
         values = np.arange(imgmin, imgmax, delta)
-        self._drawContours(values)
+        self._drawContours(values, **draw_kwars)
 
     def index(self):
         if self._index is None:
@@ -167,7 +183,7 @@ class Plot2D(silxPlot2D):
             self.setWindowTitle('{}: Plot2D'.format(self._index))
 
     def addImage(self, data, x=None, y=None, xlabel=None, ylabel=None,
-                 **kwargs):
+                 vmin=None, vmax=None, **kwargs):
         """Custom addImage
 
         Parameters
@@ -177,6 +193,8 @@ class Plot2D(silxPlot2D):
             x, y to set origin and scale (both should be given!)
         xlabel, ylabel : None or str (optional)
             set self.setGraphXLabel / self.setGraphYLabel
+        vmin, vmax : float (optional)
+            intensity values of the colormap min/max
         """
         self._image = data
         self._x = x
@@ -190,12 +208,17 @@ class Plot2D(silxPlot2D):
         if ylabel is not None:
             self._ylabel = ylabel
             self.setGraphYLabel(ylabel)
+        if (vmin is None):
+            vmin = self._image.min()
+        if (vmax is None):
+            vmax = self._image.max()
+        self.getDefaultColormap().setVRange(vmin, vmax)
         return super(Plot2D, self).addImage(data, origin=self._origin,
                                             scale=self._scale,
                                             **kwargs)
 
 
-def main(contour_levels=5, noise=0.01, compare_with_matplolib=False):
+def main(contour_levels=5, noise=0.1, compare_with_matplolib=False):
     """Run a Qt app with the widget"""
     from sloth.test.dummy_data import dummy_gauss_image
     from silx import sx
@@ -216,9 +239,8 @@ def main(contour_levels=5, noise=0.01, compare_with_matplolib=False):
                                         noise=noise)
     signal = signal1 + 0.8*signal2
     p = Plot2D(backend='matplotlib')
-    p.setLogLevel(logging.DEBUG)
     p.addImage(signal, x=x, y=y, xlabel='X', ylabel='Y')
-    p.addContours(contour_levels)
+    p.addContours(contour_levels, plot_method='curve')
     p.show()
 
     if compare_with_matplolib:
@@ -237,7 +259,7 @@ def main(contour_levels=5, noise=0.01, compare_with_matplolib=False):
         ax.set_title("pure matplotlib")
         plt.show()
 
-    #input("Press enter to close window")
+    input("Press enter to close window")
 
 
 if __name__ == '__main__':
