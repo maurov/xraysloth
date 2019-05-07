@@ -22,16 +22,23 @@ import logging
 #                     filename='{0}.log'.format(tempfile.mktemp()),
 #                     filemode='w')
 
+_levels = {'DEBUG': logging.DEBUG,
+           'INFO': logging.INFO,
+           'WARNING': logging.WARNING,
+           'ERROR': logging.ERROR,
+           'FATAL': logging.FATAL,
+           'CRITICAL': logging.CRITICAL}
 
-def getLogger(name, level=logging.INFO):
+
+def getLogger(name, level='INFO'):
     """Utility function to get the logger with customization
 
     Parameters
     ----------
     name : str
         name of the logger
-    level : int (optional)
-        logging level [logging.INFO]
+    level : str (optional)
+        logging level ['INFO']
     profile : str (optional)
         specific profile [None]
         - None
@@ -40,7 +47,7 @@ def getLogger(name, level=logging.INFO):
             stream=sys.stdout
     """
     logger = logging.getLogger(name)
-    logger.setLevel(level)
+    logger.setLevel(_levels[level])
 
     handler = logging.StreamHandler(sys.stderr)
     """stderr handler (needed to show log in Jupyter notebook)"""
