@@ -27,24 +27,24 @@ class Plot2D(silxPlot2D):
         self.setKeepDataAspectRatio(True)
         self.getDefaultColormap().setName('viridis')
 
-    def _drawContours(self, values, lineStyleCallback=None,
-                      plot_timeout=10, plot_method='scatter'):
+    def _drawContours(self, values, color='gray',
+                      plot_timeout=100, plot_method='curve'):
         """Draw iso contours for given values
 
         Parameters
         ----------
         values : list or array
             intensities at which to find contours
-        lineStyleCallback : function or None (optional)
-            a function that return a dictionary of
-            linestyle, linewidth and color for
-            value, ivalue and ipolygon
+        color : string (optional)
+            color of contours (among common color names) ['gray']
         plot_timeout : int (optional)
             time in seconds befor the plot is interrupted
         plot_method : str (optional)
             method to use for the contour plot
-            'curve' -> self.addCurve
-            'scatter' -> self.addScatter
+            'curve' -> self.addCurve, polygons as from find_contours
+            'curve_max' -> self.addCurve, one polygon (max length)
+            'curve_merge' -> self.addCurve, one polygon (concatenate)
+            'scatter' -> self.addScatter (only points)
         """
         if self._ms is None:
             return
@@ -56,75 +56,49 @@ class Plot2D(silxPlot2D):
             polTime = time.time()
             self._logger.debug(f"Found {len(polygons)} polygon at level {value}")
             totTime += polTime - startTime
+            # prepare polygons list for plot_method
             if len(polygons) == 0:
                 continue
             if len(polygons) > 1:
-                # from sloth.utils.arrays import imax
-                # lengths = [len(x) for x in polygons]
-                # polygon = polygons[imax(lengths)]
-                polygon = np.concatenate(polygons, axis=0)
-            else:
-                polygon = polygons[0]
-            legend = "polygon-%d" % ipolygon
-            xpoly = polygon[:, 1]
-            ypoly = polygon[:, 0]
-            xscale = np.ones_like(xpoly) * self._scale[0]
-            yscale = np.ones_like(ypoly) * self._scale[1]
-            xorigin = np.ones_like(xpoly) * self._origin[0]
-            yorigin = np.ones_like(ypoly) * self._origin[1]
-            x = xpoly * xscale + xorigin
-            y = ypoly * yscale + yorigin
-            if plot_method == 'scatter':
-                from silx.gui.colors import Colormap
-                cm = Colormap()
-                cm.setColormapLUT([[0., 0., 0., 0.2]])
-                arrval = np.ones_like(x)*value
-                self.addScatter(x, y, arrval, symbol='.', colormap=cm)
-            else:
-                if lineStyleCallback is not None:
-                    extraStyle = lineStyleCallback(value, ivalue, ipolygon)
+                if (plot_method == 'curve_max'):
+                    from sloth.utils.arrays import imax
+                    lengths = [len(x) for x in polygons]
+                    polygons = [polygons[imax(lengths)]]
+                elif (plot_method == 'curve_merge') or (plot_method == 'scatter'):
+                    polygons = [np.concatenate(polygons, axis=0)]
                 else:
-                    extraStyle = {"linestyle": "-",
-                                  "linewidth": 0.5,
-                                  "color": "gray"}
-                if totTime > plot_timeout:
+                    pass
+            # define default contour style
+            contourStyle = {"linestyle": "-",
+                            "linewidth": 0.5,
+                            "color": color}
+            for polygon in polygons:
+                legend = "polygon-%d" % ipolygon
+                xpoly = polygon[:, 1]
+                ypoly = polygon[:, 0]
+                xscale = np.ones_like(xpoly) * self._scale[0]
+                yscale = np.ones_like(ypoly) * self._scale[1]
+                xorigin = np.ones_like(xpoly) * self._origin[0]
+                yorigin = np.ones_like(ypoly) * self._origin[1]
+                x = xpoly * xscale + xorigin
+                y = ypoly * yscale + yorigin
+                # plot timeout
+                if totTime >= plot_timeout:
                     self._logger.warning("Plot contours time out reached!")
                     break
-                self.addCurve(x=x, y=y, legend=legend, resetzoom=False,
-                              **extraStyle)
-            pltTime = time.time()
-            totTime += pltTime - polTime
-            ipolygon += 1
-
-            # self.addScatter(x, y, value, symbol='.')
-            # for polygon in polygons:
-            #     legend = "polygon-%d" % ipolygon
-            #     if len(polygon) == 0:
-            #         continue
-
-            #     xpoly = polygon[:, 1]
-            #     ypoly = polygon[:, 0]
-            #     xscale = np.ones_like(xpoly) * self._scale[0]
-            #     yscale = np.ones_like(ypoly) * self._scale[1]
-            #     xorigin = np.ones_like(xpoly) * self._origin[0]
-            #     yorigin = np.ones_like(ypoly) * self._origin[1]
-            #     x = xpoly * xscale + xorigin
-            #     y = ypoly * yscale + yorigin
-
-            #     if lineStyleCallback is not None:
-            #         extraStyle = lineStyleCallback(value, ivalue, ipolygon)
-            #     else:
-            #         extraStyle = {"linestyle": "-",
-            #                       "linewidth": 0.5,
-            #                       "color": "gray"}
-            #     if totTime > plot_timeout:
-            #         self._logger.warning("Plot contours time out reached!")
-            #         break
-            #     self.addCurve(x=x, y=y, legend=legend, resetzoom=False,
-            #                   **extraStyle)
-            #     pltTime = time.time()
-            #     totTime += pltTime - polTime
-            #     ipolygon += 1
+                # plot methods
+                if plot_method == 'scatter':
+                    from silx.gui.colors import (Colormap, rgba)
+                    cm = Colormap()
+                    cm.setColormapLUT([rgba(color)])
+                    arrval = np.ones_like(x)*value
+                    self.addScatter(x, y, arrval, symbol='.', colormap=cm)
+                else:
+                    self.addCurve(x=x, y=y, legend=legend, resetzoom=False,
+                                  **contourStyle)
+                pltTime = time.time()
+                totTime += pltTime - polTime
+                ipolygon += 1
 
     def addContours(self, nlevels, algo='merge', **draw_kwars):
         """Add contour lines to plot
@@ -218,7 +192,8 @@ class Plot2D(silxPlot2D):
                                             **kwargs)
 
 
-def main(contour_levels=5, noise=0.1, compare_with_matplolib=False):
+def main(contour_levels=5, noise=0.1, compare_with_matplolib=False,
+         plot_method='curve'):
     """Run a Qt app with the widget"""
     from sloth.test.dummy_data import dummy_gauss_image
     from silx import sx
@@ -240,7 +215,7 @@ def main(contour_levels=5, noise=0.1, compare_with_matplolib=False):
     signal = signal1 + 0.8*signal2
     p = Plot2D(backend='matplotlib')
     p.addImage(signal, x=x, y=y, xlabel='X', ylabel='Y')
-    p.addContours(contour_levels, plot_method='curve')
+    p.addContours(contour_levels, plot_method=plot_method)
     p.show()
 
     if compare_with_matplolib:
