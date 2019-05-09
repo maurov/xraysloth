@@ -26,14 +26,24 @@ _levels = {'DEBUG': logging.DEBUG,
 #                    'CRITICAL': 'red'}
 #
 
+_log = False
 
-def enable_basicConfig(level='INFO'):
+def logging_basicConfig(level='INFO'):
     """logging basic configuration"""
+    global _log
     logging.basicConfig(level=_levels[level],
                         format=_default_format,
                         datefmt=_default_datefmt)
                         # filename='{0}.log'.format(tempfile.mktemp()),
                         # filemode='w')
+    _log = True
+
+
+def getConsoleHandler():
+    """Default console handler"""
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setFormatter(logging.Formatter(_default_format))
+    return console_handler
 
 
 def getLogger(name, level='INFO'):
@@ -47,31 +57,21 @@ def getLogger(name, level='INFO'):
         name of the logger
     level : str (optional)
         logging level ['INFO']
-    profile : str (optional)
-        specific profile [None]
-        - None
-            stream=sys.stderr
-        - 'notebook'
-            stream=sys.stdout
     """
-    enable_basicConfig(level=level)
+    if not _log:
+        logging_basicConfig(level=level)
     logger = logging.getLogger(name)
     logger.setLevel(_levels[level])
-    return logger
-
-    # handler = logging.StreamHandler(sys.stderr)
-    # """stderr handler (needed to show log in Jupyter notebook)"""
-
-    # formatter = logging.Formatter(_default_format)
-    # handler.setFormatter(formatter)
-    # """Create formatter and add it to the handler"""
 
     # if (logger.hasHandlers()):
     #     logger.handlers.clear()
     # logger.addHandler(handler)
     # """Clear existing handlers and add current one"""
 
-    # return logger
+    logger.addHandler(getConsoleHandler())
+    logger.propagate = False
+
+    return logger
 
 
 def test_logger(level='DEBUG'):
