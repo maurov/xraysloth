@@ -43,5 +43,8 @@ class Config(object):
             self.name = 'sloth'
 
     def read(self):
-        return qt.QSettings(qt.QSettings.IniFormat, qt.QSettings.UserScope,
-                            self.name, 'settings')
+        return qt.QSettings(qt.QSettings.IniFormat,
+                            qt.QSettings.UserScope,
+                            self.name,
+                            'sloth-daxs',
+                            None)
