@@ -251,9 +251,9 @@ class MainWindow(qt.QMainWindow):
     def _initConsoleMenu(self):
         self.menuConsole = self.menuBar.addMenu("Console")
 
-        self.newConsoleAction = qt.QAction(
-            "&New Qt Console", self, shortcut="Ctrl+K",
-            triggered=self._ipykernel.new_qt_console)
+        self.newConsoleAction = qt.QAction("&New Qt Console",
+                                           self, shortcut="Ctrl+K",
+                                           triggered=self._ipykernel.new_qt_console)
         self._addMenuAction(self.menuConsole, self.newConsoleAction)
 
         self.closeConsoleAction = qt.QAction(
@@ -261,5 +261,6 @@ class MainWindow(qt.QMainWindow):
         self._addMenuAction(self.menuConsole, self.closeConsoleAction)
 
     def onClose(self):
-        self._ipykernel.cleanup_consoles()
-        self.app.lastWindowClosed.connect(qt.pyqtSignal(quit()))
+        if self._ipykernel is not None:
+            self._ipykernel.cleanup_consoles()
+        self.closeEvent(quit())
