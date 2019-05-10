@@ -70,11 +70,15 @@ class DataSourceSpecH5(object):
 
     def _initTreeView(self):
         """Init TreeView GUI"""
-        from silx.gui.hdf5 import Hdf5TreeView
-        self._view = Hdf5TreeView()
-        self._model = self._view.findHdf5TreeModel()
+        from sloth.gui.daxs.viewHdf5Tree import TreeView
+        from sloth.gui.daxs.modelHdf5Tree import TreeModel
+        self._view = TreeView()
+        self._model = TreeModel()
+        self._view.setModel(self._model)
         # customization
         self._view.setWindowTitle("DataSourceSpecH5 - view")
+        self._view.setMinimumWidth(1024)
+        self._view.setMinimumHeight(400)
         self._view.setSortingEnabled(False)
         # Avoid the user to drop file in the widget
         self._model.setFileDropEnabled(False)
