@@ -21,6 +21,9 @@ class MainWindowHdf5Tree(qt.QMainWindow):
     """
 
     def __init__(self, app, parent=None, with_ipykernel=False):
+        """
+        Constructor
+        """
         super(MainWindowHdf5Tree, self).__init__(parent=parent)
 
         self._app = app
