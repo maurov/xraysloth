@@ -1,5 +1,5 @@
 #Python environment for: https://github.com/maurov/xraysloth
-#Target: base environment for sloth
+#Target: base environment for sloth based on Larch (Wx) + SILX (Qt)
 #Usage: conda env create -f environment.yml
 name: sloth-env
 channels:
@@ -19,6 +19,7 @@ dependencies:
     - sphinx>=1.5
     - conda-forge::xraylib
     - conda-forge::lmfit>=0.9.13
+    - GSECARS::xraylarch
     - pip:
         - silx>=0.10.1
         - pymca>=5.4.3
