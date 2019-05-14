@@ -25,7 +25,7 @@ except ImportError:
     pass
 
 from sloth.math.lineshapes import (F2S, fwhm2sigma, sigma2fwhm,
-                                   Lorentzian)
+                                   lorentzian)
 
 
 def _get_xraydb():
@@ -54,7 +54,6 @@ def _xraylib_error(ret=None):
     """print a missing xraylib error message and return 'ret'"""
     _logger.error("Xraylib not found")
     return ret
-
 
 
 #######################
@@ -159,9 +158,11 @@ def mapLine2Trans(line):
     """returns a tuple of strings mapping the transitions for a given line"""
     try:
         idx = LINES2TRANS[line]
-        return (LINES[idx[0]], TRANSITIONS[idx[0]], SHELLS[idx[1]], SHELLS[idx[2]])
-    except:
-        _logger.error('line {0} not in the list; returning 0'.format(line))
+        return (LINES[idx[0]],
+                TRANSITIONS[idx[0]],
+                SHELLS[idx[1]], SHELLS[idx[2]])
+    except KeyError:
+        _logger.error('Line {0} not known; returning 0'.format(line))
         return 0
 
 ############################
@@ -187,45 +188,52 @@ def get_element(elem):
 
 
 def find_edge(emin, emax, shells=None):
-    """return the edge energy in a given energy range [emin, emax] (eV)"""
-    if HAS_XRAYLIB is False: _xraylib_error(0)
+    """Get the edge energy in a given energy range [emin, emax] (eV)
+
+    Parameters
+    ----------
+    emin, emax : floats
+        energy range to search for an absorption edege (eV)
+    shells : list of str (optional)
+        list of shells to search for [None -> use SHELLS (=all)]
+    """
+    if HAS_XRAYLIB is False:
+        _xraylib_error(0)
     if shells is None:
         shells = SHELLS
     for el in ELEMENTS:
         for sh in shells:
-            edge = xl.EdgeEnergy(xl.SymbolToAtomicNumber(el), getattr(xl, sh+'_SHELL'))*1000
+            edge = xl.EdgeEnergy(xl.SymbolToAtomicNumber(el),
+                                 getattr(xl, sh+'_SHELL'))*1000
             if ((edge >= emin) and (edge <= emax)):
-                print('{0} \t {1} \t {2:>.2f} eV'.format(el, sh, edge))
+                _logger.info('{0} \t {1} \t {2:>.2f} eV'.format(el, sh, edge))
 
 
 def find_line(emin, emax, elements=None, lines=None, outDict=False):
-    """return the line energy in a given energy range [emin,emax] (eV)
+    """Get the emission line energy in a given energy range [emin,emax] (eV)
 
     Parameters
-    ==========
-
+    ----------
     emin, emax : float
-                 [minimum, maximum] energy range (eV)
-
-    elements : list of str
-               list of elements, [ELEMENTS (all)]
-
-    lines : list of str
-            list of lines, [LINES (all)]
-
+        [minimum, maximum] energy range (eV)
+    elements : list of str (optional)
+        list of elements, [None -> ELEMENTS (all)]
+    lines : list of str (optional)
+        list of lines, [None -> LINES (all)]
     outDict : boolean, False
-              returns a dictionary instead of printing to screen with keywords:
-              _out['el'] : element symbol, list of strs
-              _out['eln] : element number, list of ints
-              _out['ln'] : line, list of strs
-              _out['en'] : energy eV, list of floats
-              _out['w']  : width eV, list of floats
+        returns a dictionary instead of printing to screen with keywords:
 
     Returns
-    =======
-
-    None, prints to screen the results (unless outDict boolean given)
-
+    -------
+    None or outDict
+        if outDict:
+            _out['el']: element symbol, list of strs
+            _out['eln]: element number, list of ints
+            _out['ln']: line, list of strs
+            _out['en']: energy eV, list of floats
+            _out['w'] : width eV, list of floats
+        else:
+            prints to screen the results
     """
     if HAS_XRAYLIB is False:
         _xraylib_error(0)
@@ -240,12 +248,12 @@ def find_line(emin, emax, elements=None, lines=None, outDict=False):
     _out['en'] = []
     _out['w'] = []
     for el in elements:
-        eln = xl.SymbolToAtomicNumber(el)
+        eln = get_element(el)[1]
         for ln in lines:
             try:
                 line = xl.LineEnergy(eln, getattr(xl, ln+'_LINE'))*1000
-            except:
-                print('{0}.{1} none'.format(el, ln))
+            except Exception:
+                _logger.debug('{0}.{1} none'.format(el, ln))
                 continue
             if ((line >= emin) and (line <= emax)):
                 w = fluo_width(elem=el, line=ln)
@@ -255,17 +263,19 @@ def find_line(emin, emax, elements=None, lines=None, outDict=False):
                     _out['ln'].append(ln)
                     _out['en'].append(line)
                     _out['w'].append(w)
-    # returns
+    #: returns
     if outDict:
         return _out
     else:
-        for eln, el, ln, line, w in zip(_out['eln'], _out['el'], _out['ln'], _out['en'], _out['w']):
-            print('{eln} \t {el} \t {ln} \t {line:>.2f} \t {w:>.2f}'.format(**_out))
+        for eln, el, ln, line, w in zip(_out['eln'], _out['el'], _out['ln'],
+                                        _out['en'], _out['w']):
+            _logger.info('{eln} \t {el} \t {ln} \t {line:>.2f} \t {w:>.2f}'.format(**_out))
 
 
 def ene_res(emin, emax, shells=['K']):
     """ used in spectro.py """
-    if HAS_XRAYLIB is False: _xraylib_error(0)
+    if HAS_XRAYLIB is False:
+        _xraylib_error(0)
     s = {}
     s['el'] = []
     s['en'] = []
@@ -286,23 +296,25 @@ def ene_res(emin, emax, shells=['K']):
 
 
 def fluo_width(elem=None, line=None, herfd=False, showInfos=True):
-    """returns the line width in eV
+    """Get the fluorescence line width in eV
 
     Parameters
     ----------
+    elem : string or int
+        absorbing element
+    line : string
+        Siegbahn notation for emission line
 
-    elem : string or int, given element
-    line : string, siegbahn notation for emission line
-
-    Return
-    ------
+    Returns
+    -------
     herfd=False (default): lw_xas + lw_xes
     herfd=True: 1/(math.sqrt(lw_xas**2 + lw_xes**2))
 
     """
-    if HAS_XRAYLIB is False: _xraylib_error(0)
+    if HAS_XRAYLIB is False:
+        _xraylib_error(0)
     if ((elem is None) or (line is None)):
-        print('ERROR: element or edge not given, returning 0')
+        _logger.error('element or edge not given, returning 0')
         return 0
     elm = get_element(elem)
     ln = mapLine2Trans(line)
@@ -310,46 +322,42 @@ def fluo_width(elem=None, line=None, herfd=False, showInfos=True):
         lw_xas = xl.AtomicLevelWidth(elm[1], getattr(xl, ln[2]+'_SHELL'))*1000
         lw_xes = xl.AtomicLevelWidth(elm[1], getattr(xl, ln[3]+'_SHELL'))*1000
         if showInfos:
-            print('{0} {1} (={2}): XAS={3:.2f} eV, XES={4:.2f} eV'.format(elm[0], line, ln[1], lw_xas, lw_xes))
+            _logger.info('{0} {1} (={2}): XAS={3:.2f} eV, XES={4:.2f} eV'.format(elm[0], line, ln[1], lw_xas, lw_xes))
         if herfd is True:
             return 1./(math.sqrt(lw_xas**2 + lw_xes**2))
         else:
             return lw_xas + lw_xes
-    except:
+    except Exception:
         return 0
 
 
 def fluo_amplitude(elem, line, excitation=None, barn_unit=False):
-    """get the fluorescence cross section for given element/line
+    """Get the fluorescence cross section for a given element/line
 
     Parameters
-    ==========
-
+    ----------
     elem : string or number
-           element
-
+        element
     line : string
-           emission line Siegban (e.g. 'LA1') or IUPAC (e.g. 'L3M5')
-
-    excitation : float [None]
-                 excitation energy in eV
-
-    barn_unit : boolean [False]
+        emission line Siegban (e.g. 'LA1') or IUPAC (e.g. 'L3M5')
+    excitation : float (optional)
+        excitation energy in eV [None -> 10 keV]
+    barn_unit : boolean
+        use units of barn/atom [None -> cm2/g]
 
     Returns
-    =======
-
+    -------
     fluo_amp (in 'cm2/g' or 'barn/atom' if barn_unit is True)
 
     """
     if excitation is None:
-        _logger.warning("excitation energy not given, using 10 keV")
+        _logger.warning("Excitation energy not given, using 10 keV")
         excitation = 10.
     #: guess if eV or keV
     elif excitation >= 200.:
         excitation /= 1000
     else:
-        _logger.warning("excitation energy given in keV")
+        _logger.warning("Excitation energy given in keV")
     el_n = get_element(elem)[1]
     if barn_unit:
         CSfluo = xl.CSb_FluorLine_Kissel_Cascade
@@ -357,30 +365,39 @@ def fluo_amplitude(elem, line, excitation=None, barn_unit=False):
         CSfluo = xl.CS_FluorLine_Kissel_Cascade
     try:
         fluo_amp = CSfluo(el_n, getattr(xl, line+'_LINE'), excitation)
-    except:
-        _logger.error("line is wrong")
+    except Exception:
+        _logger.warning("Line not known")
         fluo_amp = 0
     return fluo_amp
 
 
 def xray_line(element, line=None, initial_level=None):
-    """get the energy in eV for a given element/line or level
+    """Get the emission energy in eV for a given element/line or level
 
-    :param element: string or number
-    :param line: string, Siegbahn notation, e.g. 'KA1' [None]
-    :param initial_level: string, initial core level, e.g. 'K' [None]
-    :returns: dictionary {'line' : [], 'ene' : []} or a number
+    Parameters
+    ----------
+    element : string or int
+        absorbing element
+    line: string (optional)
+        Siegbahn notation, e.g. 'KA1' [None -> LINES (all)]
+    initial_level: string
+        initial core level, e.g. 'K' [None]
+
+    Returns
+    -------
+    dictionary {'line': [], 'ene': []} or a number
 
     """
-    if HAS_XRAYLIB is False: _xraylib_error(0)
+    if HAS_XRAYLIB is False:
+        _xraylib_error(0)
     el_n = get_element(element)[1]
-    outdict = {'line' : [],
-               'ene' : []}
+    outdict = {'line': [],
+               'ene': []}
     _retNum = False
     if (line is None) and (initial_level is not None):
         try:
             lines = [line for line in LINES if initial_level in line]
-        except:
+        except Exception:
             _logger.error('initial_level is wrong')
     else:
         lines = [line]
@@ -390,7 +407,7 @@ def xray_line(element, line=None, initial_level=None):
             line_ene = xl.LineEnergy(el_n, getattr(xl, _line+'_LINE'))*1000
             outdict['line'].append(_line)
             outdict['ene'].append(line_ene)
-        except:
+        except Exception:
             _logger.error("line is wrong")
             continue
     if _retNum:
@@ -400,17 +417,18 @@ def xray_line(element, line=None, initial_level=None):
 
 
 def xray_edge(element, initial_level=None):
-    """get the energy edge in eV for a given element
+    """Get the energy edge in eV for a given element
 
     :param element: string or number
     :param initial_level: string, initial core level, e.g. 'K' or list [None]
     :returns: dictionary {'edge' : [], 'ene' : []} or a number
 
     """
-    if HAS_XRAYLIB is False: _xraylib_error(0)
+    if HAS_XRAYLIB is False:
+        _xraylib_error(0)
     el_n = get_element(element)[1]
-    outdict = {'edge' : [],
-               'ene' : []}
+    outdict = {'edge': [],
+               'ene': []}
     _retNum = False
     if initial_level is None:
         initial_level = SHELLS
@@ -424,7 +442,7 @@ def xray_edge(element, initial_level=None):
             edge_ene = xl.EdgeEnergy(el_n, getattr(xl, _level+'_SHELL'))*1000
             outdict['edge'].append(_level)
             outdict['ene'].append(edge_ene)
-        except:
+        except Exception:
             _logger.warning("{0} {1} edge unknown".format(get_element(element)[0], _level))
             continue
     if _retNum:
@@ -435,7 +453,7 @@ def xray_edge(element, initial_level=None):
 
 def fluo_spectrum(elem, line, xwidth=3, xstep=0.05,\
                   plot=False, showInfos=True, **kws):
-    """generate a fluorescence spectrum for a given element/line
+    """Generate a fluorescence spectrum for a given element/line
 
     .. note:: it generates a Lorentzian function with the following parameters:
               - center: emission energy (eV)
@@ -444,30 +462,24 @@ def fluo_spectrum(elem, line, xwidth=3, xstep=0.05,\
               - xmin, xmax: center -+ xwidth*fwhm
 
     Parameters
-    ==========
-
+    ----------
     elem : string or int
-
+        absorbing element
     line : string
-           emission line Siegban (e.g. 'LA1') or IUPAC (e.g. 'L3M5')
-
-    xwidth : int or float [3]
-             multiplication factor to establish xmin, xmax (= center -+ xwidth*fwhm)
-
-    xstep : float [0.05]
-            energy step in eV
-
-    showInfos : boolean [True]
-                print the `info` dict
-
-    plot : boolean [False]
-           plot the line before returning it
-
+        emission line Siegban (e.g. 'LA1') or IUPAC (e.g. 'L3M5')
+    xwidth : int or float (optional)
+        FWHM multiplication factor to establish xmin, xmax range
+        (= center -+ xwidth*fwhm) [3]
+    xstep : float (optional)
+        energy step in eV [0.05]
+    showInfos : boolean (optional)
+        print the `info` dict [True]
+    plot : boolean (optional)
+        plot the line before returning it [False]
     **kws : keyword arguments for :func:`fluo_width`, :func:`fluo_amplitude`
 
     Returns
-    =======
-
+    -------
     xfluo, yfluo, info : XY arrays of floats, dictionary
 
     """
@@ -498,7 +510,7 @@ def fluo_spectrum(elem, line, xwidth=3, xstep=0.05,\
             'yunit': yunit}
     legend = '{eln} {ln}'.format(**info)
     if showInfos:
-        print('Lorentzian => cen: {cen:.3f} eV, amp: {amp:.3f} {yunit}, fwhm: {fwhm:.3f} eV'.format(**info))
+        _logger.info('Lorentzian => cen: {cen:.3f} eV, amp: {amp:.3f} {yunit}, fwhm: {fwhm:.3f} eV'.format(**info))
     if plot:
         from sloth.gui.plot.plot1D import Plot1D
         p1 = Plot1D()
@@ -510,25 +522,23 @@ def fluo_spectrum(elem, line, xwidth=3, xstep=0.05,\
     return xfluo, yfluo, info
 
 
-def fluo_lines(elem, lines, **fluokws):
-    """generate the emission spectrum of a given element and list of lines
+def fluo_lines(elem, lines, retAll=False, **fluokws):
+    """Generate a cumulative emission spectrum of a given element and
+    list of lines
 
     Parameters
-    ==========
-
+    ----------
     elem : string or int
-
-    lines : list of strings
-            emission lines as Siegban (e.g. 'LA1') or IUPAC (e.g. 'L3M5')
-
+    lines : list of str
+        emission lines as Siegban (e.g. 'LA1') or IUPAC (e.g. 'L3M5')
     **fluokws : keyword arguments for :func:`fluo_spectrum`
 
     Returns
-    =======
-
+    -------
     xcom, ycom : arrays of floats
-                 energy/intensity of the whole spectrum
-
+        energy/intensity of the whole spectrum
+    if retAll:
+        xcom, ycom, [xi, yi, ii]
     """
     plot = fluokws.get('plot', False)
     xstep = fluokws.get('xstep', 0.05)
@@ -540,8 +550,8 @@ def fluo_lines(elem, lines, **fluokws):
             xi.append(x)
             yi.append(y)
             ii.append(i)
-        except:
-            print("INFO: no line found for {0}-{1}".format(elem, ln))
+        except Exception:
+            _logger.info("no line found for {0}-{1}".format(elem, ln))
     xmin = min([x.min() for x in xi])
     xmax = max([x.max() for x in xi])
     xcom = np.arange(xmin, xmax, xstep)
@@ -560,7 +570,10 @@ def fluo_lines(elem, lines, **fluokws):
             p.addCurve(x, y, legend=i['ln'], replace=False)
         p.show()
 
-    return xcom, ycom
+    if retAll:
+        return xcom, ycom, [xi, yi, ii]
+    else:
+        return xcom, ycom
 
 
 ##########################
