@@ -17,23 +17,30 @@ import numpy as np
 from .logging import getLogger
 _logger = getLogger('sloth.utils.xdata')
 
-HAS_XRAYDB = False
+HAS_XRAYLIB = False
 try:
     import xraylib as xl
     HAS_XRAYLIB = True
 except ImportError:
     pass
 
-HAS_LARCH = False
-try:
-    import larch
-    from larch import Interpreter
-    _larch = Interpreter() #init larch session
-    from larch_plugins.xray.xraydb_plugin import get_xraydb
-    xdb = get_xraydb(_larch)
-    HAS_LARCH = True
-except:
-    pass
+from sloth.math.lineshapes import (F2S, fwhm2sigma, sigma2fwhm,
+                                   Lorentzian)
+
+
+def _get_xraydb():
+    """Get Larch X-ray database instance"""
+    try:
+        import larch
+        from larch import Interpreter
+        _larch = Interpreter()  #: init larch session
+        from larch_plugins.xray.xraydb_plugin import get_xraydb
+        xdb = get_xraydb(_larch)
+        return xdb
+    except ModuleNotFoundError:
+        return None
+        _logger.error("Larch not found")
+        pass
 
 
 #: ERROR MESSAGES
@@ -49,28 +56,6 @@ def _xraylib_error(ret=None):
     return ret
 
 
-#: SIGMA <-> FWHM
-F2S = 2*math.sqrt(2*math.log(2))
-
-
-def fwhm2sigma(fwhm):
-    """get sigma from FWHM"""
-    return fwhm/F2S
-
-
-def sigma2fwhm(sigma):
-    """get FWHM from sigma"""
-    return sigma*F2S
-
-
-def lorentzian(x, amplitude=1.0, center=0.0, sigma=1.0):
-    """Return a 1-dimensional Lorentzian function.
-
-    lorentzian(x, amplitude, center, sigma) = (amplitude/(1 +
-    ((1.0*x-center)/sigma)**2)) / (pi*sigma)
-
-    """
-    return (amplitude/(1 + ((1.0*x-center)/sigma)**2)) / (math.pi*sigma)
 
 #######################
 #: ELEMENTS AND LINES #
