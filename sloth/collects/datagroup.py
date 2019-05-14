@@ -15,6 +15,10 @@
     - DataGroupRixs
 
 """
+from sloth.utils.logging import getLogger
+_logger = getLogger('sloth.collects')
+_logger.error('!!! DEPRECATED MODULE !!! -> use sloth.groups')
+
 import os, sys, copy, pickle
 import numpy as np
 
