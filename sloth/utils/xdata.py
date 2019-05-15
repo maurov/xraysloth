@@ -248,18 +248,18 @@ def find_line(emin, emax, elements=None, lines=None, outDict=False):
     _out['en'] = []
     _out['w'] = []
     for el in elements:
-        eln = get_element(el)[1]
+        eln = get_element(el)
         for ln in lines:
             try:
-                line = xl.LineEnergy(eln, getattr(xl, ln+'_LINE'))*1000
+                line = xl.LineEnergy(eln[1], getattr(xl, ln+'_LINE'))*1000
             except Exception:
                 _logger.debug('{0}.{1} none'.format(el, ln))
                 continue
             if ((line >= emin) and (line <= emax)):
                 w = fluo_width(elem=el, line=ln)
                 if not w == 0:
-                    _out['el'].append(el)
-                    _out['eln'].append(eln)
+                    _out['el'].append(eln[0])
+                    _out['eln'].append(eln[1])
                     _out['ln'].append(ln)
                     _out['en'].append(line)
                     _out['w'].append(w)
@@ -269,7 +269,7 @@ def find_line(emin, emax, elements=None, lines=None, outDict=False):
     else:
         for eln, el, ln, line, w in zip(_out['eln'], _out['el'], _out['ln'],
                                         _out['en'], _out['w']):
-            _logger.info('{eln} \t {el} \t {ln} \t {line:>.2f} \t {w:>.2f}'.format(**_out))
+            _logger.info(f'{eln} {el} {ln} {line:>.3f} {w:>.2f}')
 
 
 def ene_res(emin, emax, shells=['K']):
