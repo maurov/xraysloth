@@ -19,8 +19,8 @@ dependencies:
     - six>=1.10
     #- patchelf #not available for Mac
     #<Qt/Wx>
-    - qt>=5.7
     - pyqt=5
+    - qt>=5.7
     - anyqt>=0.0.8 #PyQt4/PyQt5 compatibility layer
     - pyqtgraph>=0.10.0
     - wxpython>=4.0.3
@@ -87,6 +87,7 @@ dependencies:
     - conda-forge::orange3
     #<<<PIP PART>>>
     - pip:
+        - PyQtWebEngine
         #<SILX & friends>
         - fisx>=1.1.6
         - fabio>=0.8.0
