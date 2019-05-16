@@ -10,9 +10,10 @@ Notes
 -----
 
 - :mod:`silx.io.commonh5` is the base layer here. This module provides
-  :class:`Node`(object) that is a layer on top of :mod:`h5py`. The base classes
-  for *groups* and *datasets* are, respectively, :class:`Group`(Node) and
- :class:`Dataset`(Node).
+  :class:`silx.io.commonh5.Node` (object) that is a layer on top of :mod:`h5py`.
+  The base classes for *groups* and *datasets* are, respectively,
+  :class:`silx.io.commonh5.Group` (Node) and :class:`silx.io.commonh5.Dataset`
+  (Node).
 
 - The base structure is::
 
