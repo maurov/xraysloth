@@ -49,26 +49,37 @@ class BaseGroup(commonh5.Group):
         super(BaseGroup, self).__init__(name,
                                         parent=parent, attrs=attrs)
 
-
-class RootGroup(commonh5.Group):
-    """Root group (= '/')"""
-
-    def __init__(self):
-        """Constructor with default NXroot class"""
-
-        name = '/NXroot'
-        attrs = {"NX_class": "NXroot",
-                 "created": datetime.datetime.now().isoformat(),
-                 "creator": "sloth %s" % sloth_version
-                 }
-        super(RootGroup, self).__init__(name, parent=None, attrs=attrs)
-
     def add_entry(self, name):
         """Add EntryGroup"""
         self.add_node(EntryGroup(name, parent=self))
 
+    def get_children(self):
+        """List of children"""
+        return list(self._get_items().values())
 
-class EntryGroup(commonh5.Group):
+    def __str__(self, level=0):
+        """Tree representation"""
+        ret = "+" + "---"*level + self.basename + "\n"
+        for child in self.get_children():
+            ret += child.__str__(level+1)
+        return ret
+
+
+class RootGroup(BaseGroup):
+    """Root group (= '/')"""
+
+    def __init__(self, name='/NXroot'):
+        """Constructor with default NXroot class"""
+
+        attrs = {"NX_class": "NXroot",
+                 "created": datetime.datetime.now().isoformat(),
+                 "creator": "sloth %s" % sloth_version
+                 }
+        super(RootGroup, self).__init__(name, parent=None,
+                                        attrs=attrs)
+
+
+class EntryGroup(BaseGroup):
     """Generic group entry in the tree structure
 
     .. note:: This is equivalent to :class:`silx.io.spech5.ScanGroup`
@@ -84,9 +95,6 @@ class EntryGroup(commonh5.Group):
 
         super(EntryGroup, self).__init__(name, parent=parent, attrs=attrs)
 
-    def add_entry(self, name):
-        """Add EntryGroup"""
-        self.add_node(EntryGroup(name, parent=self))
 
 ############
 # DATASETS #
@@ -105,9 +113,12 @@ class BaseDataset(commonh5.Dataset):
 def test_example():
     """Test example for :mod:`sloth.groups.h5base`"""
     _logger.info("Data model example: 't' is the root instance")
-    t = RootGroup()
+    t = RootGroup('test')
     t.add_node(EntryGroup('entry1', parent=t))
     t.add_entry('entry2')
+    t['entry1'].add_entry('subentry1')
+    t['entry2'].add_entry('subentry2')
+    t['entry2/subentry2'].add_entry('subsubentry2')
     return t
 
 
