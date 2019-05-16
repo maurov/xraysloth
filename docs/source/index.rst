@@ -28,6 +28,7 @@ Current version is |release|.
    :hidden:
 
    installation.rst
+   data_model/index.rst
    modules/index.rst
    changelog.rst
    todo.rst
@@ -35,14 +36,18 @@ Current version is |release|.
 :doc:`installation`
   Step-by-step guide to installation.
 
+:doc:`data_model/index`
+  How the data are structured (from file to memory and back).
+
 :doc:`modules/index`
-   Documentation (automagically built from docstrings) for the packages included in *sloth*.
+  Documentation automatically built from the docstrings of the packages
+  included in *sloth*.
 
 :doc:`changelog`
-   List of changes.
+  List of changes.
 
 :doc:`todo`
-   List of things to do (ideas, bugs, plans).
+  List of things to do (ideas, bugs, plans).
 
 
 Indices
