@@ -1,3 +1,6 @@
+
+.. _data-model:
+
 Notes on the data model
 =======================
 

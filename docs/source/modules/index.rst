@@ -5,6 +5,7 @@ Reference
    :maxdepth: 2
 
    io.rst
+   groups.rst
    collects.rst
    fit.rst
    inst.rst
