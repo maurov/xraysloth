@@ -99,6 +99,7 @@ dependencies:
         - spec2nexus
         - palettable
         # Python IDE with Atom and/or Emacs
+        - black
         - ipdb
         - rope
         - jedi
