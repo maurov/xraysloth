@@ -28,6 +28,7 @@ _levels = {'DEBUG': logging.DEBUG,
 
 _log = False
 
+
 def logging_basicConfig(level='INFO'):
     """logging basic configuration"""
     global _log
@@ -63,13 +64,14 @@ def getLogger(name, level='INFO'):
     logger = logging.getLogger(name)
     logger.setLevel(_levels[level])
 
-    # if (logger.hasHandlers()):
-    #     logger.handlers.clear()
-    # logger.addHandler(handler)
-    # """Clear existing handlers and add current one"""
-
+    if (logger.hasHandlers()):
+        logger.handlers.clear()
+        logger.debug("custom logger setup > clear handlers")
     logger.addHandler(getConsoleHandler())
+    """Clear existing handlers and add current one"""
+
     logger.propagate = False
+    logger.debug("custom logger setup > finished")
 
     return logger
 

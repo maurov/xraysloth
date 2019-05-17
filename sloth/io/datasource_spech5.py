@@ -289,7 +289,7 @@ class DataSourceSpecH5(object):
             else:
                 _h5path = f'/{t._scan_str}/'
             write_to_h5(self._sg, self._fname_out, h5path=_h5path,
-                        mode=mode, overwrite_data=True,
+                        mode=mode, overwrite_data=overwrite,
                         create_dataset_args=dict(track_order=True))
             self._logger.info(f'Written {_h5path}')
 

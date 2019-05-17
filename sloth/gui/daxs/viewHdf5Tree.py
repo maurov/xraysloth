@@ -48,3 +48,18 @@ class TreeView(Hdf5TreeView):
 
         for fn in filenames:
             self.model().appendFile(fn)
+
+
+class TreeViewWidget(TreeView):
+    """TreeView widget with embedded TreeModel"""
+
+    def __init__(self):
+        """Constructor"""
+
+        super(TreeViewWidget, self).__init__()
+        from .modelHdf5Tree import TreeModel
+        self.setModel(TreeModel())
+        self.setWindowTitle("Minimal TreeView widget (with TreeModel)")
+        self.setMinimumWidth(1024)
+        self.setMinimumHeight(400)
+        self.setSortingEnabled(False)
