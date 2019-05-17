@@ -21,6 +21,7 @@ dependencies:
     - conda-forge::lmfit>=0.9.13
     - GSECARS::xraylarch
     - pip:
+        - hdf5plugin
         - silx>=0.10.1
         - pymca>=5.4.3
         - sphinxcontrib-napoleon
