@@ -47,9 +47,10 @@ class BaseGroup(commonh5.Group):
     """Base group used to build the tree structure"""
 
     def __init__(self, name, parent=None, attrs=None):
-        """Constructor"""
+        """Constructor with track_order forced to True"""
         super(BaseGroup, self).__init__(name,
-                                        parent=parent, attrs=attrs)
+                                        parent=parent, attrs=attrs,
+                                        track_order=True)
 
     def add_group(self, name, attrs=None, cls=None):
         """Add Group"""
@@ -83,7 +84,6 @@ class RootGroup(BaseGroup):
 
     def __init__(self, name=""):
         """Constructor with default NXroot class"""
-
         attrs = {"NX_class": "NXroot",
                  "created": datetime.datetime.now().isoformat(),
                  "creator": "sloth %s" % sloth_version
@@ -115,7 +115,6 @@ class RootGroup(BaseGroup):
         _logger.warning("FIXME: the order of groups is currently not kept")
 
 
-
 class EntryGroup(BaseGroup):
     """Generic group entry in the tree structure
 
@@ -124,14 +123,12 @@ class EntryGroup(BaseGroup):
     """
 
     def __init__(self, name, parent=None, attrs=None):
-        """Constructor simply adding default NXentry class"""
-
+        """Constructor: simply adding default NXentry class"""
         _attrs = {"NX_class": "NXentry"}
         if attrs is not None:
             attrs.update(_attrs)
         else:
             attrs = _attrs
-
         super(EntryGroup, self).__init__(name, parent=parent, attrs=attrs)
 
 
@@ -145,13 +142,11 @@ class BaseDataset(commonh5.Dataset):
 
     def __init(self, name, data, parent=None, attrs=None):
         """Constructor simply adding default NXdata class"""
-
         _attrs = {"NX_class": "NXdata"}
         if attrs is not None:
             attrs.update(_attrs)
         else:
             attrs = _attrs
-
         super(BaseDataset, self).__init__(name, data,
                                           parent=parent, attrs=attrs)
 
