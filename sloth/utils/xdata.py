@@ -220,6 +220,7 @@ def get_line(line):
         _errstr = f"Line {line} is not a valid name in Siegbahn notation"
         _logger.error(_errstr)
         raise NameError(_errstr)
+    return line
 
 
 def find_edge(emin, emax, shells=None):
@@ -332,7 +333,7 @@ def ene_res(emin, emax, shells=['K']):
     return s
 
 
-def fluo_width(elem=None, line=None, herfd=False):
+def fluo_width(elem=None, line=None, herfd=False, showInfos=True):
     """Get the fluorescence line width in eV
 
     Parameters
@@ -359,9 +360,10 @@ def fluo_width(elem=None, line=None, herfd=False):
         lw_xas = xl.AtomicLevelWidth(elm[1], getattr(xl, ln[2]+'_SHELL'))*1000
         lw_xes = xl.AtomicLevelWidth(elm[1], getattr(xl, ln[3]+'_SHELL'))*1000
         lw_herfd = 1./(math.sqrt(lw_xas**2 + lw_xes**2))
-        _logger.info(f"{elm[0]} {line} (={ln[1]}):")
-        _logger.info(f"Atomic levels widths: XAS={lw_xas:.2f} eV,\
-                     XES={lw_xes:.2f} [HERFD={lw_herfd:.2f} eV]")
+        if showInfos:
+            _logger.info(f"{elm[0]} {line} (={ln[1]}):")
+            _logger.info(f"Atomic levels widths: XAS={lw_xas:.2f} eV,\
+                        XES={lw_xes:.2f} [HERFD={lw_herfd:.2f} eV]")
         if herfd is True:
             return lw_herfd
         else:
@@ -395,8 +397,7 @@ def fluo_amplitude(elem, line, excitation=None, barn_unit=False):
     #: guess if eV or keV
     elif excitation >= 200.:
         excitation /= 1000
-    else:
-        _logger.warning("Excitation energy given in keV")
+    _logger.info(f"Excitation energy is {excitation} keV")
     el_n = get_element(elem)[1]
     if barn_unit:
         CSfluo = xl.CSb_FluorLine_Kissel_Cascade

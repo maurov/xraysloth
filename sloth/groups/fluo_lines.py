@@ -4,11 +4,11 @@
 ===========================================
 """
 
-from .h5base import (EntryGroup, BaseDataset)
+from sloth.groups.h5base import EntryGroup
 
 from sloth.utils.xdata import (get_element, get_line, mapLine2Trans,
-                                xray_line, xray_edge,
-                               fluo_width, fluo_amplitude)
+                               xray_line, xray_edge,
+                               fluo_width, fluo_amplitude, fluo_spectrum)
 
 #: module logger
 from sloth.utils.logging import getLogger
@@ -22,28 +22,54 @@ class FluoLine(EntryGroup):
     attrs = {'element': None,  #: absorbing element name
              'element_Z': None,  #: atomic number
              'line': None,  #: emission line name
+             'label': None,  #: group label = {element}_{line}
              'transition': None,  #: emission line IUPAC notation
              'edge': None,  #: energy edge of the given line
              'energy': None,  #: emission line energy (eV)
              'width': None,  #: line width => sum atomic levels XAS+XES
              'excitation': None,  #: excitation energy in eV
-             'amplitude': None,
+             'amplitude': None,  #: cross section of the line
              }
 
-    def __init__(self, element, line, excitation=None):
+    def __init__(self, element, line, excitation=None, parent=None):
         """Constructor with element and line names"""
-        self.__dict__.update(self.attrs)
         element = get_element(element)
-        self.element = element[0]
-        self.element_Z = element[1]
         line = get_line(line)
-        self.line = line
-        self.transition = self.get_transition()
-        self.edge = self.get_edge()
-        self.energy = self.get_energy()
-        self.width = self.get_width()
-        if excitation is not None:
-            self.excitation = excitation
+        self.update_attrs(dict(element=element[0],
+                               element_Z=element[1],
+                               line=line,
+                               label=f"{element[0]}_{line}",
+                               excitation=excitation
+                               )
+                          )
+        self.update_attrs(dict(transition=self.get_transition()))
+        self.update_attrs(dict(edge=self.get_edge()))
+        self.update_attrs(dict(energy=self.get_energy()))
+        self.update_attrs(dict(width=self.get_width()))
+        self.update_attrs(dict(amplitude=self.get_amplitude()))
+
+        super(FluoLine, self).__init__(self.label, attrs=self.attrs,
+                                       parent=parent)
+
+        self.init_spectrum()
+        self._plotWin = None
+
+    def _getPlotWin(self):
+        """Get plot window object"""
+        plotWin = self._plotWin
+        if plotWin is None:
+            from silx import sx
+            from sloth.gui.plot.plot1D import Plot1D
+            sx.enable_gui()
+            plotWin = Plot1D()
+            self._plotWin = plotWin
+        return plotWin
+
+    def update_attrs(self, attrs=None):
+        """Update attributes"""
+        if attrs is not None:
+            self.attrs.update(attrs)
+        self.__dict__.update(self.attrs)
 
     def get_transition(self):
         """Line transition IUPAC"""
@@ -66,6 +92,50 @@ class FluoLine(EntryGroup):
     def get_amplitude(self):
         """Line cross section"""
         return fluo_amplitude(self.element, self.line, self.excitation)
+
+    def init_spectrum(self, xwidth=3., xstep=0.05):
+        """Generate the fluorescence spectrum
+
+        Parameters
+        ----------
+        xwidth : int or float (optional)
+            FWHM multiplication factor to establish xmin, xmax range
+            (= center -+ xwidth*fwhm) [3]
+        xstep : float (optional)
+            energy step in eV [0.05]
+        """
+        x, y, _i = fluo_spectrum(self.element, self.line, xwidth=xwidth,
+                                 xstep=xstep, excitation=self.excitation,
+                                 showInfos=False)
+        _gid = 'spectrum'
+        self.add_group(_gid)
+        self[_gid].add_dataset('x', x)
+        self[_gid].add_dataset('y', y)
+        self[_gid].attrs.update(dict(xlabel='Energy (eV)',
+                                     ylabel='Intensity'))
+
+    @property
+    def spectrum(self):
+        return self['spectrum']
+
+    @property
+    def x(self):
+        return self['spectrum/x'].value
+
+    @property
+    def y(self):
+        return self['spectrum/y'].value
+
+    def plot(self, plotWin=None):
+        """Plot the spectrum"""
+        if plotWin is None:
+            plotWin = self._getPlotWin()
+        plotWin.addCurve(self.x, self.y, legend=self.label, replace=True)
+        plotWin.setWindowTitle('FluoLine')
+        plotWin.setGraphTitle(f"Center:{self.energy} eV, Width:{self.width} eV")
+        plotWin.setGraphXLabel(self.spectrum.attrs['xlabel'])
+        plotWin.setGraphYLabel(self.spectrum.attrs['ylabel'])
+        plotWin.show()
 
 
 def test():

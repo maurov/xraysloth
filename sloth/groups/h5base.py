@@ -78,19 +78,6 @@ class BaseGroup(commonh5.Group):
             ret += child.__str__(level+1)
         return ret
 
-
-class RootGroup(BaseGroup):
-    """Root group (= '/')"""
-
-    def __init__(self, name=""):
-        """Constructor with default NXroot class"""
-        attrs = {"NX_class": "NXroot",
-                 "created": datetime.datetime.now().isoformat(),
-                 "creator": "sloth %s" % sloth_version
-                 }
-        super(RootGroup, self).__init__(name, parent=None,
-                                        attrs=attrs)
-
     def write_to_h5(self, filename, overwrite=False):
         """Write the whole tree to file"""
         self._fname_out = filename
@@ -113,6 +100,19 @@ class RootGroup(BaseGroup):
                     create_dataset_args=dict(track_order=True))
         _logger.info(f"{self.basename} written to {filename}")
         _logger.warning("FIXME: the order of groups is currently not kept")
+
+
+class RootGroup(BaseGroup):
+    """Root group (= '/')"""
+
+    def __init__(self, name=""):
+        """Constructor with default NXroot class"""
+        attrs = {"NX_class": "NXroot",
+                 "created": datetime.datetime.now().isoformat(),
+                 "creator": "sloth %s" % sloth_version
+                 }
+        super(RootGroup, self).__init__(name, parent=None,
+                                        attrs=attrs)
 
 
 class EntryGroup(BaseGroup):
@@ -162,15 +162,19 @@ def test_example(write=True, view=True):
     t = RootGroup('test')
     t.add_group('Z9entry1', cls=EntryGroup)
     t.add_group('A0entry2')
-    t['Z9entry1'].add_group('subentry1')
-    t['A0entry2'].add_group('subentry2')
-    t['A0entry2/subentry2'].add_group('subsubentry2')
+    t['Z9entry1'].add_group('ZZsubentry1')
+    t['Z9entry1'].add_group('ZAsubentry2')
+    t['A0entry2'].add_group('AAsubentry1')
+    t['A0entry2'].add_group('AZsubentry2')
+    t['A0entry2/AZsubentry2'].add_group('Bsubsubentry1')
+    t['A0entry2/AZsubentry2'].add_group('Dsubsubentry2')
+    t['A0entry2/AZsubentry2'].add_group('Asubsubentry3')
 
     #: +dataset
     import numpy as np
     x = np.arange(10)
     t['Z9entry1'].add_dataset('x', x)
-    t['Z9entry1/subentry1'].add_dataset('x', x)
+    t['Z9entry1/ZZsubentry1'].add_dataset('x', x)
 
     _logger.info('print(t):\n%s', t)
 
