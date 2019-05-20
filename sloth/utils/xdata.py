@@ -84,17 +84,41 @@ ELEMENTS = ('H', 'He',
 #: N = 4 (s, p, d, f)
 #: O = 5 (s, p, d, f)
 #: P = 6 (s, p)
-#: TRANSITIONS
-#: 1 = s
-#: 2, 3 = p (1/2, 3/2)
-#: 4, 5 = d (3/2, 5/2)
-#: 6, 7 = f (5/2, 7/2)
 SHELLS = ('K',                                       # 0
           'L1', 'L2', 'L3',                          # 1, 2, 3
           'M1', 'M2', 'M3', 'M4', 'M5',              # 4, 5, 6, 7, 8
           'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7',  # 9, 10, 11, 12, 13, 14, 15
           'O1', 'O2', 'O3', 'O4', 'O5',              # 16, 17, 18, 19, 20
           'P1', 'P2', 'P3')                          # 21, 22, 23
+
+#: TRANSITIONS
+#: 1 = s
+#: 2, 3 = p (1/2, 3/2)
+#: 4, 5 = d (3/2, 5/2)
+#: 6, 7 = f (5/2, 7/2)
+LEVELS_DICT = {'K': '1s',
+               'L1': '2s',
+               'L2': '2p1/2',
+               'L3': '2p3/2',
+               'M1': '3s',
+               'M2': '3p1/2',
+               'M3': '3p3/2',
+               'M4': '3d3/2',
+               'M5': '3d5/2',
+               'N1': '4s',
+               'N2': '4p1/2',
+               'N3': '4p3/2',
+               'N4': '4d3/2',
+               'N5': '4d5/2',
+               'N6': '4f5/2',
+               'N7': '4f7/2',
+               'O1': '5s',
+               'O2': '5p1/2',
+               'O3': '5p3/2',
+               'P1': '6s',
+               'P2': '6p1/2',
+               'P3': '6p3/2'
+               }
 
 #: dictionary of lines
 #: Ln in Hepheastus is LE in Xraylib
@@ -125,7 +149,8 @@ TRANS_K = TRANS_DICT['K']
 TRANS_L = TRANS_DICT['L1'] + TRANS_DICT['L2'] + TRANS_DICT['L3']
 TRANS_M = TRANS_DICT['M3'] + TRANS_DICT['M4'] + TRANS_DICT['M5']
 TRANSITIONS = TRANS_K + TRANS_L + TRANS_M
-#: INDEX DICTIONARY: KEYS=LINES : VALUES=(LINES[IDX], SHELLS[IDX_XAS], SHELLS[IDX_XES])
+#: INDEX DICTIONARY: KEYS=LINES : VALUES=(LINES[IDX],\
+#                                         SHELLS[IDX_XAS], SHELLS[IDX_XES])
 LINES2TRANS = {'KA1': (0, 0, 3),
                'KA2': (1, 0, 2),
                'KA3': (2, 0, 1),
@@ -172,19 +197,29 @@ def mapLine2Trans(line):
 
 def get_element(elem):
     """get a tuple for element name and number"""
+    _errstr = f"Element {elem} not known!"
+    if (type(elem) is str) and (elem not in ELEMENTS):
+        _logger.error(_errstr)
+        raise NameError(_errstr)
     if (type(elem) is str) and (elem in ELEMENTS):
         elem_z = xl.SymbolToAtomicNumber(elem)
-        if elem_z == 0:
-            raise NameError("unknown element name")
         elem_str = elem
     elif (type(elem) is int):
         elem_str = xl.AtomicNumberToSymbol(elem)
         if elem_str is None:
-            raise NameError("element Z out of range")
+            raise NameError("Element Z out of range")
         elem_z = elem
     else:
-        raise NameError("check element argument")
+        raise NameError(_errstr)
     return (elem_str, elem_z)
+
+
+def get_line(line):
+    """Check the line name is a valid name and return it"""
+    if line not in LINES:
+        _errstr = f"Line {line} is not a valid name in Siegbahn notation"
+        _logger.error(_errstr)
+        raise NameError(_errstr)
 
 
 def find_edge(emin, emax, shells=None):
@@ -284,8 +319,10 @@ def ene_res(emin, emax, shells=['K']):
     s['dee'] = []
     for el in ELEMENTS:
         for sh in shells:
-            edge = xl.EdgeEnergy(xl.SymbolToAtomicNumber(el), getattr(xl, sh+'_SHELL'))*1000
-            ch = xl.AtomicLevelWidth(xl.SymbolToAtomicNumber(el), getattr(xl, sh+'_SHELL'))*1000
+            edge = xl.EdgeEnergy(xl.SymbolToAtomicNumber(el),
+                                 getattr(xl, sh+'_SHELL'))*1000
+            ch = xl.AtomicLevelWidth(xl.SymbolToAtomicNumber(el),
+                                     getattr(xl, sh+'_SHELL'))*1000
             if ((edge >= emin) and (edge <= emax)):
                 s['el'].append(el)
                 s['en'].append(xl.SymbolToAtomicNumber(el))
@@ -295,7 +332,7 @@ def ene_res(emin, emax, shells=['K']):
     return s
 
 
-def fluo_width(elem=None, line=None, herfd=False, showInfos=True):
+def fluo_width(elem=None, line=None, herfd=False):
     """Get the fluorescence line width in eV
 
     Parameters
@@ -321,10 +358,12 @@ def fluo_width(elem=None, line=None, herfd=False, showInfos=True):
     try:
         lw_xas = xl.AtomicLevelWidth(elm[1], getattr(xl, ln[2]+'_SHELL'))*1000
         lw_xes = xl.AtomicLevelWidth(elm[1], getattr(xl, ln[3]+'_SHELL'))*1000
-        if showInfos:
-            _logger.info('{0} {1} (={2}): XAS={3:.2f} eV, XES={4:.2f} eV'.format(elm[0], line, ln[1], lw_xas, lw_xes))
+        lw_herfd = 1./(math.sqrt(lw_xas**2 + lw_xes**2))
+        _logger.info(f"{elm[0]} {line} (={ln[1]}):")
+        _logger.info(f"Atomic levels widths: XAS={lw_xas:.2f} eV,\
+                     XES={lw_xes:.2f} [HERFD={lw_herfd:.2f} eV]")
         if herfd is True:
-            return 1./(math.sqrt(lw_xas**2 + lw_xes**2))
+            return lw_herfd
         else:
             return lw_xas + lw_xes
     except Exception:
