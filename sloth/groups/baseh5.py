@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Basic data groups that mimics HDF5 tree-like structure
-=========================================================
+"""
+Basic data groups that mimics HDF5 tree-like structure
+======================================================
 
 .. note:: The implementation stricty follows the one in :mod:`silx.io.spech5`
     expanding it by disentanglig from the Spec file.

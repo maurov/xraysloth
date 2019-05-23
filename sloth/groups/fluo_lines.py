@@ -4,7 +4,7 @@
 ===========================================
 """
 
-from sloth.groups.h5base import EntryGroup
+from sloth.groups.baseh5 import EntryGroup
 
 from sloth.utils.xdata import (get_element, get_line, mapLine2Trans,
                                xray_line, xray_edge,
@@ -35,18 +35,18 @@ class FluoLine(EntryGroup):
         """Constructor with element and line names"""
         element = get_element(element)
         line = get_line(line)
-        self.update_attrs(dict(element=element[0],
-                               element_Z=element[1],
-                               line=line,
-                               label=f"{element[0]}_{line}",
-                               excitation=excitation
+        self._update_attrs(dict(element=element[0],
+                                element_Z=element[1],
+                                line=line,
+                                label=f"{element[0]}_{line}",
+                                excitation=excitation
                                )
                           )
-        self.update_attrs(dict(transition=self.get_transition()))
-        self.update_attrs(dict(edge=self.get_edge()))
-        self.update_attrs(dict(energy=self.get_energy()))
-        self.update_attrs(dict(width=self.get_width()))
-        self.update_attrs(dict(amplitude=self.get_amplitude()))
+        self._update_attrs(dict(transition=self.get_transition()))
+        self._update_attrs(dict(edge=self.get_edge()))
+        self._update_attrs(dict(energy=self.get_energy()))
+        self._update_attrs(dict(width=self.get_width()))
+        self._update_attrs(dict(amplitude=self.get_amplitude()))
 
         super(FluoLine, self).__init__(self.label, attrs=self.attrs,
                                        parent=parent)
@@ -65,7 +65,7 @@ class FluoLine(EntryGroup):
             self._plotWin = plotWin
         return plotWin
 
-    def update_attrs(self, attrs=None):
+    def _update_attrs(self, attrs=None):
         """Update attributes"""
         if attrs is not None:
             self.attrs.update(attrs)
