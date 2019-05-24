@@ -111,6 +111,7 @@ dependencies:
         - python-jsonrpc-server
         - python-language-server[all]
         - sphinxcontrib-napoleon
+        - recommonmark
         #- radon #orange-dev
         #- graypy #tomwer
         #- requests-unixsocket #tomwer-dev

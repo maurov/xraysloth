@@ -26,4 +26,5 @@ dependencies:
         - pymca>=5.4.3
         - sphinxcontrib-napoleon
         - sphinx_rtd_theme
+        - recommonmark
         - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl; sys_platform == 'linux'

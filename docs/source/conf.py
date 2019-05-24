@@ -47,7 +47,8 @@ extensions = ['sphinx.ext.mathjax',
               'sphinx.ext.mathjax',
               'sphinx.ext.viewcode',
               'sphinx.ext.doctest',
-              'sphinx.ext.autosectionlabel']
+              'sphinx.ext.autosectionlabel',
+              'recommonmark']
 
 autodoc_member_order = 'bysource'
 suppress_warnings = ["app.add_node"]
@@ -59,7 +60,11 @@ templates_path = ['_templates']
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
+    '.txt': 'markdown',
+    }
 
 # The master toctree document.
 master_doc = 'index'
