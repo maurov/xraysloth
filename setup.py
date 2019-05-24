@@ -90,29 +90,29 @@ def _install_scripts(_setup):
         os.chmod(dest, 493)  # mode=755
 
 
-def main(install_scripts=True):
+def main(install_scripts=False):
     """The main entry point."""
     config = configuration()
     setup_kwargs = config.todict()
     setup_kwargs.update(
-        name = PROJECT,
-        version = sloth.__version__,
-        packages = sloth.__pkgs__,
-        description = 'some utilities for x-ray spectroscopists',
-        long_description = get_readme(),
-        license = 'BSD',
-        author = 'Mauro Rovezzi',
-        author_email = 'mauro.rovezzi@gmail.com',
-        url = 'https://github.com/maurov/sloth',
-        download_url = 'https://github.com/maurov/sloth',
-        classifiers = ['Development Status :: 1 - Planning',
-                       'License :: OSI Approved :: BSD',
-                       'Operating System :: OS Independent',
-                       'Programming Language :: Python :: 2',
-                       'Programming Language :: Python :: 3',
-                       'Topic :: Scientific/Engineering :: Physics',
-                       'Intended Audience :: Education',
-                       'Intended Audience :: Science/Research']
+        name=PROJECT,
+        version=sloth.__version__,
+        packages=sloth.__pkgs__,
+        description='some utilities for x-ray spectroscopists',
+        long_description=get_readme(),
+        license='BSD',
+        author='Mauro Rovezzi',
+        author_email='mauro.rovezzi@gmail.com',
+        url='https://github.com/maurov/sloth',
+        download_url='https://github.com/maurov/sloth',
+        classifiers=['Development Status :: 1 - Planning',
+                     'License :: OSI Approved :: BSD',
+                     'Operating System :: OS Independent',
+                     'Programming Language :: Python :: 2',
+                     'Programming Language :: Python :: 3',
+                     'Topic :: Scientific/Engineering :: Physics',
+                     'Intended Audience :: Education',
+                     'Intended Audience :: Science/Research']
         )
     _setup = setup(**setup_kwargs)
 
