@@ -88,10 +88,14 @@
               
             
             
-              <p class="caption"><span class="caption-text">Full contents - hidden:</span></p>
+              <p class="caption"><span class="caption-text">Contents</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_model/index.html">Notes on the data model</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="io.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.io</span></code>: Input-output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="groups.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.groups</span></code>: data groups</a></li>
 <li class="toctree-l2"><a class="reference internal" href="collects.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects</span></code>: Data containers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fit.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit</span></code>: fitting tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inst.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst</span></code>: working with instrumentation</a></li>
@@ -589,10 +593,31 @@ and (p20, p21)</p>
 <div class="section" id="deglitch-utilities">
 <h3>Deglitch utilities<a class="headerlink" href="#deglitch-utilities" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
-<dt id="sloth.math.deglitch.remove_spikes">
-<code class="descclassname">sloth.math.deglitch.</code><code class="descname">remove_spikes</code><span class="sig-paren">(</span><em>y</em>, <em>window=3</em>, <em>threshold=3</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/deglitch.html#remove_spikes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.deglitch.remove_spikes" title="Permalink to this definition">¶</a></dt>
+<dt id="sloth.math.deglitch.remove_spikes_medfilt1d">
+<code class="descclassname">sloth.math.deglitch.</code><code class="descname">remove_spikes_medfilt1d</code><span class="sig-paren">(</span><em>y_spiky</em>, <em>kernel_size=3</em>, <em>threshold=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/deglitch.html#remove_spikes_medfilt1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.deglitch.remove_spikes_medfilt1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove spikes in a 1D array using medfilt from silx.math</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_spiky</strong> (<em>array</em>) – spiky data</p></li>
+<li><p><strong>kernel_size</strong> (<em>int</em><em>, </em><em>optional</em>) – kernel size where to calculate median [3]</p></li>
+<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – relative difference between filtered and spiky data [0.1]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>filtered array</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.math.deglitch.remove_spikes_pandas">
+<code class="descclassname">sloth.math.deglitch.</code><code class="descname">remove_spikes_pandas</code><span class="sig-paren">(</span><em>y</em>, <em>window=3</em>, <em>threshold=3</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/deglitch.html#remove_spikes_pandas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.deglitch.remove_spikes_pandas" title="Permalink to this definition">¶</a></dt>
 <dd><p>remove spikes using pandas</p>
-<p>taken from <a href="#id1"><span class="problematic" id="id2">`https://ocefpaf.github.io/python4oceanographers/blog/2015/03/16/outlier_detection/`_</span></a></p>
+<p>Taken from <a href="#id1"><span class="problematic" id="id2">`https://ocefpaf.github.io/python4oceanographers/blog/2015/03/16/outlier_detection/`_</span></a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>this will not work in pandas &gt; 0.17 one could simply do
@@ -602,9 +627,9 @@ df.as_matrix() is deprecated, use df.values instead</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>y</strong> (<em>data array</em>) – </p></li>
-<li><p><strong>window</strong> (<em>int</em><em>, </em><em>[</em><em>3</em><em>]</em>) – window in rolling</p></li>
-<li><p><strong>threshold</strong> (<em>int</em><em>, </em><em>[</em><em>3</em><em>]</em>) – number of sigma</p></li>
+<li><p><strong>y</strong> (<em>array 1D</em>) – </p></li>
+<li><p><strong>window</strong> (<em>int</em><em> (</em><em>optional</em><em>)</em>) – window in rolling median [3]</p></li>
+<li><p><strong>threshold</strong> (<em>int</em><em> (</em><em>optional</em><em>)</em>) – number of sigma difference with original data</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

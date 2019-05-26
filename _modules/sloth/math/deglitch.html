@@ -86,8 +86,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">Full contents - hidden:</span></p>
+              <p class="caption"><span class="caption-text">Contents</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data_model/index.html">Notes on the data model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../todo.html">To Do</a></li>
@@ -163,42 +166,69 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="n">HAS_PANDAS</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-    <span class="n">HAS_PANDAS</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="k">except</span><span class="p">:</span>
-    <span class="k">pass</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;sloth.utils.deglitch&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="remove_spikes"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.deglitch.remove_spikes">[docs]</a><span class="k">def</span> <span class="nf">remove_spikes</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+
+<div class="viewcode-block" id="remove_spikes_medfilt1d"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.deglitch.remove_spikes_medfilt1d">[docs]</a><span class="k">def</span> <span class="nf">remove_spikes_medfilt1d</span><span class="p">(</span><span class="n">y_spiky</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Remove spikes in a 1D array using medfilt from silx.math</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_spiky : array</span>
+<span class="sd">        spiky data</span>
+
+<span class="sd">    kernel_size : int, optional</span>
+<span class="sd">        kernel size where to calculate median [3]</span>
+
+<span class="sd">    threshold : float, optional</span>
+<span class="sd">        relative difference between filtered and spiky data [0.1]</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    array</span>
+<span class="sd">        filtered array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ynew</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">y_spiky</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">silx.math.medianfilter</span> <span class="k">import</span> <span class="n">medfilt1d</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;medfilt1d not found! -&gt; returning zeros&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ynew</span>
+    <span class="n">y_filtered</span> <span class="o">=</span> <span class="n">medfilt1d</span><span class="p">(</span><span class="n">y_spiky</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">,</span> <span class="n">conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                           <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">cval</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">diff</span> <span class="o">=</span> <span class="n">y_filtered</span><span class="o">-</span><span class="n">y_spiky</span>
+    <span class="n">rel_diff</span> <span class="o">=</span> <span class="n">diff</span><span class="o">/</span><span class="n">y_filtered</span>
+    <span class="n">ynew</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">rel_diff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">y_filtered</span><span class="p">,</span> <span class="n">y_spiky</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ynew</span></div>
+
+
+<div class="viewcode-block" id="remove_spikes_pandas"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.deglitch.remove_spikes_pandas">[docs]</a><span class="k">def</span> <span class="nf">remove_spikes_pandas</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;remove spikes using pandas</span>
 
-<span class="sd">    taken from `https://ocefpaf.github.io/python4oceanographers/blog/2015/03/16/outlier_detection/`_</span>
-<span class="sd">    </span>
+<span class="sd">    Taken from `https://ocefpaf.github.io/python4oceanographers/blog/2015/03/16/outlier_detection/`_</span>
+
 <span class="sd">    .. note:: this will not work in pandas &gt; 0.17 one could simply do</span>
 <span class="sd">              `df.rolling(3, center=True).median()`; also</span>
 <span class="sd">              df.as_matrix() is deprecated, use df.values instead</span>
 
 <span class="sd">    Parameters</span>
-<span class="sd">    ==========</span>
-
-<span class="sd">    y : data array</span>
-
-<span class="sd">    window : int, [3]</span>
-<span class="sd">             window in rolling</span>
-<span class="sd">    </span>
-<span class="sd">    threshold : int, [3]</span>
-<span class="sd">                number of sigma</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y : array 1D</span>
+<span class="sd">    window : int (optional)</span>
+<span class="sd">        window in rolling median [3]</span>
+<span class="sd">    threshold : int (optional)</span>
+<span class="sd">        number of sigma difference with original data</span>
 
 <span class="sd">    Return</span>
-<span class="sd">    ======</span>
-
+<span class="sd">    ------</span>
 <span class="sd">    ynew : array like x/y</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ynew</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">HAS_PANDAS</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ERROR: pandas not found (required for this function)&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;pandas not found! -&gt; returning zeros&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ynew</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
@@ -216,7 +246,7 @@
         <span class="n">sigma</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">mean</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
         <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sigma</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sigma</span><span class="p">)))</span>
         <span class="n">ynew</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">threshold</span> <span class="o">*</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">yf</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-        
+
         <span class="c1">#ynew = np.array(yf.values).reshape(len(x))</span>
     <span class="k">return</span> <span class="n">ynew</span></div>
 </pre></div>

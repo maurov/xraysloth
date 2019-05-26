@@ -87,8 +87,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">Full contents - hidden:</span></p>
+              <p class="caption"><span class="caption-text">Contents</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_model/index.html">Notes on the data model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules/index.html">Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="todo.html">To Do</a></li>
@@ -177,6 +180,7 @@
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
  | <a href="#U"><strong>U</strong></a>
+ | <a href="#V"><strong>V</strong></a>
  | <a href="#W"><strong>W</strong></a>
  | <a href="#X"><strong>X</strong></a>
  
@@ -214,19 +218,25 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules/raytracing.html#sloth.raytracing.crystal_box.XCrystalBox.check_opts">check_opts() (sloth.raytracing.crystal_box.XCrystalBox method)</a>
 </li>
+      <li><a href="modules/utils.html#sloth.utils.exceptions.checkZeroDivision">checkZeroDivision() (in module sloth.utils.exceptions)</a>
+</li>
       <li><a href="modules/math.html#sloth.math.geometry3D.circle_3p">circle_3p() (in module sloth.math.geometry3D)</a>
 </li>
       <li><a href="modules/math.html#sloth.math.geometry3D.circle_radius">circle_radius() (in module sloth.math.geometry3D)</a>
 </li>
-      <li><a href="modules/utils.html#sloth.utils.genericutils.colorstr">colorstr() (in module sloth.utils.genericutils)</a>
+      <li><a href="modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.close">close() (sloth.io.datasource_spech5.DataSourceSpecH5 method)</a>
 </li>
-      <li><a href="modules/math.html#sloth.math.convolution1D.conv">conv() (in module sloth.math.convolution1D)</a>
+      <li><a href="modules/utils.html#sloth.utils.genericutils.colorstr">colorstr() (in module sloth.utils.genericutils)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules/math.html#sloth.math.convolution1D.conv">conv() (in module sloth.math.convolution1D)</a>
+</li>
       <li><a href="modules/collects.html#sloth.collects.datagroup.DataGroup.copyattr">copyattr() (sloth.collects.datagroup.DataGroup method)</a>
 </li>
       <li><a href="modules/utils.html#sloth.utils.bragg.cotdeg">cotdeg() (in module sloth.utils.bragg)</a>
+</li>
+      <li><a href="modules/utils.html#sloth.utils.files.cp_replace">cp_replace() (in module sloth.utils.files)</a>
 </li>
       <li><a href="modules/collects.html#sloth.collects.datagroup_rixs.RixsData.crop">crop() (sloth.collects.datagroup_rixs.RixsData method)</a>
 </li>
@@ -261,6 +271,8 @@
       <li><a href="modules/collects.html#sloth.collects.datagroup2D.DataGroup2D">DataGroup2D (class in sloth.collects.datagroup2D)</a>
 </li>
       <li><a href="modules/collects.html#sloth.collects.datagroup_rixs.DataGroupRixs">DataGroupRixs (class in sloth.collects.datagroup_rixs)</a>
+</li>
+      <li><a href="modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5">DataSourceSpecH5 (class in sloth.io.datasource_spech5)</a>
 </li>
       <li><a href="modules/utils.html#sloth.utils.bragg.de_bragg">de_bragg() (in module sloth.utils.bragg)</a>
 </li>
@@ -316,8 +328,6 @@
 </li>
       <li><a href="modules/utils.html#sloth.utils.xdata.fluo_width">fluo_width() (in module sloth.utils.xdata)</a>
 </li>
-      <li><a href="modules/utils.html#sloth.utils.xdata.fwhm2sigma">fwhm2sigma() (in module sloth.utils.xdata)</a>
-</li>
   </ul></td>
 </tr></table>
 
@@ -336,6 +346,8 @@
         <li><a href="modules/inst.html#sloth.inst.rowland.RcVert.get_ana_pos">(sloth.inst.rowland.RcVert method)</a>
 </li>
       </ul></li>
+      <li><a href="modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_array">get_array() (sloth.io.datasource_spech5.DataSourceSpecH5 method)</a>
+</li>
       <li><a href="modules/inst.html#sloth.inst.rowland.RowlandCircle.get_axoff">get_axoff() (sloth.inst.rowland.RowlandCircle method)</a>
 </li>
       <li><a href="modules/inst.html#sloth.inst.rowland.RowlandCircle.get_axoff0">get_axoff0() (sloth.inst.rowland.RowlandCircle method)</a>
@@ -354,7 +366,7 @@
 </li>
       <li><a href="modules/inst.html#sloth.inst.rowland.RowlandCircle.get_chi2">get_chi2() (sloth.inst.rowland.RowlandCircle method)</a>
 </li>
-      <li><a href="modules/io.html#sloth.io.specfile_reader.SpecfileData.get_det_dt">get_det_dt() (sloth.io.specfile_reader.SpecfileData method)</a>
+      <li><a href="modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_counters">get_counters() (sloth.io.datasource_spech5.DataSourceSpecH5 method)</a>
 </li>
       <li><a href="modules/inst.html#sloth.inst.rowland.RcHoriz.get_det_pos">get_det_pos() (sloth.inst.rowland.RcHoriz method)</a>
 
@@ -376,7 +388,7 @@
 </li>
       <li><a href="modules/inst.html#sloth.inst.rowland.RowlandCircle.get_ene_off">get_ene_off() (sloth.inst.rowland.RowlandCircle method)</a>
 </li>
-      <li><a href="modules/io.html#sloth.io.specfile_reader.SpecfileData.get_filter">get_filter() (sloth.io.specfile_reader.SpecfileData method)</a>
+      <li><a href="modules/utils.html#sloth.utils.files.get_fnames">get_fnames() (in module sloth.utils.files)</a>
 </li>
       <li><a href="modules/collects.html#sloth.collects.datagroup.DataGroup.get_ig_from_label">get_ig_from_label() (sloth.collects.datagroup.DataGroup method)</a>
 </li>
@@ -392,7 +404,7 @@
       </ul></li>
       <li><a href="modules/collects.html#sloth.collects.datagroup.EvalData.get_labels">get_labels() (sloth.collects.datagroup.EvalData method)</a>
 </li>
-      <li><a href="modules/io.html#sloth.io.specfile_reader.SpecfileData.get_map">get_map() (sloth.io.specfile_reader.SpecfileData method)</a>
+      <li><a href="modules/utils.html#sloth.utils.xdata.get_line">get_line() (in module sloth.utils.xdata)</a>
 </li>
       <li><a href="modules/inst.html#sloth.inst.rowland.RcHoriz.get_miscut_off">get_miscut_off() (sloth.inst.rowland.RcHoriz method)</a>
 
@@ -400,11 +412,7 @@
         <li><a href="modules/inst.html#sloth.inst.rowland.RcVert.get_miscut_off">(sloth.inst.rowland.RcVert method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/io.html#sloth.io.specfile_reader.SpecfileData.get_mrg">get_mrg() (sloth.io.specfile_reader.SpecfileData method)</a>
-</li>
-      <li><a href="modules/io.html#sloth.io.specfile_reader.SpecfileData.get_mrgs_by">get_mrgs_by() (sloth.io.specfile_reader.SpecfileData method)</a>
-</li>
-      <li><a href="modules/io.html#sloth.io.specfile_reader.SpecfileData.get_mrgs_rep">get_mrgs_rep() (sloth.io.specfile_reader.SpecfileData method)</a>
+      <li><a href="modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_motors">get_motors() (sloth.io.datasource_spech5.DataSourceSpecH5 method)</a>
 </li>
       <li><a href="modules/inst.html#sloth.inst.rowland.RcVert.get_pos">get_pos() (sloth.inst.rowland.RcVert method)</a>
 </li>
@@ -414,15 +422,23 @@
 </li>
       <li><a href="modules/inst.html#sloth.inst.rowland.RowlandCircle.get_sag_off_mots">get_sag_off_mots() (sloth.inst.rowland.RowlandCircle method)</a>
 </li>
-      <li><a href="modules/io.html#sloth.io.specfile_reader.SpecfileData.get_scan">get_scan() (sloth.io.specfile_reader.SpecfileData method)</a>
-</li>
-      <li><a href="modules/io.html#sloth.io.specfile_reader.SpecfileData.get_scans">get_scans() (sloth.io.specfile_reader.SpecfileData method)</a>
+      <li><a href="modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_scan_axis">get_scan_axis() (sloth.io.datasource_spech5.DataSourceSpecH5 method)</a>
 </li>
       <li><a href="modules/inst.html#sloth.inst.rowland.RowlandCircle.get_theta">get_theta() (sloth.inst.rowland.RowlandCircle method)</a>
 </li>
+      <li><a href="modules/utils.html#sloth.utils.strings.get_timestamp">get_timestamp() (in module sloth.utils.strings)</a>
+</li>
+      <li><a href="modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_title">get_title() (sloth.io.datasource_spech5.DataSourceSpecH5 method)</a>
+</li>
+      <li><a href="modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_value">get_value() (sloth.io.datasource_spech5.DataSourceSpecH5 method)</a>
+</li>
       <li><a href="modules/collects.html#sloth.collects.datagroup_rixs.get_xyz_bm16">get_xyz_bm16() (in module sloth.collects.datagroup_rixs)</a>
 </li>
+      <li><a href="modules/utils.html#sloth.utils.logging.getConsoleHandler">getConsoleHandler() (in module sloth.utils.logging)</a>
+</li>
       <li><a href="modules/inst.html#sloth.inst.dthetaxz.getDthetaDats">getDthetaDats() (in module sloth.inst.dthetaxz)</a>
+</li>
+      <li><a href="modules/utils.html#sloth.utils.logging.getLogger">getLogger() (in module sloth.utils.logging)</a>
 </li>
       <li><a href="modules/inst.html#sloth.inst.dthetaxz.getMeshMasked">getMeshMasked() (in module sloth.inst.dthetaxz)</a>
 </li>
@@ -446,9 +462,9 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/utils.html#sloth.utils.genericutils.imax">imax() (in module sloth.utils.genericutils)</a>
+      <li><a href="modules/utils.html#sloth.utils.arrays.imax">imax() (in module sloth.utils.arrays)</a>
 </li>
-      <li><a href="modules/utils.html#sloth.utils.genericutils.imin">imin() (in module sloth.utils.genericutils)</a>
+      <li><a href="modules/utils.html#sloth.utils.arrays.imin">imin() (in module sloth.utils.arrays)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -478,16 +494,20 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules/math.html#sloth.math.geometry3D.length">length() (in module sloth.math.geometry3D)</a>
 </li>
+      <li><a href="modules/utils.html#sloth.utils.xdata.LEVELS_DICT">LEVELS_DICT (in module sloth.utils.xdata)</a>
+</li>
       <li><a href="modules/math.html#sloth.math.convolution1D.lin_gamma">lin_gamma() (in module sloth.math.convolution1D)</a>
 </li>
       <li><a href="modules/math.html#sloth.math.geometry3D.lines2_intersect">lines2_intersect() (in module sloth.math.geometry3D)</a>
 </li>
-      <li><a href="modules/collects.html#sloth.collects.datagroup.EvalData.load_data">load_data() (sloth.collects.datagroup.EvalData method)</a>
+      <li><a href="modules/utils.html#sloth.utils.xdata.LINES_DICT">LINES_DICT (in module sloth.utils.xdata)</a>
 </li>
-      <li><a href="modules/raytracing.html#sloth.raytracing.crystal_box.XCrystalBox.load_pars">load_pars() (sloth.raytracing.crystal_box.XCrystalBox method)</a>
+      <li><a href="modules/collects.html#sloth.collects.datagroup.EvalData.load_data">load_data() (sloth.collects.datagroup.EvalData method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules/raytracing.html#sloth.raytracing.crystal_box.XCrystalBox.load_pars">load_pars() (sloth.raytracing.crystal_box.XCrystalBox method)</a>
+</li>
       <li><a href="modules/raytracing.html#sloth.raytracing.crystal_box.XCrystalBox.load_refl">load_refl() (sloth.raytracing.crystal_box.XCrystalBox method)</a>
 </li>
       <li><a href="modules/collects.html#sloth.collects.datagroup_rixs.RixsData.load_spec_map">load_spec_map() (sloth.collects.datagroup_rixs.RixsData method)</a>
@@ -496,18 +516,18 @@
 </li>
       <li><a href="modules/collects.html#sloth.collects.datagroup_rixs.RixsData.loadxyz">loadxyz() (sloth.collects.datagroup_rixs.RixsData method)</a>
 </li>
-      <li><a href="modules/math.html#sloth.math.convolution1D.lorentzian">lorentzian() (in module sloth.math.convolution1D)</a>
-
-      <ul>
-        <li><a href="modules/utils.html#sloth.utils.xdata.lorentzian">(in module sloth.utils.xdata)</a>
+      <li><a href="modules/utils.html#sloth.utils.logging.logging_basicConfig">logging_basicConfig() (in module sloth.utils.logging)</a>
 </li>
-      </ul></li>
+      <li><a href="modules/math.html#sloth.math.convolution1D.lorentzian">lorentzian() (in module sloth.math.convolution1D)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules/io.html#sloth.io.datasource_spech5.main">main() (in module sloth.io.datasource_spech5)</a>
+</li>
       <li><a href="modules/utils.html#sloth.utils.xdata.mapLine2Trans">mapLine2Trans() (in module sloth.utils.xdata)</a>
 </li>
   </ul></td>
@@ -534,10 +554,12 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/collects.html#sloth.collects.datagroup.EvalData.overwrite_flags">overwrite_flags() (sloth.collects.datagroup.EvalData method)</a>
+      <li><a href="modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.open">open() (sloth.io.datasource_spech5.DataSourceSpecH5 method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules/collects.html#sloth.collects.datagroup.EvalData.overwrite_flags">overwrite_flags() (sloth.collects.datagroup.EvalData method)</a>
+</li>
       <li><a href="modules/collects.html#sloth.collects.datagroup.EvalData.overwrite_labels">overwrite_labels() (sloth.collects.datagroup.EvalData method)</a>
 </li>
   </ul></td>
@@ -582,16 +604,18 @@
 </li>
       <li><a href="modules/inst.html#sloth.inst.rowland.RcVert">RcVert (class in sloth.inst.rowland)</a>
 </li>
-      <li><a href="modules/math.html#sloth.math.deglitch.remove_spikes">remove_spikes() (in module sloth.math.deglitch)</a>
+      <li><a href="modules/math.html#sloth.math.deglitch.remove_spikes_medfilt1d">remove_spikes_medfilt1d() (in module sloth.math.deglitch)</a>
+</li>
+      <li><a href="modules/math.html#sloth.math.deglitch.remove_spikes_pandas">remove_spikes_pandas() (in module sloth.math.deglitch)</a>
 </li>
       <li><a href="modules/collects.html#sloth.collects.datagroup_rixs.RixsData">RixsData (class in sloth.collects.datagroup_rixs)</a>
 </li>
       <li><a href="modules/collects.html#sloth.collects.datagroup_rixs.RixsDataPlotter">RixsDataPlotter (class in sloth.collects.datagroup_rixs)</a>
 </li>
-      <li><a href="modules/math.html#sloth.math.rotmatrix.rotate">rotate() (in module sloth.math.rotmatrix)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules/math.html#sloth.math.rotmatrix.rotate">rotate() (in module sloth.math.rotmatrix)</a>
+</li>
       <li><a href="modules/math.html#sloth.math.rotmatrix.rotation_matrix_numpy">rotation_matrix_numpy() (in module sloth.math.rotmatrix)</a>
 </li>
       <li><a href="modules/math.html#sloth.math.rotmatrix.rotation_matrix_weave">rotation_matrix_weave() (in module sloth.math.rotmatrix)</a>
@@ -620,17 +644,21 @@
 </li>
       <li><a href="modules/inst.html#sloth.inst.rowland.RowlandCircle.set_ene0">set_ene0() (sloth.inst.rowland.RowlandCircle method)</a>
 </li>
+      <li><a href="modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.set_group">set_group() (sloth.io.datasource_spech5.DataSourceSpecH5 method)</a>
+</li>
       <li><a href="modules/raytracing.html#sloth.raytracing.crystal_box.XCrystalBox.set_opt">set_opt() (sloth.raytracing.crystal_box.XCrystalBox method)</a>
+</li>
+      <li><a href="modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.set_scan">set_scan() (sloth.io.datasource_spech5.DataSourceSpecH5 method)</a>
 </li>
       <li><a href="modules/inst.html#sloth.inst.rowland.RowlandCircle.set_theta0">set_theta0() (sloth.inst.rowland.RowlandCircle method)</a>
 </li>
       <li><a href="modules/collects.html#sloth.collects.datagroup.DataGroup.setgroup">setgroup() (sloth.collects.datagroup.DataGroup method)</a>
 </li>
+      <li><a href="modules/utils.html#sloth.utils.xdata.SHELLS">SHELLS (in module sloth.utils.xdata)</a>
+</li>
       <li><a href="modules/collects.html#sloth.collects.datagroup.DataGroup.show">show() (sloth.collects.datagroup.DataGroup method)</a>
 </li>
       <li><a href="modules/collects.html#sloth.collects.datagroup.EvalData.show_label">show_label() (sloth.collects.datagroup.EvalData method)</a>
-</li>
-      <li><a href="modules/utils.html#sloth.utils.xdata.sigma2fwhm">sigma2fwhm() (in module sloth.utils.xdata)</a>
 </li>
       <li><a href="modules/collects.html#module-sloth.collects">sloth.collects (module)</a>
 </li>
@@ -646,19 +674,23 @@
 </li>
       <li><a href="modules/fit.html#module-sloth.fit.peakfit">sloth.fit.peakfit (module)</a>
 </li>
+      <li><a href="modules/groups.html#module-sloth.groups">sloth.groups (module)</a>
+</li>
       <li><a href="modules/gui.html#module-sloth.gui">sloth.gui (module)</a>
 </li>
       <li><a href="modules/inst.html#module-sloth.inst">sloth.inst (module)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules/inst.html#module-sloth.inst.dthetaxz">sloth.inst.dthetaxz (module)</a>
 </li>
       <li><a href="modules/inst.html#module-sloth.inst.dthetaxz_plot">sloth.inst.dthetaxz_plot (module)</a>
 </li>
       <li><a href="modules/inst.html#module-sloth.inst.rowland">sloth.inst.rowland (module)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules/io.html#module-sloth.io">sloth.io (module)</a>
+</li>
+      <li><a href="modules/io.html#module-sloth.io.datasource_spech5">sloth.io.datasource_spech5 (module)</a>
 </li>
       <li><a href="modules/io.html#module-sloth.io.specfile_reader">sloth.io.specfile_reader (module)</a>
 </li>
@@ -682,21 +714,39 @@
 </li>
       <li><a href="modules/utils.html#module-sloth.utils">sloth.utils (module)</a>
 </li>
+      <li><a href="modules/utils.html#module-sloth.utils.arrays">sloth.utils.arrays (module)</a>
+</li>
       <li><a href="modules/utils.html#module-sloth.utils.bragg">sloth.utils.bragg (module)</a>
+</li>
+      <li><a href="modules/utils.html#module-sloth.utils.exceptions">sloth.utils.exceptions (module)</a>
+</li>
+      <li><a href="modules/utils.html#module-sloth.utils.files">sloth.utils.files (module)</a>
 </li>
       <li><a href="modules/utils.html#module-sloth.utils.genericutils">sloth.utils.genericutils (module)</a>
 </li>
+      <li><a href="modules/utils.html#module-sloth.utils.logging">sloth.utils.logging (module)</a>
+</li>
       <li><a href="modules/utils.html#module-sloth.utils.pymca">sloth.utils.pymca (module)</a>
+</li>
+      <li><a href="modules/utils.html#module-sloth.utils.strings">sloth.utils.strings (module)</a>
 </li>
       <li><a href="modules/utils.html#module-sloth.utils.xdata">sloth.utils.xdata (module)</a>
 </li>
       <li><a href="modules/io.html#sloth.io.specfile_reader.SpecfileData">SpecfileData (class in sloth.io.specfile_reader)</a>
+</li>
+      <li><a href="modules/utils.html#sloth.utils.strings.str2rng">str2rng() (in module sloth.utils.strings)</a>
+</li>
+      <li><a href="modules/utils.html#sloth.utils.arrays.sum_arrays_1d">sum_arrays_1d() (in module sloth.utils.arrays)</a>
 </li>
   </ul></td>
 </tr></table>
 
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules/utils.html#sloth.utils.logging.test_logger">test_logger() (in module sloth.utils.logging)</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules/utils.html#sloth.utils.bragg.theta_b">theta_b() (in module sloth.utils.bragg)</a>
 </li>
@@ -715,6 +765,14 @@
   </ul></td>
 </tr></table>
 
+<h2 id="V">V</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.view">view() (sloth.io.datasource_spech5.DataSourceSpecH5 method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="W">W</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -726,9 +784,9 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/io.html#sloth.io.specfile_reader.SpecfileData.write_ascii">write_ascii() (sloth.io.specfile_reader.SpecfileData method)</a>
-</li>
       <li><a href="modules/raytracing.html#sloth.raytracing.crystal_box.XCrystalBox.write_inp_file">write_inp_file() (sloth.raytracing.crystal_box.XCrystalBox method)</a>
+</li>
+      <li><a href="modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.write_scans_to_h5">write_scans_to_h5() (sloth.io.datasource_spech5.DataSourceSpecH5 method)</a>
 </li>
       <li><a href="modules/inst.html#sloth.inst.dthetaxz.writeScanDats">writeScanDats() (in module sloth.inst.dthetaxz)</a>
 </li>

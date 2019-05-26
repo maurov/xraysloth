@@ -86,8 +86,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">Full contents - hidden:</span></p>
+              <p class="caption"><span class="caption-text">Contents</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data_model/index.html">Notes on the data model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../todo.html">To Do</a></li>
@@ -494,7 +497,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">csec</span> <span class="o">=</span> <span class="n">csec</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="n">norm</span>
 
-<div class="viewcode-block" id="SpecfileData.get_scan"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.specfile_reader.SpecfileData.get_scan">[docs]</a>    <span class="k">def</span> <span class="nf">get_scan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scnt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_scan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scnt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;get a single scan from a SPEC file</span>
 
 <span class="sd">        Parameters</span>
@@ -639,9 +642,9 @@
         <span class="k">if</span> <span class="n">cnty</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">scan_datx</span><span class="p">,</span> <span class="n">scan_datz</span><span class="p">,</span> <span class="n">scan_mots</span><span class="p">[</span><span class="n">cnty</span><span class="p">]</span><span class="o">*</span><span class="n">_xscale</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">scan_datx</span><span class="p">,</span> <span class="n">scan_datz</span><span class="p">,</span> <span class="n">scan_mots</span><span class="p">,</span> <span class="n">scan_info</span></div>
+            <span class="k">return</span> <span class="n">scan_datx</span><span class="p">,</span> <span class="n">scan_datz</span><span class="p">,</span> <span class="n">scan_mots</span><span class="p">,</span> <span class="n">scan_info</span>
 
-<div class="viewcode-block" id="SpecfileData.get_map"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.specfile_reader.SpecfileData.get_map">[docs]</a>    <span class="k">def</span> <span class="nf">get_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scans</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scans</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;get a map composed of many scans repeated at different position of</span>
 <span class="sd">        a given motor</span>
 
@@ -686,7 +689,7 @@
                 <span class="n">zcol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">zcol</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
             <span class="n">_counter</span> <span class="o">+=</span> <span class="mi">1</span>
 
-        <span class="k">return</span> <span class="n">xcol</span><span class="p">,</span> <span class="n">ycol</span><span class="p">,</span> <span class="n">zcol</span></div>
+        <span class="k">return</span> <span class="n">xcol</span><span class="p">,</span> <span class="n">ycol</span><span class="p">,</span> <span class="n">zcol</span>
 
     <span class="k">def</span> <span class="nf">grid_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xcol</span><span class="p">,</span> <span class="n">ycol</span><span class="p">,</span> <span class="n">zcol</span><span class="p">,</span> <span class="n">xystep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lib</span><span class="o">=</span><span class="s1">&#39;scipy&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;cubic&#39;</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">HAS_GRIDXYZ</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -694,7 +697,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span>
 
-<div class="viewcode-block" id="SpecfileData.get_scans"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.specfile_reader.SpecfileData.get_scans">[docs]</a>    <span class="k">def</span> <span class="nf">get_scans</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scans</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">motinfo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_scans</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scans</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">motinfo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;get a list of scans</span>
 
 <span class="sd">        Parameters</span>
@@ -741,10 +744,10 @@
         <span class="k">if</span> <span class="n">motinfo</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">xdats</span><span class="p">,</span> <span class="n">zdats</span><span class="p">,</span> <span class="n">mdats</span><span class="p">,</span> <span class="n">idats</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">xdats</span><span class="p">,</span> <span class="n">zdats</span></div>
+            <span class="k">return</span> <span class="n">xdats</span><span class="p">,</span> <span class="n">zdats</span>
 
 
-<div class="viewcode-block" id="SpecfileData.get_mrg"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.specfile_reader.SpecfileData.get_mrg">[docs]</a>    <span class="k">def</span> <span class="nf">get_mrg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scans</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;average&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_mrg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scans</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;average&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;get a merged scan from a list of scans</span>
 
 <span class="sd">        Parameters</span>
@@ -785,9 +788,9 @@
         <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;join&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">xdats</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">zdats</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;single&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">xdats</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">zdats</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+            <span class="k">return</span> <span class="n">xdats</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">zdats</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-<div class="viewcode-block" id="SpecfileData.get_mrgs_by"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.specfile_reader.SpecfileData.get_mrgs_by">[docs]</a>    <span class="k">def</span> <span class="nf">get_mrgs_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scans</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">nbin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_mrgs_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scans</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">nbin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;get merge by groups of scans</span>
 
 <span class="sd">        Parameters</span>
@@ -835,9 +838,9 @@
                                         <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">)</span>
             <span class="n">xmrgs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_xmrg</span><span class="p">)</span>
             <span class="n">zmrgs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_zmrg</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">xmrgs</span><span class="p">,</span> <span class="n">zmrgs</span></div>
+        <span class="k">return</span> <span class="n">xmrgs</span><span class="p">,</span> <span class="n">zmrgs</span>
 
-<div class="viewcode-block" id="SpecfileData.get_mrgs_rep"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.specfile_reader.SpecfileData.get_mrgs_rep">[docs]</a>    <span class="k">def</span> <span class="nf">get_mrgs_rep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scns</span><span class="p">,</span> <span class="n">nrep</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_mrgs_rep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scns</span><span class="p">,</span> <span class="n">nrep</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;get merge by groups of repetitions</span>
 
 <span class="sd">        Parameters</span>
@@ -847,9 +850,9 @@
 <span class="sd">               string representing ALL the good scans (parsed by str2rng)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Not implemented yet!&quot;</span><span class="p">)</span></div>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Not implemented yet!&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SpecfileData.get_det_dt"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.specfile_reader.SpecfileData.get_det_dt">[docs]</a>    <span class="k">def</span> <span class="nf">get_det_dt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">zcts</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">secs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_det_dt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">zcts</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">secs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;get detector signal corrected by dead time</span>
 
 <span class="sd">        Parameters</span>
@@ -888,9 +891,9 @@
         <span class="k">if</span> <span class="n">secs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">zcts_corr</span> <span class="o">*</span> <span class="n">secs</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">zcts_corr</span></div>
+            <span class="k">return</span> <span class="n">zcts_corr</span>
 
-<div class="viewcode-block" id="SpecfileData.get_filter"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.specfile_reader.SpecfileData.get_filter">[docs]</a>    <span class="k">def</span> <span class="nf">get_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ydats</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;scipySG&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ydats</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;scipySG&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;get filtered data using a list of ydats and given method</span>
 
 <span class="sd">        Parameters</span>
@@ -930,9 +933,9 @@
                                              <span class="n">deriv</span><span class="o">=</span><span class="n">deriv</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">ysdats</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;method not known!&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;method not known!&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SpecfileData.write_ascii"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.specfile_reader.SpecfileData.write_ascii">[docs]</a>    <span class="k">def</span> <span class="nf">write_ascii</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">write_ascii</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;export single scans to separate ascii files&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_SFDW</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;specfiledatawriter required for this method!!!&quot;</span><span class="p">)</span>
@@ -956,7 +959,7 @@
                          <span class="n">motnames</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sf</span><span class="o">.</span><span class="n">allmotors</span><span class="p">())</span>
             <span class="n">fout</span><span class="o">.</span><span class="n">wScan</span><span class="p">([</span><span class="s1">&#39;Energy&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s1">&#39;zlabel&#39;</span><span class="p">])],</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span>
                        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">command</span><span class="p">()),</span>
-                       <span class="n">motpos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">allmotorpos</span><span class="p">())</span></div></div>
+                       <span class="n">motpos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">allmotorpos</span><span class="p">())</span></div>
 
 
 <span class="c1">### LARCH ###</span>

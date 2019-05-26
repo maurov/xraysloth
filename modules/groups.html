@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sloth.dft: interacting with density functional theory (DFT) codes &mdash; Sloth 0.3.0-dev documentation</title>
+  <title>sloth.groups: data groups &mdash; Sloth 0.3.0-dev documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="sloth.gui: GUI" href="gui.html" />
-    <link rel="prev" title="sloth.utils: utilities" href="utils.html" /> 
+    <link rel="next" title="sloth.collects: Data containers" href="collects.html" />
+    <link rel="prev" title="sloth.io: Input-output" href="io.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -95,17 +95,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../data_model/index.html">Notes on the data model</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="io.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.io</span></code>: Input-output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="groups.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.groups</span></code>: data groups</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.groups</span></code>: data groups</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sloth-groups-h5base-generic-groups-datasets"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.groups.h5base</span></code>: generic Groups/Datasets</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="collects.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects</span></code>: Data containers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fit.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit</span></code>: fitting tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inst.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst</span></code>: working with instrumentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="raytracing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing</span></code>: x-ray raytracing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="math.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math</span></code>: mathematical utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils</span></code>: utilities</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.dft</span></code>: interacting with density functional theory (DFT) codes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#sloth-dft-qe-xtl-quantum-espresso-to-xtl"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.dft.qe_xtl</span></code>: Quantum ESPRESSO to XTL</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="dft.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.dft</span></code>: interacting with density functional theory (DFT) codes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.gui</span></code>: GUI</a></li>
 </ul>
 </li>
@@ -158,13 +158,13 @@
         
           <li><a href="index.html">Reference</a> &raquo;</li>
         
-      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.dft</span></code>: interacting with density functional theory (DFT) codes</li>
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.groups</span></code>: data groups</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/modules/dft.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/modules/groups.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -177,10 +177,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <span class="target" id="module-sloth.dft"></span><div class="section" id="sloth-dft-interacting-with-density-functional-theory-dft-codes">
-<h1><a class="reference internal" href="#module-sloth.dft" title="sloth.dft"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.dft</span></code></a>: interacting with density functional theory (DFT) codes<a class="headerlink" href="#sloth-dft-interacting-with-density-functional-theory-dft-codes" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="sloth-dft-qe-xtl-quantum-espresso-to-xtl">
-<h2><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.dft.qe_xtl</span></code>: Quantum ESPRESSO to XTL<a class="headerlink" href="#sloth-dft-qe-xtl-quantum-espresso-to-xtl" title="Permalink to this headline">¶</a></h2>
+  <span class="target" id="module-sloth.groups"></span><div class="section" id="sloth-groups-data-groups">
+<h1><a class="reference internal" href="#module-sloth.groups" title="sloth.groups"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.groups</span></code></a>: data groups<a class="headerlink" href="#sloth-groups-data-groups" title="Permalink to this headline">¶</a></h1>
+<p>This module implements <a class="reference internal" href="../data_model/index.html#data-model"><span class="std std-ref">Notes on the data model</span></a>.</p>
+<div class="section" id="sloth-groups-h5base-generic-groups-datasets">
+<h2><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.groups.h5base</span></code>: generic Groups/Datasets<a class="headerlink" href="#sloth-groups-h5base-generic-groups-datasets" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -192,10 +193,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="gui.html" class="btn btn-neutral float-right" title="sloth.gui: GUI" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="collects.html" class="btn btn-neutral float-right" title="sloth.collects: Data containers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="utils.html" class="btn btn-neutral float-left" title="sloth.utils: utilities" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="io.html" class="btn btn-neutral float-left" title="sloth.io: Input-output" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
