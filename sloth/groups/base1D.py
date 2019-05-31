@@ -9,18 +9,24 @@ This module implements the following classes:
 BaseCurve
 ---------
 
-HDF5-like representation of a curve (1D dataset), that is:
+HDF5-like representation of a curve (1D dataset), that is, a dataset having one
+axis array (the abscissa) and one signal array (the ordinate), plus at least one
+attribute, the label.
+
+ They go, respectively, in the :
 
 - BaseCurve:
-    - 'axis' (group):
-        - attrs: axis attributes
+    - attrs: base attributes
+        - label: curve label
+    - 'axes' (group):
+        - attrs: axes attributes
             - default: 'name'
             - ...
-        - 'x_name' (dataset): array
+        - 'ax1_name' (dataset): array
             - attrs: x attributes
                 - label: 'x_label'
                 - ...
-    - 'signal' (group):
+    - 'signals' (group):
         - attrs: signal attributes
             - default: 'y_name'
             - ...

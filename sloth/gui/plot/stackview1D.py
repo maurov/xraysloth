@@ -34,7 +34,6 @@ class StackView1D(qt.QMainWindow):
     This is 0 if the stack is cleared, else a positive integer.
     """
 
-
     def __init__(self, parent=None):
         qt.QMainWindow.__init__(self, parent=parent)
         if parent is not None:
@@ -65,7 +64,6 @@ class StackView1D(qt.QMainWindow):
         centralWidget.setLayout(gridLayout)
         self.setCentralWidget(centralWidget)
         self.setMinimumSize(1024, 800)
-
 
     def __updateFrameNumber(self, index):
         """Update the current plot.
