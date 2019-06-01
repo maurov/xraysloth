@@ -10,29 +10,28 @@ Requirements
 
 """
 import os
-import logging
 import numpy as np
 import h5py
 from silx.io.utils import open as silx_open
-from sloth.utils.logging import getLogger
 
 
 class DataSourceSpecH5(object):
     """Data source utility wrapper for a Spec file read as HDF5 object
     via silx.io.open"""
 
-    def __init__(self, fname=None):
+    def __init__(self, fname=None, logger=None):
         """init with file name and default attributes"""
-        _logger_name = "sloth.io.DataSourceSpecH5"
-        self._logger = getLogger(_logger_name)
-        self._logger.setLevel(logging.INFO)
+        if logger is None:
+            from sloth.utils.logging import getLogger
+            _logger_name = "sloth.io.DataSourceSpecH5"
+            self._logger = getLogger(_logger_name, level='INFO')
+        else:
+            self._logger = logger
+
         self.fname = fname
-        # source file object (h5py-like)
-        try:
-            self._sf = silx_open(fname)
-        except OSError:
-            self._logger.error(f"Cannot open {self.fname}")
-            self._sf = None
+        self._sf = None
+        if self.fname is not None:
+            self._init_source_file()
         self._scan_n = None
         self._scan_str = None
         self._sg = None  # ScanGroup
@@ -40,6 +39,15 @@ class DataSourceSpecH5(object):
         self.set_group()
         # show data in a TreeView
         # self.view()
+
+    def _init_source_file(self):
+        """init source file object"""
+        #: source file object (h5py-like)
+        try:
+            self._sf = silx_open(self.fname)
+        except OSError:
+            self._logger.error(f"Cannot open {self.fname}")
+            self._sf = None
 
     def open(self, mode='r'):
         """Open the source file object with h5py in given mode"""
@@ -55,8 +63,7 @@ class DataSourceSpecH5(object):
         self._sf = None
 
     def _set_urls(self):
-        """Set default SpecH5 urls
-        """
+        """Set default SpecH5 urls"""
         self._mots_url = 'instrument/positioners'
         self._cnts_url = 'measurement'
         self._title_url = 'title'

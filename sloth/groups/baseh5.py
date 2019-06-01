@@ -47,11 +47,14 @@ _logger = getLogger('sloth.groups.h5base', level='INFO')
 class BaseGroup(commonh5.Group):
     """Base group used to build the tree structure"""
 
-    def __init__(self, name, parent=None, attrs=None):
-        """Constructor with track_order forced to True"""
+    def __init__(self, name, parent=None, attrs=None, logger=None):
+        """Constructor"""
         super(BaseGroup, self).__init__(name,
-                                        parent=parent, attrs=attrs,
-                                        track_order=True)
+                                        parent=parent, attrs=attrs)
+        if logger is None:
+            self._logger = _logger
+        else:
+            self._logger = logger
 
     def add_group(self, name, attrs=None, cls=None):
         """Add Group"""
@@ -89,7 +92,7 @@ class BaseGroup(commonh5.Group):
         else:
             _fileExists = False
         if _fileExists and (not overwrite):
-            _logger.info(f"Output file exists and 'overwrite' is {overwrite}")
+            self._logger.info(f"Output file exists and 'overwrite' is {overwrite}")
             return
         if overwrite:
             mode = 'w'
@@ -99,21 +102,21 @@ class BaseGroup(commonh5.Group):
         write_to_h5(self, self._fname_out,
                     mode=mode, overwrite_data=overwrite,
                     create_dataset_args=dict(track_order=True))
-        _logger.info(f"{self.basename} written to {filename}")
-        _logger.warning("FIXME: the order of groups is currently not kept")
+        self._logger.info(f"{self.basename} written to {filename}")
+        self._logger.warning("FIXME: the order of groups is currently not kept")
 
 
 class RootGroup(BaseGroup):
     """Root group (= '/')"""
 
-    def __init__(self, name=""):
+    def __init__(self, name="", logger=None):
         """Constructor with default NXroot class"""
         attrs = {"NX_class": "NXroot",
                  "created": datetime.datetime.now().isoformat(),
                  "creator": "sloth %s" % sloth_version
                  }
         super(RootGroup, self).__init__(name, parent=None,
-                                        attrs=attrs)
+                                        attrs=attrs, logger=logger)
 
 
 class EntryGroup(BaseGroup):
@@ -123,14 +126,15 @@ class EntryGroup(BaseGroup):
 
     """
 
-    def __init__(self, name, parent=None, attrs=None):
+    def __init__(self, name, parent=None, attrs=None, logger=None):
         """Constructor: simply adding default NXentry class"""
         _attrs = {"NX_class": "NXentry"}
         if attrs is not None:
             attrs.update(_attrs)
         else:
             attrs = _attrs
-        super(EntryGroup, self).__init__(name, parent=parent, attrs=attrs)
+        super(EntryGroup, self).__init__(name, parent=parent, attrs=attrs,
+                                         logger=logger)
 
 
 ############
@@ -159,8 +163,8 @@ class BaseDataset(commonh5.Dataset):
 
 def test_example(write=True, view=True):
     """Test example for :mod:`sloth.groups.h5base`"""
-    _logger.info("Data model example: 't' is the root instance")
-    t = RootGroup('test')
+    t = RootGroup('test', logger=_logger)
+    t._logger.info("Data model example: 't' is the root instance")
     t.add_group('Z9entry1', cls=EntryGroup)
     t.add_group('A0entry2')
     t['Z9entry1'].add_group('ZZsubentry1')
@@ -177,7 +181,7 @@ def test_example(write=True, view=True):
     t['Z9entry1'].add_dataset('x', x)
     t['Z9entry1/ZZsubentry1'].add_dataset('x', x)
 
-    _logger.info('print(t):\n%s', t)
+    t._logger.info('print(t):\n%s', t)
 
     if write:
         #: +write to file

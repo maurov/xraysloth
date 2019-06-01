@@ -78,6 +78,10 @@ Notes on the workflow
 from silx.gui import qt
 from sloth.groups.baseh5 import RootGroup
 from sloth.gui.plot.plotarea import PlotArea
+from sloth.io.datasource_spech5 import DataSourceSpecH5
+
+from sloth.utils.logging import getLogger
+_logger = getLogger('sloth.examples.data_analysis_h5', level='INFO')
 
 
 class MyDataAnalysisApp(qt.QMainWindow):
@@ -91,22 +95,57 @@ class MyDataAnalysisApp(qt.QMainWindow):
         else:
             self.setWindowTitle('My Great Data Analysis Box')
 
+        #: logger
+        self._logger = _logger
+
+    def _init_gui(self):
+        """build GUI"""
         centralWidget = qt.QWidget(self)
-
+        #: instance of plot area
         self._plot = PlotArea()
-
+        self._logger.info(f"'{self.__class__.__name__}._plot': plot area")
+        #: assign grid layout
         gridLayout = qt.QGridLayout()
         gridLayout.setContentsMargins(0, 0, 0, 0)
         #: addWidget(widget, row, column, rowSpan, columnSpan[, alignment=0]))
         gridLayout.addWidget(self._plot, 0, 0, 2, 2)
-
+        #: set grid layout in the central widget
         centralWidget.setLayout(gridLayout)
         self.setCentralWidget(centralWidget)
         self.setMinimumSize(1024, 800)
 
+    def _init_data_model(self):
+        """init data model"""
+        self._dm = RootGroup(logger=self._logger)
+        self._logger.info(f"'{self.__class__.__name__}._dm': data model")
 
-if __name__ == '__main__':
+    def _init_data_source(self, fname=None):
+        """init data source"""
+        self._ds = DataSourceSpecH5(fname=fname, logger=self._logger)
+        self._logger.info(f"'{self.__class__.__name__}._ds': data source (file={fname})")
+
+########
+# MAIN #
+########
+
+
+def main(fname=None):
+    """main with the possibility to load a filename"""
+    from sloth.utils.jupyter import run_from_ipython
+    _ipy = run_from_ipython()
     from silx import sx
     sx.enable_gui()
     t = MyDataAnalysisApp()
-    t.show()
+    # t.show()
+    t._init_gui()
+    t._init_data_model()
+    t._init_data_source(fname=fname)
+    #: now start playing yourself!
+    _logger.info(f"'{t.__class__.__name__}': called 't' here, ENJOY!")
+    if not _ipy:
+        input("Please, run this in IPython. Press ENTER to QUIT")
+    return t
+
+
+if __name__ == '__main__':
+    t = main()
