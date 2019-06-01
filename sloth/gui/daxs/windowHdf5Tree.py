@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
-"""QMainWindow based on :mod:`silx.examples.customHdf5TreeModel`
+"""
+QMainWindow based on :mod:`silx.examples.customHdf5TreeModel`
 """
 
 import os
