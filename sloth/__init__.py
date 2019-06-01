@@ -25,16 +25,20 @@ _libDir = os.path.dirname(os.path.realpath(__file__))
 _resourcesPath = os.path.join(_libDir, 'resources')
 
 __pkgs__ = ['sloth',
-            'sloth.test',        # main test suite
-            'sloth.utils',       # utilities (generic)
-            'sloth.io',          # input-output
-            'sloth.math',        # math&friends
-            'sloth.collects',    # data containers
-            'sloth.fit',         # fit utilities
-            'sloth.gui',         # graphical user interface
-            'sloth.inst',        # instrumentation
-            'sloth.raytracing',  # ray tracing (shadow)
-            'sloth.examples']    # examples
+            'sloth.io',           # input-output
+            'sloth.groups',       # data groups based on HDF5 model
+            'sloth.collects'      # data containers !DEPRECATED! -> sloth.groups
+            'sloth.utils',        # utilities (generic)
+            'sloth.math',         # math&friends
+            'sloth.test',         # main test suite
+            'sloth.fit',          # fit utilities
+            'sloth.gui',          # graphical user interface
+            'sloth.inst',         # instrumentation
+            'sloth.raytracing',   # ray tracing (shadow)
+            'sloth.calculators',  # ab initio calculators
+            'sloth.examples',     # examples
+            'sloth.resources',    # resoureces (= UI files, icons, etc.)
+            ]
 
 
 class NullClass(object):

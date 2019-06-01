@@ -1,10 +1,46 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-"""STRINGS
-----------
-:mod:`sloth.utils.strings`
 """
+Simple utilities working with strings
+-------------------------------------
+
+:mod:`sloth.utils.strings`
+
+.. note:: each function has its own imports and checks.
+
+"""
+
+####################
+# COLORIZED OUTPUT #
+####################
+
+
+def colorstr(instr, color='green', on_color=None, attrs=['bold']):
+    """colorized string
+
+    Parameters
+    ----------
+    color : str, 'green'
+            Available text colors:
+            'red', 'green', 'yellow', 'blue', 'magenta', 'cyan',
+            'white'
+    on_color : str, None
+               Available text highlights:
+               'on_red', 'on_green', 'on_yellow', 'on_blue', 'on_magenta',
+               'on_cyan', 'on_white'
+    attrs : list of str, ['bold']
+            Available attributes:
+            'bold', 'dark', 'underline', 'blink', 'reverse', 'concealed'
+    """
+    try:
+        from termcolor import colored
+        return colored(instr, color=color, on_color=None, attrs=attrs)
+    except ImportError:
+        return instr
+
+###################
+# STRING TO RANGE #
+###################
 
 
 def str2rng(rngstr, keeporder=True, rebin=None):
@@ -60,6 +96,10 @@ def str2rng(rngstr, keeporder=True, rebin=None):
         return uniquify(_rngout)
     else:
         return list(set(_rngout))
+
+################
+# TIME STRINGS #
+################
 
 
 def get_timestamp() -> str:
