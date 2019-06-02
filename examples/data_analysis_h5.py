@@ -5,8 +5,10 @@
 Example of data analysis based on a HDF5-like data model
 ========================================================
 
-This example builds a full data analysis workflow based on a HDF5
-representation. The aim is to keep everything in a HDF5-like container class.
+.. note:: WORK-IN-PROGRESS / NOT COMPLETE!
+
+This example aims building a data analysis workflow based on a HDF5
+representation. The goal is to keep everything in a HDF5-like container class.
 
 Notes on the workflow
 ---------------------

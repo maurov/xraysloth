@@ -41,7 +41,7 @@ _logger = getLogger('sloth.gui.daxs')
 
 def createParser():
     """Application parser"""
-    parser = argparse.ArgumentParser(description="Sloth-DAXS GUI - arguments parser")
+    parser = argparse.ArgumentParser(description="Sloth-DAXS GUI")
     parser.add_argument(
         '-d', '--debug',
         dest="debug",
@@ -54,12 +54,6 @@ def createParser():
         action='store_true',
         default=False,
         help='start an IPython kernel within the application')
-    parser.add_argument(
-        '-m0', '--model-v0',
-        dest='model_v0',
-        action='store_true',
-        default=False,
-        help='import MainWindow based on original TreeView model')
     parser.add_argument(
         '-f', '--fresh',
         dest="fresh_start",
@@ -119,10 +113,7 @@ def mainQtApp(options):
     if options.fresh_start:
         settings.clear()
 
-    if options.model_v0:
-        from .window import MainWindow
-    else:
-        from .windowHdf5Tree import MainWindowHdf5Tree as MainWindow
+    from .window import MainWindow
 
     window = MainWindow(app, with_ipykernel=options.with_ipykernel)
     window.setAttribute(qt.Qt.WA_DeleteOnClose, True)

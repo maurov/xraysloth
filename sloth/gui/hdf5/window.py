@@ -7,11 +7,10 @@ QMainWindow based on :mod:`silx.examples.customHdf5TreeModel`
 import os
 from silx.gui import qt
 from sloth import _resourcesPath
-from .viewHdf5Tree import TreeView
-from .modelHdf5Tree import TreeModel
+from .view import TreeView
+from .model import TreeModel
 from sloth.gui.plot.plotarea import PlotArea  # sloth version
-from .console import InternalIPyKernel
-from .config import Config
+from sloth.gui.console import InternalIPyKernel
 
 from sloth.utils.logging import getLogger
 logger = getLogger('sloth.gui.daxs.windowHdf5Tree')
@@ -21,7 +20,7 @@ class MainWindowHdf5Tree(qt.QMainWindow):
     """MainWindow based on Hdf5TreeView
     """
 
-    def __init__(self, app, parent=None, with_ipykernel=False):
+    def __init__(self, app, parent=None, with_ipykernel=True):
         """
         Constructor
         """
@@ -116,35 +115,12 @@ class MainWindowHdf5Tree(qt.QMainWindow):
         super(MainWindowHdf5Tree, self).closeEvent(event)
 
     def loadSettings(self):
-        config = Config()
-        self.settings = config.read()
-
-        if self.settings is None:
-            return
-
-        self.settings.beginGroup('MainWindow')
-
-        state = self.settings.value('State')
-        if state is not None:
-            self.restoreState(qt.QByteArray(state))
-
-        size = self.settings.value('Size')
-        if size is not None:
-            self.resize(qt.QSize(size))
-
-        pos = self.settings.value('Position')
-        if pos is not None:
-            self.move(qt.QPoint(pos))
-
-        self.settings.endGroup()
+        """TODO"""
+        pass
 
     def saveSettings(self):
-        self.settings.beginGroup('MainWindow')
-        self.settings.setValue('State', self.saveState())
-        self.settings.setValue('Size', self.size())
-        self.settings.setValue('Position', self.pos())
-        self.settings.endGroup()
-        self.settings.sync()
+        """TODO"""
+        pass
 
     # Populate the menu bar with common actions and shortcuts
     def _addMenuAction(self, menu, action, deferShortcut=False):

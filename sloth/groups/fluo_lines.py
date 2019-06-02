@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Data groups for x-ray fluorescence lines
-===========================================
+"""
+Data groups for x-ray fluorescence lines
+========================================
 """
 
 from sloth.groups.baseh5 import EntryGroup
@@ -51,7 +52,7 @@ class FluoLine(EntryGroup):
         super(FluoLine, self).__init__(self.label, attrs=self.attrs,
                                        parent=parent)
 
-        self.init_spectrum()
+        self._init_spectrum()
         self._plotWin = None
 
     def _getPlotWin(self):
@@ -93,7 +94,7 @@ class FluoLine(EntryGroup):
         """Line cross section"""
         return fluo_amplitude(self.element, self.line, self.excitation)
 
-    def init_spectrum(self, xwidth=3., xstep=0.05):
+    def _init_spectrum(self, xwidth=3., xstep=0.05):
         """Generate the fluorescence spectrum
 
         Parameters

@@ -7,9 +7,6 @@ import os
 from silx.gui import qt
 from silx.gui.hdf5 import Hdf5TreeView
 
-from sloth.utils.logging import getLogger
-logger = getLogger('sloth.gui.daxs.viewHdf5Tree')
-
 
 class TreeView(Hdf5TreeView):
     """TreeView class based on :mod:`silx.gui.hdf5.Hdf5TreeView`"""

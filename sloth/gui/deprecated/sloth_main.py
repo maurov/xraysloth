@@ -21,11 +21,11 @@ from silx.gui import qt
 # from silx.gui.widgets.PeriodicTable import PeriodicTable
 
 import sloth
-from sloth.gui.widgets.console import (_pushDict, _pushInfos,
+from sloth.gui.deprecated.console import (_pushDict, _pushInfos,
                                        _slothKit)
 
-from sloth.gui.widgets.console import customIPythonWidget
-from sloth.gui.widgets.plot1D import SlothPlot1D
+from sloth.gui.deprecated.console import customIPythonWidget
+from sloth.gui.deprecated.plot1D import SlothPlot1D
 
 # from .models.list_model import PaletteListModel
 # _resourcesPath = os.path.join(os.path.split(sloth.__file__)[0], 'resources')

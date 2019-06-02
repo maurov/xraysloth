@@ -40,9 +40,10 @@ from .model import TreeModel, HeaderSection
 from .view import TreeView
 # from .plot import PlotArea  # original DAXS version
 from sloth.gui.plot.plotarea import PlotArea  # sloth version
+from sloth.gui.console import InternalIPyKernel
+
 from .config import Config
 from .delegates import ComboBoxDelegate
-from .console import InternalIPyKernel
 from .profiling import timeit # noqa
 from sloth import _resourcesPath
 

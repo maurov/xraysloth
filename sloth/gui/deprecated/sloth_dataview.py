@@ -9,7 +9,7 @@ import os
 import sys
 from silx.gui import qt
 import sloth
-from sloth.gui.widgets.dataview import DataViewDockWidget
+from sloth.gui.deprecated.dataview import DataViewDockWidget
 
 
 class SlothDataViewMainWindow(qt.QMainWindow):
