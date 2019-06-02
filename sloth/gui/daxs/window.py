@@ -31,7 +31,6 @@ __license__ = 'MIT'
 
 import os
 import glob
-import logging
 
 from silx.gui import qt
 
@@ -47,13 +46,16 @@ from .delegates import ComboBoxDelegate
 from .profiling import timeit # noqa
 from sloth import _resourcesPath
 
-from sloth.utils.logging import getLogger
-logger = getLogger('sloth.gui.daxs.window')
-
 
 class MainWindow(qt.QMainWindow):
-    def __init__(self, app, parent=None, with_ipykernel=False):
+    def __init__(self, app, parent=None, with_ipykernel=False, logger=None):
         super(MainWindow, self).__init__(parent=parent)
+
+        if logger is None:
+            from sloth.utils.logging import getLogger
+            self._logger = getLogger('sloth.gui.daxs.window')
+        else:
+            self._logger = logger
 
         self.app = app
         self._with_ipykernel = with_ipykernel
@@ -170,7 +172,7 @@ class MainWindow(qt.QMainWindow):
         bottomRightItem = self.model.itemFromIndex(bottomRight)
 
         if topLeftItem is not bottomRightItem:
-            logger.error('The indices to not point to the same '
+            self._logger.error('The indices to not point to the same '
                          'item in the model')
             return
 
@@ -179,7 +181,7 @@ class MainWindow(qt.QMainWindow):
 
         if item.isChecked:
             if len(plotWindows) == 0:
-                logger.info('There are no plot widgets available')
+                self._logger.info('There are no plot widgets available')
                 return
 
         for plotWindow in plotWindows:

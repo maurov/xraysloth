@@ -31,11 +31,10 @@ __license__ = 'MIT'
 
 import sys
 import argparse
-import logging
 import signal
 
 from sloth.utils.logging import getLogger
-_logger = getLogger('sloth.gui.daxs')
+_logger = getLogger('sloth.gui.daxs', level='INFO')
 """Module logger"""
 
 
@@ -73,7 +72,7 @@ def createParser():
 def mainQtApp(options):
     """Part of the main application depending on Qt"""
     if options.debug:
-        logging.root.setLevel(logging.DEBUG)
+        _logger.setLevel('DEBUG')
 
     try:
         # it should be loaded before h5py
@@ -114,8 +113,8 @@ def mainQtApp(options):
         settings.clear()
 
     from .window import MainWindow
-
-    window = MainWindow(app, with_ipykernel=options.with_ipykernel)
+    window = MainWindow(app, with_ipykernel=options.with_ipykernel,
+                        logger=_logger)
     window.setAttribute(qt.Qt.WA_DeleteOnClose, True)
 
     if options.use_opengl_plot:
