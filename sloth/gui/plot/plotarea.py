@@ -11,6 +11,7 @@ from silx.utils.weakref import WeakList
 from silx.gui import qt
 from .plot1D import Plot1D
 from .plot2D import Plot2D
+from .stackview1D import StackView1D
 
 __authors__ = ["Marius Retegan", "Mauro Rovezzi"]
 
@@ -35,12 +36,14 @@ class PlotArea(qt.QMdiArea):
     def __init__(self, parent=None):
         super(PlotArea, self).__init__(parent=parent)
 
-        # Context menu
+        #: Context menu
         self.setContextMenuPolicy(qt.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.showContextMenu)
 
-        # Set the order of the subwindows returned by subWindowList.
+        #: Set the order of the subwindows returned by subWindowList.
         self.setActivationOrder(qt.QMdiArea.CreationOrder)
+
+        self.setMinimumSize(1024, 1024)
 
     def getPlotWindow(self, index):
         """get the PlotWindow widget object for a given index"""
@@ -55,8 +58,12 @@ class PlotArea(qt.QMdiArea):
     def showContextMenu(self, position):
         menu = qt.QMenu('Plot Area Menu', self)
 
-        action = qt.QAction('Add Plot1D Window', self,
+        action = qt.QAction('Add Plot1D', self,
                             triggered=self.addPlot1D)
+        menu.addAction(action)
+
+        action = qt.QAction('Add Stack of Plot1D', self,
+                            triggered=self.addStackView1D)
         menu.addAction(action)
 
         action = qt.QAction('Add Plot2D Window', self,
@@ -78,6 +85,9 @@ class PlotArea(qt.QMdiArea):
     def addPlot1D(self):
         return self.addPlotWindow(plotType='1D')
 
+    def addStackView1D(self):
+        return self.addPlotWindow(plotType='Stack1D')
+
     def addPlot2D(self):
         return self.addPlotWindow(plotType='2D')
 
@@ -87,11 +97,16 @@ class PlotArea(qt.QMdiArea):
         Parameters
         ----------
         plotType : str
-            type of plot, '1D' (=curves) or '2D' (images)
+            type of plot:
+                '1D' (= curves)
+                '2D' (= images),
+                'Stack1D' (= stack of curves)
         """
         subWindow = MdiSubWindow(parent=self)
         if plotType == '2D':
             plotWindow = Plot2D(parent=subWindow)
+        elif plotType == 'Stack1D':
+            plotWindow = StackView1D(parent=subWindow)
         else:
             plotWindow = Plot1D(parent=subWindow)
         plotWindow.setIndex(len(self.plotWindows()))

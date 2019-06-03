@@ -9,6 +9,7 @@ Viewer for a stack of 1D plots
 """
 import numpy as np
 from silx.gui import qt
+from matplotlib.pyplot import cm
 from silx.gui.widgets.FrameBrowser import HorizontalSliderWithBrowser
 from sloth.gui.plot.plot1D import Plot1D
 
@@ -42,9 +43,15 @@ class StackView1D(qt.QMainWindow):
         else:
             self.setWindowTitle('StackView1D')
 
+        self._index = None  #: used for embedding in PlotArea
+
         self._stack = None
         """Loaded stack, a list of lists of 1D arrays plus a dictionary:
-           [[x1, y1, info1], ... [xN, yN, infoN]]."""
+           [[ [p1_x1, p1_y1, p1_info1], [p1_x2, p1_y2, p1_info2], ...,],
+            [ ... ],
+            [ [pN_x1, pN_y1, pN_info1], ... ],
+            ].
+        """
 
         centralWidget = qt.QWidget(self)
         self._plot = Plot1D()
@@ -63,7 +70,7 @@ class StackView1D(qt.QMainWindow):
 
         centralWidget.setLayout(gridLayout)
         self.setCentralWidget(centralWidget)
-        self.setMinimumSize(1024, 800)
+        self.setMinimumSize(600, 800)
 
     def __updateFrameNumber(self, index):
         """Update the current plot.
@@ -72,13 +79,27 @@ class StackView1D(qt.QMainWindow):
         if self._stack is None:
             #: no data set
             return
-        curve = self._stack[index]
-        x, y, info = curve[0], curve[1], curve[2]
-        try:
-            legend = info['legend']
-        except KeyError:
-            legend = 'Unknown'
-        self._plot.addCurve(x, y, legend=legend, replace=True)
+        curves = self._stack[index]  #: lists of curves
+        _colors = cm.rainbow(np.linspace(0, 1, len(curves)))
+
+        for icurve, curve in enumerate(curves):
+            assert len(curve) == 3, "list of curves must have [x, y, info]"
+            x, y, info = curve[0], curve[1], curve[2]
+            try:
+                legend = info['legend']
+            except KeyError:
+                legend = f'UnknownCurve{icurve}'
+            try:
+                color = info['color']
+            except KeyError:
+                color = _colors[icurve]
+            if icurve == 0:
+                replace = True
+            else:
+                replace = False
+            self._plot.addCurve(x, y, legend=legend, color=color,
+                                replace=replace)
+
         self.sigFrameChanged.emit(index)
 
     def setStack(self, stack=None):
@@ -90,17 +111,13 @@ class StackView1D(qt.QMainWindow):
 
         #: check stack is well formatted
         assert type(stack) is list, "stack must be a list"
-        assert all(type(data) is list for data in stack), "data in stack must be lists"
-        assert all(len(data) == 3 for data in stack), "data in stack must be lists of length 3"
-        assert all(isinstance(data[0], np.ndarray) for data in stack), "data[0] in stack should be a Numpy array"
-        assert all(isinstance(data[1], np.ndarray) for data in stack), "data[1] in stack should be a Numpy array"
-        assert all(isinstance(data[2], dict) for data in stack), "data[2] in stack should be a dictionary"
+        assert all(type(plots) is list for plots in stack), "data in stack must be lists"
 
         self._stack = stack
-        ndata = len(self._stack)
-        self.sigStackChanged.emit(ndata)
+        nplots = len(self._stack)
+        self.sigStackChanged.emit(nplots)
 
-        self._browser.setRange(0, ndata-1)
+        self._browser.setRange(0, nplots-1)
 
         #: init plot
         self.__updateFrameNumber(0)
@@ -109,6 +126,16 @@ class StackView1D(qt.QMainWindow):
         #: enable and init browser
         self._browser.setEnabled(True)
 
+    def index(self):
+        if self._index is None:
+            self._index = 0
+        return self._index
+
+    def setIndex(self, value):
+        self._index = value
+        if self._index is not None:
+            self.setWindowTitle('{}: StackView1D'.format(self._index))
+
 
 def main():
     from silx import sx
@@ -116,9 +143,15 @@ def main():
     sv1 = StackView1D()
     x = np.arange(10)
     y = np.sin(x)*x
-    i = {'legend': 'sin'}
-    ii = {'legend': 'sin+10'}
-    stack = [[x, y, i], [x, y+10, ii]]
+    i = {'legend': 'p1: sin'}
+    ii = {'legend': 'p1: sin+10'}
+    i2 = {'legend': 'p2: 2sin', 'color': 'green'}
+    ii2 = {'legend': 'p2: 2sin+10', 'color': 'red'}
+    stack = [
+        [[x, y, i], [x, y+10, ii]],  #: plot 1
+        [[x, 2*y, i2], [x, 2*y+10, ii2]],  #: plot 2
+        [[x, 3*y, {}], [x, 3*y+10, {}]],  #: plot 3
+        ]
     sv1.setStack(stack)
     sv1.show()
     input("Press ENTER to close the window...")
