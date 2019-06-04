@@ -45,6 +45,14 @@ class StackView1D(qt.QMainWindow):
 
         self._index = None  #: used for embedding in PlotArea
 
+        #: DEFAULTS SETTINGS (updated for each plot in the stack)
+        self._colors = None  #: default curve colors
+        self._linewidth = 1  #: default curve _linewidth
+        self._xlabel = 'xlabel'
+        self._ylabel = 'ylabel'
+        self._title = 'title'
+
+        #: STACK FORMAT
         self._stack = None
         """Loaded stack, a list of lists of 1D arrays plus a dictionary:
            [[ [p1_x1, p1_y1, p1_info1], [p1_x2, p1_y2, p1_info2], ...,],
@@ -72,6 +80,12 @@ class StackView1D(qt.QMainWindow):
         self.setCentralWidget(centralWidget)
         self.setMinimumSize(600, 800)
 
+    def _set_colors(self, nlevels, colormap=None):
+        """set a given number of default colors as linspace in colormap"""
+        if colormap is None:
+            colormap = cm.rainbow
+        self._colors = colormap(np.linspace(0, 1, nlevels))
+
     def __updateFrameNumber(self, index):
         """Update the current plot.
         :param index: index of the frame to be displayed
@@ -80,11 +94,12 @@ class StackView1D(qt.QMainWindow):
             #: no data set
             return
         curves = self._stack[index]  #: lists of curves
-        _colors = cm.rainbow(np.linspace(0, 1, len(curves)))
+        self._set_colors(len(curves))
 
         for icurve, curve in enumerate(curves):
             assert len(curve) == 3, "list of curves must have [x, y, info]"
             x, y, info = curve[0], curve[1], curve[2]
+            #PLOT STYLE/INFO
             try:
                 legend = info['legend']
             except KeyError:
@@ -92,13 +107,36 @@ class StackView1D(qt.QMainWindow):
             try:
                 color = info['color']
             except KeyError:
-                color = _colors[icurve]
+                color = self._colors[icurve]
+            try:
+                linewidth = info['linewidth']
+            except KeyError:
+                linewidth = self._linewidth
+            try:
+                xlabel = info['xlabel']
+                self._xlabel = xlabel  #: kept if setted once
+            except KeyError:
+                xlabel = self._xlabel
+            try:
+                ylabel = info['ylabel']
+                self._ylabel = ylabel  #: kept if setted once
+            except KeyError:
+                ylabel = self._ylabel
+            try:
+                title = info['title']
+            except KeyError:
+                title = self._title
             if icurve == 0:
                 replace = True
             else:
                 replace = False
-            self._plot.addCurve(x, y, legend=legend, color=color,
+            self._plot.addCurve(x, y, legend=legend,
+                                color=color,
+                                linewidth=linewidth,
                                 replace=replace)
+            self._plot.setGraphXLabel(xlabel)
+            self._plot.setGraphYLabel(ylabel)
+            self._plot.setGraphTitle(title)
 
         self.sigFrameChanged.emit(index)
 

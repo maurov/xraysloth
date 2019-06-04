@@ -43,7 +43,8 @@ class PlotArea(qt.QMdiArea):
         #: Set the order of the subwindows returned by subWindowList.
         self.setActivationOrder(qt.QMdiArea.CreationOrder)
 
-        self.setMinimumSize(1024, 1024)
+        self.setWindowTitle('PlotArea')
+        self.setMinimumSize(960, 960)
 
     def getPlotWindow(self, index):
         """get the PlotWindow widget object for a given index"""
