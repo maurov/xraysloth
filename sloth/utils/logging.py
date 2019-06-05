@@ -43,8 +43,16 @@ def logging_basicConfig(level='INFO'):
 def getConsoleHandler():
     """Default console handler"""
     console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setFormatter(logging.Formatter(_default_format))
+    console_handler.setFormatter(logging.Formatter(fmt=_default_format))
     return console_handler
+
+
+def getFileHandler(filename, mode='a'):
+    """Default console handler"""
+    file_handler = logging.FileHandler(filename, mode=mode)
+    file_handler.setFormatter(logging.Formatter(fmt=_default_format_file,
+                                                datefmt=_default_datefmt))
+    return file_handler
 
 
 def getLogger(name, level='INFO'):
@@ -84,6 +92,17 @@ def test_logger(level='DEBUG'):
     logger.warning('a warning message')
     logger.error('an error message')
     logger.critical('a critical message')
+    import tempfile
+    flog = tempfile.mktemp(prefix='test_logger_', suffix='.log')
+    logger.addHandler(getFileHandler(flog))
+    logger.info(f'added file handler -> {flog}')
+    logger.info('testing again all log levels:')
+    logger.debug('a debug message')
+    logger.info('an info message')
+    logger.warning('a warning message')
+    logger.error('an error message')
+    logger.critical('a critical message')
+
 
 
 if __name__ == '__main__':

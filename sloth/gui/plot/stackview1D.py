@@ -124,9 +124,9 @@ class StackView1D(qt.QMainWindow):
                 ylabel = self._ylabel
             try:
                 title = info['title']
+                self._title = title  #: kept if setted once
             except KeyError:
                 title = self._title
-                self._title = title  #: kept if setted once
             if icurve == 0:
                 replace = True
             else:
