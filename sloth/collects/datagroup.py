@@ -70,7 +70,7 @@ try:
 except ImportError:
     pass
 
-from ..utils.strings import str2rng
+from ..utils.strings import str2rng, get_fnames
 from ..io.specfile_reader import spec_getmap2group, spec_getmrg2group
 
 ### GLOBAL VARIABLES ###

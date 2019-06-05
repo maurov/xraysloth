@@ -13,7 +13,7 @@ from .plot1D import Plot1D
 from .plot2D import Plot2D
 from .stackview1D import StackView1D
 
-__authors__ = ["Marius Retegan", "Mauro Rovezzi"]
+__credits__ = ["Marius Retegan"]
 
 
 class MdiSubWindow(qt.QMdiSubWindow):

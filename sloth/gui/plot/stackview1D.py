@@ -4,14 +4,14 @@
 """
 Viewer for a stack of 1D plots
 ==============================
-
-
 """
 import numpy as np
 from silx.gui import qt
 from matplotlib.pyplot import cm
 from silx.gui.widgets.FrameBrowser import HorizontalSliderWithBrowser
 from sloth.gui.plot.plot1D import Plot1D
+
+__credits__ = ['SILX developers']
 
 
 class StackView1D(qt.QMainWindow):
@@ -126,6 +126,7 @@ class StackView1D(qt.QMainWindow):
                 title = info['title']
             except KeyError:
                 title = self._title
+                self._title = title  #: kept if setted once
             if icurve == 0:
                 replace = True
             else:
@@ -134,9 +135,9 @@ class StackView1D(qt.QMainWindow):
                                 color=color,
                                 linewidth=linewidth,
                                 replace=replace)
+            self._plot.setGraphTitle(title)
             self._plot.setGraphXLabel(xlabel)
             self._plot.setGraphYLabel(ylabel)
-            self._plot.setGraphTitle(title)
 
         self.sigFrameChanged.emit(index)
 
