@@ -362,8 +362,7 @@ def fluo_width(elem=None, line=None, herfd=False, showInfos=True):
         lw_herfd = 1./(math.sqrt(lw_xas**2 + lw_xes**2))
         if showInfos:
             _logger.info(f"{elm[0]} {line} (={ln[1]}):")
-            _logger.info(f"Atomic levels widths: XAS={lw_xas:.2f} eV,\
-                        XES={lw_xes:.2f} [HERFD={lw_herfd:.2f} eV]")
+            _logger.info(f"Atomic levels widths: XAS={lw_xas:.2f} eV, XES={lw_xes:.2f} eV, [HERFD={lw_herfd:.2f} eV]")
         if herfd is True:
             return lw_herfd
         else:
