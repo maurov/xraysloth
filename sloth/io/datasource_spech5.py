@@ -46,7 +46,7 @@ class DataSourceSpecH5(object):
         try:
             self._sf = silx_open(self.fname)
         except OSError:
-            self._logger.error(f"Cannot open {self.fname}")
+            self._logger.error(f"cannot open {self.fname}")
             self._sf = None
 
     def open(self, mode='r'):
@@ -54,7 +54,7 @@ class DataSourceSpecH5(object):
         try:
             self._sf = h5py.File(self.fname, mode)
         except OSError:
-            self._logger.error(f"Cannot open {self.fname}")
+            self._logger.error(f"cannot open {self.fname}")
             pass
 
     def close(self):
@@ -77,8 +77,8 @@ class DataSourceSpecH5(object):
 
     def _initTreeView(self):
         """Init TreeView GUI"""
-        from sloth.gui.daxs.viewHdf5Tree import TreeView
-        from sloth.gui.daxs.modelHdf5Tree import TreeModel
+        from sloth.gui.hdf5.view import TreeView
+        from sloth.gui.hdf5.model import TreeModel
         self._view = TreeView()
         self._model = TreeModel()
         self._view.setModel(self._model)
@@ -142,7 +142,7 @@ class DataSourceSpecH5(object):
         try:
             self._sg = self._sf[self._scan_url]
             self._scan_title = self.get_title()
-            self._logger.info(f"Selected scan {self._scan_url}: '{self._scan_title}'")
+            self._logger.info(f"selected scan {self._scan_url}: '{self._scan_title}'")
         except KeyError:
             self._sg = None
             self._scan_title = None
@@ -157,7 +157,7 @@ class DataSourceSpecH5(object):
         try:
             return [i for i in self._get_sg()[url_str].keys()]
         except:
-            self._logger.error(f"'{url_str}' not found.\n Hint: use set_scan method first")
+            self._logger.error(f"'{url_str}' not found -> use 'set_scan' method first")
 
     def get_motors(self):
         """Get list of motors names"""
@@ -222,7 +222,7 @@ class DataSourceSpecH5(object):
             sel_cnt = f'{self._cnts_url}/{cnt}'
             return self._get_sg()[sel_cnt][()]
         else:
-            self._logger.error(f"'{cnt}' not found among the available counters:\n {cnts}")
+            self._logger.error(f"'{cnt}' not found among the available counters: {cnts}")
             sel_cnt = f'{self._cnts_url}/{cnts[0]}'
             return np.zeros_like(self._get_sg()[sel_cnt][()])
 
@@ -254,11 +254,11 @@ class DataSourceSpecH5(object):
             sel_mot = f'{self._mots_url}/{mot}'
             return self._get_sg()[sel_mot][()]
         else:
-            self._logger.error(f"'{mot}' not found in available motors:\n {mots}")
+            self._logger.error(f"'{mot}' not found in available motors: {mots}")
             return 0
 
     def write_scans_to_h5(self, scans, fname_out, h5path=None,
-                          overwrite=False):
+                          overwrite=False, conf_dict=None):
         """Export a selected range of scans to HDF5 file
 
         .. note:: This is a simple wrapper to
@@ -274,15 +274,31 @@ class DataSourceSpecH5(object):
             path inside HDF5 [None -> '/']
         overwrite : boolean (optional)
             force overwrite if the file exists [False]
+        conf_dict : None or dict (optional)
+            configuration dictionary saved as '{hdfpath}/0.1_conf'
         """
         from silx.io.convert import write_to_h5
         self._fname_out = fname_out
-        self._logger.info(f"Output file: {self._fname_out}")
+        self._logger.info(f"output file: {self._fname_out}")
         if os.path.isfile(self._fname_out) and os.access(self._fname_out, os.R_OK):
-            self._logger.info(f"Output file exists (overwrite is {overwrite})")
+            self._logger.info(f"output file exists (overwrite is {overwrite})")
             _fileExists = True
         else:
             _fileExists = False
+        #: h5path
+        if h5path is None:
+            h5path = '/'
+        else:
+            h5path += '/'
+        #: write configuration dictionary, if given
+        if conf_dict is not None:
+            from silx.io.dictdump import dicttoh5
+            _h5path = f'{h5path}0.1-conf/'
+            dicttoh5(conf_dict, self._fname_out, h5path=_h5path,
+                     mode="w", overwrite_data=overwrite,
+                     create_dataset_args=dict(track_order=True))
+            self._logger.info(f'written dictionary: {_h5path}')
+        #: write scans
         for iscan, scan in enumerate(scans):
             if (iscan == 0) and (overwrite or (not _fileExists)):
                 mode = 'w'  # overwrite
@@ -291,14 +307,11 @@ class DataSourceSpecH5(object):
             self.set_scan(scan)
             if self._sg is None:
                 continue
-            if h5path is not None:
-                _h5path = f'/{h5path}/{self._scan_str}/'
-            else:
-                _h5path = f'/{t._scan_str}/'
+            _h5path = f'{h5path}{self._scan_str}/'
             write_to_h5(self._sg, self._fname_out, h5path=_h5path,
                         mode=mode, overwrite_data=overwrite,
                         create_dataset_args=dict(track_order=True))
-            self._logger.info(f'Written {_h5path}')
+            self._logger.info(f'written scan: {_h5path}')
 
 
 def main():
