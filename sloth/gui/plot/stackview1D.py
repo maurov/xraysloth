@@ -25,7 +25,7 @@ class StackView1D(qt.QMainWindow):
     #: QT SIGNALS
     sigFrameChanged = qt.Signal(int)
     """Signal emitter when the frame number has changed.
-        This signal provides the current frame number.
+        This signal provides the current frame index.
     """
 
     sigStackChanged = qt.Signal(int)
@@ -54,11 +54,12 @@ class StackView1D(qt.QMainWindow):
 
         #: STACK FORMAT
         self._stack = None
-        """Loaded stack, a list of lists of 1D arrays plus a dictionary:
-           [[ [p1_x1, p1_y1, p1_info1], [p1_x2, p1_y2, p1_info2], ...,],
-            [ ... ],
-            [ [pN_x1, pN_y1, pN_info1], ... ],
-            ].
+        """stack, a dictionary of dictionaries with the format:
+
+        stack = {'plotA': {'curves': [[x1, y1, info1], ..., [xN, yN, infoN]]},
+                 'plotB': {'curves': ...},
+                 ...
+                 'plotN': {}}
         """
 
         centralWidget = qt.QWidget(self)
@@ -81,19 +82,24 @@ class StackView1D(qt.QMainWindow):
         self.setMinimumSize(600, 800)
 
     def _set_colors(self, nlevels, colormap=None):
-        """set a given number of default colors as linspace in colormap"""
+        """set a given number of default colors as linspace in a colormap"""
         if colormap is None:
             colormap = cm.rainbow
         self._colors = colormap(np.linspace(0, 1, nlevels))
 
     def __updateFrameNumber(self, index):
-        """Update the current plot.
-        :param index: index of the frame to be displayed
+        """Update the current frame plot.
+
+        Parameters
+        ----------
+        index: int
+            index of the frame to be displayed
         """
         if self._stack is None:
             #: no data set
             return
-        curves = self._stack[index]  #: lists of curves
+        key = list(self._stack.keys())[index]
+        curves = self._stack[key]['curves']  #: lists of curves
         self._set_colors(len(curves))
 
         for icurve, curve in enumerate(curves):
@@ -149,11 +155,12 @@ class StackView1D(qt.QMainWindow):
             return
 
         #: check stack is well formatted
-        assert type(stack) is list, "stack must be a list"
-        assert all(type(plots) is list for plots in stack), "data in stack must be lists"
+        assert type(stack) is dict, "stack must be a dictionary"
+        assert all('curves' in value.keys() for value in stack.values()), "stack dictionary must have 'curves' key"
+        assert all(type(value['curves']) is list for value in stack.values()), "data in stack must be lists"
 
         self._stack = stack
-        nplots = len(self._stack)
+        nplots = len(self._stack.keys())
         self.sigStackChanged.emit(nplots)
 
         self._browser.setRange(0, nplots-1)
@@ -186,11 +193,10 @@ def main():
     ii = {'legend': 'p1: sin+10'}
     i2 = {'legend': 'p2: 2sin', 'color': 'green'}
     ii2 = {'legend': 'p2: 2sin+10', 'color': 'red'}
-    stack = [
-        [[x, y, i], [x, y+10, ii]],  #: plot 1
-        [[x, 2*y, i2], [x, 2*y+10, ii2]],  #: plot 2
-        [[x, 3*y, {}], [x, 3*y+10, {}]],  #: plot 3
-        ]
+    stack = {'onePlot': {'curves': [[x, y, i], [x, y+10, ii]]},  #: plot 1
+             'plotTwo': {'curves': [[x, 2*y, i2], [x, 2*y+10, ii2]]},  #: plot 2
+             'third': {'curves': [[x, 3*y, {}], [x, 3*y+10, {}]]},  #: plot 3
+             }
     sv1.setStack(stack)
     sv1.show()
     input("Press ENTER to close the window...")
