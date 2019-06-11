@@ -1,12 +1,12 @@
 #Python environment for: https://github.com/maurov/xraysloth
-#Target: for running on mybinder.org
+#Target: for running a local Jupyterlab instance
 #Usage: conda env create -f environment.yml
-name: sloth-binder
+name: sloth-lab
 channels:
     - defaults
     #NOTE: specific channels are given per-package, not here!
 dependencies:
-    - python=3.6
+    - python=3.7
     - pip
     - nodejs
     - numpy>=1.16
@@ -20,6 +20,12 @@ dependencies:
     - conda-forge::xraylib
     - conda-forge::lmfit>=0.9.13
     - pip:
+        - black
+        - jupyterlab_code_formatter
+        - jupyterlab_server
+        - jupyterlab-git
+        - jupyterlab_latex
+        - hdf5plugin
         - silx>=0.10.1
-        - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl; sys_platform == 'linux'
-        - https://github.com/maurov/xraysloth
+        #- http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl; sys_platform == 'linux'
+#-> run 'postBuild' script to complete install

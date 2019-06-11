@@ -1,0 +1,28 @@
+#  Jupyterlab extensions
+
+# NOTE: if required, set proxy first:
+#npm config set proxy "http://domain\username:password@servername:port/"
+#npm confit set proxy "http://proxy.esrf.fr:3128/"
+#
+# https://github.com/QuantStack/jupyterlab-drawio
+#jupyter labextension install jupyterlab-drawio
+
+# https://www.npmjs.com/package/@jupyterlab/plotly-extension
+#jupyter labextension install @jupyterlab/plotly-extension
+
+# https://github.com/jupyterlab/jupyterlab-git
+#jupyter labextension install @jupyterlab/git
+#jupyter serverextension enable --py jupyterlab_git
+
+# https://github.com/ryantam626/jupyterlab_code_formatter
+#jupyter labextension install @ryantam626/jupyterlab_code_formatter
+#jupyter serverextension enable --py jupyterlab_code_formatter
+
+# TODO:
+#
+# https://github.com/jupyterlab/jupyterlab-google-drive
+# jupyter labextension install @jupyterlab/google-drive
+#
+# https://github.com/jupyterlab/jupyterlab-latex
+# to install jupyter extension
+# jupyter labextension install @jupyterlab/latex
