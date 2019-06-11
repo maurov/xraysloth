@@ -27,7 +27,7 @@ _resourcesPath = os.path.join(_libDir, 'resources')
 __pkgs__ = ['sloth',
             'sloth.io',           # input-output
             'sloth.groups',       # data groups based on HDF5 model
-            'sloth.collects'      # data containers !DEPRECATED! -> sloth.groups
+            'sloth.collects',      # data containers !DEPRECATED! -> sloth.groups
             'sloth.utils',        # utilities (generic)
             'sloth.math',         # math&friends
             'sloth.test',         # main test suite
