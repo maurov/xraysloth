@@ -20,6 +20,8 @@ dependencies:
     - conda-forge::xraylib
     - conda-forge::lmfit>=0.9.13
     - pip:
+        - jupyterlab_server
+        - jupyterlab-git
         - silx>=0.10.1
         - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl; sys_platform == 'linux'
         - git+https://github.com/maurov/xraysloth
