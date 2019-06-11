@@ -22,4 +22,4 @@ dependencies:
     - pip:
         - silx>=0.10.1
         - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl; sys_platform == 'linux'
-        - https://github.com/maurov/xraysloth
+        - git+https://github.com/maurov/xraysloth
