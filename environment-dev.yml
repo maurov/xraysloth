@@ -98,7 +98,7 @@ dependencies:
         - hdf5plugin
         - spec2nexus
         - palettable
-        # Python IDE with Atom and/or Emacs
+        # Python IDE with Visual studio code and/or Atom and/or Emacs
         - black
         - ipdb
         - rope
@@ -111,7 +111,9 @@ dependencies:
         - python-jsonrpc-server
         - python-language-server[all]
         - sphinxcontrib-napoleon
+        - sphinx_rtd_theme
         - recommonmark
+        - doc8
         #- radon #orange-dev
         #- graypy #tomwer
         #- requests-unixsocket #tomwer-dev

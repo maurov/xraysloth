@@ -53,10 +53,14 @@ coverage.xml
 *.pot
 
 # Sphinx documentation
-docs/_build/
+docs/_build/*
+docs/source/_build
 
 # Pycharm stuff
 .idea
 
 # Jupyter notebooks
 *.ipynb_checkpoints
+
+# Visual studio code
+*.vscode
