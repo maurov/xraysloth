@@ -8,6 +8,13 @@
 #npm config set proxy "http://domain\username:password@servername:port/"
 #npm confit set proxy "http://proxy.esrf.fr:3128/"
 
+# ---------------------------
+# IPYMPL / JUPYTER-MATPLOTLIB
+# ---------------------------
+# https://github.com/matplotlib/jupyter-matplotlib
+jupyter labextension install @jupyter-widgets/jupyterlab-manager
+jupyter labextension install jupyter-matplotlib
+
 # ------
 # DRAWIO
 # ------
@@ -21,21 +28,37 @@ jupyter labextension install jupyterlab-drawio
 jupyter labextension install @jupyterlab/git
 jupyter serverextension enable --py jupyterlab_git
 
-# --------------------
-# TODO (OR LOCAL ONLY)
-# --------------------
+# -------------------------------------
+# EXPERIMENTAL FEATURES: SLOTH-LAB ONLY
+# -------------------------------------
 
-# https://github.com/ryantam626/jupyterlab_code_formatter
-#jupyter labextension install @ryantam626/jupyterlab_code_formatter
-#jupyter serverextension enable --py jupyterlab_code_formatter
+if [[ $CONDA_DEFAULT_ENV = *"sloth-lab"* ]]; then
 
-# https://www.npmjs.com/package/@jupyterlab/plotly-extension
-#jupyter labextension install @jupyterlab/plotly-extension
+  # Packages specified in `environment-lab.yml`
 
-#
-# https://github.com/jupyterlab/jupyterlab-google-drive
-# jupyter labextension install @jupyterlab/google-drive
-#
-# https://github.com/jupyterlab/jupyterlab-latex
-# to install jupyter extension
-# jupyter labextension install @jupyterlab/latex
+  # -----
+  # LATEX
+  # -----
+  # https://github.com/jupyterlab/jupyterlab-latex
+  jupyter labextension install @jupyterlab/latex
+
+  # ----------------------
+  # CODE FORMATTER (BLACK)
+  # ----------------------
+  # https://github.com/ryantam626/jupyterlab_code_formatter
+  jupyter labextension install @ryantam626/jupyterlab_code_formatter
+  jupyter serverextension enable --py jupyterlab_code_formatter
+
+  # ------
+  # PLOTLY
+  # ------
+  # https://www.npmjs.com/package/@jupyterlab/plotly-extension
+  #jupyter labextension install @jupyterlab/plotly-extension
+
+  # ------------
+  # GOOGLE-DRIVE
+  # ------------
+  # https://github.com/jupyterlab/jupyterlab-google-drive
+  jupyter labextension install @jupyterlab/google-drive
+
+fi;
