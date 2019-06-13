@@ -29,7 +29,7 @@ def getPyMcaMain(fload=None):
     rcParams['text.usetex'] = False
 
     if HAS_PYMCA:
-        m = PyMcaMain.PyMcaMain()
+        m = PyMcaMain()
         if fload is not None:
             m.sourceWidget.sourceSelector.openFile(fload)
         m.show()

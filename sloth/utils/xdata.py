@@ -20,6 +20,7 @@ _logger = getLogger('sloth.utils.xdata')
 HAS_XRAYLIB = False
 try:
     import xraylib as xl
+    xl.SetErrorMessages(0)  #: disable showing error messages
     HAS_XRAYLIB = True
 except ImportError:
     pass
@@ -292,7 +293,7 @@ def find_line(emin, emax, elements=None, lines=None, outDict=False):
                 _logger.debug('{0}.{1} none'.format(el, ln))
                 continue
             if ((line >= emin) and (line <= emax)):
-                w = fluo_width(elem=el, line=ln)
+                w = fluo_width(elem=el, line=ln, showInfos=False)
                 if not w == 0:
                     _out['el'].append(eln[0])
                     _out['eln'].append(eln[1])
