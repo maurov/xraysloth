@@ -1,31 +1,46 @@
 #Python environment for: https://github.com/maurov/xraysloth
-#Target: for running a local Jupyterlab instance
+#Target: for running a local Jupyterlab instance + separate code editing
 #Usage: conda env create -f environment.yml
 name: sloth-lab
 channels:
     - defaults
     #NOTE: specific channels are given per-package, not here!
 dependencies:
-    - python=3.7
+    - python=3.6
     - pip
     - nodejs
     - numpy>=1.16
     - scipy>=1.2.0
     - matplotlib>=2.0
     - h5py>=2.7
+    - sphinx>=1.5
+    - sphinxcontrib
+    - conda-forge::black
     - conda-forge::ipywidgets
     - conda-forge::ipympl
     - conda-forge::widgetsnbextension
     - conda-forge::jupyterlab
+    - conda-forge::nbsphinx
     - conda-forge::xraylib
     - conda-forge::lmfit>=0.9.13
     - pip:
-        - black
+        #: Linters
+        - pylint
+        - pycodestyle
+        - pydocstyle
+        #: Build docs
+        - sphinxcontrib-napoleon
+        - sphinx_rtd_theme
+        - recommonmark
+        #: Lab extensions
+        - nb_black
         - jupyterlab_code_formatter
         - jupyterlab_server
         - jupyterlab-git
         - jupyterlab_latex
+        #: Base libs
         - hdf5plugin
         - silx>=0.10.1
-        #- http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl; sys_platform == 'linux'
-#-> run 'postBuild' script to complete install
+        - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl; sys_platform == 'linux'
+
+#: -> run 'postBuild' script to complete install

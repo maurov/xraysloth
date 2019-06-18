@@ -99,7 +99,6 @@ dependencies:
         - spec2nexus
         - palettable
         # Python IDE with Visual studio code and/or Atom and/or Emacs
-        - pylint
         - black
         - ipdb
         - rope
