@@ -94,6 +94,20 @@ class FluoLine(EntryGroup):
         """Line cross section"""
         return fluo_amplitude(self.element, self.line, self.excitation)
 
+    def get_rate(self):
+        """Line rate
+
+        .. note:: this uses PyMca5
+        """
+        try:
+            from PyMca5.PyMcaPhysics.xrf.Elements import Element
+        except ModuleNotFoundError:
+            _logger.error('[get_rate] PyMca5 not found!')
+            return None
+        _el = Element[self.element]
+        _trans = mapLine2Trans(self.line)[1]
+        return _el[_trans]['rate']
+
     def _init_spectrum(self, xwidth=3., xstep=0.05):
         """Generate the fluorescence spectrum
 
