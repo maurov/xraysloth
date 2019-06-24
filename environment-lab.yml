@@ -24,6 +24,7 @@ dependencies:
     - conda-forge::nbsphinx
     - conda-forge::xraylib
     - conda-forge::lmfit>=0.9.13
+    # - conda-forge::rise
     - pip:
         #: Linters
         - pylint
