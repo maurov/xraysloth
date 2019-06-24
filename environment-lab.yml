@@ -15,6 +15,7 @@ dependencies:
     - h5py>=2.7
     - sphinx>=1.5
     - sphinxcontrib
+    - pyyaml
     - conda-forge::black
     - conda-forge::ipywidgets
     - conda-forge::ipympl
