@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Simple peak fitting utility
-==============================
+"""
+Simple peak fitting utility with PyMCA/SILX
+===========================================
 
 Current fitting backends: PyMca_ or SILX_
 
@@ -10,16 +11,15 @@ Current fitting backends: PyMca_ or SILX_
 .. _SILX: https://github.com/silx-kit/silx
 
 """
-import sys, os
+import os
 import numpy as np
 
 HAS_SILX = False
 try:
-    from silx.math.fit.functions import sum_gauss
     from silx.math.fit import fittheories, bgtheories
     from silx.math.fit.fitmanager import FitManager
     HAS_SILX = True
-except:
+except ImportError:
     pass
 
 HAS_PYMCA = False
@@ -27,22 +27,23 @@ HAS_PYMCA5 = False
 try:
     from PyMca5.PyMcaMath.fitting import Specfit, SpecfitFunctions
     HAS_PYMCA5 = True
-except:
+except ImportError:
     try:
         from PyMca import Specfit, SpecfitFunctions
         HAS_PYMCA = True
-    except:
+    except ImportError:
         from sloth import NullClass
         Specfit = NullClass
         SpecfitFunctions = NullClass
         pass
 
-from sloth.utils.genericutils import run_from_ipython
+from sloth.utils.jupyter import run_from_ipython
 IN_IPYTHON = run_from_ipython()
 
-##################
-### SILX BASED ###
-##################
+##############
+# SILX BASED #
+##############
+
 
 def fit_silx(x, y, theory=None, bkg=None):
     """fit a peak with using silx library
@@ -117,16 +118,17 @@ def fit_silx(x, y, theory=None, bkg=None):
         fit.estimate()
         fit.runfit()
         yfit = fit.gendata()
-    except:
+    except Exception:
         print('ERROR: fit_silx FAILED!!!')
 
     #print('FWHM: {0}'.format(fwhm(x,yfit,method='bin')))
     return yfit
 
 
-###################
-### PYMCA BASED ###
-###################
+###############
+# PYMCA BASED #
+###############
+
 
 def fit_splitpvoigt(x, y, dy=False,\
                     theory='Split Pseudo-Voigt', bkg='Constant',\
