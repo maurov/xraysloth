@@ -112,7 +112,7 @@
 <li class="toctree-l2"><a class="reference internal" href="raytracing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing</span></code>: x-ray raytracing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="math.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math</span></code>: mathematical utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils</span></code>: utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dft.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.dft</span></code>: interacting with density functional theory (DFT) codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calculators.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.calculators</span></code>: interacting with calculators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.gui</span></code>: GUI</a></li>
 </ul>
 </li>
@@ -199,30 +199,30 @@ have a unified data loading experience for many types of data files.</p>
 </ul>
 <dl class="class">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5">
-<em class="property">class </em><code class="descclassname">sloth.io.datasource_spech5.</code><code class="descname">DataSourceSpecH5</code><span class="sig-paren">(</span><em>fname=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">sloth.io.datasource_spech5.</code><code class="sig-name descname">DataSourceSpecH5</code><span class="sig-paren">(</span><em class="sig-param">fname=None</em>, <em class="sig-param">logger=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Data source utility wrapper for a Spec file read as HDF5 object
 via silx.io.open</p>
 <dl class="method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.open">
-<code class="descname">open</code><span class="sig-paren">(</span><em>mode='r'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.open"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.open" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">open</code><span class="sig-paren">(</span><em class="sig-param">mode='r'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.open"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.open" title="Permalink to this definition">¶</a></dt>
 <dd><p>Open the source file object with h5py in given mode</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.close" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close source file silx.io.spech5.SpecH5</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.view">
-<code class="descname">view</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.view"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.view" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">view</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.view"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.view" title="Permalink to this definition">¶</a></dt>
 <dd><p>Init the TreeView and show</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.set_group">
-<code class="descname">set_group</code><span class="sig-paren">(</span><em>group_url=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.set_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.set_group" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_group</code><span class="sig-paren">(</span><em class="sig-param">group_url=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.set_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.set_group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select group url</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -239,7 +239,7 @@ via silx.io.open</p>
 
 <dl class="method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.set_scan">
-<code class="descname">set_scan</code><span class="sig-paren">(</span><em>scan_n</em>, <em>scan_idx=1</em>, <em>group_url=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.set_scan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.set_scan" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_scan</code><span class="sig-paren">(</span><em class="sig-param">scan_n</em>, <em class="sig-param">scan_idx=1</em>, <em class="sig-param">group_url=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.set_scan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.set_scan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select a given scan number</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -260,19 +260,19 @@ via silx.io.open</p>
 
 <dl class="method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_motors">
-<code class="descname">get_motors</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_motors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_motors" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_motors</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_motors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_motors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get list of motors names</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_counters">
-<code class="descname">get_counters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_counters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_counters" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_counters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_counters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_counters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get list of motors names</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_title">
-<code class="descname">get_title</code><span class="sig-paren">(</span><em>scan_n=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_title"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_title" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_title</code><span class="sig-paren">(</span><em class="sig-param">scan_n=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_title"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_title" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get title str for a given scan</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -289,13 +289,13 @@ via silx.io.open</p>
 
 <dl class="method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_scan_axis">
-<code class="descname">get_scan_axis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_scan_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_scan_axis" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_scan_axis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_scan_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_scan_axis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the name of the scanned axis from title</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_array">
-<code class="descname">get_array</code><span class="sig-paren">(</span><em>cnt</em>, <em>scan_n=None</em>, <em>group_url=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_array" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_array</code><span class="sig-paren">(</span><em class="sig-param">cnt</em>, <em class="sig-param">scan_n=None</em>, <em class="sig-param">group_url=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get array of a given counter</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -316,7 +316,7 @@ via silx.io.open</p>
 
 <dl class="method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_value">
-<code class="descname">get_value</code><span class="sig-paren">(</span><em>mot</em>, <em>scan_n=None</em>, <em>group_url=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_value" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_value</code><span class="sig-paren">(</span><em class="sig-param">mot</em>, <em class="sig-param">scan_n=None</em>, <em class="sig-param">group_url=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get motor position</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -337,7 +337,7 @@ via silx.io.open</p>
 
 <dl class="method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.write_scans_to_h5">
-<code class="descname">write_scans_to_h5</code><span class="sig-paren">(</span><em>scans</em>, <em>fname_out</em>, <em>h5path=None</em>, <em>overwrite=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.write_scans_to_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.write_scans_to_h5" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_scans_to_h5</code><span class="sig-paren">(</span><em class="sig-param">scans</em>, <em class="sig-param">fname_out</em>, <em class="sig-param">h5path=None</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">conf_dict=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.write_scans_to_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.write_scans_to_h5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export a selected range of scans to HDF5 file</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -351,6 +351,7 @@ via silx.io.open</p>
 <li><p><strong>fname_out</strong> (<em>str</em>) – output file name</p></li>
 <li><p><strong>h5path</strong> (<em>str</em><em> (</em><em>optional</em><em>)</em>) – path inside HDF5 [None -&gt; ‘/’]</p></li>
 <li><p><strong>overwrite</strong> (<em>boolean</em><em> (</em><em>optional</em><em>)</em>) – force overwrite if the file exists [False]</p></li>
+<li><p><strong>conf_dict</strong> (<em>None</em><em> or </em><em>dict</em><em> (</em><em>optional</em><em>)</em>) – configuration dictionary saved as ‘{hdfpath}/0.1_conf’</p></li>
 </ul>
 </dd>
 </dl>
@@ -360,7 +361,7 @@ via silx.io.open</p>
 
 <dl class="function">
 <dt id="sloth.io.datasource_spech5.main">
-<code class="descclassname">sloth.io.datasource_spech5.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.main" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.io.datasource_spech5.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.main" title="Permalink to this definition">¶</a></dt>
 <dd><p>test</p>
 </dd></dl>
 
@@ -384,7 +385,7 @@ via silx.io.open</p>
 </div>
 <dl class="class">
 <dt id="sloth.io.specfile_reader.SpecfileData">
-<em class="property">class </em><code class="descclassname">sloth.io.specfile_reader.</code><code class="descname">SpecfileData</code><span class="sig-paren">(</span><em>fname=None</em>, <em>cntx=1</em>, <em>cnty=None</em>, <em>csig=None</em>, <em>cmon=None</em>, <em>csec=None</em>, <em>norm=None</em>, <em>verbosity=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/specfile_reader.html#SpecfileData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.specfile_reader.SpecfileData" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">sloth.io.specfile_reader.</code><code class="sig-name descname">SpecfileData</code><span class="sig-paren">(</span><em class="sig-param">fname=None</em>, <em class="sig-param">cntx=1</em>, <em class="sig-param">cnty=None</em>, <em class="sig-param">csig=None</em>, <em class="sig-param">cmon=None</em>, <em class="sig-param">csec=None</em>, <em class="sig-param">norm=None</em>, <em class="sig-param">verbosity=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/specfile_reader.html#SpecfileData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.specfile_reader.SpecfileData" title="Permalink to this definition">¶</a></dt>
 <dd><p>SpecfileData object</p>
 </dd></dl>
 

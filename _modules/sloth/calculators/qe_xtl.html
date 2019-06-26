@@ -1,0 +1,407 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sloth.calculators.qe_xtl &mdash; Sloth 0.3.0-dev documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Sloth
+          
+
+          
+            
+            <img src="../../../_static/xraysloth.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data_model/index.html">Notes on the data model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../todo.html">To Do</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Sloth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sloth.calculators.qe_xtl</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sloth.calculators.qe_xtl</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;Simple utility to convert Quantum ESPRESSO input files to XTL</span>
+
+<span class="sd">..note:: The starting point of this code is `ase.io.espresso` from the</span>
+<span class="sd">Atomic Simulation Environment (ASE) package.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Mauro Rovezzi&quot;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s2">&quot;mauro.rovezzi@gmail.com&quot;</span>
+<span class="n">__credits__</span> <span class="o">=</span> <span class="s2">&quot;ASE developers (https://wiki.fysik.dtu.dk/ase/)&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;BSD license &lt;http://opensource.org/licenses/BSD-3-Clause&gt;&quot;</span>
+<span class="n">__organization__</span> <span class="o">=</span> <span class="s2">&quot;European Synchrotron Radiation Facility&quot;</span>
+<span class="n">__year__</span> <span class="o">=</span> <span class="s2">&quot;2014-2015&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">string</span> <span class="k">import</span> <span class="n">Template</span>
+
+<span class="c1">#SOME CONSTANTS</span>
+<span class="c1"># BOHR RADIUS IN ANGSTROMS</span>
+<span class="n">A0</span> <span class="o">=</span> <span class="mf">0.5291772192</span>
+
+<div class="viewcode-block" id="read_fortran_namelist"><a class="viewcode-back" href="../../../modules/calculators.html#sloth.calculators.qe_xtl.read_fortran_namelist">[docs]</a><span class="k">def</span> <span class="nf">read_fortran_namelist</span><span class="p">(</span><span class="n">fileobj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Takes a fortran-namelist formatted file and returns appropriate</span>
+<span class="sd">    dictionaries, followed by lines of text that do not fit this</span>
+<span class="sd">    pattern.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">extralines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">indict</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">fileobj</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fileobj</span><span class="o">.</span><span class="n">readlines</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">indict</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">):</span>
+            <span class="n">indict</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&amp;&#39;</span><span class="p">):</span>
+            <span class="n">indict</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">dictname</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">dictname</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="ow">not</span> <span class="n">indict</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">extralines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">indict</span><span class="p">:</span>
+            <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">SyntaxError</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;.true.&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;.false.&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">dictname</span><span class="p">][</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">extralines</span></div>
+
+
+<div class="viewcode-block" id="f2f"><a class="viewcode-back" href="../../../modules/calculators.html#sloth.calculators.qe_xtl.f2f">[docs]</a><span class="k">def</span> <span class="nf">f2f</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts a fortran-formatted double precision number (e.g.,</span>
+<span class="sd">    2.323d2) to a python float. value should be a string.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="get_method"><a class="viewcode-back" href="../../../modules/calculators.html#sloth.calculators.qe_xtl.get_method">[docs]</a><span class="k">def</span> <span class="nf">get_method</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">line_no</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns the method used in a given section &quot;&quot;&quot;</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">line_no</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">&#39;{&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;{&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span><span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;}&#39;</span><span class="p">)]</span>
+    <span class="k">elif</span> <span class="s1">&#39;(&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span><span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">)]</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">method</span></div>
+
+<div class="viewcode-block" id="get_cell"><a class="viewcode-back" href="../../../modules/calculators.html#sloth.calculators.qe_xtl.get_cell">[docs]</a><span class="k">def</span> <span class="nf">get_cell</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the cell parameters from the lines of text of the espresso</span>
+<span class="sd">    input file.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cell_params</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="k">if</span> <span class="s1">&#39;CELL_PARAMETERS&#39;</span> <span class="ow">in</span> <span class="n">l</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;More than one CELL_PARAMETERS section?&#39;</span><span class="p">)</span>
+    <span class="n">line_no</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="n">line_no</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span><span class="n">line_no</span> <span class="o">+</span> <span class="mi">4</span><span class="p">]:</span>
+        <span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">,</span> <span class="n">vz</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">cell_params</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">,</span> <span class="n">vz</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cell_params</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">),</span> <span class="n">get_method</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">line_no</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="get_atoms"><a class="viewcode-back" href="../../../modules/calculators.html#sloth.calculators.qe_xtl.get_atoms">[docs]</a><span class="k">def</span> <span class="nf">get_atoms</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the atomic positions of the atoms as an (ordered) list from</span>
+<span class="sd">    the lines of text of the espresso input file.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">atomic_positions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="k">if</span> <span class="s1">&#39;ATOMIC_POSITIONS&#39;</span> <span class="ow">in</span> <span class="n">l</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;More than one ATOMIC_POSITIONS section?&#39;</span><span class="p">)</span>
+    <span class="n">line_no</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="n">line_no</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span><span class="n">line_no</span> <span class="o">+</span> <span class="n">n_atoms</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]:</span>
+        <span class="c1">#el, x, y, z = line.split()</span>
+        <span class="c1">#atomic_positions.append([el, (f2f(x), f2f(y), f2f(z))])</span>
+        <span class="n">atomic_positions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">atomic_positions</span><span class="p">,</span> <span class="n">get_method</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">line_no</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="get_negative_pos"><a class="viewcode-back" href="../../../modules/calculators.html#sloth.calculators.qe_xtl.get_negative_pos">[docs]</a><span class="k">def</span> <span class="nf">get_negative_pos</span><span class="p">(</span><span class="n">positions</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the minimum negative atomic positions vector&quot;&quot;&quot;</span>
+    <span class="n">xnmin</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">ynmin</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">znmin</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">positions</span><span class="p">:</span>
+        <span class="n">line_s</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">xnmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span> <span class="n">xnmin</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">line_s</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="p">)</span> 
+        <span class="n">ynmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span> <span class="n">ynmin</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">line_s</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="p">)</span> 
+        <span class="n">znmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span> <span class="n">znmin</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">line_s</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="p">)</span> 
+    <span class="k">return</span> <span class="n">xnmin</span><span class="p">,</span> <span class="n">ynmin</span><span class="p">,</span> <span class="n">znmin</span></div>
+
+<div class="viewcode-block" id="read_qe_in"><a class="viewcode-back" href="../../../modules/calculators.html#sloth.calculators.qe_xtl.read_qe_in">[docs]</a><span class="k">def</span> <span class="nf">read_qe_in</span><span class="p">(</span><span class="n">fileobj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Reads espresso input files.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fileobj</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">fileobj</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fileobj</span><span class="p">,</span> <span class="s1">&#39;rU&#39;</span><span class="p">)</span>
+    <span class="c1"># get data from qe input file</span>
+    <span class="n">data</span><span class="p">,</span> <span class="n">extralines</span> <span class="o">=</span> <span class="n">read_fortran_namelist</span><span class="p">(</span><span class="n">fileobj</span><span class="p">)</span>
+    <span class="n">positions</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">get_atoms</span><span class="p">(</span><span class="n">extralines</span><span class="p">,</span>
+                                  <span class="n">n_atoms</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;system&#39;</span><span class="p">][</span><span class="s1">&#39;nat&#39;</span><span class="p">])</span>
+    <span class="c1"># init dictionary</span>
+    <span class="n">qedict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># cell</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;system&#39;</span><span class="p">][</span><span class="s1">&#39;ibrav&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">conv</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;system&#39;</span><span class="p">][</span><span class="s1">&#39;celldm(1)&#39;</span><span class="p">])</span><span class="o">*</span><span class="n">A0</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">cm</span> <span class="o">=</span> <span class="n">get_cell</span><span class="p">(</span><span class="n">extralines</span><span class="p">)</span>
+        <span class="n">ma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">mb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">mc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">qedict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;alat&#39;</span> <span class="p">:</span> <span class="n">ma</span> <span class="o">*</span> <span class="n">conv</span><span class="p">,</span>
+                       <span class="s1">&#39;blat&#39;</span> <span class="p">:</span> <span class="n">mb</span> <span class="o">*</span> <span class="n">conv</span><span class="p">,</span>
+                       <span class="s1">&#39;clat&#39;</span> <span class="p">:</span> <span class="n">mc</span> <span class="o">*</span> <span class="n">conv</span><span class="p">})</span>
+        <span class="n">dac</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">dbc</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">dab</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">cosac</span> <span class="o">=</span> <span class="n">dac</span> <span class="o">/</span> <span class="p">(</span><span class="n">ma</span> <span class="o">*</span> <span class="n">mc</span><span class="p">)</span>
+        <span class="n">cosbc</span> <span class="o">=</span> <span class="n">dbc</span> <span class="o">/</span> <span class="p">(</span><span class="n">mb</span> <span class="o">*</span> <span class="n">mc</span><span class="p">)</span>
+        <span class="n">cosab</span> <span class="o">=</span> <span class="n">dab</span> <span class="o">/</span> <span class="p">(</span><span class="n">ma</span> <span class="o">*</span> <span class="n">mb</span><span class="p">)</span>
+        <span class="n">qedict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;alpha&#39;</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">cosac</span><span class="p">)),</span>
+                       <span class="s1">&#39;beta&#39;</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">cosbc</span><span class="p">)),</span>
+                       <span class="s1">&#39;gamma&#39;</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">cosab</span><span class="p">))})</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;system&#39;</span><span class="p">][</span><span class="s1">&#39;ibrav&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">):</span>
+        <span class="n">qedict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;alat&#39;</span> <span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;system&#39;</span><span class="p">][</span><span class="s1">&#39;celldm(1)&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">A0</span><span class="p">,</span>
+                       <span class="s1">&#39;blat&#39;</span> <span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;system&#39;</span><span class="p">][</span><span class="s1">&#39;celldm(1)&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">A0</span><span class="p">,</span>
+                       <span class="s1">&#39;clat&#39;</span> <span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;system&#39;</span><span class="p">][</span><span class="s1">&#39;celldm(3)&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;system&#39;</span><span class="p">][</span><span class="s1">&#39;celldm(1)&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">A0</span><span class="p">,</span>
+                       <span class="s1">&#39;alpha&#39;</span> <span class="p">:</span> <span class="mf">90.0</span><span class="p">,</span>
+                       <span class="s1">&#39;beta&#39;</span> <span class="p">:</span> <span class="mf">90.0</span><span class="p">,</span>
+                       <span class="s1">&#39;gamma&#39;</span> <span class="p">:</span> <span class="mf">120.0</span><span class="p">})</span>
+    <span class="c1"># atoms</span>
+    <span class="n">xn</span><span class="p">,</span> <span class="n">yn</span><span class="p">,</span> <span class="n">zn</span> <span class="o">=</span> <span class="n">get_negative_pos</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
+    <span class="n">positions_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">positions_lst</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">positions</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;angstrom&#39;</span> <span class="ow">in</span> <span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()):</span>
+            <span class="n">line_s</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">line_s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:.7f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="p">(</span> <span class="nb">float</span><span class="p">(</span><span class="n">line_s</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="n">xn</span> <span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">qedict</span><span class="p">[</span><span class="s1">&#39;alat&#39;</span><span class="p">]))</span>
+            <span class="n">line_s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:.7f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="p">(</span> <span class="nb">float</span><span class="p">(</span><span class="n">line_s</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">-</span> <span class="n">yn</span> <span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">qedict</span><span class="p">[</span><span class="s1">&#39;blat&#39;</span><span class="p">])</span> <span class="p">)</span>
+            <span class="n">line_s</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:.7f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="p">(</span> <span class="nb">float</span><span class="p">(</span><span class="n">line_s</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">-</span> <span class="n">zn</span> <span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">qedict</span><span class="p">[</span><span class="s1">&#39;clat&#39;</span><span class="p">])</span> <span class="p">)</span>
+            <span class="n">line_s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;   &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">line_s</span><span class="p">)</span>
+        <span class="n">positions_lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+        <span class="n">positions_str</span> <span class="o">=</span> <span class="n">positions_str</span><span class="o">+</span><span class="n">line</span>
+    <span class="c1">#</span>
+    <span class="n">qedict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;atoms_lst&#39;</span> <span class="p">:</span> <span class="n">positions_lst</span><span class="p">,</span>
+                   <span class="s1">&#39;atoms_str&#39;</span> <span class="p">:</span> <span class="n">positions_str</span><span class="p">})</span>
+    <span class="n">fileobj</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">qedict</span></div>
+
+<div class="viewcode-block" id="qe2xtl"><a class="viewcode-back" href="../../../modules/calculators.html#sloth.calculators.qe_xtl.qe2xtl">[docs]</a><span class="k">def</span> <span class="nf">qe2xtl</span><span class="p">(</span><span class="n">fin</span><span class="p">,</span> <span class="n">fout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;converts a QE input to XTL out file&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">fout</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fout</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.xtl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fin</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">dats</span> <span class="o">=</span> <span class="n">read_qe_in</span><span class="p">(</span><span class="n">fin</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;QE input: </span><span class="si">{0}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fin</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">title</span><span class="p">:</span> <span class="n">dats</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;title&#39;</span> <span class="p">:</span> <span class="n">title</span><span class="p">})</span>
+    <span class="n">xtl_tmpl</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">TITLE $</span><span class="si">{title}</span><span class="se">\n\</span>
+<span class="s1">CELL</span><span class="se">\n\</span>
+<span class="s1"> $</span><span class="si">{alat}</span><span class="s1"> $</span><span class="si">{blat}</span><span class="s1"> $</span><span class="si">{clat}</span><span class="s1"> $</span><span class="si">{alpha}</span><span class="s1"> $</span><span class="si">{beta}</span><span class="s1"> $</span><span class="si">{gamma}</span><span class="se">\n\</span>
+<span class="s1">SYMMETRY NUMBER 1</span><span class="se">\n\</span>
+<span class="s1">SYMMETRY LABEL P1</span><span class="se">\n\</span>
+<span class="s1">ATOMS</span><span class="se">\n\</span>
+<span class="s1">NAME   X   Y   Z</span><span class="se">\n\</span>
+<span class="s1">$</span><span class="si">{atoms_str}</span><span class="se">\</span>
+<span class="s1">EOF</span>
+<span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+    <span class="n">xtlout</span> <span class="o">=</span> <span class="n">xtl_tmpl</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">dats</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fout</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">xtlout</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;XTL output: </span><span class="si">{0}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fout</span><span class="p">))</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014--2019, Mauro Rovezzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

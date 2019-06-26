@@ -159,11 +159,47 @@
   <h1>Source code for sloth.utils.strings</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
-
-<span class="sd">&quot;&quot;&quot;STRINGS</span>
-<span class="sd">----------</span>
-<span class="sd">:mod:`sloth.utils.strings`</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Simple utilities working with strings</span>
+<span class="sd">-------------------------------------</span>
+
+<span class="sd">:mod:`sloth.utils.strings`</span>
+
+<span class="sd">.. note:: each function has its own imports and checks.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1">####################</span>
+<span class="c1"># COLORIZED OUTPUT #</span>
+<span class="c1">####################</span>
+
+
+<div class="viewcode-block" id="colorstr"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.strings.colorstr">[docs]</a><span class="k">def</span> <span class="nf">colorstr</span><span class="p">(</span><span class="n">instr</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">on_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;bold&#39;</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;colorized string</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    color : str, &#39;green&#39;</span>
+<span class="sd">            Available text colors:</span>
+<span class="sd">            &#39;red&#39;, &#39;green&#39;, &#39;yellow&#39;, &#39;blue&#39;, &#39;magenta&#39;, &#39;cyan&#39;,</span>
+<span class="sd">            &#39;white&#39;</span>
+<span class="sd">    on_color : str, None</span>
+<span class="sd">               Available text highlights:</span>
+<span class="sd">               &#39;on_red&#39;, &#39;on_green&#39;, &#39;on_yellow&#39;, &#39;on_blue&#39;, &#39;on_magenta&#39;,</span>
+<span class="sd">               &#39;on_cyan&#39;, &#39;on_white&#39;</span>
+<span class="sd">    attrs : list of str, [&#39;bold&#39;]</span>
+<span class="sd">            Available attributes:</span>
+<span class="sd">            &#39;bold&#39;, &#39;dark&#39;, &#39;underline&#39;, &#39;blink&#39;, &#39;reverse&#39;, &#39;concealed&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">termcolor</span> <span class="k">import</span> <span class="n">colored</span>
+        <span class="k">return</span> <span class="n">colored</span><span class="p">(</span><span class="n">instr</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">on_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">instr</span></div>
+
+<span class="c1">###################</span>
+<span class="c1"># STRING TO RANGE #</span>
+<span class="c1">###################</span>
 
 
 <div class="viewcode-block" id="str2rng"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.strings.str2rng">[docs]</a><span class="k">def</span> <span class="nf">str2rng</span><span class="p">(</span><span class="n">rngstr</span><span class="p">,</span> <span class="n">keeporder</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rebin</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -219,6 +255,10 @@
         <span class="k">return</span> <span class="n">uniquify</span><span class="p">(</span><span class="n">_rngout</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">_rngout</span><span class="p">))</span></div>
+
+<span class="c1">################</span>
+<span class="c1"># TIME STRINGS #</span>
+<span class="c1">################</span>
 
 
 <div class="viewcode-block" id="get_timestamp"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.strings.get_timestamp">[docs]</a><span class="k">def</span> <span class="nf">get_timestamp</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>

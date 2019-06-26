@@ -179,6 +179,7 @@
 <span class="n">HAS_XRAYLIB</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">xraylib</span> <span class="k">as</span> <span class="nn">xl</span>
+    <span class="n">xl</span><span class="o">.</span><span class="n">SetErrorMessages</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1">#: disable showing error messages</span>
     <span class="n">HAS_XRAYLIB</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="k">pass</span>
@@ -451,7 +452,7 @@
                 <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.</span><span class="si">{1}</span><span class="s1"> none&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">ln</span><span class="p">))</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="p">((</span><span class="n">line</span> <span class="o">&gt;=</span> <span class="n">emin</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">line</span> <span class="o">&lt;=</span> <span class="n">emax</span><span class="p">)):</span>
-                <span class="n">w</span> <span class="o">=</span> <span class="n">fluo_width</span><span class="p">(</span><span class="n">elem</span><span class="o">=</span><span class="n">el</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="n">ln</span><span class="p">)</span>
+                <span class="n">w</span> <span class="o">=</span> <span class="n">fluo_width</span><span class="p">(</span><span class="n">elem</span><span class="o">=</span><span class="n">el</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="n">ln</span><span class="p">,</span> <span class="n">showInfos</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">w</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">_out</span><span class="p">[</span><span class="s1">&#39;el&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eln</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
                     <span class="n">_out</span><span class="p">[</span><span class="s1">&#39;eln&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eln</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -521,8 +522,7 @@
         <span class="n">lw_herfd</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">lw_xas</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">lw_xes</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">showInfos</span><span class="p">:</span>
             <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{elm[0]}</span><span class="s2"> </span><span class="si">{line}</span><span class="s2"> (=</span><span class="si">{ln[1]}</span><span class="s2">):&quot;</span><span class="p">)</span>
-            <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Atomic levels widths: XAS=</span><span class="si">{lw_xas:.2f}</span><span class="s2"> eV,</span><span class="se">\</span>
-<span class="s2">                        XES=</span><span class="si">{lw_xes:.2f}</span><span class="s2"> [HERFD=</span><span class="si">{lw_herfd:.2f}</span><span class="s2"> eV]&quot;</span><span class="p">)</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Atomic levels widths: XAS=</span><span class="si">{lw_xas:.2f}</span><span class="s2"> eV, XES=</span><span class="si">{lw_xes:.2f}</span><span class="s2"> eV, [HERFD=</span><span class="si">{lw_herfd:.2f}</span><span class="s2"> eV]&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">herfd</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">lw_herfd</span>
         <span class="k">else</span><span class="p">:</span>

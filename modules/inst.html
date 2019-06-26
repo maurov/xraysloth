@@ -109,7 +109,7 @@
 <li class="toctree-l2"><a class="reference internal" href="raytracing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing</span></code>: x-ray raytracing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="math.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math</span></code>: mathematical utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils</span></code>: utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dft.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.dft</span></code>: interacting with density functional theory (DFT) codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calculators.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.calculators</span></code>: interacting with calculators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.gui</span></code>: GUI</a></li>
 </ul>
 </li>
@@ -197,7 +197,7 @@ energy [eV]</p>
 <div class="line-block">
 <div class="line">description            | here    | XRT    | RT4XES  | SHADOW3 |</div>
 </div>
-<p><a href="#id3"><span class="problematic" id="id4">|------------------------+---------+--------+---------+---------|</span></a>
+<p><a href="#id4"><span class="problematic" id="id5">|------------------------+---------+--------+---------+---------|</span></a>
 | Bragg angle            |      heta  |         heta |  heta  |         heta  |
 | Rowland circle radius  | Rm      | Rm     | R/2     |         |
 | crystal bending radius | 2*Rm    | 2*Rm   | R       |         |
@@ -243,21 +243,21 @@ q0 = 2 * Rm * sin(theta0 + alpha)</p>
 </ul>
 <dl class="function">
 <dt id="sloth.inst.rowland.cs_h">
-<code class="descclassname">sloth.inst.rowland.</code><code class="descname">cs_h</code><span class="sig-paren">(</span><em>c</em>, <em>R</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#cs_h"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.cs_h" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.inst.rowland.</code><code class="sig-name descname">cs_h</code><span class="sig-paren">(</span><em class="sig-param">c</em>, <em class="sig-param">R</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#cs_h"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.cs_h" title="Permalink to this definition">¶</a></dt>
 <dd><p>Height of the circular segment, given its radius R and chord
 length c See: [<a class="reference external" href="http://en.wikipedia.org/wiki/Circular_segment">http://en.wikipedia.org/wiki/Circular_segment</a>]</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sloth.inst.rowland.acenx">
-<code class="descclassname">sloth.inst.rowland.</code><code class="descname">acenx</code><span class="sig-paren">(</span><em>n</em>, <em>asx=25.0</em>, <em>agx=5.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#acenx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.acenx" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.inst.rowland.</code><code class="sig-name descname">acenx</code><span class="sig-paren">(</span><em class="sig-param">n</em>, <em class="sig-param">asx=25.0</em>, <em class="sig-param">agx=5.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#acenx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.acenx" title="Permalink to this definition">¶</a></dt>
 <dd><p>n-th analyser center (starting from 0!) in x, given its size (asx)
 and gap between two (agx) in mm</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sloth.inst.rowland.det_pos_rotated">
-<code class="descclassname">sloth.inst.rowland.</code><code class="descname">det_pos_rotated</code><span class="sig-paren">(</span><em>dxyz, drot=35.0, doffsets=[0, 0]</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#det_pos_rotated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.det_pos_rotated" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.inst.rowland.</code><code class="sig-name descname">det_pos_rotated</code><span class="sig-paren">(</span><em class="sig-param">dxyz, drot=35.0, doffsets=[0, 0]</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#det_pos_rotated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.det_pos_rotated" title="Permalink to this definition">¶</a></dt>
 <dd><p>return the detector positions in a rotated reference system with
 the origin at the sample</p>
 <dl class="field-list simple">
@@ -281,17 +281,17 @@ NOTE: the (dy, dz) sign here is given as the convention setted during the commis
 
 <dl class="class">
 <dt id="sloth.inst.rowland.RowlandCircle">
-<em class="property">class </em><code class="descclassname">sloth.inst.rowland.</code><code class="descname">RowlandCircle</code><span class="sig-paren">(</span><em>Rm=500.0</em>, <em>theta0=0.0</em>, <em>alpha=0.0</em>, <em>d=None</em>, <em>aW=0.0</em>, <em>aWext=0.0</em>, <em>rSext=0.0</em>, <em>aL=0.0</em>, <em>bender_version=None</em>, <em>bender=(0.0</em>, <em>0.0</em>, <em>0.0)</em>, <em>actuator=(0.0</em>, <em>0.0)</em>, <em>inCircle=False</em>, <em>useCm=False</em>, <em>showInfos=True</em>, <em>**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">sloth.inst.rowland.</code><code class="sig-name descname">RowlandCircle</code><span class="sig-paren">(</span><em class="sig-param">Rm=500.0</em>, <em class="sig-param">theta0=0.0</em>, <em class="sig-param">alpha=0.0</em>, <em class="sig-param">d=None</em>, <em class="sig-param">aW=0.0</em>, <em class="sig-param">aWext=0.0</em>, <em class="sig-param">rSext=0.0</em>, <em class="sig-param">aL=0.0</em>, <em class="sig-param">bender_version=None</em>, <em class="sig-param">bender=(0.0</em>, <em class="sig-param">0.0</em>, <em class="sig-param">0.0)</em>, <em class="sig-param">actuator=(0.0</em>, <em class="sig-param">0.0)</em>, <em class="sig-param">inCircle=False</em>, <em class="sig-param">useCm=False</em>, <em class="sig-param">showInfos=True</em>, <em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rowland circle geometry</p>
 <dl class="method">
 <dt id="sloth.inst.rowland.RowlandCircle.set_dspacing">
-<code class="descname">set_dspacing</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.set_dspacing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.set_dspacing" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_dspacing</code><span class="sig-paren">(</span><em class="sig-param">d</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.set_dspacing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.set_dspacing" title="Permalink to this definition">¶</a></dt>
 <dd><p>set crystal d-spacing (AA)</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RowlandCircle.set_theta0">
-<code class="descname">set_theta0</code><span class="sig-paren">(</span><em>theta0</em>, <em>showInfos=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.set_theta0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.set_theta0" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_theta0</code><span class="sig-paren">(</span><em class="sig-param">theta0</em>, <em class="sig-param">showInfos=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.set_theta0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.set_theta0" title="Permalink to this definition">¶</a></dt>
 <dd><p>set correct attributes for a given theta0 (Bragg angle =
 center theta)</p>
 <dl class="field-list simple">
@@ -312,45 +312,45 @@ center theta)</p>
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RowlandCircle.get_infos">
-<code class="descname">get_infos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_infos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_infos" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_infos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_infos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_infos" title="Permalink to this definition">¶</a></dt>
 <dd><p>show useful information on distances/parameters</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RowlandCircle.set_ene0">
-<code class="descname">set_ene0</code><span class="sig-paren">(</span><em>ene0</em>, <em>d=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.set_ene0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.set_ene0" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_ene0</code><span class="sig-paren">(</span><em class="sig-param">ene0</em>, <em class="sig-param">d=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.set_ene0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.set_ene0" title="Permalink to this definition">¶</a></dt>
 <dd><p>set the central energy (eV) and relative Bragg angle</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RowlandCircle.get_theta">
-<code class="descname">get_theta</code><span class="sig-paren">(</span><em>ene=None</em>, <em>d=None</em>, <em>isDeg=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_theta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_theta" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_theta</code><span class="sig-paren">(</span><em class="sig-param">ene=None</em>, <em class="sig-param">d=None</em>, <em class="sig-param">isDeg=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_theta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_theta" title="Permalink to this definition">¶</a></dt>
 <dd><p>get theta angle (deg or rad, controlled by isDeg var) for a
 given energy (eV) and d-spacing</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RowlandCircle.get_ene">
-<code class="descname">get_ene</code><span class="sig-paren">(</span><em>theta=None</em>, <em>d=None</em>, <em>isDeg=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_ene"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_ene" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_ene</code><span class="sig-paren">(</span><em class="sig-param">theta=None</em>, <em class="sig-param">d=None</em>, <em class="sig-param">isDeg=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_ene"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_ene" title="Permalink to this definition">¶</a></dt>
 <dd><p>get energy (eV) for a given angle (deg) and d-spacing</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RowlandCircle.get_dth">
-<code class="descname">get_dth</code><span class="sig-paren">(</span><em>eDelta</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_dth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_dth" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_dth</code><span class="sig-paren">(</span><em class="sig-param">eDelta</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_dth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_dth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delta   heta using differential Bragg law</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RowlandCircle.get_chi">
-<code class="descname">get_chi</code><span class="sig-paren">(</span><em>aXoff</em>, <em>Rs=None</em>, <em>aL=None</em>, <em>inDeg=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_chi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_chi" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_chi</code><span class="sig-paren">(</span><em class="sig-param">aXoff</em>, <em class="sig-param">Rs=None</em>, <em class="sig-param">aL=None</em>, <em class="sig-param">inDeg=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_chi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_chi" title="Permalink to this definition">¶</a></dt>
 <dd><p>get chi angle in sagittal focusing using offset from
 centre analyser (aXoff)</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RowlandCircle.get_chi2">
-<code class="descname">get_chi2</code><span class="sig-paren">(</span><em>aN=1.0</em>, <em>aWext=None</em>, <em>Rs=None</em>, <em>rSext=None</em>, <em>inDeg=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_chi2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_chi2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_chi2</code><span class="sig-paren">(</span><em class="sig-param">aN=1.0</em>, <em class="sig-param">aWext=None</em>, <em class="sig-param">Rs=None</em>, <em class="sig-param">rSext=None</em>, <em class="sig-param">inDeg=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_chi2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_chi2" title="Permalink to this definition">¶</a></dt>
 <dd><p>get chi angle in sagittal focusing using touching/connected analysers</p>
 <p>Using the extended radius Rsp=Rs+rSext, can be calculated as
 aN times the chi/2 of the first analyser given by:</p>
@@ -364,25 +364,25 @@ aN times the chi/2 of the first analyser given by:</p>
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RowlandCircle.get_ana_dist">
-<code class="descname">get_ana_dist</code><span class="sig-paren">(</span><em>chi</em>, <em>aN=1.0</em>, <em>aW=None</em>, <em>Rs=None</em>, <em>inDeg=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_ana_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_ana_dist" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_ana_dist</code><span class="sig-paren">(</span><em class="sig-param">chi</em>, <em class="sig-param">aN=1.0</em>, <em class="sig-param">aW=None</em>, <em class="sig-param">Rs=None</em>, <em class="sig-param">inDeg=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_ana_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_ana_dist" title="Permalink to this definition">¶</a></dt>
 <dd><p>get analyser-analyser distance at Rs</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RowlandCircle.get_axoff">
-<code class="descname">get_axoff</code><span class="sig-paren">(</span><em>chi</em>, <em>Rs=None</em>, <em>aL=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_axoff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_axoff" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_axoff</code><span class="sig-paren">(</span><em class="sig-param">chi</em>, <em class="sig-param">Rs=None</em>, <em class="sig-param">aL=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_axoff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_axoff" title="Permalink to this definition">¶</a></dt>
 <dd><p>get aXoff for the pivot point when chi is known (simple case)</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RowlandCircle.get_axoff0">
-<code class="descname">get_axoff0</code><span class="sig-paren">(</span><em>chi</em>, <em>Rs=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_axoff0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_axoff0" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_axoff0</code><span class="sig-paren">(</span><em class="sig-param">chi</em>, <em class="sig-param">Rs=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_axoff0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_axoff0" title="Permalink to this definition">¶</a></dt>
 <dd><p>get aXoff at the surface of the analyser</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RowlandCircle.get_axoff_line">
-<code class="descname">get_axoff_line</code><span class="sig-paren">(</span><em>aXoffMin</em>, <em>SagOffMin</em>, <em>degRot=0.0</em>, <em>Rs=None</em>, <em>aL=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_axoff_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_axoff_line" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_axoff_line</code><span class="sig-paren">(</span><em class="sig-param">aXoffMin</em>, <em class="sig-param">SagOffMin</em>, <em class="sig-param">degRot=0.0</em>, <em class="sig-param">Rs=None</em>, <em class="sig-param">aL=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_axoff_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_axoff_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>get aXoff for the pivot point when only a linear trajectory is known</p>
 <p>The local sagittal cartesian coordinate system is assumed: the
 origin is at the pivot point of the central analyser, the
@@ -423,7 +423,7 @@ the abscissa (horizontal)</p></li>
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RowlandCircle.get_sag_off">
-<code class="descname">get_sag_off</code><span class="sig-paren">(</span><em>aXoff</em>, <em>Rs=None</em>, <em>aL=None</em>, <em>retAll=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_sag_off"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_sag_off" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_sag_off</code><span class="sig-paren">(</span><em class="sig-param">aXoff</em>, <em class="sig-param">Rs=None</em>, <em class="sig-param">aL=None</em>, <em class="sig-param">retAll=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_sag_off"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_sag_off" title="Permalink to this definition">¶</a></dt>
 <dd><p>analyser sagittal offset from the center one (Y-like direction)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -448,27 +448,27 @@ where the 0 is referred to the case with aL=0</p></li>
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RowlandCircle.get_sag_off0">
-<code class="descname">get_sag_off0</code><span class="sig-paren">(</span><em>aXoff</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_sag_off0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_sag_off0" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_sag_off0</code><span class="sig-paren">(</span><em class="sig-param">aXoff</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_sag_off0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_sag_off0" title="Permalink to this definition">¶</a></dt>
 <dd><p>quick wrap to get the sagittal offset at the analyser
 surface, use get_sag_off() for full control!</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RowlandCircle.get_sag_off_mots">
-<code class="descname">get_sag_off_mots</code><span class="sig-paren">(</span><em>aXoff</em>, <em>degRot=0.0</em>, <em>pivotSide=10.0</em>, <em>Rs=None</em>, <em>aL=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_sag_off_mots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_sag_off_mots" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_sag_off_mots</code><span class="sig-paren">(</span><em class="sig-param">aXoff</em>, <em class="sig-param">degRot=0.0</em>, <em class="sig-param">pivotSide=10.0</em>, <em class="sig-param">Rs=None</em>, <em class="sig-param">aL=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_sag_off_mots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_sag_off_mots" title="Permalink to this definition">¶</a></dt>
 <dd><p>motors positions for sagittal offset
 TODO: not working yet, sagoff also negative</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RowlandCircle.get_bender_pos">
-<code class="descname">get_bender_pos</code><span class="sig-paren">(</span><em>aN=5</em>, <em>bender=None</em>, <em>Rs=None</em>, <em>aL=None</em>, <em>rSext=None</em>, <em>bender_version=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_bender_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_bender_pos" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_bender_pos</code><span class="sig-paren">(</span><em class="sig-param">aN=5</em>, <em class="sig-param">bender=None</em>, <em class="sig-param">Rs=None</em>, <em class="sig-param">aL=None</em>, <em class="sig-param">rSext=None</em>, <em class="sig-param">bender_version=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_bender_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_bender_pos" title="Permalink to this definition">¶</a></dt>
 <dd><p>get the position (aXoff, SagOff) of the bender point (B)</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RowlandCircle.get_bender_mot">
-<code class="descname">get_bender_mot</code><span class="sig-paren">(</span><em>bender_pos</em>, <em>actuator=None</em>, <em>bender_version=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_bender_mot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_bender_mot" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_bender_mot</code><span class="sig-paren">(</span><em class="sig-param">bender_pos</em>, <em class="sig-param">actuator=None</em>, <em class="sig-param">bender_version=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_bender_mot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_bender_mot" title="Permalink to this definition">¶</a></dt>
 <dd><p>get the motor position of the bender, given its point
 position (B) and the actuator specifications, plus the version of the mechanics</p>
 <dl class="field-list simple">
@@ -485,19 +485,19 @@ position (B) and the actuator specifications, plus the version of the mechanics<
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RowlandCircle.get_az_off">
-<code class="descname">get_az_off</code><span class="sig-paren">(</span><em>eDelta</em>, <em>rtheta0=None</em>, <em>d=None</em>, <em>Rm=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_az_off"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_az_off" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_az_off</code><span class="sig-paren">(</span><em class="sig-param">eDelta</em>, <em class="sig-param">rtheta0=None</em>, <em class="sig-param">d=None</em>, <em class="sig-param">Rm=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_az_off"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_az_off" title="Permalink to this definition">¶</a></dt>
 <dd><p>get analyser Z offset for a given energy delta (eV)</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RowlandCircle.get_ay_off">
-<code class="descname">get_ay_off</code><span class="sig-paren">(</span><em>eDelta</em>, <em>rtheta0=None</em>, <em>d=None</em>, <em>Rm=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_ay_off"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_ay_off" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_ay_off</code><span class="sig-paren">(</span><em class="sig-param">eDelta</em>, <em class="sig-param">rtheta0=None</em>, <em class="sig-param">d=None</em>, <em class="sig-param">Rm=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_ay_off"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_ay_off" title="Permalink to this definition">¶</a></dt>
 <dd><p>get analyser Y offset for a given energy delta (eV)</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RowlandCircle.get_ene_off">
-<code class="descname">get_ene_off</code><span class="sig-paren">(</span><em>aZoff</em>, <em>rtheta0=None</em>, <em>d=None</em>, <em>Rm=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_ene_off"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_ene_off" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_ene_off</code><span class="sig-paren">(</span><em class="sig-param">aZoff</em>, <em class="sig-param">rtheta0=None</em>, <em class="sig-param">d=None</em>, <em class="sig-param">Rm=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RowlandCircle.get_ene_off"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RowlandCircle.get_ene_off" title="Permalink to this definition">¶</a></dt>
 <dd><p>get analyser delta E for a given Z offset</p>
 </dd></dl>
 
@@ -505,23 +505,23 @@ position (B) and the actuator specifications, plus the version of the mechanics<
 
 <dl class="class">
 <dt id="sloth.inst.rowland.RcVert">
-<em class="property">class </em><code class="descclassname">sloth.inst.rowland.</code><code class="descname">RcVert</code><span class="sig-paren">(</span><em>*args</em>, <em>**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RcVert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RcVert" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">sloth.inst.rowland.</code><code class="sig-name descname">RcVert</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RcVert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RcVert" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rowland circle vertical frame: sample-detector on XZ plane along Z axis</p>
 <dl class="method">
 <dt id="sloth.inst.rowland.RcVert.get_pos">
-<code class="descname">get_pos</code><span class="sig-paren">(</span><em>vect</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RcVert.get_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RcVert.get_pos" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_pos</code><span class="sig-paren">(</span><em class="sig-param">vect</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RcVert.get_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RcVert.get_pos" title="Permalink to this definition">¶</a></dt>
 <dd><p>utility method: return ‘vect’ or its rotated form if self.rotHor</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RcVert.get_det_pos">
-<code class="descname">get_det_pos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RcVert.get_det_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RcVert.get_det_pos" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_det_pos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RcVert.get_det_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RcVert.get_det_pos" title="Permalink to this definition">¶</a></dt>
 <dd><p>detector center position [X,Y,Z]</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RcVert.get_ana_pos">
-<code class="descname">get_ana_pos</code><span class="sig-paren">(</span><em>chi=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RcVert.get_ana_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RcVert.get_ana_pos" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_ana_pos</code><span class="sig-paren">(</span><em class="sig-param">chi=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RcVert.get_ana_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RcVert.get_ana_pos" title="Permalink to this definition">¶</a></dt>
 <dd><p>analyser XYZ center position for a given chi</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -532,7 +532,7 @@ position (B) and the actuator specifications, plus the version of the mechanics<
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RcVert.get_miscut_off">
-<code class="descname">get_miscut_off</code><span class="sig-paren">(</span><em>alpha=None</em>, <em>Rm=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RcVert.get_miscut_off"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RcVert.get_miscut_off" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_miscut_off</code><span class="sig-paren">(</span><em class="sig-param">alpha=None</em>, <em class="sig-param">Rm=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RcVert.get_miscut_off"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RcVert.get_miscut_off" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns horizontal and vertical offsets for a given miscut angle
 TODO: NOT CORRECT, CHECK THIS!</p>
 </dd></dl>
@@ -541,18 +541,18 @@ TODO: NOT CORRECT, CHECK THIS!</p>
 
 <dl class="class">
 <dt id="sloth.inst.rowland.RcHoriz">
-<em class="property">class </em><code class="descclassname">sloth.inst.rowland.</code><code class="descname">RcHoriz</code><span class="sig-paren">(</span><em>*args</em>, <em>**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RcHoriz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RcHoriz" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">sloth.inst.rowland.</code><code class="sig-name descname">RcHoriz</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RcHoriz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RcHoriz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rowland circle horizontal frame: sample-analyser on XY plane along
 Y axis</p>
 <dl class="method">
 <dt id="sloth.inst.rowland.RcHoriz.get_det_pos">
-<code class="descname">get_det_pos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RcHoriz.get_det_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RcHoriz.get_det_pos" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_det_pos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RcHoriz.get_det_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RcHoriz.get_det_pos" title="Permalink to this definition">¶</a></dt>
 <dd><p>detector position [X,Y,Z]</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RcHoriz.get_ana_pos">
-<code class="descname">get_ana_pos</code><span class="sig-paren">(</span><em>chi=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RcHoriz.get_ana_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RcHoriz.get_ana_pos" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_ana_pos</code><span class="sig-paren">(</span><em class="sig-param">chi=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RcHoriz.get_ana_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RcHoriz.get_ana_pos" title="Permalink to this definition">¶</a></dt>
 <dd><p>analyser XYZ center position for a given chi</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -563,7 +563,7 @@ Y axis</p>
 
 <dl class="method">
 <dt id="sloth.inst.rowland.RcHoriz.get_miscut_off">
-<code class="descname">get_miscut_off</code><span class="sig-paren">(</span><em>alpha=None</em>, <em>p=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RcHoriz.get_miscut_off"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RcHoriz.get_miscut_off" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_miscut_off</code><span class="sig-paren">(</span><em class="sig-param">alpha=None</em>, <em class="sig-param">p=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/rowland.html#RcHoriz.get_miscut_off"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.rowland.RcHoriz.get_miscut_off" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns horizontal and vertical offsets for a given miscut angle
 TODO: NOT CORRECT CHECK THIS!</p>
 </dd></dl>
@@ -578,7 +578,7 @@ TODO: NOT CORRECT CHECK THIS!</p>
 <span class="target" id="module-sloth.inst.dthetaxz"></span><p>Analytical expression of $Delta        heta (x, z)$ from Wittry</p>
 <dl class="function">
 <dt id="sloth.inst.dthetaxz.dThetaXZ">
-<code class="descclassname">sloth.inst.dthetaxz.</code><code class="descname">dThetaXZ</code><span class="sig-paren">(</span><em>x</em>, <em>z</em>, <em>thetab</em>, <em>case=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/dthetaxz.html#dThetaXZ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.dthetaxz.dThetaXZ" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.inst.dthetaxz.</code><code class="sig-name descname">dThetaXZ</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">z</em>, <em class="sig-param">thetab</em>, <em class="sig-param">case=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/dthetaxz.html#dThetaXZ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.dthetaxz.dThetaXZ" title="Permalink to this definition">¶</a></dt>
 <dd><dl>
 <dt>Analytical espression of the angular deviation from Bragg</dt><dd><p>reflection over a diffractor in conventional point-to-point
 focusing geometries</p>
@@ -601,7 +601,7 @@ focusing geometries</p>
 </dl>
 <p>dThetaXZ : 2D masked array</p>
 <p>The following expression is taken from table I in
-<a class="reference internal" href="#wittry-1992-jap" id="id1"><span>[Wittry:1992_JAP]</span></a>. This is the same of Eq.12-13 in <a class="reference internal" href="#pestehe2" id="id2"><span>[Pestehe2]</span></a>
+<a class="reference internal" href="#wittry-1992-jap" id="id2"><span>[Wittry:1992_JAP]</span></a>. This is the same of Eq.12-13 in <a class="reference internal" href="#pestehe2" id="id3"><span>[Pestehe2]</span></a>
 and holds within the following approximations:</p>
 <ul class="simple">
 <li><p>the source is an ideal point source located on the Rowland circle</p></li>
@@ -658,12 +658,12 @@ onumber</p>
 <blockquote>
 <div><p>end{eqnarray}</p>
 <dl class="citation">
-<dt class="label" id="wittry-1992-jap"><span class="brackets"><a class="fn-backref" href="#id1">Wittry:1992_JAP</a></span></dt>
+<dt class="label" id="wittry-1992-jap"><span class="brackets"><a class="fn-backref" href="#id2">Wittry:1992_JAP</a></span></dt>
 <dd><ol class="upperalpha simple" start="4">
 <li><p>Wittry and S. Sun, J. Appl. Phys. <strong>71</strong> (1992) 564</p></li>
 </ol>
 </dd>
-<dt class="label" id="pestehe2"><span class="brackets"><a class="fn-backref" href="#id2">Pestehe2</a></span></dt>
+<dt class="label" id="pestehe2"><span class="brackets"><a class="fn-backref" href="#id3">Pestehe2</a></span></dt>
 <dd><ol class="upperalpha simple" start="19">
 <li><ol class="upperalpha simple" start="10">
 <li><p>Pestehe, J. Appl. Cryst. <strong>45</strong> (2012) 890-901</p></li>
@@ -678,10 +678,10 @@ and 2) in the sagittal (focusing) direction (z), R$_{2}$ and
 R$_{2}^prime$. In each direction the two radii, R and R$^prime$,
 are for the crystal surface and planes, respectively. The
 implemented cases are the following ones:</p>
-<p><a href="#id5"><span class="problematic" id="id6">|------+----------------------+----------+----------------+------------------+------------------|</span></a>
+<p><a href="#id6"><span class="problematic" id="id7">|------+----------------------+----------+----------------+------------------+------------------|</span></a>
 | Case | Name                 |  R$_{1}$ | R$_{1}^prime$ | R$_{2}$          | R$_{2}^prime$   |
 |      |                      |  surface |         planes | surface          | planes           |
-<a href="#id7"><span class="problematic" id="id8">|------+----------------------+----------+----------------+------------------+------------------|</span></a>
+<a href="#id8"><span class="problematic" id="id9">|------+----------------------+----------+----------------+------------------+------------------|</span></a>
 |    1 | Johann (Jn)          |       1. |             1. | $infty$         | $infty$         |
 |    2 | Johansson (Js)       |      0.5 |             1. | $infty$         | $infty$         |
 |    3 | Spherical Jn (SphJn) |       1. |             1. | 1.               | 1.               |
@@ -691,7 +691,7 @@ implemented cases are the following ones:</p>
 |    7 | Js focusing          |      0.5 |             1. | $sin^2(        heta)$ | $sin^2(       heta)$ |
 |    8 | Berreman             | $infty$ |             1. | $sin^2(        heta)$ | $sin^2(       heta)$ |
 |    9 | Jn focusing          |       1. |             1. | $sin^2(        heta)$ | $sin^2(       heta)$ |
-<a href="#id9"><span class="problematic" id="id10">|------+----------------------+----------+----------------+------------------+------------------|</span></a></p>
+<a href="#id10"><span class="problematic" id="id11">|------+----------------------+----------+----------------+------------------+------------------|</span></a></p>
 <p>It is important to note that all the coordinates are given in
 units of R$_{1}^prime$, the bending radius of the crystal
 planes. This is crucial for converting to real dimensions (mm).</p>
@@ -700,7 +700,7 @@ planes. This is crucial for converting to real dimensions (mm).</p>
 
 <dl class="function">
 <dt id="sloth.inst.dthetaxz.getMeshMasked">
-<code class="descclassname">sloth.inst.dthetaxz.</code><code class="descname">getMeshMasked</code><span class="sig-paren">(</span><em>mask='circular'</em>, <em>r1p=1000.0</em>, <em>cryst_x=50.0</em>, <em>cryst_z=10.0</em>, <em>csteps=1000j</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/dthetaxz.html#getMeshMasked"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.dthetaxz.getMeshMasked" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.inst.dthetaxz.</code><code class="sig-name descname">getMeshMasked</code><span class="sig-paren">(</span><em class="sig-param">mask='circular'</em>, <em class="sig-param">r1p=1000.0</em>, <em class="sig-param">cryst_x=50.0</em>, <em class="sig-param">cryst_z=10.0</em>, <em class="sig-param">csteps=1000j</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/dthetaxz.html#getMeshMasked"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.dthetaxz.getMeshMasked" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns two 2D masked arrays representing a (flat) grid of the
 crystal surface</p>
 <dl class="field-list simple">
@@ -721,7 +721,7 @@ rectangular analyzer in mm</p></li>
 
 <dl class="function">
 <dt id="sloth.inst.dthetaxz.getDthetaDats">
-<code class="descclassname">sloth.inst.dthetaxz.</code><code class="descname">getDthetaDats</code><span class="sig-paren">(</span><em>mxx, mzz, wrc=0.000125, cases=['Johann', 'Johansson', 'Spherical plate', 'Wittry'], angles=[15, 45, 75]</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/dthetaxz.html#getDthetaDats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.dthetaxz.getDthetaDats" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.inst.dthetaxz.</code><code class="sig-name descname">getDthetaDats</code><span class="sig-paren">(</span><em class="sig-param">mxx, mzz, wrc=0.000125, cases=['Johann', 'Johansson', 'Spherical plate', 'Wittry'], angles=[15, 45, 75]</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/dthetaxz.html#getDthetaDats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.dthetaxz.getDthetaDats" title="Permalink to this definition">¶</a></dt>
 <dd><p>calculates data (see returns for details) in given loops</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -749,14 +749,14 @@ dd[case][‘eres’] : energy resolution</p></li>
 
 <dl class="function">
 <dt id="sloth.inst.dthetaxz.writeScanDats">
-<code class="descclassname">sloth.inst.dthetaxz.</code><code class="descname">writeScanDats</code><span class="sig-paren">(</span><em>dd</em>, <em>fname</em>, <em>scanLabel=None</em>, <em>motpos=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/dthetaxz.html#writeScanDats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.dthetaxz.writeScanDats" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.inst.dthetaxz.</code><code class="sig-name descname">writeScanDats</code><span class="sig-paren">(</span><em class="sig-param">dd</em>, <em class="sig-param">fname</em>, <em class="sig-param">scanLabel=None</em>, <em class="sig-param">motpos=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/dthetaxz.html#writeScanDats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.dthetaxz.writeScanDats" title="Permalink to this definition">¶</a></dt>
 <dd><p>writes 1D scan data to SPEC file (refer to ‘getMeshMasked’ and ‘getDthetaDats</p>
 </dd></dl>
 
 <span class="target" id="module-sloth.inst.dthetaxz_plot"></span><p>plots related to dthetaxz</p>
 <dl class="function">
 <dt id="sloth.inst.dthetaxz_plot.plotEffScatt">
-<code class="descclassname">sloth.inst.dthetaxz_plot.</code><code class="descname">plotEffScatt</code><span class="sig-paren">(</span><em>xx, zz, wrc=0.000125, cases=['Johann', 'Johansson', 'Spherical plate', 'Wittry'], casesLabels=None, angles=[15, 45, 75], xyFigHalfRange=None, xyTicks=0.1, xlabel='x, mer. (R$_{m}^{\\prime}$)', ylabel='z, sag. (R$_{m}^{\\prime}$)', figName='fig1', xyFigSize=(1500, 900), figDpi=150, fontSize=8, nlevels=15, rowSpan=2, colSpan=2, xylab=(0.025, 0.97), ylabshift=-0.3, plotMask=True, plotVert=False, absWrc=False, cbarShow=True, cbarTicks=2.5e-05, cbarOrientation='vertical', cbarLabel='$\\Delta \\theta$', figCmap=&lt;matplotlib.colors.LinearSegmentedColormap object&gt;, figOut=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/dthetaxz_plot.html#plotEffScatt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.dthetaxz_plot.plotEffScatt" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.inst.dthetaxz_plot.</code><code class="sig-name descname">plotEffScatt</code><span class="sig-paren">(</span><em class="sig-param">xx, zz, wrc=0.000125, cases=['Johann', 'Johansson', 'Spherical plate', 'Wittry'], casesLabels=None, angles=[15, 45, 75], xyFigHalfRange=None, xyTicks=0.1, xlabel='x, mer. (R$_{m}^{\\prime}$)', ylabel='z, sag. (R$_{m}^{\\prime}$)', figName='fig1', xyFigSize=(1500, 900), figDpi=150, fontSize=8, nlevels=15, rowSpan=2, colSpan=2, xylab=(0.025, 0.97), ylabshift=-0.3, plotMask=True, plotVert=False, absWrc=False, cbarShow=True, cbarTicks=2.5e-05, cbarOrientation='vertical', cbarLabel='$\\Delta \\theta$', figCmap=&lt;matplotlib.colors.LinearSegmentedColormap object&gt;, figOut=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/dthetaxz_plot.html#plotEffScatt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.dthetaxz_plot.plotEffScatt" title="Permalink to this definition">¶</a></dt>
 <dd><p>plots the effective scattering angle given a masked array</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -819,7 +819,7 @@ fraction’ units</p>
 
 <dl class="function">
 <dt id="sloth.inst.dthetaxz_plot.plotScanThetaFile">
-<code class="descclassname">sloth.inst.dthetaxz_plot.</code><code class="descname">plotScanThetaFile</code><span class="sig-paren">(</span><em>fname</em>, <em>scans</em>, <em>signal='eres'</em>, <em>xlims=None</em>, <em>ylims=None</em>, <em>ylog=True</em>, <em>yscale=1</em>, <em>caseScale='Js'</em>, <em>plotDeeShells=True</em>, <em>showLegend=True</em>, <em>figName='fig1'</em>, <em>figSize=(5</em>, <em>5)</em>, <em>figDpi=150</em>, <em>fontSize=10</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/dthetaxz_plot.html#plotScanThetaFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.dthetaxz_plot.plotScanThetaFile" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.inst.dthetaxz_plot.</code><code class="sig-name descname">plotScanThetaFile</code><span class="sig-paren">(</span><em class="sig-param">fname</em>, <em class="sig-param">scans</em>, <em class="sig-param">signal='eres'</em>, <em class="sig-param">xlims=None</em>, <em class="sig-param">ylims=None</em>, <em class="sig-param">ylog=True</em>, <em class="sig-param">yscale=1</em>, <em class="sig-param">caseScale='Js'</em>, <em class="sig-param">plotDeeShells=True</em>, <em class="sig-param">showLegend=True</em>, <em class="sig-param">figName='fig1'</em>, <em class="sig-param">figSize=(5</em>, <em class="sig-param">5)</em>, <em class="sig-param">figDpi=150</em>, <em class="sig-param">fontSize=10</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/dthetaxz_plot.html#plotScanThetaFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.dthetaxz_plot.plotScanThetaFile" title="Permalink to this definition">¶</a></dt>
 <dd><p>plot 1D $       heta_{B}$ scans from SPEC file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

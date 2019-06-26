@@ -12,5 +12,5 @@ Reference
    raytracing.rst
    math.rst
    utils.rst
-   dft.rst
+   calculators.rst
    gui.rst

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sloth.collects.datagroup2D &mdash; Sloth 0.3.0-dev documentation</title>
+  <title>sloth.calculators.fdmnes &mdash; Sloth 0.3.0-dev documentation</title>
   
 
   
@@ -141,7 +141,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>sloth.collects.datagroup2D</li>
+      <li>sloth.calculators.fdmnes</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -156,27 +156,26 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for sloth.collects.datagroup2D</h1><div class="highlight"><pre>
+  <h1>Source code for sloth.calculators.fdmnes</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
-
-<span class="sd">&quot;&quot;&quot;DataGroup2D: work with 2D data sets (planes/maps/images)</span>
-<span class="sd">===========================================================</span>
-
-<span class="sd">- DataGroup</span>
-<span class="sd">  - DataGroup2D</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">.datagroup</span> <span class="k">import</span> <span class="n">DataGroup</span>
+<span class="sd">FDMNES-related stuff</span>
+<span class="sd">--------------------</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="DataGroup2D"><a class="viewcode-back" href="../../../modules/collects.html#sloth.collects.datagroup2D.DataGroup2D">[docs]</a><span class="k">class</span> <span class="nc">DataGroup2D</span><span class="p">(</span><span class="n">DataGroup</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; 2D version of DataGroup &quot;&quot;&quot;</span>
-    
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwsd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_larch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">DataGroup2D</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwsd</span><span class="o">=</span><span class="n">kwsd</span><span class="p">,</span> <span class="n">_larch</span><span class="o">=</span><span class="n">_larch</span><span class="p">)</span></div>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="k">pass</span>
+<div class="viewcode-block" id="get_efermi"><a class="viewcode-back" href="../../../modules/calculators.html#sloth.calculators.fdmnes.get_efermi">[docs]</a><span class="k">def</span> <span class="nf">get_efermi</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;get the Fermi level energy from a FDMNES out file&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">ef</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">6</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Calculated Fermi level: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ef</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">ef</span></div>
 </pre></div>
 
            </div>

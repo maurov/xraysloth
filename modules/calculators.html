@@ -1,0 +1,310 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sloth.calculators: interacting with calculators &mdash; Sloth 0.3.0-dev documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="sloth.gui: GUI" href="gui.html" />
+    <link rel="prev" title="sloth.utils: utilities" href="utils.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Sloth
+          
+
+          
+            
+            <img src="../_static/xraysloth.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_model/index.html">Notes on the data model</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="io.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.io</span></code>: Input-output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="groups.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.groups</span></code>: data groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collects.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects</span></code>: Data containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fit.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit</span></code>: fitting tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inst.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst</span></code>: working with instrumentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="raytracing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing</span></code>: x-ray raytracing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math</span></code>: mathematical utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils</span></code>: utilities</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.calculators</span></code>: interacting with calculators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sloth-calculators-qe-xtl-quantum-espresso-to-xtl"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.calculators.qe_xtl</span></code>: Quantum ESPRESSO to XTL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sloth.calculators.fdmnes"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.calculators.fdmnes</span></code>: FDMNES utils</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#fdmnes-related-stuff">FDMNES-related stuff</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.gui</span></code>: GUI</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../todo.html">To Do</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Sloth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Reference</a> &raquo;</li>
+        
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.calculators</span></code>: interacting with calculators</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/modules/calculators.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-sloth.calculators"></span><div class="section" id="sloth-calculators-interacting-with-calculators">
+<h1><a class="reference internal" href="#module-sloth.calculators" title="sloth.calculators"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.calculators</span></code></a>: interacting with calculators<a class="headerlink" href="#sloth-calculators-interacting-with-calculators" title="Permalink to this headline">¶</a></h1>
+<p>This module is inspired from <a class="reference external" href="https://wiki.fysik.dtu.dk/ase/">ASE</a>. Despite
+the same name, here only a couple of utilities are present.</p>
+<div class="section" id="sloth-calculators-qe-xtl-quantum-espresso-to-xtl">
+<h2><a class="reference internal" href="#module-sloth.calculators.qe_xtl" title="sloth.calculators.qe_xtl"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.calculators.qe_xtl</span></code></a>: Quantum ESPRESSO to XTL<a class="headerlink" href="#sloth-calculators-qe-xtl-quantum-espresso-to-xtl" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-sloth.calculators.qe_xtl"></span><p>Simple utility to convert Quantum ESPRESSO input files to XTL</p>
+<p>..note:: The starting point of this code is <cite>ase.io.espresso</cite> from the
+Atomic Simulation Environment (ASE) package.</p>
+<dl class="function">
+<dt id="sloth.calculators.qe_xtl.read_fortran_namelist">
+<code class="sig-prename descclassname">sloth.calculators.qe_xtl.</code><code class="sig-name descname">read_fortran_namelist</code><span class="sig-paren">(</span><em class="sig-param">fileobj</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#read_fortran_namelist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.read_fortran_namelist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a fortran-namelist formatted file and returns appropriate
+dictionaries, followed by lines of text that do not fit this
+pattern.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.calculators.qe_xtl.f2f">
+<code class="sig-prename descclassname">sloth.calculators.qe_xtl.</code><code class="sig-name descname">f2f</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#f2f"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.f2f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a fortran-formatted double precision number (e.g.,
+2.323d2) to a python float. value should be a string.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.calculators.qe_xtl.get_method">
+<code class="sig-prename descclassname">sloth.calculators.qe_xtl.</code><code class="sig-name descname">get_method</code><span class="sig-paren">(</span><em class="sig-param">lines</em>, <em class="sig-param">line_no</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#get_method"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.get_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the method used in a given section</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.calculators.qe_xtl.get_cell">
+<code class="sig-prename descclassname">sloth.calculators.qe_xtl.</code><code class="sig-name descname">get_cell</code><span class="sig-paren">(</span><em class="sig-param">lines</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#get_cell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.get_cell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the cell parameters from the lines of text of the espresso
+input file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.calculators.qe_xtl.get_atoms">
+<code class="sig-prename descclassname">sloth.calculators.qe_xtl.</code><code class="sig-name descname">get_atoms</code><span class="sig-paren">(</span><em class="sig-param">lines</em>, <em class="sig-param">n_atoms</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#get_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.get_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the atomic positions of the atoms as an (ordered) list from
+the lines of text of the espresso input file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.calculators.qe_xtl.get_negative_pos">
+<code class="sig-prename descclassname">sloth.calculators.qe_xtl.</code><code class="sig-name descname">get_negative_pos</code><span class="sig-paren">(</span><em class="sig-param">positions</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#get_negative_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.get_negative_pos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the minimum negative atomic positions vector</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.calculators.qe_xtl.read_qe_in">
+<code class="sig-prename descclassname">sloth.calculators.qe_xtl.</code><code class="sig-name descname">read_qe_in</code><span class="sig-paren">(</span><em class="sig-param">fileobj</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#read_qe_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.read_qe_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads espresso input files.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.calculators.qe_xtl.qe2xtl">
+<code class="sig-prename descclassname">sloth.calculators.qe_xtl.</code><code class="sig-name descname">qe2xtl</code><span class="sig-paren">(</span><em class="sig-param">fin</em>, <em class="sig-param">fout=None</em>, <em class="sig-param">title=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#qe2xtl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.qe2xtl" title="Permalink to this definition">¶</a></dt>
+<dd><p>converts a QE input to XTL out file</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sloth.calculators.fdmnes">
+<span id="sloth-calculators-fdmnes-fdmnes-utils"></span><h2><a class="reference internal" href="#module-sloth.calculators.fdmnes" title="sloth.calculators.fdmnes"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.calculators.fdmnes</span></code></a>: FDMNES utils<a class="headerlink" href="#module-sloth.calculators.fdmnes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="fdmnes-related-stuff">
+<h3>FDMNES-related stuff<a class="headerlink" href="#fdmnes-related-stuff" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="sloth.calculators.fdmnes.get_efermi">
+<code class="sig-prename descclassname">sloth.calculators.fdmnes.</code><code class="sig-name descname">get_efermi</code><span class="sig-paren">(</span><em class="sig-param">fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/fdmnes.html#get_efermi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.calculators.fdmnes.get_efermi" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the Fermi level energy from a FDMNES out file</p>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="gui.html" class="btn btn-neutral float-right" title="sloth.gui: GUI" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="utils.html" class="btn btn-neutral float-left" title="sloth.utils: utilities" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014--2019, Mauro Rovezzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

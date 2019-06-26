@@ -98,17 +98,14 @@
 <li class="toctree-l2"><a class="reference internal" href="groups.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.groups</span></code>: data groups</a></li>
 <li class="toctree-l2"><a class="reference internal" href="collects.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects</span></code>: Data containers</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit</span></code>: fitting tools</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#module-sloth.fit.peakfit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit.peakfit</span></code>: peak fitting</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#simple-peak-fitting-utility">Simple peak fitting utility</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#sloth-fit-peakfit-peak-fitting"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit.peakfit</span></code>: peak fitting</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="inst.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst</span></code>: working with instrumentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="raytracing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing</span></code>: x-ray raytracing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="math.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math</span></code>: mathematical utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils</span></code>: utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dft.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.dft</span></code>: interacting with density functional theory (DFT) codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calculators.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.calculators</span></code>: interacting with calculators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.gui</span></code>: GUI</a></li>
 </ul>
 </li>
@@ -182,130 +179,8 @@
             
   <span class="target" id="module-sloth.fit"></span><div class="section" id="sloth-fit-fitting-tools">
 <h1><a class="reference internal" href="#module-sloth.fit" title="sloth.fit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit</span></code></a>: fitting tools<a class="headerlink" href="#sloth-fit-fitting-tools" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-sloth.fit.peakfit">
-<span id="sloth-fit-peakfit-peak-fitting"></span><h2><a class="reference internal" href="#module-sloth.fit.peakfit" title="sloth.fit.peakfit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit.peakfit</span></code></a>: peak fitting<a class="headerlink" href="#module-sloth.fit.peakfit" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="simple-peak-fitting-utility">
-<h3>Simple peak fitting utility<a class="headerlink" href="#simple-peak-fitting-utility" title="Permalink to this headline">¶</a></h3>
-<p>Current fitting backends: <a class="reference external" href="https://github.com/vasole/pymca">PyMca</a> or <a class="reference external" href="https://github.com/silx-kit/silx">SILX</a></p>
-<dl class="function">
-<dt id="sloth.fit.peakfit.fit_silx">
-<code class="descclassname">sloth.fit.peakfit.</code><code class="descname">fit_silx</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theory=None</em>, <em>bkg=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/fit/peakfit.html#fit_silx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.fit.peakfit.fit_silx" title="Permalink to this definition">¶</a></dt>
-<dd><p>fit a peak with using silx library</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>y</strong> (<em>x</em><em>,</em>) – </p></li>
-<li><p><strong>theory</strong> (<em>string</em><em> [</em><em>None</em><em>]</em>) – available theories:
-+———————+
-| Gaussians           |
-| Lorentz             |
-| Area Gaussians      |
-| Area Lorentz        |
-| Pseudo-Voigt Line   |
-| Area Pseudo-Voigt   |
-| Split Gaussian      |
-| Split Lorentz       |
-| Split Pseudo-Voigt  |
-| Step Down           |
-| Step Up             |
-| Slit                |
-| Atan                |
-| Hypermet            |
-| Degree 2 Polynomial |
-| Degree 3 Polynomial |
-| Degree 4 Polynomial |
-| Degree 5 Polynomial |
-+———————+</p></li>
-<li><p><strong>bkg</strong> (<em>string</em><em> [</em><em>None</em><em>]</em>) – available bkg theories:
-+———————+
-| No Background       |
-| Constant            |
-| Linear              |
-| Strip               |
-| Snip                |
-| Degree 2 Polynomial |
-| Degree 3 Polynomial |
-| Degree 4 Polynomial |
-| Degree 5 Polynomial |
-+———————+</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>yfit</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>fit array like x</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="sloth.fit.peakfit.fit_splitpvoigt">
-<code class="descclassname">sloth.fit.peakfit.</code><code class="descname">fit_splitpvoigt</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>dy=False</em>, <em>theory='Split Pseudo-Voigt'</em>, <em>bkg='Constant'</em>, <em>conf=None</em>, <em>npeaks=1</em>, <em>show_infos=True</em>, <em>show_res=True</em>, <em>plot=True</em>, <em>**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/fit/peakfit.html#fit_splitpvoigt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.fit.peakfit.fit_splitpvoigt" title="Permalink to this definition">¶</a></dt>
-<dd><p>simple wrapper to PyMca.Specfit</p>
-<p>the goal is to fit (automagically) a set of 1D data (x,y) with an
-asymmetric PseudoVoigt (splitpvoigt) function plus a constant
-background</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>y</strong> (<em>x</em><em>,</em>) – </p></li>
-<li><p><strong>dy</strong> (<em>boolean</em><em> or </em><em>float</em><em>, </em><em>False</em>) – error bar on y. If dy==True: dy=np.sqrt(y) or give an
-explicit array</p></li>
-<li><p><strong>theory</strong> (<em>str</em><em>, </em><em>[</em><em>'Split Pseudo-Voigt'</em><em>,</em>) – ‘Gaussians’,
-‘Lorentz’,
-‘Area Gaussians’,
-‘Area Lorentz’,
-‘Pseudo-Voigt Line’,
-‘Area Pseudo-Voigt’,
-‘Split Gaussian’,
-‘Split Lorentz’,
-‘Step Down’,
-‘Step Up’,
-‘Slit’,
-‘Atan’,
-‘Hypermet’,
-‘Periodic Gaussians’]</p></li>
-<li><p><strong>bkg</strong> (<em>str</em><em>, </em><em>[</em><em>'Constant'</em><em>, </em><em>'No Background'</em><em>, </em><em>'Linear'</em><em>, </em><em>'Internal'</em><em>]</em>) – </p></li>
-<li><p><strong>conf</strong> (<em>dictionary</em><em>, </em><em>None</em>) – to tune Specfit configuration, default:
-‘FwhmPoints’ : int(len(y)/5.
-‘Sensitivity’ : 5.
-‘EtaFlag’ : 1 (force eta between 0 and 1)
-‘WeightFlag’ : 0 (do not weight by noise)
-‘AutoScaling’ : 1 (auto scale y)
-‘AutoFwhm’ : 1 (auto guess fwhm)</p></li>
-<li><p><strong>npeaks</strong> (<em>int</em><em>, </em><em>1</em>) – limit the number of split-PseudoVoigt peaks to guess</p></li>
-<li><p><strong>show_infos</strong> (<em>boolean</em><em>, </em><em>True</em>) – print information on the peakfit setup</p></li>
-<li><p><strong>show_res</strong> (<em>boolean</em><em>, </em><em>True</em>) – print fit results to standard output</p></li>
-<li><p><strong>plot</strong> (<em>boolean</em><em>, </em><em>True</em>) – plot data, fit and residual with PyMca (ScanWindow)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>PyMca.Specfit.Specfit, PyMca.ScanWindow.ScanWindow (None if plot=False)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="sloth.fit.peakfit.fit_results">
-<code class="descclassname">sloth.fit.peakfit.</code><code class="descname">fit_results</code><span class="sig-paren">(</span><em>fitobj</em>, <em>output='print'</em>, <em>pk_info=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/fit/peakfit.html#fit_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.fit.peakfit.fit_results" title="Permalink to this definition">¶</a></dt>
-<dd><p>simple report of fit results</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>fitobj</strong> (<em>Specfit object</em>) – </p></li>
-<li><p><strong>output</strong> (<em>'string'</em>) – ‘list’
-‘print’
-‘dict’</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
+<div class="section" id="sloth-fit-peakfit-peak-fitting">
+<h2><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit.peakfit</span></code>: peak fitting<a class="headerlink" href="#sloth-fit-peakfit-peak-fitting" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
