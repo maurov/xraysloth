@@ -1,5 +1,5 @@
 #Python environment for: https://github.com/maurov/xraysloth
-#Target: base environment for sloth based on Larch (Wx) + SILX (Qt)
+#Target: base environment for sloth based on Larch (Wx) + SILX (Qt) + OASYS
 #Usage: conda env create -f environment.yml
 name: sloth-env
 channels:
@@ -10,8 +10,8 @@ dependencies:
     - pip
     - numpy>=1.16
     - scipy>=1.2.0
-    - matplotlib>=2.0
-    - h5py>=2.7
+    - matplotlib>=3.0
+    - h5py>=2.8
     - pyqt=5
     - qtconsole
     - ipython
@@ -23,6 +23,15 @@ dependencies:
     - GSECARS::xraylarch
     - pip:
         - hdf5plugin
-        - silx>=0.10.1
-        - pymca>=5.4.3
+        - silx>=0.11.0
+        - pymca>=5.5.0
         - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl; sys_platform == 'linux'
+        - resources
+        - oasys-canvas-core
+        - oasys-widget-core
+        - oasys1
+        - srxraylib
+        - syned
+        - wofry
+        - OASYS1-ShadowOui
+        - OASYS1-XOPPY
