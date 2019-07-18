@@ -12,7 +12,7 @@ RIXS data reader for beamline BM16 @ ESRF
 """
 import numpy as np
 from sloth.io.specfile_reader import _mot2array
-from sloth.fit.peakfit import fit_splitpvoigt
+from sloth.fit.peakfit_silx import fit_splitpvoigt
 
 
 def get_xyz_bm16(logobj, specobj, fit_elastic=False):
