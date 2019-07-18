@@ -185,19 +185,19 @@ class RixsData(object):
         try:
             self.dat = np.loadtxt(fname)
             print('Loaded {0}'.format(fname))
-        except:
+        except Exception:
             print('Error in loading {0}'.format(fname))
             return
 
-        self.xcol = self.dat[:,0]
-        #decide if dat[:,1] is e_out or e_in-e_out
-        if np.max(self.dat[:,1])/np.max(self.dat[:,0]) < 0.5:
-            self.ycol = self.dat[:,0] - self.dat[:,1]
-            self.etcol = self.dat[:,1]
+        self.xcol = self.dat[:, 0]
+        # decide if dat[:,1] is e_out or e_in-e_out
+        if np.max(self.dat[:, 1]) / np.max(self.dat[:, 0]) < 0.5:
+            self.ycol = self.dat[:, 0] - self.dat[:, 1]
+            self.etcol = self.dat[:, 1]
         else:
-            self.ycol = self.dat[:,1]
-            self.etcol = self.dat[:,0] - self.dat[:,1] # energy transfer
-        self.zcol = self.dat[:,2]
+            self.ycol = self.dat[:, 1]
+            self.etcol = self.dat[:, 0] - self.dat[:, 1]  # energy transfer
+        self.zcol = self.dat[:, 2]
 
     def gridxyz(self, **kws):
         """create gridded standard groups"""
@@ -297,6 +297,29 @@ class RixsData(object):
         self.ezzcrop = griddata((self.xcol, self.etcol), self.zcol, (_exx, _et), method=_method)
 
         return
+
+    def crop2(self, x1, y1, x2, y2, yet=False, **kws):
+        """crop the plane in a given range / matrix approach
+
+        Parameters
+        ==========
+        x1, y1, x2, y2 : floats
+            X/Y initial and new coordinates
+
+        yet : boolean, False
+            defines if the Y coordinates are given in emission or
+            energy transfer
+        """
+        if yet == True:
+            print('Not implemented!')
+            return
+        ix1 = np.abs(self.x-x1).argmin()
+        iy1 = np.abs(self.y-y1).argmin()
+        ix2 = np.abs(self.x-x2).argmin()
+        iy2 = np.abs(self.y-y2).argmin()
+        self.xcrop = self.x[ix1:ix2]
+        self.ycrop = self.y[iy1:iy2]
+        self.zzcrop = self.zz[iy1:iy2, ix1:ix2]
 
     def norm(self, zz):
         """normalization to max-min"""

@@ -44,12 +44,89 @@ def _parse_header(fname):
     return header
 
 
+def get_rixs_13ide(sample_name, scan_name, rixs_no='001', data_dir='.',
+                  counter_signal='ROI1', counter_norm=None, save_rixs=False):
+    """Build RIXS map without XY gridding, line-by-line interpolation
+
+    Parameters
+    ----------
+    sample_name : str
+    scan_name : str
+    rixs_no : str, optional
+        length 3 string, ['001']
+    data_dir : str, optional
+        path to the data ['.']
+    counter_signal : str
+        name of the data column to use as signal
+    counter_norm : str
+        name of the data column to use as normaliztion
+    save_rixs : bool
+        if True -> save rixs numpy array to disk
+
+    Returns
+    -------
+    rixsdict : dict
+        {
+        'ene_in': 1D array,
+        'ene_out': 1D array,
+        'rixs': 2D array,
+        }
+
+    """
+    fnstr = "{0}_{1}.{2}".format(scan_name, sample_name, rixs_no)
+    grepstr = "{0}*.{1}".format(fnstr, rixs_no)
+    fnames = glob.glob(os.path.join(data_dir, grepstr))
+    enes = [_parse_header(fname)['Analyzer.energy'] for fname in fnames]
+    estep = round(enes[1]-enes[0], 2)
+
+    fname0 = fnames[0]
+    header = _parse_header(fname0)
+    cols = header['columns']
+    ix = cols.index('Energy') or 0
+    iz = cols.index(counter_signal)
+    i0 = cols.index(counter_norm)
+    dat = np.loadtxt(fname0)
+    x0 = dat[:, ix]
+    xnew = np.arange(x0.min(), x0.max(), estep)
+    if counter_norm is not None:
+        z0 = dat[:, iz] / dat[:, i0]
+    else:
+        z0 = dat[:, iz]
+
+    _scan = 0
+    _signals = []
+    for ifn, fname in enumerate(fnames):
+        dat = np.loadtxt(fname)
+        x = dat[:, ix]
+        if counter_norm is not None:
+            z = dat[:, iz] / dat[:, i0]
+        else:
+            z = dat[:, iz]
+        znew = np.interp(xnew, x0, z)
+        _signals.append(znew)
+        _logger.info(f"Loaded scan {_scan+1}: {enes[ifn]} eV")
+        _scan += 1
+
+    rixs = np.array(_signals)
+
+    if save_rixs:
+        fnout = "{0}_rixs.npy".format(fnstr)
+        np.save(fnout, rixs)
+
+    rixsout = {
+        'ene_in': np.array(xnew),
+        'ene_out': np.array(enes),
+        'rixs': rixs
+    }
+
+    return rixsout
+
+
 def get_xyz_13ide(sample_name, scan_name, rixs_no='001', data_dir='.',
                   counter_signal='ROI1', counter_norm=None):
     """function to get 3 arrays representing the RIXS plane
 
     .. note: this scheme is currently used at 13-ID-E
-
 
     Parameters
     ----------
