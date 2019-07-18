@@ -15,12 +15,9 @@
     - DataGroupRixs
 
 """
-from sloth.utils.logging import getLogger
-_logger = getLogger('sloth.collects')
-_logger.error('!!! DEPRECATED MODULE !!! -> use sloth.groups')
-
 import os, sys, copy, pickle
 import numpy as np
+import glob
 
 from datetime import datetime
 from collections import deque
@@ -70,8 +67,9 @@ try:
 except ImportError:
     pass
 
-from ..utils.strings import str2rng, get_fnames
-from ..io.specfile_reader import spec_getmap2group, spec_getmrg2group
+from sloth.utils.logging import getLogger
+_logger = getLogger('sloth.collects')
+_logger.error('!!! DEPRECATED MODULE !!! -> use sloth.groups')
 
 ### GLOBAL VARIABLES ###
 MODNAME = '_datagroup'
@@ -111,7 +109,7 @@ class DataGroup(object):
         return igs
 
     def get_fnames(self, grepstr, rpath=os.getcwd(), substr1=None):
-        return get_fnames(grepstr, rpath=rpath, substr1=substr1)
+        return glob.glob(grepstr, rpath=rpath, substr1=substr1)
 
     def selector(self, sel):
         """initialize a selected list of objects, self.gs_sel"""

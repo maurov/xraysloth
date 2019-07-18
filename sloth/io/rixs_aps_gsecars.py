@@ -12,24 +12,40 @@ RIXS data reader for beamline 13-ID-E @ APS
 """
 import os
 import numpy as np
-from sloth.io.specfile_reader import _mot2array
 import glob
 
+from sloth.utils.logging import getLogger
+_logger = getLogger('io_gsecars_rixs')
 
-def _parse_header_ene_spectro(fname):
-    """Get Analyzer.Energy value from header"""
+
+def _parse_header(fname):
+    """Get parsed header
+
+    Return
+    ------
+    header : dict
+        {
+        'columns': list of strings,
+        'Analyzer.Energy': float,
+        }
+    """
     with open(fname) as f:
         lines = f.read().splitlines()
-    for line in lines:
+    header_lines = [line[2:] for line in lines if line[0] == '#']
+    header = {}
+    for line in header_lines:
         if 'Analyzer.Energy' in line:
             ene_line = line.split(' ')
             break
         else:
-            ene_line = ['#', 'Analyzer.Energy:', '0', '', '||', '', '13XRM:ANA:Energy.VAL']  #: expected header line
-    return float(ene_line[2])
+            ene_line = ['Analyzer.Energy:', '0', '', '||', '', '13XRM:ANA:Energy.VAL']  #: expected line
+    header['Analyzer.energy'] = float(ene_line[1])
+    header['columns'] = header_lines[-1].split('\t')
+    return header
 
 
-def get_xyz_13ide(sample_name, scan_name, rixs_no='001', data_dir='.'):
+def get_xyz_13ide(sample_name, scan_name, rixs_no='001', data_dir='.',
+                  counter_signal='ROI1', counter_norm=None):
     """function to get 3 arrays representing the RIXS plane
 
     .. note: this scheme is currently used at 13-ID-E
@@ -43,7 +59,10 @@ def get_xyz_13ide(sample_name, scan_name, rixs_no='001', data_dir='.'):
         length 3 string, ['001']
     data_dir : str, optional
         path to the data ['.']
-
+    counter_signal : str
+        name of the data column to use as signal
+    counter_norm : str
+        name of the data column to use as normaliztion
 
     Returns
     -------
@@ -52,8 +71,34 @@ def get_xyz_13ide(sample_name, scan_name, rixs_no='001', data_dir='.'):
     """
     grepstr = "{0}_{1}.{2}*.{2}".format(scan_name, sample_name, rixs_no)
     fnames = glob.glob(os.path.join(data_dir, grepstr))
+    _scan = 0
+    for fname in fnames:
+        header = _parse_header(fname)
+        emi = header['Analyzer.energy']
+        cols = header['columns']
+        ix = cols.index('Energy') or 0
+        iy = cols.index(counter_signal)
+        i0 = cols.index(counter_norm)
+        dat = np.loadtxt(fname)
+        x = dat[:, ix]
+        y = np.ones_like(x) * emi
+        if counter_norm is not None:
+            z = dat[:, iy] / dat[:, i0]
+        else:
+            z = dat[:, iy]
+        if _scan == 0:
+            xcol = x
+            ycol = y
+            zcol = z
+        else:
+            xcol = np.append(xcol, x)
+            ycol = np.append(ycol, y)
+            zcol = np.append(zcol, z)
+        _logger.info(f"Loaded scan {_scan+1}: {emi} eV")
+        _scan += 1
 
-    return fnames
+    return xcol, ycol, zcol
+
 
 if __name__ == '__main__':
     pass

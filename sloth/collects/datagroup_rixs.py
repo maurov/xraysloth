@@ -23,7 +23,8 @@ from matplotlib import cm
 from matplotlib.ticker import MaxNLocator, AutoLocator
 
 # sloth
-from .datagroup2D import DataGroup2D, spec_getmap2group
+from ..io.specfile_reader import spec_getmap2group
+from .datagroup2D import DataGroup2D
 from ..math.gridxyz import gridxyz
 from sloth.io.specfile_reader import SpecfileData
 
