@@ -16,10 +16,12 @@ class Plot2D(silxPlot2D):
     def __init__(self, parent=None, backend=None, logger=None):
 
         super(Plot2D, self).__init__(parent=parent, backend=backend)
+
         if logger is not None:
-            self._logger = getLogger("Plot2D", level='DEBUG')
-        else:
             self._logger = logger
+        else:
+            self._logger = getLogger("Plot2D")
+
         self._index = None
         self._image = None
         self._mask = None
@@ -179,7 +181,7 @@ class Plot2D(silxPlot2D):
         self._x = x
         self._y = y
         if (x is not None) and (y is not None):
-            self._origin = (np.min(x), np.max(y))
+            self._origin = (np.min(x), np.min(y))
             self._scale = (x[1]-x[0], y[1]-y[0])
         if title is not None:
             self._title = title

@@ -88,6 +88,8 @@ class RixsData(object):
             label = 'rd{0}'.format(hex(id(self)))
         self.label = label
 
+        self.plotter = None
+
     def get_kwsd(self):
         """return a dictionary of dictionaries with keywords arguments:
 
@@ -358,6 +360,7 @@ class RixsData(object):
         iy1 = np.abs(self.y-y1).argmin()
         ix2 = np.abs(self.x-x2).argmin()
         iy2 = np.abs(self.y-y2).argmin()
+        self._crop_area = (x1, y1, x2, y2)
         self.xcrop = self.x[ix1:ix2]
         self.ycrop = self.y[iy1:iy2]
         self.zzcrop = self.zz[iy1:iy2, ix1:ix2]
@@ -365,6 +368,32 @@ class RixsData(object):
     def norm(self, zz):
         """normalization to max-min"""
         return zz/(np.nanmax(zz)-np.nanmin(zz))
+
+    def getPlotter(self):
+        """Get a default plotter"""
+        if self.plotter is None:
+            from sloth.gui.plot.plotrixs import RixsPlot2D
+            self.plotter = RixsPlot2D(logger=self._logger)
+        return self.plotter
+
+    def plot(self, plotter=None, nlevels=50, crop=False):
+        """Data plotter"""
+        if plotter is None:
+            p = self.getPlotter()
+        p.clear()
+        if type(crop) is tuple:
+            self.crop(*crop)
+        if crop:
+            _title = f"{self.label} [CROP: {self._crop_area}]"
+            p.addImage(self.zzcrop, x=self.xcrop, y=self.ycrop, title=_title,
+                       xlabel='Ene_in', ylabel='Ene_out')
+        else:
+            p.addImage(self.zz, x=self.x, y=self.y, title=self.label,
+                       xlabel='Ene_in', ylabel='Ene_out')
+        p.addContours(nlevels)
+        p.show()
+
+
 
 class RixsDataPlotter(object):
     """ plotter for a RixsData object """
