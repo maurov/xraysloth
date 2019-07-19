@@ -7,15 +7,20 @@
 
 """
 from sloth.gui.plot.plot2D import Plot2D
-
+from sloth.utils.logging import getLogger
 
 class RixsPlot2D(Plot2D):
     """RIXS equivalent of Plot2D"""
 
-    def __init__(self, parent=None, backend=None):
+    def __init__(self, parent=None, backend=None, logger=None):
         """Constructor"""
 
-        super(RixsPlot2D, self).__init__(parent=parent, backend=backend)
+        if logger is not None:
+            self._logger = logger
+       else:
+            self._logger = getLogger("RixsPlot2D")
+
+        super(RixsPlot2D, self).__init__(parent=parent, backend=backend, logger=self._logger)
         self.setKeepDataAspectRatio(True)
         self.getDefaultColormap().setName('Blues')
 

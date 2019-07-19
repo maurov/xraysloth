@@ -13,10 +13,13 @@ from sloth.utils.logging import getLogger
 class Plot2D(silxPlot2D):
     """Custom Plot2D instance targeted to 2D images"""
 
-    def __init__(self, parent=None, backend=None):
+    def __init__(self, parent=None, backend=None, logger=None):
 
         super(Plot2D, self).__init__(parent=parent, backend=backend)
-        self._logger = getLogger("Plot2D", level='DEBUG')
+        if logger is not None:
+            self._logger = getLogger("Plot2D", level='DEBUG')
+        else:
+            self._logger = logger
         self._index = None
         self._image = None
         self._mask = None
