@@ -28,6 +28,8 @@ from .datagroup2D import DataGroup2D
 from ..math.gridxyz import gridxyz
 from sloth.io.specfile_reader import SpecfileData
 
+from sloth.utils.logging import getLogger
+_logger = getLogger('datagroup_rixs')  #: module logger, used as self._logger if not given
 
 class DataGroupRixs(DataGroup2D):
     """DataGroup for RIXS planes"""
@@ -70,12 +72,18 @@ class DataGroupRixs(DataGroup2D):
 class RixsData(object):
     """RIXS plane object"""
 
-    def __init__(self, label=None, kwsd=None):
+    def __init__(self, label=None, kwsd=None, logger=None):
         """initialize with keyword arguments dictionaries"""
+
+        if logger is not None:
+            self._logger = logger
+        else:
+            self._logger = _logger
 
         if kwsd is None:
             kwsd = self.get_kwsd()
         self.kwsd = kwsd
+
         if label is None:
             label = 'rd{0}'.format(hex(id(self)))
         self.label = label
@@ -176,6 +184,39 @@ class RixsData(object):
                           'lc_lw': 3}}
         return kwsd
 
+
+    def load_from_dict(self, rxdict):
+        """Load RIXS data from a dictionary
+
+        Parameters
+        ----------
+        rxdict : dict
+            Required structure
+            {
+             'sample_name': str,
+             'ene_in': 1D array,
+             'ene_out': 1D array,
+             'rixs': 2D array,
+            }
+
+        Return
+        ------
+        None, set attributes: self.x, self.y, self.zz, self.label
+        """
+        self.label = rxdict['sample_name']
+        self.x = rxdict['ene_in']
+        self.y = rxdict['ene_out']
+        self.zz = rxdict['rixs']
+
+
+    def load_from_h5(self, fname):
+        """Load RIXS from HDF5 file"""
+        from silx.io.dictdump import h5todict
+        rxdict = h5todict(fname)
+        rxdict['sample_name'] = rxdict['sample_name'].tostring().decode()
+        self.load_from_dict(rxdict)
+
+
     def loadxyz(self, fname, **kws):
         """load data from a 3 columns ASCII file assuming the format: e_in,
         e_out, signal
@@ -254,7 +295,7 @@ class RixsData(object):
             self.xcol, self.ycol = _x, _y
         self.etcol = self.xcol-self.ycol # energy transfer
 
-    def crop(self, x1, y1, x2, y2, yet=False, **kws):
+    def crop_old(self, x1, y1, x2, y2, yet=False, **kws):
         """crop the plane in a given range
 
         Parameters
@@ -298,8 +339,8 @@ class RixsData(object):
 
         return
 
-    def crop2(self, x1, y1, x2, y2, yet=False, **kws):
-        """crop the plane in a given range / matrix approach
+    def crop(self, x1, y1, x2, y2, yet=False, **kws):
+        """crop the plane in a given range / matrix approach (current)
 
         Parameters
         ==========

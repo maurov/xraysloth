@@ -156,7 +156,7 @@ class Plot2D(silxPlot2D):
         if self._index is not None:
             self.setWindowTitle('{}: Plot2D'.format(self._index))
 
-    def addImage(self, data, x=None, y=None, xlabel=None, ylabel=None,
+    def addImage(self, data, x=None, y=None, title=None, xlabel=None, ylabel=None,
                  vmin=None, vmax=None, **kwargs):
         """Custom addImage
 
@@ -165,6 +165,8 @@ class Plot2D(silxPlot2D):
         data : array
         x, y : None or array (optional)
             x, y to set origin and scale (both should be given!)
+        title : str
+            set self.setGraphTitle(str) / self.setWindowTitle(str)
         xlabel, ylabel : None or str (optional)
             set self.setGraphXLabel / self.setGraphYLabel
         vmin, vmax : float (optional)
@@ -176,6 +178,10 @@ class Plot2D(silxPlot2D):
         if (x is not None) and (y is not None):
             self._origin = (np.min(x), np.max(y))
             self._scale = (x[1]-x[0], y[1]-y[0])
+        if title is not None:
+            self._title = title
+            self.setGraphTitle(title)
+            self.setWindowTitle(title)
         if xlabel is not None:
             self._xlabel = xlabel
             self.setGraphXLabel(xlabel)
