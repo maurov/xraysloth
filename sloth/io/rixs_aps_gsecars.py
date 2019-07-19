@@ -65,8 +65,13 @@ def get_rixs_13ide(sample_name, scan_name, rixs_no='001', data_dir='.',
 
     Returns
     -------
-    rixsdict : dict
+    outdict : dict
         {
+        'filename_root': str,
+        'sample_name': str,
+        'scan_name': str,
+        'counter_signal': str,
+        'counter_norm': str,
         'ene_in': 1D array,
         'ene_out': 1D array,
         'rixs': 2D array,
@@ -109,24 +114,32 @@ def get_rixs_13ide(sample_name, scan_name, rixs_no='001', data_dir='.',
 
     rixs = np.array(_signals)
 
-    if save_rixs:
-        fnout = "{0}_rixs.npy".format(fnstr)
-        np.save(fnout, rixs)
-
-    rixsout = {
+    outdict = {
         'ene_in': np.array(xnew),
         'ene_out': np.array(enes),
-        'rixs': rixs
+        'ene_grid': estep,
+        'rixs': rixs,
+        'filename_root': fnstr,
+        'sample_name': sample_name,
+        'scan_name': scan_name,
+        'counter_signal': counter_signal,
+        'counter_norm': counter_norm,
     }
 
-    return rixsout
+    if save_rixs:
+        fnout = "{0}_rixs.h5".format(fnstr)
+        from silx.io.dictdump import dicttoh5
+        dicttoh5(outdict, fnout)
+        _logger.info(f"RIXS saved to {fnout}")
+
+    return outdict
 
 
 def get_xyz_13ide(sample_name, scan_name, rixs_no='001', data_dir='.',
                   counter_signal='ROI1', counter_norm=None):
     """function to get 3 arrays representing the RIXS plane
 
-    .. note: this scheme is currently used at 13-ID-E
+    .. note: better use get_rixs_13ide
 
     Parameters
     ----------
