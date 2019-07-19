@@ -63,6 +63,18 @@ class CustomCurveLegendsWidget(CurveLegendsWidget):
         yaxis = curve.getYAxis()
         curve.setYAxis('left' if yaxis == 'right' else 'right')
 
+    def _copyCurve(self, curve, plot):
+        """Copy curve
+        """
+        data = curve.getData()
+        legend = curve.getLegend() + '*'
+        plot.addCurve(data[0], data[1], legend=legend)
+
+    def _clearPlot(self, plot):
+        """Clear plot
+        """
+        plot.clear()
+
     def _contextMenu(self, pos):
         """Create a show the context menu.
         :param QPoint pos: Position in this widget
@@ -76,6 +88,10 @@ class CustomCurveLegendsWidget(CurveLegendsWidget):
             menu.addAction('Unselect' if curve == activeCurve else 'Select',
                            functools.partial(self._switchCurveActive, curve))
 
+            # Add an action to store a copy of the curve
+            plot = curve.getPlot()
+            menu.addAction('Copy', functools.partial(self._copyCurve, curve, plot))
+
             # Add an action to switch the Y axis of a curve
             yaxis = 'right' if curve.getYAxis() == 'left' else 'left'
             menu.addAction('Map to %s' % yaxis,
@@ -85,6 +101,11 @@ class CustomCurveLegendsWidget(CurveLegendsWidget):
             menu.addAction('Hide' if curve.isVisible() else 'Show',
                            functools.partial(self._switchCurveVisibility, curve))
 
+            # Add an action to clear the plot
+            plot = curve.getPlot()
+            menu.addAction('Clear plot', functools.partial(self._clearPlot, plot))
+
+
             globalPosition = self.mapToGlobal(pos)
             menu.exec_(globalPosition)
 
@@ -92,7 +113,7 @@ class CustomCurveLegendsWidget(CurveLegendsWidget):
 class Plot1D(PlotWindow):
     """Custom PlotWindow instance targeted to 1D curves"""
 
-    def __init__(self, parent=None, backend=None):
+    def __init__(self, parent=None, backend=None, title='Plot1D'):
 
         super(Plot1D, self).__init__(parent=parent, backend=backend,
                                      resetzoom=True, autoScale=True,
@@ -103,6 +124,8 @@ class Plot1D(PlotWindow):
                                      control=False, position=True,
                                      roi=False, mask=False, fit=True)
         self._index = None
+        self._title = title
+        self.setWindowTitle(self._title)
 
         # Active curve behaviour
         # TODO: https://github.com/silx-kit/silx/blob/5035be343dc37ef60eab114c139016ebd9832d96/silx/gui/plot/test/testPlotWidget.py#L636
@@ -131,7 +154,7 @@ class Plot1D(PlotWindow):
     def setIndex(self, value):
         self._index = value
         if self._index is not None:
-            self.setWindowTitle('{}: Plot1D'.format(self._index))
+            self.setWindowTitle('{0}: {1}'.format(self._index, self._title))
 
     def reset(self):
         self.clear()
