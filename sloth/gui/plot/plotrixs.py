@@ -10,13 +10,13 @@ Plot RIXS data
 """
 from itertools import cycle
 from silx.gui import qt
-from silx.gui.plot.Profile import ProfileToolBar, createProfile
-
+from silx.gui.plot.Profile import ProfileToolBar
 from sloth.gui.plot.plotarea import PlotArea, MdiSubWindow
 from sloth.gui.plot.plot1D import Plot1D
 from sloth.gui.plot.plot2D import Plot2D
 
 from sloth.utils.logging import getLogger
+
 
 class RixsProfileToolBar(ProfileToolBar):
     """RIXS-adapted Profile (=Cuts) toolbar"""
