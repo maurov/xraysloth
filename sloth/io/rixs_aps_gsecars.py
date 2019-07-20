@@ -47,7 +47,8 @@ def _parse_header(fname):
 
 
 def get_rixs_13ide(sample_name, scan_name, rixs_no='001', data_dir='.',
-                  counter_signal='ROI1', counter_norm=None, save_rixs=False):
+                   out_dir=None, counter_signal='ROI1', counter_norm=None,
+                   save_rixs=False):
     """Build RIXS map without XY gridding, line-by-line interpolation
 
     Parameters
@@ -58,17 +59,20 @@ def get_rixs_13ide(sample_name, scan_name, rixs_no='001', data_dir='.',
         length 3 string, ['001']
     data_dir : str, optional
         path to the data ['.']
+    out_dir : str, optional
+        path to save the data [None -> data_dir]
     counter_signal : str
         name of the data column to use as signal
     counter_norm : str
         name of the data column to use as normaliztion
     save_rixs : bool
-        if True -> save rixs numpy array to disk
+        if True -> save outdict to disk (in 'out_dir')
 
     Returns
     -------
     outdict : dict
         {
+        'filename_all' : list,
         'filename_root': str,
         'sample_name': str,
         'scan_name': str,
@@ -80,6 +84,8 @@ def get_rixs_13ide(sample_name, scan_name, rixs_no='001', data_dir='.',
         }
 
     """
+    if out_dir is None:
+        out_dir = data_dir
     fnstr = "{0}_{1}".format(scan_name, sample_name)
     grepstr = "{0}*.{1}".format(fnstr, rixs_no)
     fnames = glob.glob(os.path.join(data_dir, grepstr))
@@ -123,6 +129,7 @@ def get_rixs_13ide(sample_name, scan_name, rixs_no='001', data_dir='.',
         'e_grid': estep,
         'e_unit': 'eV',
         'filename_root': fnstr,
+        'filename_all': fnames,
         'sample_name': sample_name,
         'scan_name': scan_name,
         'counter_signal': counter_signal,
@@ -131,7 +138,7 @@ def get_rixs_13ide(sample_name, scan_name, rixs_no='001', data_dir='.',
 
     if save_rixs:
         fnout = "{0}_rixs.h5".format(fnstr)
-        dicttoh5(outdict, os.path.join(data_dir, fnout))
+        dicttoh5(outdict, os.path.join(out_dir, fnout))
         _logger.info(f"RIXS saved to {fnout}")
 
     return outdict
