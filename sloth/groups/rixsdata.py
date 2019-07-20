@@ -8,32 +8,30 @@ RIXS data object
 """
 import numpy as np
 
+from silx.io.dictdump import dicttoh5, h5todict
+
 from sloth.utils.logging import getLogger
 _logger = getLogger('rixsdata')  #: module logger
 
 class RixsData(object):
     """RIXS plane object"""
 
-    _x, _y, _zz = None, None, None
-    _xc, _yc, _zzc = None, None, None
+    sample_name = 'Unknown'
 
-    _xlabel = 'Incoming energy (eV)'
-    _ylabel = 'Emitted energy (eV)'
-    _etlabel = 'Energy transfer (eV)'
+    ein, eout, rmap = None, None, None
+    ein_c, eout_c, rmap_c = None, None, None
 
+    ein_label = 'Incoming energy (eV)'
+    eout_label = 'Emitted energy (eV)'
+    et_label = 'Energy transfer (eV)'
 
-    def __init__(self, label=None, logger=None):
+    _plotter = None
+
+    def __init__(self, name=None, logger=None):
         """Constructor"""
 
-        if label is None:
-            label = 'rd{0}'.format(hex(id(self)))
-        self.label = label
-
-        if logger is None:
-            logger = _logger
-        self._logger = _logger
-
-        self._plotter = None
+        self.__name__ = name or 'RixsData_{0}'.format(hex(id(self)))
+        self._logger = logger or _logger
 
 
     def load_from_dict(self, rxdict):
@@ -45,28 +43,30 @@ class RixsData(object):
             Required structure
             {
              'sample_name': str,
-             'ene_in': 1D array,
-             'ene_out': 1D array,
-             'rixs': 2D array,
+             'ein': 1D array,
+             'eout': 1D array,
+             'rmap': 2D array,
             }
 
         Return
         ------
         None, set attributes: self.x, self.y, self.zz, self.label
         """
-        self.label = rxdict['sample_name']
-        self._x = rxdict['ene_in']
-        self._y = rxdict['ene_out']
-        self._zz = rxdict['rixs']
+        self.__dict__.update(rxdict)
 
 
     def load_from_h5(self, fname):
         """Load RIXS from HDF5 file"""
-        from silx.io.dictdump import h5todict
         rxdict = h5todict(fname)
         rxdict['sample_name'] = rxdict['sample_name'].tostring().decode()
         self.load_from_dict(rxdict)
-        self._logger.info(f"RIXS map loade from {fname}")
+        self._logger.info(f"RIXS map loaded from {fname}")
+
+
+    def save_to_h5(self, fname):
+        """Dump dictionary representation to HDF5 file"""
+        dicttoh5(self.__dict__)
+        self._logger.info(f"RixsData saved to {fname}")
 
 
     def crop(self, crop_area):
@@ -81,18 +81,19 @@ class RixsData(object):
 
         """
         x1, y1, x2, y2 = crop_area
-        ix1 = np.abs(self._x-x1).argmin()
-        iy1 = np.abs(self._y-y1).argmin()
-        ix2 = np.abs(self._x-x2).argmin()
-        iy2 = np.abs(self._y-y2).argmin()
+        ix1 = np.abs(self.ein-x1).argmin()
+        iy1 = np.abs(self.eout-y1).argmin()
+        ix2 = np.abs(self.ein-x2).argmin()
+        iy2 = np.abs(self.eout-y2).argmin()
         self._crop_area = crop_area
-        self._xc = self._x[ix1:ix2]
-        self._yc = self._y[iy1:iy2]
-        self._zzc = self._zz[iy1:iy2, ix1:ix2]
+        self.ein_c = self.ein[ix1:ix2]
+        self.eout_c = self.eout[iy1:iy2]
+        self.rmap_c = self.rmap[iy1:iy2, ix1:ix2]
+
 
     def norm(self):
         """Simple map normalization to max-min"""
-        self._zzn = self._zz/(np.nanmax(self._zz)-np.nanmin(self._zz))
+        self.rmap_norm = self.rmap/(np.nanmax(self.rmap)-np.nanmin(self.rmap))
 
 
     def getPlotter(self):
@@ -102,7 +103,8 @@ class RixsData(object):
             self._plotter = RixsPlot2D(logger=self._logger)
         return self._plotter
 
-    def plot(self, plotter=None, nlevels=50, crop=False):
+
+    def plot(self, plotter=None, crop=False, nlevels=50):
         """Data plotter"""
         if plotter is None:
             plotter = self.getPlotter()
@@ -110,14 +112,14 @@ class RixsData(object):
             self._plotter = plotter
         plotter.clear()
         if type(crop) is tuple:
-            self.crop(*crop)
+            self.crop(crop)
         if crop:
-            _title = f"{self.label} [CROP: {self._crop_area}]"
-            plotter.addImage(self._zzc, x=self._xc, y=self._yc, title=_title,
-                             xlabel=self._xlabel, ylabel=self._ylabel)
+            _title = f"{self.sample_name} [CROP: {self._crop_area}]"
+            plotter.addImage(self.rmap_c, x=self.ein_c, y=self.eout_c, title=_title,
+                             xlabel=self.ein_label, ylabel=self.eout_label)
         else:
-            plotter.addImage(self._zz, x=self._x, y=self._y, title=self.label,
-                             xlabel=self._xlabel, ylabel=self._ylabel)
+            plotter.addImage(self.rmap, x=self.ein, y=self.eout, title=self.sample_name,
+                             xlabel=self.ein_label, ylabel=self.eout_label)
         plotter.addContours(nlevels)
         plotter.show()
 

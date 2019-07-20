@@ -14,6 +14,8 @@ import os
 import numpy as np
 import glob
 
+from silx.io.dictdump import dicttoh5
+
 from sloth.utils.logging import getLogger
 _logger = getLogger('io_gsecars_rixs')
 
@@ -78,11 +80,11 @@ def get_rixs_13ide(sample_name, scan_name, rixs_no='001', data_dir='.',
         }
 
     """
-    fnstr = "{0}_{1}.{2}".format(scan_name, sample_name, rixs_no)
+    fnstr = "{0}_{1}".format(scan_name, sample_name)
     grepstr = "{0}*.{1}".format(fnstr, rixs_no)
     fnames = glob.glob(os.path.join(data_dir, grepstr))
-    enes = [_parse_header(fname)['Analyzer.energy'] for fname in fnames]
-    estep = round(enes[1]-enes[0], 2)
+    enes = np.sort(np.array([_parse_header(fname)['Analyzer.energy'] for fname in fnames]))
+    estep = round(np.average(enes[1:]-enes[:-1]), 2)
 
     fname0 = fnames[0]
     header = _parse_header(fname0)
@@ -115,10 +117,11 @@ def get_rixs_13ide(sample_name, scan_name, rixs_no='001', data_dir='.',
     rixs = np.array(_signals)
 
     outdict = {
-        'ene_in': np.array(xnew),
-        'ene_out': np.array(enes),
-        'ene_grid': estep,
-        'rixs': rixs,
+        'ein': np.array(xnew),
+        'eout': np.array(enes),
+        'rmap': rixs,
+        'e_grid': estep,
+        'e_unit': 'eV',
         'filename_root': fnstr,
         'sample_name': sample_name,
         'scan_name': scan_name,
@@ -128,7 +131,6 @@ def get_rixs_13ide(sample_name, scan_name, rixs_no='001', data_dir='.',
 
     if save_rixs:
         fnout = "{0}_rixs.h5".format(fnstr)
-        from silx.io.dictdump import dicttoh5
         dicttoh5(outdict, fnout)
         _logger.info(f"RIXS saved to {fnout}")
 
