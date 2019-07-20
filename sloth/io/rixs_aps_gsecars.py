@@ -131,7 +131,7 @@ def get_rixs_13ide(sample_name, scan_name, rixs_no='001', data_dir='.',
 
     if save_rixs:
         fnout = "{0}_rixs.h5".format(fnstr)
-        dicttoh5(outdict, fnout)
+        dicttoh5(outdict, os.path.join(data_dir, fnout))
         _logger.info(f"RIXS saved to {fnout}")
 
     return outdict
