@@ -8,20 +8,20 @@ Main window of RIXS GUI
 import os
 import numpy as np
 from silx.gui import qt
-from sloth.gui.plot.plotrixs import RixsPlotArea
+from sloth.gui.plot.plotrixs import RixsMainWindow
 from sloth import _resourcesPath
 from sloth.gui.rixs.view import RixsListView
 from sloth.gui.rixs.model import RixsListModel
 from sloth.gui.console import InternalIPyKernel
 
 
-class MainWindowRixs(qt.QMainWindow):
+class RixsAppWindow(qt.QMainWindow):
     """MainWindow may also behave as widget"""
 
     def __init__(self, parent=None, with_ipykernel=False):
         """Constructor"""
 
-        super(MainWindowRixs, self).__init__(parent=parent)
+        super(RixsAppWindow, self).__init__(parent=parent)
 
         if parent is not None:
             #: behave as a widget
@@ -47,19 +47,8 @@ class MainWindowRixs(qt.QMainWindow):
         self.setMenuBar(self._menuBar)
         self._initAppMenu()
 
-        centralWidget = qt.QWidget(self)
-        self._rixsPlotArea = RixsPlotArea()
-        self._profilesPlotArea = RixsPlotArea()
-
-        gridLayout = qt.QGridLayout()
-        gridLayout.setContentsMargins(0, 0, 0, 0)
-        #: addWidget(widget, row, column, rowSpan, columnSpan[, alignment=0]))
-        gridLayout.addWidget(self._rixsPlotArea, 0, 0, 1, 2)
-        gridLayout.addWidget(self._profilesPlotArea, 1, 0, 1, 2)
-
-        centralWidget.setLayout(gridLayout)
-        self.setCentralWidget(centralWidget)
-        self.setMinimumSize(600, 800)
+        self._rixsPlots = RixsMainWindow(self)
+        self.setCentralWidget(self._rixsPlots)
 
         self._dockDataWidget = qt.QDockWidget(parent=self)
         self._dockDataWidget.setObjectName('Data View')
@@ -73,9 +62,7 @@ class MainWindowRixs(qt.QMainWindow):
             self._ipykernel.init_kernel(backend='qt')
             self._ipykernel.add_to_namespace('view', self._view)
             self._ipykernel.add_to_namespace('model', self._model)
-            self._ipykernel.add_to_namespace('plots_rixs', self._rixsPlotArea)
-            self._ipykernel.add_to_namespace('plots_cuts',
-                                             self._profilesPlotArea)
+            self._ipykernel.add_to_namespace('plot', self._rixsPlots)
 
             # Add IPython console at menu
             self._initConsoleMenu()
@@ -84,11 +71,11 @@ class MainWindowRixs(qt.QMainWindow):
 
     def showEvent(self, event):
         self.loadSettings()
-        super(MainWindowRixs, self).showEvent(event)
+        super(RixsAppWindow, self).showEvent(event)
 
     def closeEvent(self, event):
         self.saveSettings()
-        super(MainWindowRixs, self).closeEvent(event)
+        super(RixsAppWindow, self).closeEvent(event)
 
     def loadSettings(self):
         """TODO"""
@@ -138,7 +125,7 @@ class MainWindowRixs(qt.QMainWindow):
 def main():
     from silx import sx
     sx.enable_gui()
-    rx = MainWindowRixs()
+    rx = RixsAppWindow()
     rx.show()
     input("Press ENTER to close the window...")
 

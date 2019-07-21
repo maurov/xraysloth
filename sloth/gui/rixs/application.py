@@ -55,7 +55,7 @@ def mainQtApp(options):
     # catched
     timer.timeout.connect(lambda: None)
 
-    from .window import MainWindowRixs as MainWindow
+    from .window import RixsAppWindow as MainWindow
 
     window = MainWindow(with_ipykernel=True)
     window.setAttribute(qt.Qt.WA_DeleteOnClose, True)

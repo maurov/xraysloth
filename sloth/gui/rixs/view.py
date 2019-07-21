@@ -5,7 +5,7 @@ RIXS data view
 """
 import os
 from silx.gui import qt
-
+#import functools
 from sloth.groups.rixsdata import RixsData
 
 
@@ -24,6 +24,19 @@ class RixsListView(qt.QListView):
 
     def showContextMenu(self, position):
         menu = qt.QMenu('List View Menu', self)
+
+        # Get the index under the cursor.
+        index = self.indexAt(position)
+        print("sono qui")
+        print(index)
+        print(index.row())
+        item = 0 #self.model()._rixs_data[index.row()]
+
+        if isinstance(item, RixsData):
+            action = qt.QAction('Plot Left', self, triggered=self.plotLeft)
+            menu.addAction(action)
+            action = qt.QAction('Plot Right', self, triggered=self.plotRight)
+            menu.addAction(action)
 
         action = qt.QAction(
             'Load RixsData from file', self, triggered=self.loadFiles)
@@ -50,6 +63,12 @@ class RixsListView(qt.QListView):
         except Exception:
             return
         self.model().appendRow(r)
+
+    def plotLeft(self):
+        pass
+
+    def plotRight(self):
+        pass
 
 
 if __name__ == '__main__':

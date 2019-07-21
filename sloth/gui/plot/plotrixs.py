@@ -23,7 +23,7 @@ class RixsProfileToolBar(ProfileToolBar):
 
     def __init__(self, parent=None, plot=None, profileWindow=None, overlayColors=None,
                  title='RIXS profile'):
-        """Constructor changes only title"""
+        """Constructor"""
         super(RixsProfileToolBar, self).__init__(parent=parent, plot=plot,
                                                  profileWindow=profileWindow, title=title)
 
@@ -60,7 +60,8 @@ class RixsProfileToolBar(ProfileToolBar):
 class RixsPlot2D(Plot2D):
     """RIXS equivalent of Plot2D"""
 
-    def __init__(self, parent=None, backend=None, logger=None, profileWindow=None, overlayColors=None):
+    def __init__(self, parent=None, backend=None, logger=None,
+                 profileWindow=None, overlayColors=None):
         """Constructor"""
 
         self._logger = logger or getLogger("RixsPlot2D")
@@ -68,17 +69,26 @@ class RixsPlot2D(Plot2D):
         if profileWindow is None:
             profileWindow = Plot1D()
 
-        super(RixsPlot2D, self).__init__(parent=parent, backend=backend, logger=self._logger)
+        super(RixsPlot2D, self).__init__(parent=parent, backend=backend,
+                                         logger=self._logger)
 
-        #tweak profile toolbar
+        #: cleaning toolbar
+        self.getMaskAction().setVisible(False)
+        self.getYAxisInvertedAction().setVisible(False)
+        self.getKeepDataAspectRatioAction().setVisible(False)
+        self.getColorBarAction().setVisible(False)
+
+        # Change default profile toolbar
         self.removeToolBar(self.profile)
-        self.profile = RixsProfileToolBar(plot=self, profileWindow=profileWindow,
+        self.profile = RixsProfileToolBar(plot=self,
+                                          profileWindow=profileWindow,
                                           overlayColors=overlayColors)
         self.addToolBar(self.profile)
 
         self.setWindowTitle('RixsPlot2D')
         self.setKeepDataAspectRatio(True)
         self.getDefaultColormap().setName('Blues')
+
 
 class RixsPlotArea(PlotArea):
     """RIXS equivalent of PlotArea"""
@@ -129,13 +139,59 @@ class RixsPlotArea(PlotArea):
     def addRixsPlot2D(self):
         """Add a RixPlot2D window in the mdi Area"""
         subWindow = MdiSubWindow(parent=self)
-        plotWindow = RixsPlot2D(parent=subWindow, profileWindow=self._profileWindow,
+        plotWindow = RixsPlot2D(parent=subWindow,
+                                profileWindow=self._profileWindow,
                                 overlayColors=self._overlayColors)
         plotWindow.setIndex(len(self.plotWindows()))
         subWindow.setWidget(plotWindow)
         subWindow.show()
         self.changed.emit()
         return plotWindow
+
+
+class RixsMainWindow(qt.QMainWindow):
+
+    def __init__(self, parent=None):
+
+        super(RixsMainWindow, self).__init__(parent=parent)
+
+        if parent is not None:
+            #: behave as a widget
+            self.setWindowFlags(qt.Qt.Widget)
+        else:
+            #: main window
+            self.setWindowTitle('RIXS_VIEW')
+
+        self._overlayColors = cycle(['#1F77B4', '#AEC7E8', '#FF7F0E',
+                                     '#FFBB78', '#2CA02C', '#98DF8A',
+                                     '#D62728', '#FF9896', '#9467BD',
+                                     '#C5B0D5', '#8C564B', '#C49C94',
+                                     '#E377C2', '#F7B6D2', '#7F7F7F',
+                                     '#C7C7C7', '#BCBD22', '#DBDB8D',
+                                     '#17BECF', '#9EDAE5'])
+
+        centralWidget = qt.QWidget(self)
+        self._profilesH = Plot1D(title='Horizontal profiles')
+        self._profilesV = Plot1D(title='Vertical profiles')
+        self._rixsPlotLeft = RixsPlot2D(parent=self,
+                                        profileWindow=self._profilesH,
+                                        overlayColors=self._overlayColors)
+        self._rixsPlotRight = RixsPlot2D(parent=self,
+                                         profileWindow=self._profilesH,
+                                         overlayColors=self._overlayColors)
+
+        gridLayout = qt.QGridLayout()
+        gridLayout.setContentsMargins(1, 1, 1, 1)
+        #: addWidget(widget, row, column, rowSpan, columnSpan[, alignment=0]))
+        gridLayout.addWidget(self._rixsPlotLeft, 0, 0, 1, 1)
+        gridLayout.addWidget(self._rixsPlotRight, 0, 1, 1, 1)
+        gridLayout.addWidget(self._profilesH, 1, 0, 1, 1)
+        gridLayout.addWidget(self._profilesV, 1, 1, 1, 1)
+
+        centralWidget.setLayout(gridLayout)
+        self.setCentralWidget(centralWidget)
+        self.setMinimumSize(600, 600)
+
 
 if __name__ == '__main__':
     pass
