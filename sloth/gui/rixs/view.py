@@ -47,7 +47,7 @@ class RixsListView(qt.QListView):
     def loadFiles(self):
         paths, _ = qt.QFileDialog.getOpenFileNames(
             self, 'Select Files to Load', os.getcwd(),
-            'RixsData Files (*.h5);; All Files (*)')
+            'RixsData Files (*rixs.h5);; All Files (*)')
 
         if not paths:
             return
