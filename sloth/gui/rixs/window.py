@@ -8,18 +8,27 @@ Main window of RIXS GUI
 import os
 import numpy as np
 from silx.gui import qt
-from sloth.gui.plot.plotrixs import RixsMainWindow
+from sloth.gui.plot.plotrixs import RixsPlotArea
 from sloth import _resourcesPath
-from sloth.gui.rixs.view import RixsListView
-from sloth.gui.rixs.model import RixsListModel
+
+#from sloth.gui.rixs.view import RixsListView as RixsView
+#from sloth.gui.rixs.model import RixsListModel as RixsModel
+from sloth.gui.rixs.view import RixsTreeView as RixsView
+from sloth.gui.rixs.model import RixsTreeModel as RixsModel
+from sloth.gui.rixs.items import RixsItem
+
 from sloth.gui.console import InternalIPyKernel
+
+from sloth.utils.logging import getLogger
 
 
 class RixsAppWindow(qt.QMainWindow):
     """MainWindow may also behave as widget"""
 
-    def __init__(self, parent=None, with_ipykernel=False):
+    def __init__(self, parent=None, with_ipykernel=False, logger=None):
         """Constructor"""
+
+        self._logger = logger or getLogger('RixsAppWindow')
 
         super(RixsAppWindow, self).__init__(parent=parent)
 
@@ -38,8 +47,8 @@ class RixsAppWindow(qt.QMainWindow):
         self._with_ipykernel = with_ipykernel
 
         #: Model/view
-        self._model = RixsListModel()
-        self._view = RixsListView(parent=self)
+        self._model = RixsModel()
+        self._view = RixsView(parent=self)
         self._view.setModel(self._model)
 
         # Add (empty) menu bar -> contents added later
@@ -47,27 +56,71 @@ class RixsAppWindow(qt.QMainWindow):
         self.setMenuBar(self._menuBar)
         self._initAppMenu()
 
-        self._rixsPlots = RixsMainWindow(self)
-        self.setCentralWidget(self._rixsPlots)
+        #: Plot Area
+        self._plotArea = RixsPlotArea(self)
+        self.setCentralWidget(self._plotArea)
 
+        #: TreeView dock widget
         self._dockDataWidget = qt.QDockWidget(parent=self)
         self._dockDataWidget.setObjectName('Data View')
         self._dockDataWidget.setWidget(self._view)
         self.addDockWidget(qt.Qt.LeftDockWidgetArea, self._dockDataWidget)
-        """TreeView dock widget"""
 
+        #: Plots update
+        self._model.dataChanged.connect(self.updatePlot)
+        self._plotArea.changed.connect(self.updateModel)
+
+        #: Console
         if self._with_ipykernel:
             # Initialize internal ipykernel
             self._ipykernel = InternalIPyKernel()
             self._ipykernel.init_kernel(backend='qt')
             self._ipykernel.add_to_namespace('view', self._view)
             self._ipykernel.add_to_namespace('model', self._model)
-            self._ipykernel.add_to_namespace('plot', self._rixsPlots)
+            self._ipykernel.add_to_namespace('plot', self._plotArea)
 
             # Add IPython console at menu
             self._initConsoleMenu()
         else:
             self._ipykernel = None
+
+    def updateModel(self):
+        plotWindows = self._plotArea.plotWindows()
+        for item in self._view.rixsItems():
+            item.plotWindows = plotWindows
+            if len(plotWindows) == 0:
+                index = self._model.indexFromItem(item)
+                self._model.dataChanged.emit(index, index)
+
+    def updatePlot(self, *args):
+        topLeft, bottomRight, _ = args
+
+        topLeftItem = self._model.itemFromIndex(topLeft)
+        bottomRightItem = self._model.itemFromIndex(bottomRight)
+
+        if topLeftItem is not bottomRightItem:
+            self._logger.error('The indices do not point to the same item in the model')
+            return
+
+        item = topLeftItem
+        plotWindows = self._plotArea.plotWindows()
+
+        if item.isChecked:
+            if len(plotWindows) == 0:
+                self._logger.info('There are no plot widgets available')
+                return
+
+        for plotWindow in plotWindows:
+            plotWindow.remove(item.legend)
+            if not plotWindow.getItems():
+                plotWindow.reset()
+            else:
+                plotWindow.statusBar().clearMessage()
+
+        rixsItems = self._view.rixsItems()
+        if item.isChecked:
+            if item in list(rixsItems) and isinstance(item, RixsItem):
+                item.plot()
 
     def showEvent(self, event):
         self.loadSettings()

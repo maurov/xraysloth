@@ -93,7 +93,7 @@ class RixsPlot2D(Plot2D):
 class RixsPlotArea(PlotArea):
     """RIXS equivalent of PlotArea"""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, profileWindow=None):
         super(RixsPlotArea, self).__init__(parent=parent)
 
         self._overlayColors = cycle(['#1F77B4', '#AEC7E8', '#FF7F0E',
@@ -105,7 +105,8 @@ class RixsPlotArea(PlotArea):
                                      '#17BECF', '#9EDAE5'])
 
         self.setWindowTitle('RixsPlotArea')
-        self._profileWindow = self._addProfileWindow()
+        self._profileWindow = profileWindow or self._addProfileWindow()
+        self.setMinimumSize(300, 300)
 
     def showContextMenu(self, position):
         menu = qt.QMenu('RixsPlotArea Menu', self)
@@ -136,11 +137,13 @@ class RixsPlotArea(PlotArea):
         self.changed.emit()
         return plotWindow
 
-    def addRixsPlot2D(self):
+    def addRixsPlot2D(self, profileWindow=None):
         """Add a RixPlot2D window in the mdi Area"""
         subWindow = MdiSubWindow(parent=self)
+        if profileWindow is None:
+            profileWindow = self._profileWindow
         plotWindow = RixsPlot2D(parent=subWindow,
-                                profileWindow=self._profileWindow,
+                                profileWindow=profileWindow,
                                 overlayColors=self._overlayColors)
         plotWindow.setIndex(len(self.plotWindows()))
         subWindow.setWidget(plotWindow)
@@ -162,31 +165,17 @@ class RixsMainWindow(qt.QMainWindow):
             #: main window
             self.setWindowTitle('RIXS_VIEW')
 
-        self._overlayColors = cycle(['#1F77B4', '#AEC7E8', '#FF7F0E',
-                                     '#FFBB78', '#2CA02C', '#98DF8A',
-                                     '#D62728', '#FF9896', '#9467BD',
-                                     '#C5B0D5', '#8C564B', '#C49C94',
-                                     '#E377C2', '#F7B6D2', '#7F7F7F',
-                                     '#C7C7C7', '#BCBD22', '#DBDB8D',
-                                     '#17BECF', '#9EDAE5'])
-
         centralWidget = qt.QWidget(self)
-        self._profilesH = Plot1D(title='Horizontal profiles')
-        self._profilesV = Plot1D(title='Vertical profiles')
-        self._rixsPlotLeft = RixsPlot2D(parent=self,
-                                        profileWindow=self._profilesH,
-                                        overlayColors=self._overlayColors)
-        self._rixsPlotRight = RixsPlot2D(parent=self,
-                                         profileWindow=self._profilesH,
-                                         overlayColors=self._overlayColors)
+        self._profileWindow = Plot1D(title='Profiles')
+        self._rixsPlots = RixsPlotArea(parent=self,
+                                       profileWindow=self._profileWindow)
+        self._rixsPlots.addRixsPlot2D()
 
         gridLayout = qt.QGridLayout()
         gridLayout.setContentsMargins(1, 1, 1, 1)
         #: addWidget(widget, row, column, rowSpan, columnSpan[, alignment=0]))
-        gridLayout.addWidget(self._rixsPlotLeft, 0, 0, 1, 1)
-        gridLayout.addWidget(self._rixsPlotRight, 0, 1, 1, 1)
-        gridLayout.addWidget(self._profilesH, 1, 0, 1, 1)
-        gridLayout.addWidget(self._profilesV, 1, 1, 1, 1)
+        gridLayout.addWidget(self._rixsPlots, 0, 0, 1, 2)
+        gridLayout.addWidget(self._profileWindow, 0, 1, 1, 1)
 
         centralWidget.setLayout(gridLayout)
         self.setCentralWidget(centralWidget)

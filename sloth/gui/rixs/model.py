@@ -5,6 +5,15 @@ RIXS data model
 """
 from silx.gui import qt
 
+from sloth.gui.daxs.model import TreeModel
+
+
+class RixsTreeModel(TreeModel):
+
+    def __init__(self, parent=None):
+
+        super(RixsTreeModel, self).__init__(parent=parent)
+
 
 class RixsListModel(qt.QAbstractListModel):
 
