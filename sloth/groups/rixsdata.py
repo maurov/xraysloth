@@ -13,17 +13,34 @@ from silx.io.dictdump import dicttoh5, h5todict
 from sloth.utils.logging import getLogger
 _logger = getLogger('rixsdata')  #: module logger
 
+def get_rixs_et(rixs_map, ene_in, ene_out):
+    """Rotate a RIXS map to energy transfer
+
+
+    """
+    assert type(ene_in) is np.ndarray and (len(rixs_map.shape)==1), "'ene_in' should be 1D Numpy array"
+    assert type(ene_out) is np.ndarray, and (len(rixs_map.shape)==1) "'ene_out' should be 1D Numpy array"
+    assert (type(rixs_map) is np.ndarray) and (len(rixs_map.shape)==2), "'rixs_map' should be 2D Numpy array"
+    ene_et = ene_in - ene_out
+    # TODO
+    return
+
+
 class RixsData(object):
     """RIXS plane object"""
 
     sample_name = 'Unknown'
 
-    ein, eout, rmap = None, None, None
-    ein_c, eout_c, rmap_c = None, None, None
+    counter_all, counter_signal, counter_norm = None, None, None
 
-    ein_label = 'Incoming energy (eV)'
-    eout_label = 'Emitted energy (eV)'
-    et_label = 'Energy transfer (eV)'
+    ene_in, ene_out, rixs_map = None, None, None
+    ene_et, rixs_et_map = None, None
+    ene_in_crop, ene_out_crop, rixs_map_crop = None, None, None
+    ene_grid, ene_unit = None, None
+
+    ene_in_label = 'Incoming energy (eV)'
+    ene_out_label = 'Emitted energy (eV)'
+    ene_et_label = 'Energy transfer (eV)'
 
     _plotter = None
 
@@ -40,17 +57,17 @@ class RixsData(object):
         Parameters
         ----------
         rxdict : dict
-            Required structure
+            Minimal required structure
             {
              'sample_name': str,
-             'ein': 1D array,
-             'eout': 1D array,
-             'rmap': 2D array,
+             'ene_in': 1D array,
+             'ene_out': 1D array,
+             'rixs_map': 2D array,
             }
 
         Return
         ------
-        None, set attributes: self.x, self.y, self.zz, self.label
+        None, set attributes: self.*
         """
         self.__dict__.update(rxdict)
 
@@ -81,19 +98,19 @@ class RixsData(object):
 
         """
         x1, y1, x2, y2 = crop_area
-        ix1 = np.abs(self.ein-x1).argmin()
-        iy1 = np.abs(self.eout-y1).argmin()
-        ix2 = np.abs(self.ein-x2).argmin()
-        iy2 = np.abs(self.eout-y2).argmin()
+        ix1 = np.abs(self.ene_in-x1).argmin()
+        iy1 = np.abs(self.ene_out-y1).argmin()
+        ix2 = np.abs(self.ene_in-x2).argmin()
+        iy2 = np.abs(self.ene_out-y2).argmin()
         self._crop_area = crop_area
-        self.ein_c = self.ein[ix1:ix2]
-        self.eout_c = self.eout[iy1:iy2]
-        self.rmap_c = self.rmap[iy1:iy2, ix1:ix2]
+        self.ene_in_crop = self.ene_in[ix1:ix2]
+        self.ene_out_crop = self.ene_out[iy1:iy2]
+        self.rixs_map_crop = self.rixs_map[iy1:iy2, ix1:ix2]
 
 
     def norm(self):
         """Simple map normalization to max-min"""
-        self.rmap_norm = self.rmap/(np.nanmax(self.rmap)-np.nanmin(self.rmap))
+        self.rixs_map_norm = self.rixs_map/(np.nanmax(self.rixs_map)-np.nanmin(self.rixs_map))
 
 
     def getPlotter(self):
@@ -115,11 +132,19 @@ class RixsData(object):
             self.crop(crop)
         if crop:
             _title = f"{self.sample_name} [CROP: {self._crop_area}]"
-            plotter.addImage(self.rmap_c, x=self.ein_c, y=self.eout_c, title=_title,
-                             xlabel=self.ein_label, ylabel=self.eout_label)
+            plotter.addImage(self.rixs_map_crop,
+                             x=self.ene_in_crop,
+                             y=self.ene_out_crop,
+                             title=_title,
+                             xlabel=self.ene_in_label,
+                             ylabel=self.ene_out_label)
         else:
-            plotter.addImage(self.rmap, x=self.ein, y=self.eout, title=self.sample_name,
-                             xlabel=self.ein_label, ylabel=self.eout_label)
+            plotter.addImage(self.rixs_map,
+                             x=self.ene_in,
+                             y=self.ene_out,
+                             title=self.sample_name,
+                             xlabel=self.ene_in_label,
+                             ylabel=self.ene_out_label)
         plotter.addContours(nlevels)
         plotter.show()
 

@@ -76,11 +76,14 @@ def get_rixs_13ide(sample_name, scan_name, rixs_no='001', data_dir='.',
         'filename_root': str,
         'sample_name': str,
         'scan_name': str,
+        'counters': str,
         'counter_signal': str,
         'counter_norm': str,
         'ene_in': 1D array,
         'ene_out': 1D array,
-        'rixs': 2D array,
+        'ene_grid': float,
+        'ene_unit': str,
+        'rixs_map': 2D array,
         }
 
     """
@@ -111,27 +114,48 @@ def get_rixs_13ide(sample_name, scan_name, rixs_no='001', data_dir='.',
     for ifn, fname in enumerate(fnames):
         dat = np.loadtxt(fname)
         x = dat[:, ix]
+        ynew = np.ones_like(xnew) * enes[ifn]
         if counter_norm is not None:
             z = dat[:, iz] / dat[:, i0]
         else:
             z = dat[:, iz]
         znew = np.interp(xnew, x0, z)
+
+        if ifn == 0:
+            _xcol = xnew
+            _ycol = ynew
+            _zcol = znew
+        else:
+            _xcol = np.append(xnew, _xcol)
+            _ycol = np.append(ynew, _ycol)
+            _zcol = np.append(znew, _zcol)
         _signals.append(znew)
         _logger.info(f"Loaded scan {_scan+1}: {enes[ifn]} eV")
         _scan += 1
-
     rixs = np.array(_signals)
 
+    #: make energy transfer array
+    ene_in = np.array(xnew)
+    ene_out = np.array(enes)
+    et_min = round(ene_in[0] - ene_out[-1], 2)
+    et_max = round(ene_in[-1] - ene_out[0], 2)
+    ene_et = np.arange(et_min, et_max+estep, estep)
+
     outdict = {
-        'ein': np.array(xnew),
-        'eout': np.array(enes),
-        'rmap': rixs,
-        'e_grid': estep,
-        'e_unit': 'eV',
+        'ene_in': ene_in,
+        'ene_out': ene_out,
+        'rixs_map': rixs,
+        'ene_et' : ene_et,
+        'ene_in_col' : _xcol,
+        'ene_out_col' : _ycol,
+        'rixs_map_col' : _zcol,
+        'ene_grid': estep,
+        'ene_unit': 'eV',
         'filename_root': fnstr,
         'filename_all': fnames,
         'sample_name': sample_name,
         'scan_name': scan_name,
+        'counter_all': cols,
         'counter_signal': counter_signal,
         'counter_norm': counter_norm,
     }
@@ -142,61 +166,6 @@ def get_rixs_13ide(sample_name, scan_name, rixs_no='001', data_dir='.',
         _logger.info(f"RIXS saved to {fnout}")
 
     return outdict
-
-
-def get_xyz_13ide(sample_name, scan_name, rixs_no='001', data_dir='.',
-                  counter_signal='ROI1', counter_norm=None):
-    """function to get 3 arrays representing the RIXS plane
-
-    .. note: better use get_rixs_13ide
-
-    Parameters
-    ----------
-    sample_name : str
-    scan_name : str
-    rixs_no : str, optional
-        length 3 string, ['001']
-    data_dir : str, optional
-        path to the data ['.']
-    counter_signal : str
-        name of the data column to use as signal
-    counter_norm : str
-        name of the data column to use as normaliztion
-
-    Returns
-    -------
-    xcol, ycol, zcol: 1D arrays
-
-    """
-    grepstr = "{0}_{1}.{2}*.{2}".format(scan_name, sample_name, rixs_no)
-    fnames = glob.glob(os.path.join(data_dir, grepstr))
-    _scan = 0
-    for fname in fnames:
-        header = _parse_header(fname)
-        emi = header['Analyzer.energy']
-        cols = header['columns']
-        ix = cols.index('Energy') or 0
-        iy = cols.index(counter_signal)
-        i0 = cols.index(counter_norm)
-        dat = np.loadtxt(fname)
-        x = dat[:, ix]
-        y = np.ones_like(x) * emi
-        if counter_norm is not None:
-            z = dat[:, iy] / dat[:, i0]
-        else:
-            z = dat[:, iy]
-        if _scan == 0:
-            xcol = x
-            ycol = y
-            zcol = z
-        else:
-            xcol = np.append(xcol, x)
-            ycol = np.append(ycol, y)
-            zcol = np.append(zcol, z)
-        _logger.info(f"Loaded scan {_scan+1}: {emi} eV")
-        _scan += 1
-
-    return xcol, ycol, zcol
 
 
 if __name__ == '__main__':

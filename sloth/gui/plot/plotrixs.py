@@ -11,11 +11,33 @@ Plot RIXS data
 from itertools import cycle
 from silx.gui import qt
 from silx.gui.plot.Profile import ProfileToolBar
+from silx.gui.plot.actions import PlotAction
+
 from sloth.gui.plot.plotarea import PlotArea, MdiSubWindow
 from sloth.gui.plot.plot1D import Plot1D
 from sloth.gui.plot.plot2D import Plot2D
 
 from sloth.utils.logging import getLogger
+
+
+class RixsRotateAction(PlotAction):
+    """QAction rotating a Rixs plane
+
+    :param plot: :class:`.PlotWidget` instance on which to operate
+    :param parent: See :class:`QAction`
+    """
+    def __init__(self, plot, parent=None):
+        PlotAction.__init__(self,
+                            plot,
+                            icon='compare-align-auto',
+                            text='Rixs_et',
+                            tooltip='Rotate RIXS plane to energy transfer',
+                            triggered=self.rotateImage,
+                            parent=parent)
+
+    def rotateImage(self):
+        """"""
+        return
 
 
 class RixsProfileToolBar(ProfileToolBar):
