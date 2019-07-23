@@ -51,7 +51,7 @@ def gridxyz(xcol, ycol, zcol, xystep=None, lib='scipy', method='cubic'):
             _logger.error("Cannot load griddata from Matplotlib")
             return
         if not (method == 'nn' or method == 'nearest'):
-            warnings.warn("method {0} not supported by {1}".format(method, lib))
+            _logger.warning("Interpolation method {0} not supported by {1}".format(method, lib))
         _logger.info("Gridding data with {0}...".format(lib))
         zz = griddata(xcol, ycol, zcol, xx, yy)
         return xgrid, ygrid, zz

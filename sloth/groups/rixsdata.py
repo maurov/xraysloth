@@ -19,7 +19,7 @@ def get_rixs_et(rixs_map, ene_in, ene_out):
 
     """
     assert type(ene_in) is np.ndarray and (len(rixs_map.shape)==1), "'ene_in' should be 1D Numpy array"
-    assert type(ene_out) is np.ndarray, and (len(rixs_map.shape)==1) "'ene_out' should be 1D Numpy array"
+    assert type(ene_out) is np.ndarray and (len(rixs_map.shape)==1), "'ene_out' should be 1D Numpy array"
     assert (type(rixs_map) is np.ndarray) and (len(rixs_map.shape)==2), "'rixs_map' should be 2D Numpy array"
     ene_et = ene_in - ene_out
     # TODO

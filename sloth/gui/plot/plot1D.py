@@ -64,15 +64,13 @@ class CustomCurveLegendsWidget(CurveLegendsWidget):
         curve.setYAxis('left' if yaxis == 'right' else 'right')
 
     def _copyCurve(self, curve, plot):
-        """Copy curve
-        """
+        """Copy curve"""
         data = curve.getData()
         legend = curve.getLegend() + '*'
         plot.addCurve(data[0], data[1], legend=legend)
 
     def _clearPlot(self, plot):
-        """Clear plot
-        """
+        """Clear plot"""
         plot.clear()
 
     def _contextMenu(self, pos):
@@ -88,6 +86,10 @@ class CustomCurveLegendsWidget(CurveLegendsWidget):
             menu.addAction('Unselect' if curve == activeCurve else 'Select',
                            functools.partial(self._switchCurveActive, curve))
 
+            # Add an action to show/hide the curve
+            menu.addAction('Hide' if curve.isVisible() else 'Show',
+                           functools.partial(self._switchCurveVisibility, curve))
+
             # Add an action to store a copy of the curve
             plot = curve.getPlot()
             menu.addAction('Copy', functools.partial(self._copyCurve, curve, plot))
@@ -97,9 +99,7 @@ class CustomCurveLegendsWidget(CurveLegendsWidget):
             menu.addAction('Map to %s' % yaxis,
                            functools.partial(self._switchCurveYAxis, curve))
 
-            # Add an action to show/hide the curve
-            menu.addAction('Hide' if curve.isVisible() else 'Show',
-                           functools.partial(self._switchCurveVisibility, curve))
+            menu.addSeparator()
 
             # Add an action to clear the plot
             plot = curve.getPlot()
@@ -114,15 +114,15 @@ class Plot1D(PlotWindow):
     """Custom PlotWindow instance targeted to 1D curves"""
 
     def __init__(self, parent=None, backend=None, title='Plot1D'):
-
+        """Constructor"""
         super(Plot1D, self).__init__(parent=parent, backend=backend,
                                      resetzoom=True, autoScale=True,
                                      logScale=True, grid=False,
                                      curveStyle=True, colormap=False,
                                      aspectRatio=False, yInverted=False,
                                      copy=True, save=True, print_=True,
-                                     control=False, position=True,
-                                     roi=False, mask=False, fit=True)
+                                     control=False, position=True, roi=False,
+                                     mask=False, fit=True)
         self._index = None
         self._title = title
         self.setWindowTitle(self._title)

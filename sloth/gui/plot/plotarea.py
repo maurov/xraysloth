@@ -45,6 +45,7 @@ class PlotArea(qt.QMdiArea):
 
         self.setWindowTitle('PlotArea')
         self.setMinimumSize(960, 960)
+        self.setGeometry(0, 0, 1280, 1024)
 
     def getPlotWindow(self, index):
         """get the PlotWindow widget object for a given index"""
@@ -83,16 +84,16 @@ class PlotArea(qt.QMdiArea):
 
         menu.exec_(self.mapToGlobal(position))
 
-    def addPlot1D(self):
-        return self.addPlotWindow(plotType='1D')
+    def addPlot1D(self, title=None):
+        return self.addPlotWindow(plotType='1D', title=title)
 
-    def addStackView1D(self):
-        return self.addPlotWindow(plotType='Stack1D')
+    def addStackView1D(self, title=None):
+        return self.addPlotWindow(plotType='Stack1D', title=title)
 
-    def addPlot2D(self):
-        return self.addPlotWindow(plotType='2D')
+    def addPlot2D(self, title=None):
+        return self.addPlotWindow(plotType='2D', title=title)
 
-    def addPlotWindow(self, *args, plotType='1D'):
+    def addPlotWindow(self, *args, plotType='1D', title=None):
         """add a plot window in the mdi Area
 
         Parameters
@@ -105,11 +106,11 @@ class PlotArea(qt.QMdiArea):
         """
         subWindow = MdiSubWindow(parent=self)
         if plotType == '2D':
-            plotWindow = Plot2D(parent=subWindow)
+            plotWindow = Plot2D(parent=subWindow, title=title)
         elif plotType == 'Stack1D':
-            plotWindow = StackView1D(parent=subWindow)
+            plotWindow = StackView1D(parent=subWindow, title=title)
         else:
-            plotWindow = Plot1D(parent=subWindow)
+            plotWindow = Plot1D(parent=subWindow, title=title)
         plotWindow.setIndex(len(self.plotWindows()))
         subWindow.setWidget(plotWindow)
         subWindow.show()

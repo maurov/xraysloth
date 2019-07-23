@@ -13,16 +13,14 @@ from sloth.utils.logging import getLogger
 class Plot2D(silxPlot2D):
     """Custom Plot2D instance targeted to 2D images"""
 
-    def __init__(self, parent=None, backend=None, logger=None):
+    def __init__(self, parent=None, backend=None, logger=None, title="Plot2D"):
 
         super(Plot2D, self).__init__(parent=parent, backend=backend)
 
-        if logger is not None:
-            self._logger = logger
-        else:
-            self._logger = getLogger("Plot2D")
-
+        self._logger = logger or getLogger("Plot2D")
         self._index = None
+        self._title = title
+        self.setWindowTitle(self._title)
         self._image = None
         self._mask = None
         self._origin = (0, 0)
@@ -159,7 +157,7 @@ class Plot2D(silxPlot2D):
     def setIndex(self, value):
         self._index = value
         if self._index is not None:
-            self.setWindowTitle('{}: Plot2D'.format(self._index))
+            self.setWindowTitle('{0}: {1}'.format(self._index, self._title))
 
     def addImage(self, data, x=None, y=None, title=None, xlabel=None, ylabel=None,
                  vmin=None, vmax=None, **kwargs):
@@ -186,7 +184,10 @@ class Plot2D(silxPlot2D):
         if title is not None:
             self._title = title
             self.setGraphTitle(title)
-            self.setWindowTitle(title)
+            if self._index is not None:
+                self.setWindowTitle('{0}: {1}'.format(self._index, self._title))
+            else:
+                self.setWindowTitle(self._title)
         if xlabel is not None:
             self._xlabel = xlabel
             self.setGraphXLabel(xlabel)
