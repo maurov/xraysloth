@@ -14,6 +14,7 @@ _logger = getLogger('gridxyz')
 ### GLOBAL VARIABLES ###
 MODNAME = '_math'
 
+
 def gridxyz(xcol, ycol, zcol, xystep=None, lib='scipy', method='cubic'):
     """Grid (X, Y, Z) 1D data on a 2D regular mesh
 
@@ -62,7 +63,7 @@ def gridxyz(xcol, ycol, zcol, xystep=None, lib='scipy', method='cubic'):
             _logger.error("Cannot load griddata from Scipy")
             return
         _logger.info("Gridding data with {0}...".format(lib))
-        zz = griddata((xcol, ycol), zcol, (xgrid[None,:], ygrid[:,None]), method=method)
+        zz = griddata((xcol, ycol), zcol, (xgrid[None,:], ygrid[:,None]), method=method, fill_value=0)
         return xgrid, ygrid, zz
 
 ### LARCH ###
@@ -73,8 +74,10 @@ def gridxyz_larch(xcol, ycol, zcol, xystep=None, method='cubic', lib='scipy', _l
     return gridxyz(xcol, ycol, zcol, xystep=xystep, method=method, lib=lib)
 gridxyz_larch.__doc__ += gridxyz.__doc__
 
+
 def registerLarchPlugin():
     return (MODNAME, {'gridxyz': gridxyz_larch})
+
 
 if __name__ == '__main__':
     pass

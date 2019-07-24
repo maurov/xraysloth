@@ -13,6 +13,12 @@ from silx.gui import qt
 from silx.gui.plot.Profile import ProfileToolBar
 from silx.gui.plot.actions import PlotAction
 
+from silx.gui.plot.tools.roi import RegionOfInterestManager
+from silx.gui.plot.tools.roi import RegionOfInterestTableWidget
+# from silx.gui.plot.items.roi import RectangleROI
+from silx.gui.plot.items import LineMixIn, SymbolMixIn
+
+
 from sloth.gui.plot.plotarea import PlotArea, MdiSubWindow
 from sloth.gui.plot.plot1D import Plot1D
 from sloth.gui.plot.plot2D import Plot2D
@@ -25,6 +31,67 @@ _DEFAULT_OVERLAY_COLORS = cycle(['#1F77B4', '#AEC7E8', '#FF7F0E', '#FFBB78',
                                  '#E377C2', '#F7B6D2', '#7F7F7F', '#C7C7C7',
                                  '#BCBD22', '#DBDB8D', '#17BECF', '#9EDAE5'])
 
+class RixsROIManager(RegionOfInterestManager):
+
+    def __init__(self, plot, color='pink'):
+        super(RixsROIManager, self).__init__(plot)
+        self.setColor(color)
+        self.sigRoiAdded.connect(self.updateAddedRegionOfInterest)
+
+    def updateAddedRegionOfInterest(self, roi):
+        """Called for each added region of interest: set the name"""
+        if roi.getLabel() == '':
+            roi.setLabel('%d' % len(self.getRois()))
+        if isinstance(roi, LineMixIn):
+            roi.setLineWidth(2)
+            roi.setLineStyle('--')
+        if isinstance(roi, SymbolMixIn):
+            roi.setSymbol('+')
+            roi.setSymbolSize(3)
+
+
+class RixsROIDockWidget(qt.QDockWidget):
+
+    def __init__(self, plot, parent=None):
+
+        assert isinstance(plot, RixsPlot2D), "'plot' should be an instance of RixsPlot2D"
+        _title = f"Plot {plot._index} : cursors infos"
+        super(RixsROIDockWidget, self).__init__(_title, parent=parent)
+
+        self._roiManager = RixsROIManager(plot)
+
+        #: Create the table widget displaying infos
+        self._roiTable = RegionOfInterestTableWidget()
+        self._roiTable.setRegionOfInterestManager(self._roiManager)
+
+        #: Create a toolbar containing buttons for all ROI 'drawing' modes
+        self._roiToolbar = qt.QToolBar()
+        self._roiToolbar.setIconSize(qt.QSize(16, 16))
+
+        for roiClass in self._roiManager.getSupportedRoiClasses():
+            # Create a tool button and associate it with the QAction of each
+            # mode
+            action = self._roiManager.getInteractionModeAction(roiClass)
+            self._roiToolbar.addAction(action)
+
+        # Add the region of interest table and the buttons to a dock widget
+        self._widget = qt.QWidget()
+        self._layout = qt.QVBoxLayout()
+        self._widget.setLayout(self._layout)
+        self._layout.addWidget(self._roiToolbar)
+        self._layout.addWidget(self._roiTable)
+
+        self.setWidget(self._widget)
+        self.visibilityChanged.connect(self.roiDockVisibilityChanged)
+
+    def roiDockVisibilityChanged(self, visible):
+        """Handle change of visibility of the roi dock widget
+
+        If dock becomes hidden, ROI interaction is stopped.
+        """
+        if not visible:
+            self._roiManager.stop()
+
 
 class RixsRotateAction(PlotAction):
     """QAction rotating a Rixs plane
@@ -32,6 +99,7 @@ class RixsRotateAction(PlotAction):
     :param plot: :class:`.PlotWidget` instance on which to operate
     :param parent: See :class:`QAction`
     """
+
     def __init__(self, plot, parent=None):
         PlotAction.__init__(self,
                             plot,
@@ -175,22 +243,20 @@ class RixsMainWindow(qt.QMainWindow):
             #: main window
             self.setWindowTitle('RIXS_VIEW')
 
-        centralWidget = qt.QWidget(self)
-        self._profileWindow = Plot1D(title='Profiles')
-        self._rixsPlots = RixsPlotArea(parent=self,
-                                       profileWindow=self._profileWindow)
-        self._rixsPlots.addRixsPlot2D()
-
-        gridLayout = qt.QGridLayout()
-        gridLayout.setContentsMargins(1, 1, 1, 1)
-        #: addWidget(widget, row, column, rowSpan, columnSpan[, alignment=0]))
-        gridLayout.addWidget(self._rixsPlots, 0, 0, 1, 2)
-        gridLayout.addWidget(self._profileWindow, 0, 1, 1, 1)
-
-        centralWidget.setLayout(gridLayout)
-        self.setCentralWidget(centralWidget)
+        #: Plot Area
+        self._plotArea = RixsPlotArea(self)
+        self.setCentralWidget(self._plotArea)
         self.setMinimumSize(600, 600)
 
+    def addRixsDOIDockWidget(self, plot):
+        self._roiDock = RixsROIDockWidget(plot, parent=self)
+        self.addDockWidget(qt.Qt.LeftDockWidgetArea, self._roiDock)
+
+    def getPlotArea(self):
+        return self._plotArea
+
+    def getProfileWindow(self):
+        return self.getPlotArea().getProfileWindow()
 
 if __name__ == '__main__':
     pass

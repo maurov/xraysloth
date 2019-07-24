@@ -7,23 +7,10 @@ RIXS data object
 
 """
 import numpy as np
-
 from silx.io.dictdump import dicttoh5, h5todict
-
+from sloth.math.gridxyz import gridxyz
 from sloth.utils.logging import getLogger
 _logger = getLogger('rixsdata')  #: module logger
-
-def get_rixs_et(rixs_map, ene_in, ene_out):
-    """Rotate a RIXS map to energy transfer
-
-
-    """
-    assert type(ene_in) is np.ndarray and (len(rixs_map.shape)==1), "'ene_in' should be 1D Numpy array"
-    assert type(ene_out) is np.ndarray and (len(rixs_map.shape)==1), "'ene_out' should be 1D Numpy array"
-    assert (type(rixs_map) is np.ndarray) and (len(rixs_map.shape)==2), "'rixs_map' should be 2D Numpy array"
-    ene_et = ene_in - ene_out
-    # TODO
-    return
 
 
 class RixsData(object):
@@ -50,7 +37,6 @@ class RixsData(object):
         self.__name__ = name or 'RixsData_{0}'.format(hex(id(self)))
         self._logger = logger or _logger
 
-
     def load_from_dict(self, rxdict):
         """Load RIXS data from a dictionary
 
@@ -71,7 +57,6 @@ class RixsData(object):
         """
         self.__dict__.update(rxdict)
 
-
     def load_from_h5(self, fname):
         """Load RIXS from HDF5 file"""
         rxdict = h5todict(fname)
@@ -79,12 +64,10 @@ class RixsData(object):
         self.load_from_dict(rxdict)
         self._logger.info(f"RIXS map loaded from {fname}")
 
-
     def save_to_h5(self, fname):
         """Dump dictionary representation to HDF5 file"""
         dicttoh5(self.__dict__)
         self._logger.info(f"RixsData saved to {fname}")
-
 
     def crop(self, crop_area):
         """Crop the plane in a given range / matrix approach (current)
@@ -107,11 +90,18 @@ class RixsData(object):
         self.ene_out_crop = self.ene_out[iy1:iy2]
         self.rixs_map_crop = self.rixs_map[iy1:iy2, ix1:ix2]
 
+    def make_rixs_et_from_col(self):
+        """Transform a RIXS map to energy transfer"""
+        self.ene_et_col = self.ene_in_col - self.ene_out_col
+        _, self.ene_et, self.rixs_et_map = gridxyz(self.ene_in_col,
+                                                   self.ene_et_col, self.rixs_map_col,
+                                                   xystep=self.ene_grid,
+                                                   lib='scipy',
+                                                   method='nearest')
 
     def norm(self):
         """Simple map normalization to max-min"""
         self.rixs_map_norm = self.rixs_map/(np.nanmax(self.rixs_map)-np.nanmin(self.rixs_map))
-
 
     def getPlotter(self):
         """Get a default plotter"""
@@ -120,14 +110,22 @@ class RixsData(object):
             self._plotter = RixsPlot2D(logger=self._logger)
         return self._plotter
 
-
-    def plot(self, plotter=None, crop=False, nlevels=50):
+    def plot(self, plotter=None, crop=False, rixs_et=False, nlevels=50):
         """Data plotter"""
         if plotter is None:
             plotter = self.getPlotter()
         else:
             self._plotter = plotter
         plotter.clear()
+        if rixs_et:
+            plotter.addImage(self.rixs_et_map,
+                             x=self.ene_in,
+                             y=self.ene_et,
+                             title=self.sample_name,
+                             xlabel=self.ene_in_label,
+                             ylabel=self.ene_et_label)
+            plotter.addContours(nlevels)
+            return
         if type(crop) is tuple:
             self.crop(crop)
         if crop:
@@ -147,6 +145,7 @@ class RixsData(object):
                              ylabel=self.ene_out_label)
         plotter.addContours(nlevels)
         plotter.show()
+
 
 if __name__ == '__main__':
     pass
