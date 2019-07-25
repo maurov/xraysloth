@@ -170,7 +170,7 @@ class RixsPlot2D(Plot2D):
                                           overlayColors=self._overlayColors)
         self.addToolBar(self.profile)
         self.setKeepDataAspectRatio(True)
-        self.getDefaultColormap().setName('Blues')
+        self.getDefaultColormap().setName('YlOrBr')
 
 
 class RixsPlotArea(PlotArea):
