@@ -165,15 +165,18 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
 
-<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">sloth.utils.logging</span> <span class="k">import</span> <span class="n">getLogger</span>
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;gridxyz&#39;</span><span class="p">)</span>
 
 <span class="c1">### GLOBAL VARIABLES ###</span>
 <span class="n">MODNAME</span> <span class="o">=</span> <span class="s1">&#39;_math&#39;</span>
 
+
 <div class="viewcode-block" id="gridxyz"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.gridxyz.gridxyz">[docs]</a><span class="k">def</span> <span class="nf">gridxyz</span><span class="p">(</span><span class="n">xcol</span><span class="p">,</span> <span class="n">ycol</span><span class="p">,</span> <span class="n">zcol</span><span class="p">,</span> <span class="n">xystep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lib</span><span class="o">=</span><span class="s1">&#39;scipy&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;cubic&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; grid (X, Y, Z) 1D data on a 2D regular mesh</span>
-<span class="sd">    </span>
+    <span class="sd">&quot;&quot;&quot;Grid (X, Y, Z) 1D data on a 2D regular mesh</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    xcol, ycol, zcol : 1D arrays repesenting the map (z is the intensity)</span>
@@ -182,19 +185,19 @@
 <span class="sd">          [scipy]</span>
 <span class="sd">          matplotlib</span>
 <span class="sd">    method : interpolation method</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    xgrid, ygrid : 1D arrays giving abscissa and ordinate of the map</span>
 <span class="sd">    zz : 2D array with the gridded intensity map</span>
-<span class="sd">    </span>
+
 <span class="sd">    See also</span>
 <span class="sd">    --------</span>
 <span class="sd">    - MultipleScanToMeshPlugin in PyMca</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">xystep</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">xystep</span> <span class="o">=</span> <span class="mf">0.05</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;&#39;xystep&#39; not given: using a default value of </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">xystep</span><span class="p">))</span>
+        <span class="n">xystep</span> <span class="o">=</span> <span class="mf">0.1</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;&#39;xystep&#39; not given: using a default value of </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">xystep</span><span class="p">))</span>
     <span class="c1">#create the XY meshgrid and interpolate the Z on the grid</span>
     <span class="n">nxpoints</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">xcol</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">-</span><span class="n">xcol</span><span class="o">.</span><span class="n">min</span><span class="p">())</span><span class="o">/</span><span class="n">xystep</span><span class="p">)</span>
     <span class="n">nypoints</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">ycol</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">-</span><span class="n">ycol</span><span class="o">.</span><span class="n">min</span><span class="p">())</span><span class="o">/</span><span class="n">xystep</span><span class="p">)</span>
@@ -205,33 +208,35 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">matplotlib.mlab</span> <span class="k">import</span> <span class="n">griddata</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error: cannot load griddata from Matplotlib&quot;</span><span class="p">)</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Cannot load griddata from Matplotlib&quot;</span><span class="p">)</span>
             <span class="k">return</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;nn&#39;</span> <span class="ow">or</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;nearest&#39;</span><span class="p">):</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;method </span><span class="si">{0}</span><span class="s2"> not supported by </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">lib</span><span class="p">))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gridding data with </span><span class="si">{0}</span><span class="s2">...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lib</span><span class="p">))</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Interpolation method </span><span class="si">{0}</span><span class="s2"> not supported by </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">lib</span><span class="p">))</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Gridding data with </span><span class="si">{0}</span><span class="s2">...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lib</span><span class="p">))</span>
         <span class="n">zz</span> <span class="o">=</span> <span class="n">griddata</span><span class="p">(</span><span class="n">xcol</span><span class="p">,</span> <span class="n">ycol</span><span class="p">,</span> <span class="n">zcol</span><span class="p">,</span> <span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">xgrid</span><span class="p">,</span> <span class="n">ygrid</span><span class="p">,</span> <span class="n">zz</span>
     <span class="k">elif</span> <span class="p">(</span><span class="s1">&#39;scipy&#39;</span> <span class="ow">in</span> <span class="n">lib</span><span class="o">.</span><span class="n">lower</span><span class="p">()):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">griddata</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error: cannot load griddata from Scipy&quot;</span><span class="p">)</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Cannot load griddata from Scipy&quot;</span><span class="p">)</span>
             <span class="k">return</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gridding data with </span><span class="si">{0}</span><span class="s2">...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lib</span><span class="p">))</span>
-        <span class="n">zz</span> <span class="o">=</span> <span class="n">griddata</span><span class="p">((</span><span class="n">xcol</span><span class="p">,</span> <span class="n">ycol</span><span class="p">),</span> <span class="n">zcol</span><span class="p">,</span> <span class="p">(</span><span class="n">xgrid</span><span class="p">[</span><span class="kc">None</span><span class="p">,:],</span> <span class="n">ygrid</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]),</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Gridding data with </span><span class="si">{0}</span><span class="s2">...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lib</span><span class="p">))</span>
+        <span class="n">zz</span> <span class="o">=</span> <span class="n">griddata</span><span class="p">((</span><span class="n">xcol</span><span class="p">,</span> <span class="n">ycol</span><span class="p">),</span> <span class="n">zcol</span><span class="p">,</span> <span class="p">(</span><span class="n">xgrid</span><span class="p">[</span><span class="kc">None</span><span class="p">,:],</span> <span class="n">ygrid</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]),</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">xgrid</span><span class="p">,</span> <span class="n">ygrid</span><span class="p">,</span> <span class="n">zz</span></div>
 
 <span class="c1">### LARCH ###</span>
 <div class="viewcode-block" id="gridxyz_larch"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.gridxyz.gridxyz_larch">[docs]</a><span class="k">def</span> <span class="nf">gridxyz_larch</span><span class="p">(</span><span class="n">xcol</span><span class="p">,</span> <span class="n">ycol</span><span class="p">,</span> <span class="n">zcol</span><span class="p">,</span> <span class="n">xystep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;cubic&#39;</span><span class="p">,</span> <span class="n">lib</span><span class="o">=</span><span class="s1">&#39;scipy&#39;</span><span class="p">,</span> <span class="n">_larch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Larch equivalent of gridxyz() &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Larch equivalent of gridxyz() &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">_larch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Warning</span><span class="p">(</span><span class="s2">&quot;Larch broken?&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">gridxyz</span><span class="p">(</span><span class="n">xcol</span><span class="p">,</span> <span class="n">ycol</span><span class="p">,</span> <span class="n">zcol</span><span class="p">,</span> <span class="n">xystep</span><span class="o">=</span><span class="n">xystep</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">lib</span><span class="o">=</span><span class="n">lib</span><span class="p">)</span></div>
 <span class="n">gridxyz_larch</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">+=</span> <span class="n">gridxyz</span><span class="o">.</span><span class="vm">__doc__</span>
 
+
 <span class="k">def</span> <span class="nf">registerLarchPlugin</span><span class="p">():</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">MODNAME</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;gridxyz&#39;</span><span class="p">:</span> <span class="n">gridxyz_larch</span><span class="p">})</span>
+
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="k">pass</span>
