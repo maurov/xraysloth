@@ -1,0 +1,28 @@
+#Python environment for: https://github.com/maurov/xraysloth
+#Target: Orange3 + Larch (Wx) + SILX (Qt) + PyMca
+#Usage: conda env create -f environment.yml
+name: sloth-orange
+channels:
+    - defaults
+    #NOTE: specific channels are given per-package, not here!
+dependencies:
+    - python=3.6
+    - pip
+    - numpy>=1.16
+    - scipy>=1.2.0
+    - matplotlib>=3.0
+    - h5py>=2.8
+    - pyqt=5
+    - qtconsole
+    - ipython
+    - ipykernel
+    - sphinx>=1.5
+    - pyyaml
+    - conda-forge::xraylib
+    - conda-forge::lmfit>=0.9.13
+    - GSECARS::xraylarch
+    - conda-forge::orange3
+    - pip:
+        - hdf5plugin
+        - silx>=0.11.0
+        - pymca>=5.5.0
