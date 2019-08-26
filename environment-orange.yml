@@ -8,20 +8,15 @@ channels:
 dependencies:
     - python=3.6
     - pip
-    - numpy>=1.16
-    - scipy>=1.2.0
-    - matplotlib>=3.0
+    - numpy=1.16
     - h5py>=2.8
     - pyqt=5
     - qtconsole
     - ipython
-    - ipykernel
-    - sphinx>=1.5
-    - pyyaml
+    - conda-forge::orange3
     - conda-forge::xraylib
     - conda-forge::lmfit>=0.9.13
     - GSECARS::xraylarch
-    - conda-forge::orange3
     - pip:
         - hdf5plugin
         - silx>=0.11.0
