@@ -54,7 +54,7 @@ class TreeViewWidget(TreeView):
         """Constructor"""
 
         super(TreeViewWidget, self).__init__()
-        from .modelHdf5Tree import TreeModel
+        from .model import TreeModel
         self.setModel(TreeModel())
         self.setWindowTitle("Minimal TreeView widget (with TreeModel)")
         self.setMinimumWidth(1024)

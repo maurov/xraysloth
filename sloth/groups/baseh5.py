@@ -115,8 +115,7 @@ class RootGroup(BaseGroup):
                  "created": datetime.datetime.now().isoformat(),
                  "creator": "sloth %s" % sloth_version
                  }
-        super(RootGroup, self).__init__(name, parent=None,
-                                        attrs=attrs, logger=logger)
+        super(RootGroup, self).__init__(name, parent=None, attrs=attrs, logger=logger)
 
 
 class EntryGroup(BaseGroup):
@@ -189,7 +188,7 @@ def test_example(write=True, view=True):
         ft = tempfile.mktemp(prefix='test_', suffix='.hfd5')
         t.write_to_h5(ft)
 
-    if write and view:
+    if view:
         from silx import sx
         sx.enable_gui()
         # from silx.app.view.Viewer import Viewer
@@ -197,9 +196,10 @@ def test_example(write=True, view=True):
         # v.appendFile(ft)
         # v.setMinimumSize(1280, 800)
         # v.show()
-        from sloth.gui.daxs.viewHdf5Tree import TreeViewWidget
+        from sloth.gui.hdf5.view import TreeViewWidget
         v = TreeViewWidget()
-        v.model().appendFile(t._fname_out)
+        #v.model().appendFile(t._fname_out)
+        v.model().insertH5pyObject(t)
         v.show()
         input("Press ENTER to close the view window...")
 
@@ -208,3 +208,4 @@ def test_example(write=True, view=True):
 
 if __name__ == '__main__':
     t = test_example(write=True, view=True)
+    #TODO insetH5PyObject
