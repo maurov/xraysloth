@@ -109,13 +109,45 @@ class BaseGroup(commonh5.Group):
 class RootGroup(BaseGroup):
     """Root group (= '/')"""
 
-    def __init__(self, name="", logger=None):
+    def __init__(self, name="", logger=None, mode=None):
         """Constructor with default NXroot class"""
         attrs = {"NX_class": "NXroot",
                  "created": datetime.datetime.now().isoformat(),
                  "creator": "sloth %s" % sloth_version
                  }
         super(RootGroup, self).__init__(name, parent=None, attrs=attrs, logger=logger)
+
+        self._file_name = name
+        if mode is None:
+            mode = "r"
+        assert(mode in ["r", "w"])
+        self._mode = mode
+
+    @property
+    def filename(self):
+        return self._file_name
+
+    @property
+    def mode(self):
+        return self._mode
+
+    @property
+    def h5_class(self):
+        """Returns the :class:`h5py.File` class"""
+        from silx.io.utils import H5Type
+        return H5Type.FILE
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
+
+    def close(self):
+        """Close the object, and free up associated resources.
+        """
+        # should be implemented in subclass
+        pass
 
 
 class EntryGroup(BaseGroup):
@@ -208,4 +240,3 @@ def test_example(write=True, view=True):
 
 if __name__ == '__main__':
     t = test_example(write=True, view=True)
-    #TODO insetH5PyObject
