@@ -20,6 +20,8 @@ Plotting macros for XAFS data sets and fits
 
 NOTE: This is a pure matplotlib implementation of larch.wxlib.xafsplot
 
+/!\ WORK-IN-PROGRESS /!\ => MOVING TO .xafsplotter
+
 """
 import numpy as np
 from larch import Group
@@ -130,13 +132,6 @@ def _get_erange(dgroup, emin=None, emax=None):
             if emax+e0 > dat_emin and emax+e0 < dat_emax:
                 emax += e0
     return emin, emax
-
-
-def redraw(ax, xmin=None, xmax=None, ymin=None, ymax=None):
-    if (xmin is not None or xmax is not None):
-        ax.set_xlim(xmin, xmax)
-    if (ymin is not None or ymax is not None):
-        ax.set_ylim(ymin, ymax)
 
 
 def plot_mu(ax, dgroup, show_norm=False, show_deriv=False,
