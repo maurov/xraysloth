@@ -18,7 +18,7 @@ dependencies:
     - pyyaml
     - termcolor
     - sqlalchemy>=0.9
-    - conda-forge::black
+    #- conda-forge::black
     - conda-forge::ipywidgets
     - conda-forge::ipympl
     - conda-forge::widgetsnbextension
@@ -41,8 +41,8 @@ dependencies:
         - sphinx_rtd_theme
         - recommonmark
         #: Lab extensions
-        - nb_black
-        - jupyterlab_code_formatter
+        #- nb_black
+        #- jupyterlab_code_formatter
         - jupyterlab_server
         - jupyterlab-git
         - jupyterlab_latex

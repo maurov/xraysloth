@@ -52,8 +52,8 @@ if [[ $CONDA_DEFAULT_ENV = *"sloth-lab"* ]]; then
   # CODE FORMATTER (BLACK)
   # ----------------------
   # https://github.com/ryantam626/jupyterlab_code_formatter
-  jupyter labextension install @ryantam626/jupyterlab_code_formatter
-  jupyter serverextension enable --py jupyterlab_code_formatter
+  #jupyter labextension install @ryantam626/jupyterlab_code_formatter
+  #jupyter serverextension enable --py jupyterlab_code_formatter
 
   # ------
   # PLOTLY
@@ -65,6 +65,6 @@ if [[ $CONDA_DEFAULT_ENV = *"sloth-lab"* ]]; then
   # GOOGLE-DRIVE
   # ------------
   # https://github.com/jupyterlab/jupyterlab-google-drive
-  jupyter labextension install @jupyterlab/google-drive
+  #jupyter labextension install @jupyterlab/google-drive
 
 fi;
