@@ -95,16 +95,19 @@ class Plotter(object):
         rcParams['grid.alpha'] = 0.5
         rcParams['lines.linewidth'] = self._lines_linewidth
 
-    def _initPlots(self):
+    def _initPlots(self, sharex=False, sharey=False):
         """instantiate figure and subplots"""
         plt.close(self._name)
         self._fig, _axs = plt.subplots(num=self._name,
                                        ncols=self._ncols,
                                        nrows=self._nrows,
                                        dpi=self._dpi,
-                                       figsize=self._figsize)
+                                       figsize=self._figsize,
+                                       sharex=sharex,
+                                       sharey=sharey)
         #: reshape Axes as list
         self._axs = np.array(_axs).reshape(self._nplots)
+        # self._axs2 = np.full_like(self._axs, None)
         self._fig.suptitle(f"Fig: {self._title}", fontsize=self._font_size+4)
         self._initPlotsTitle(self._titles)
 
@@ -113,8 +116,8 @@ class Plotter(object):
         if titles is None:
             self._titles = ['win={0}'.format(i) for i in range(self._nplots)]
         else:
-            assert type(titles) is list, 'title should be a list'
-            assert len(titles) == self._nplots, 'title length should correspond to number of plot windows'
+            assert type(titles) is list, 'titles should be a list'
+            assert len(titles) == self._nplots, 'titles length should correspond to number of plot windows'
             self._titles = titles
         for iax, ax in enumerate(self._axs):
             ax.set_title(self._titles[iax])
@@ -133,12 +136,59 @@ class Plotter(object):
     def subplots_adjust(self, **kws):
         return self._fig.subplots_adjust(**kws)
 
-    def plot(self, x, y, label=None, win=0, color=None, side='left', **kws):
-        """plot in given axis"""
+    def plot(self, x, y, label=None, win=0, color=None,
+             side='left', show_legend=None,
+             **kws):
+        """plot in given axis
+
+        Parameters
+        ==========
+        x, y : arrays to plot
+        label : str
+            label for the legend [None]
+        win : int
+            index of self._axs (subplot to use for plot) [0]
+        color : str
+            line color [cycle(self._colors)]
+        side : str
+            ['left']
+            'right' -> sharex
+            'top' -> sharey
+        show_legend : None or dict
+            if given, it should be a dictonary of parmeters for ax.legend()
+        """
         ax = self.getAxis(win)
         if color is None:
             color = self._getNewColor()
         if side == 'right':
             ax = ax.twinx()
+            # np.append(self._axs, ax)
+        if side == 'top':
+            raise NotImplementedError()
         ax.plot(x, y, label=label, color=color)
+        if show_legend is not None:
+            assert type(show_legend) is dict, 'show_legend: None or dict'
+            ax.legend(**show_legend)
         self._fig.tight_layout()
+
+    def legend(self, win=0,
+               loc='center right',
+               bbox_to_anchor=(0.95, 0.4),
+               borderaxespad=0.1,
+               title='Legend',
+               frameon=True,
+               fancybox=True):
+        """add a common figure legend"""
+        handlers, labels = [], []
+        for ax in self._axs:
+            _handlers, _labels = ax.get_legend_handles_labels()
+            handlers.extend(_handlers)
+            labels.extend(_labels)
+        self._fig.legend(handlers,
+                         labels,
+                         loc=loc,
+                         bbox_to_anchor=bbox_to_anchor,
+                         borderaxespad=borderaxespad,
+                         title=title,
+                         frameon=frameon,
+                         fancybox=fancybox)
