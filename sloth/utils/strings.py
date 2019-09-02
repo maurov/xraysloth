@@ -107,6 +107,41 @@ def get_timestamp() -> str:
     import time
     return '{0:04d}-{1:02d}-{2:02d}_{3:02d}{4:02d}'.format(*time.localtime())
 
+###################
+# Natural Sorting #
+###################
+
+
+def _atoi(text):
+    return int(text) if text.isdigit() else text
+
+
+def natural_keys(text):
+    """
+    FROM: https://stackoverflow.com/questions/5967500/how-to-correctly-sort-a-string-with-a-number-inside
+
+    alist.sort(key=natural_keys) sorts in human order
+    http://nedbatchelder.com/blog/200712/human_sorting.html
+    (See Toothy's implementation in the comments)
+
+    Usage
+    -----
+
+    alist=[
+        "something1",
+        "something12",
+        "something17",
+        "something2",
+        "something25",
+        "something29"]
+
+    alist.sort(key=natural_keys)
+    print(alist)
+
+    """
+    import re
+    return [_atoi(c) for c in re.split(r'(\d+)', text)]
+
 
 if __name__ == '__main__':
     pass
