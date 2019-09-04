@@ -36,7 +36,7 @@ __pkgs__ = ['sloth',
             'sloth.inst',         # instrumentation
             'sloth.raytracing',   # ray tracing (shadow)
             'sloth.calculators',  # ab initio calculators
-            'sloth.examples',     # examples
+            #'sloth.examples',     # examples #TODO: fix this under windows!!!
             'sloth.resources',    # resoureces (= UI files, icons, etc.)
             ]
 
