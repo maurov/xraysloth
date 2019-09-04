@@ -46,7 +46,7 @@ if [[ $CONDA_DEFAULT_ENV = *"sloth-lab"* ]]; then
   # LATEX
   # -----
   # https://github.com/jupyterlab/jupyterlab-latex
-  jupyter labextension install @jupyterlab/latex
+  #jupyter labextension install @jupyterlab/latex
 
   # ----------------------
   # CODE FORMATTER (BLACK)

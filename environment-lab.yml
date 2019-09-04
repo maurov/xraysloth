@@ -30,6 +30,8 @@ dependencies:
     - conda-forge::uncertainties>=3.0.3
     - conda-forge::lmfit>=0.9.13
     - GSECARS::pyshortcuts>=1.3
+    - GSECARS::wxmplot
+    - GSECARS::wxutils
     # - conda-forge::rise
     - pip:
         #: Linters
@@ -45,7 +47,7 @@ dependencies:
         #- jupyterlab_code_formatter
         - jupyterlab_server
         - jupyterlab-git
-        - jupyterlab_latex
+        #- jupyterlab_latex
         #: Base libs
         - hdf5plugin
         - silx>=0.11
