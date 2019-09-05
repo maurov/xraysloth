@@ -52,6 +52,71 @@ def sum_arrays_1d(xdats, zdats, axis=None):
         zsum += fdat(axis)
     return axis, zsum
 
+    def rebin_piecewise_constant(x1, y1, x2):
+        """Rebin histogram values y1 from old bin edges x1 to new edges x2.
+
+        Code taken from: https://github.com/jhykes/rebin/blob/master/rebin.py
+
+        It follows the procedure described in Figure 18.13 (chapter 18.IV.B.
+        Spectrum Alignment, page 703) of Knoll [1]
+
+        References
+        ----------
+        [1] Glenn Knoll, Radiation Detection and Measurement, third edition,
+            Wiley, 2000.
+
+        Parameters
+        ----------
+         - x1 : m+1 array of old bin edges.
+         - y1 : m array of old histogram values.
+                This is the total number in each bin, not an average.
+         - x2 : n+1 array of new bin edges.
+
+        Returns
+        -------
+         - y2 : n array of rebinned histogram values.
+        """
+        x1 = np.asarray(x1)
+        y1 = np.asarray(y1)
+        x2 = np.asarray(x2)
+
+        # the fractional bin locations of the new bins in the old bins
+        i_place = np.interp(x2, x1, np.arange(len(x1)))
+
+        cum_sum = np.r_[[0], np.cumsum(y1)]
+
+        # calculate bins where lower and upper bin edges span
+        # greater than or equal to one original bin.
+        # This is the contribution from the 'intact' bins (not including the
+        # fractional start and end parts.
+        whole_bins = np.floor(i_place[1:]) - np.ceil(i_place[:-1]) >= 1.
+        start = cum_sum[np.ceil(i_place[:-1]).astype(int)]
+        finish = cum_sum[np.floor(i_place[1:]).astype(int)]
+
+        y2 = np.where(whole_bins, finish - start, 0.)
+
+        bin_loc = np.clip(np.floor(i_place).astype(int), 0, len(y1) - 1)
+
+        # fractional contribution for bins where the new bin edges are in the same
+        # original bin.
+        same_cell = np.floor(i_place[1:]) == np.floor(i_place[:-1])
+        frac = i_place[1:] - i_place[:-1]
+        contrib = (frac * y1[bin_loc[:-1]])
+        y2 += np.where(same_cell, contrib, 0.)
+
+        # fractional contribution for bins where the left and right bin edges are in
+        # different original bins.
+        different_cell = np.floor(i_place[1:]) > np.floor(i_place[:-1])
+        frac_left = np.ceil(i_place[:-1]) - i_place[:-1]
+        contrib = (frac_left * y1[bin_loc[:-1]])
+
+        frac_right = i_place[1:] - np.floor(i_place[1:])
+        contrib += (frac_right * y1[bin_loc[1:]])
+
+        y2 += np.where(different_cell, contrib, 0.)
+
+        return y2
+
 
 if __name__ == '__main__':
     pass
