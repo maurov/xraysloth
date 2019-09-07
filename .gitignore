@@ -63,5 +63,5 @@ docs/source/_build
 *.ipynb_checkpoints
 
 # Visual studio code
-.vscode*
-.empty*
+.vscode/
+.empty/
