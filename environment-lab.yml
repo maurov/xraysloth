@@ -18,7 +18,6 @@ dependencies:
     - pyyaml
     - termcolor
     - sqlalchemy>=0.9
-    #- conda-forge::black
     - conda-forge::ipywidgets
     - conda-forge::ipympl
     - conda-forge::widgetsnbextension
@@ -34,6 +33,13 @@ dependencies:
     - GSECARS::wxutils
     # - conda-forge::rise
     - pip:
+        #: IDE tools
+        - jedi
+        - rope
+        - autopep8
+        - yapf
+        - flake8
+        - black
         #: Linters
         - pylint
         - pycodestyle
@@ -42,7 +48,7 @@ dependencies:
         - sphinxcontrib-napoleon
         - sphinx_rtd_theme
         - recommonmark
-        #: Lab extensions
+        #: JupyterLab extensions
         #- nb_black
         #- jupyterlab_code_formatter
         - jupyterlab_server
