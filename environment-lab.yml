@@ -18,10 +18,10 @@ dependencies:
     - pyyaml
     - termcolor
     - sqlalchemy>=0.9
-    - conda-forge::ipywidgets
+    - conda-forge::ipywidgets>=7.5
     - conda-forge::ipympl
     - conda-forge::widgetsnbextension
-    - conda-forge::jupyterlab
+    - conda-forge::jupyterlab>=1.0
     - conda-forge::nbsphinx
     - conda-forge::xraylib
     - conda-forge::peakutils>=1.0.0
@@ -50,10 +50,10 @@ dependencies:
         - recommonmark
         #: JupyterLab extensions
         #- nb_black
-        #- jupyterlab_code_formatter
+        - jupyterlab_code_formatter
         - jupyterlab_server
         - jupyterlab-git
-        #- jupyterlab_latex
+        - jupyterlab_latex
         #: Base libs
         - hdf5plugin
         - silx>=0.11
