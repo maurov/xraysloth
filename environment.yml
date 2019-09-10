@@ -1,6 +1,6 @@
 #Python environment for: https://github.com/maurov/xraysloth
-#Target: for running on mybinder.org
-#Usage: conda env create -f environment.yml
+#Target: running on mybinder.org
+#Usage: automatically built
 name: sloth-binder
 channels:
     - defaults

@@ -1,5 +1,5 @@
 # pip minimum requirements for sloth
 numpy>=1.16
-matplotlib>=2.0
-scipy>=1.2.0
-silx>=0.10.1
+matplotlib>=3.0
+scipy>=1.2
+silx>=0.11
