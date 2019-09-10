@@ -9,6 +9,9 @@ Simple utilities working with strings
 .. note:: each function has its own imports and checks.
 
 """
+#: module logger
+from sloth.utils.logging import getLogger
+_logger = getLogger("sloth.utils.strings", level='WARNING')
 
 ####################
 # COLORIZED OUTPUT #
@@ -60,15 +63,23 @@ def str2rng(rngstr, keeporder=True, rebin=None):
     > [7, 8, 9, 14, 16, 17, 18, 100, 130, 135, 140]
 
     """
+    if type(rngstr) is list:
+        assert all([type(elem) is int for elem in rngstr]
+                   ), "'rngstr' not list of ints"
+        _logger.info("[str2rng] 'rngstr' given as list of integers")
+        return rngstr
+    else:
+        assert type(rngstr) is str, "'rngstr' should be a string"
     _rng = []
     for _r in rngstr.split(', '):  # the space is important!
         if (len(_r.split(',')) > 1):
-            raise NameError("Space after comma(s) is missing in '{0}'".format(_r))
+            raise NameError(
+                "Space after comma(s) is missing in '{0}'".format(_r))
         _rsplit2 = _r.split(':')
         if (len(_rsplit2) == 1):
             _rng.append(_r)
         elif (len(_rsplit2) == 2 or len(_rsplit2) == 3):
-            if len(_rsplit2) == 2 :
+            if len(_rsplit2) == 2:
                 _rsplit2.append('1')
             if (_rsplit2[0] == _rsplit2[1]):
                 raise NameError("Wrong range '{0}' in string '{1}'".format(_r, rngstr))
