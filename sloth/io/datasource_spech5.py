@@ -158,7 +158,7 @@ class DataSourceSpecH5(object):
         """
         try:
             return [i for i in self._get_sg()[url_str].keys()]
-        except:
+        except Exception:
             self._logger.error(
                 f"'{url_str}' not found -> use 'set_scan' method first")
 
