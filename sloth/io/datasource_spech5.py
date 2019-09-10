@@ -13,6 +13,7 @@ import os
 import numpy as np
 import h5py
 from silx.io.utils import open as silx_open
+from sloth.utils.strings import str2rng
 
 
 class DataSourceSpecH5(object):
@@ -142,7 +143,8 @@ class DataSourceSpecH5(object):
         try:
             self._sg = self._sf[self._scan_url]
             self._scan_title = self.get_title()
-            self._logger.info(f"selected scan {self._scan_url}: '{self._scan_title}'")
+            self._logger.info(
+                f"selected scan {self._scan_url}: '{self._scan_title}'")
         except KeyError:
             self._sg = None
             self._scan_title = None
@@ -157,7 +159,8 @@ class DataSourceSpecH5(object):
         try:
             return [i for i in self._get_sg()[url_str].keys()]
         except:
-            self._logger.error(f"'{url_str}' not found -> use 'set_scan' method first")
+            self._logger.error(
+                f"'{url_str}' not found -> use 'set_scan' method first")
 
     def get_motors(self):
         """Get list of motors names"""
@@ -191,7 +194,8 @@ class DataSourceSpecH5(object):
             _axisout = _title_splitted[2]
         _mots, _cnts = self.get_motors(), self.get_counters()
         if not ((_axisout in _mots) and (_axisout in _cnts)):
-            self._logger.warning(f"'{_axisout}' not present in counters and motors")
+            self._logger.warning(
+                f"'{_axisout}' not present in counters and motors")
         return _axisout
 
     def get_array(self, cnt, scan_n=None, group_url=None):
@@ -222,7 +226,8 @@ class DataSourceSpecH5(object):
             sel_cnt = f'{self._cnts_url}/{cnt}'
             return self._get_sg()[sel_cnt][()]
         else:
-            self._logger.error(f"'{cnt}' not found among the available counters: {cnts}")
+            self._logger.error(
+                f"'{cnt}' not found among the available counters: {cnts}")
             sel_cnt = f'{self._cnts_url}/{cnts[0]}'
             return np.zeros_like(self._get_sg()[sel_cnt][()])
 
@@ -254,11 +259,13 @@ class DataSourceSpecH5(object):
             sel_mot = f'{self._mots_url}/{mot}'
             return self._get_sg()[sel_mot][()]
         else:
-            self._logger.error(f"'{mot}' not found in available motors: {mots}")
+            self._logger.error(
+                f"'{mot}' not found in available motors: {mots}")
             return 0
 
-    def write_scans_to_h5(self, scans, fname_out, h5path=None,
-                          overwrite=False, conf_dict=None):
+    def write_scans_to_h5(self, scans, fname_out, scans_groups=None,
+                          h5path=None, overwrite=False,
+                          conf_dict=None):
         """Export a selected range of scans to HDF5 file
 
         .. note:: This is a simple wrapper to
@@ -266,10 +273,13 @@ class DataSourceSpecH5(object):
 
         Parameters
         ----------
-        scans : list of ints
-            scan numbers to export
+        scans : str, list of ints or list of lists (str/ints)
+            scan numbers to export (parsed by sloth.utils.strings.str2rng)
+            if a list of lists, scans_groups is required
         fname_out : str
             output file name
+        scans_groups : list of strings
+            groups of scans
         h5path : str (optional)
             path inside HDF5 [None -> '/']
         overwrite : boolean (optional)
@@ -285,33 +295,52 @@ class DataSourceSpecH5(object):
             _fileExists = True
         else:
             _fileExists = False
+
+        #: out hdf5 file
+        if overwrite and _fileExists:
+            os.remove(self._fname_out)
+        h5out = h5py.File(self._fname_out, mode='a', track_order=True)
+
         #: h5path
         if h5path is None:
             h5path = '/'
         else:
             h5path += '/'
-        #: write configuration dictionary, if given
+
+        #: write group configuration dictionary, if given
         if conf_dict is not None:
             from silx.io.dictdump import dicttoh5
             _h5path = f'{h5path}0.1-conf/'
-            dicttoh5(conf_dict, self._fname_out, h5path=_h5path,
-                     mode="w", overwrite_data=overwrite,
+            dicttoh5(conf_dict, h5out, h5path=_h5path,
                      create_dataset_args=dict(track_order=True))
             self._logger.info(f'written dictionary: {_h5path}')
+
         #: write scans
-        for iscan, scan in enumerate(scans):
-            if (iscan == 0) and (overwrite or (not _fileExists)):
-                mode = 'w'  # overwrite
-            else:
-                mode = 'a'
-            self.set_scan(scan)
-            if self._sg is None:
-                continue
-            _h5path = f'{h5path}{self._scan_str}/'
-            write_to_h5(self._sg, self._fname_out, h5path=_h5path,
-                        mode=mode, overwrite_data=overwrite,
-                        create_dataset_args=dict(track_order=True))
-            self._logger.info(f'written scan: {_h5path}')
+        def _loop_scans(scns, group=None):
+            for scn in scns:
+                self.set_scan(scn)
+                if self._sg is None:
+                    continue
+                if group is not None:
+                    _h5path = f'{h5path}{group}/{self._scan_str}/'
+                else:
+                    _h5path = f'{h5path}{self._scan_str}/'
+                write_to_h5(self._sg, h5out, h5path=_h5path,
+                            create_dataset_args=dict(track_order=True))
+                self._logger.info(f'written scan: {_h5path}')
+
+        if type(scans) is list:
+            assert type(
+                scans_groups) is list, "'scans_groups' should be a list"
+            assert len(scans) == len(
+                scans_groups), "'scans_groups' not matching 'scans'"
+            for scns, group in zip(scans, scans_groups):
+                _loop_scans(str2rng(scns), group=group)
+        else:
+            _loop_scans(str2rng(scans))
+
+        #: close output file
+        h5out.close()
 
 
 def main():
