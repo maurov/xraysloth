@@ -22,8 +22,8 @@ _logger = getLogger('sloth.fit.peakfit_lmfit', level='INFO')
 
 
 def fit_peak(x, y, num=1, positions=[None], amplitudes=[None],
-             expressions=None,
-             bkgModel=None, peakModel=None):
+             widths=[None], expressions=None, bkgModel=None,
+             peakModel=None):
     """peak fit with lmfit
 
     Description
@@ -40,6 +40,8 @@ def fit_peak(x, y, num=1, positions=[None], amplitudes=[None],
         initial peaks positions
     amplitudes : list of floats
         initial peaks amplitudes
+    widths : list of floats
+        initial peaks widths
     expressions : None or dict
         parameters expressions
     bkgModel : None or lmfit.Model (optional)
@@ -55,8 +57,8 @@ def fit_peak(x, y, num=1, positions=[None], amplitudes=[None],
         _logger.error("current model is limited to 3 peaks only!")
         return None
 
-    if (len(positions) < num) or (len(amplitudes) < num):
-        _logger.error("'positions' and 'amplitudes' < num!")
+    if (len(positions) < num) or (len(amplitudes) < num or (len(widths) < num)):
+        _logger.error("'positions'/'amplitudes'/'widths' < 'num'!")
         return None
 
     if bkgModel is None:
@@ -72,6 +74,7 @@ def fit_peak(x, y, num=1, positions=[None], amplitudes=[None],
     for ipk in range(num):
         pkPos = positions[ipk]
         pkAmp = amplitudes[ipk]
+        pkW = widths[ipk]
         pfx = f"p{ipk+1}_"
         xmax = x[np.argmax(y)]
         ymax = y.max()
@@ -83,20 +86,22 @@ def fit_peak(x, y, num=1, positions=[None], amplitudes=[None],
             _logger.info(f"{pfx} amplitude guess at y={ymax}")
             pkAmp = ymax
             amplitudes[ipk] = pkAmp
+        if pkW is None:
+            pkW = 1
+            _logger.info(f"{pfx} width guess {pkW}")
+            widths[ipk] = pkW
         pk = peakModel(prefix=pfx)
         pars.update(pk.make_params())
         pars[f"{pfx}center"].set(pkPos)
         pars[f"{pfx}amplitude"].set(pkAmp)
-
+        pars[f"{pfx}sigma"].set(pkW)
         #: force side peaks to stay same side of the main peak
         if not (ipk == 0):
             if pkPos < positions[0]:
                 pars[f"{pfx}center"].set(pkPos, max=positions[0])
             else:
                 pars[f"{pfx}center"].set(pkPos, min=positions[0])
-
         mod += pk
-
     #: set mathematical constraints if given
     if expressions is not None:
         assert type(expressions) is dict, "Expressions should be a dictionary"
@@ -105,7 +110,6 @@ def fit_peak(x, y, num=1, positions=[None], amplitudes=[None],
                 pars[key].set(expr=value)
             except KeyError:
                 _logger.warning(f"[fit_peak] cannot set expression 'key':'value'")
-
     _logger.info("Running fit...")
     fitobj = mod.fit(y, pars, x=x)
     return fitobj
