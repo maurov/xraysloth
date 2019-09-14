@@ -32,6 +32,20 @@ def fit_peak(x, y, num=1, positions=[None], amplitudes=[None],
     'p1_', 'p2_', 'p3_'). The main control parameter is the initial guess of the
     peaks positions.
 
+    Notes
+    -----
+    For the Gaussian function, amplitude means weighting factor
+    multiplying a unit-normalized Gaussian, so that the maximum height
+    at the centroid is Amplitude/(sqrt(2pi)*sigma), and that the
+    full-width at half maximum is ~2.355 sigma. In the fit, amplitude,
+    center, and sigma can be varied, while height and fwhm are
+    reported values, derived from these quantities.
+
+    To guess the Gaussian amplitude (A) from the peak maximum (H) and
+    a guess width (W), one could use the simple relation::
+
+        A ~ 5.90 * H * W
+
     Parameters
     ----------
     num : int
@@ -52,12 +66,13 @@ def fit_peak(x, y, num=1, positions=[None], amplitudes=[None],
     Returns
     -------
     lmfit.fit object
+
     """
     if num > 3:
         _logger.error("current model is limited to 3 peaks only!")
         return None
 
-    if (len(positions) < num) or (len(amplitudes) < num or (len(widths) < num)):
+    if (len(positions) < num) or (len(amplitudes) < num) or (len(widths) < num):
         _logger.error("'positions'/'amplitudes'/'widths' < 'num'!")
         return None
 
