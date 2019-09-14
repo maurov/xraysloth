@@ -57,10 +57,10 @@ docs/_build/*
 docs/source/_build
 
 # Pycharm stuff
-.idea
+.idea/
 
 # Jupyter notebooks
-*.ipynb_checkpoints
+*.ipynb_checkpoints/
 
 # Visual studio code
 .vscode/
