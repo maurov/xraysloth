@@ -153,6 +153,31 @@ def natural_keys(text):
     import re
     return [_atoi(c) for c in re.split(r'(\d+)', text)]
 
+##################
+# Slice function #
+##################
+
+
+def slice_func(list_in, filter_str=None):
+    """Utility to slice a list with a function of string parameter
+
+    Parameters
+    ----------
+    list_in : list
+        input string to slice
+    filter_str : None or str
+        filter to apply represented by a string [None -> no filter, input list]
+
+    Returns
+    -------
+    Sliced list
+
+    """
+    if filter_str is None:
+        return list_in
+    assert isinstance(list_in, list), "`list_in` should be a list"
+    list_out = inlist[slice(*map(lambda x: int(x.strip()) if x.strip() else None, filter.split(':')))]
+    return list_out
 
 if __name__ == '__main__':
     pass
