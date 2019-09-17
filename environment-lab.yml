@@ -29,17 +29,17 @@ dependencies:
         #: Wx (-> Larch)
         - wxmplot>=0.9
         - wxutils>=0.2
-        #: IDE tools
-        - jedi
-        - rope
-        - autopep8
-        - yapf
-        - flake8
+        #: Python IDE tools
+        - rope         #: completions and renaming
+        - yapf         #: code formatting (preferred over autopep8)
+        - mccabe
+        - pyflakes     #: faster than pylint
+        - pycodestyle  #: linter for style checking
+        - flake8       #: wrapper around pyflakes, pycodestyle and mccabe
         - black
-        #: Linters
-        - pylint
-        - pycodestyle
-        - pydocstyle
+        - pydocstyle   #: linter for docstring style checking
+        - python-language-server
+        - pyls-black   #: black plugin for python-language-server
         #: Build docs
         - sphinx>=1.5
         - sphinxcontrib-napoleon
