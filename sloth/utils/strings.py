@@ -11,14 +11,15 @@ Simple utilities working with strings
 """
 #: module logger
 from sloth.utils.logging import getLogger
-_logger = getLogger("sloth.utils.strings", level='WARNING')
+
+_logger = getLogger("sloth.utils.strings", level="WARNING")
 
 ####################
 # COLORIZED OUTPUT #
 ####################
 
 
-def colorstr(instr, color='green', on_color=None, attrs=['bold']):
+def colorstr(instr, color="green", on_color=None, attrs=["bold"]):
     """colorized string
 
     Parameters
@@ -37,9 +38,11 @@ def colorstr(instr, color='green', on_color=None, attrs=['bold']):
     """
     try:
         from termcolor import colored
+
         return colored(instr, color=color, on_color=None, attrs=attrs)
     except ImportError:
         return instr
+
 
 ###################
 # STRING TO RANGE #
@@ -64,28 +67,26 @@ def str2rng(rngstr, keeporder=True, rebin=None):
 
     """
     if type(rngstr) is list:
-        assert all([type(elem) is int for elem in rngstr]
-                   ), "'rngstr' not list of ints"
+        assert all([type(elem) is int for elem in rngstr]), "'rngstr' not list of ints"
         _logger.info("[str2rng] 'rngstr' given as list of integers")
         return rngstr
     else:
         assert type(rngstr) is str, "'rngstr' should be a string"
     _rng = []
-    for _r in rngstr.split(', '):  # the space is important!
-        if (len(_r.split(',')) > 1):
-            raise NameError(
-                "Space after comma(s) is missing in '{0}'".format(_r))
-        _rsplit2 = _r.split(':')
-        if (len(_rsplit2) == 1):
+    for _r in rngstr.split(", "):  # the space is important!
+        if len(_r.split(",")) > 1:
+            raise NameError("Space after comma(s) is missing in '{0}'".format(_r))
+        _rsplit2 = _r.split(":")
+        if len(_rsplit2) == 1:
             _rng.append(_r)
-        elif (len(_rsplit2) == 2 or len(_rsplit2) == 3):
+        elif len(_rsplit2) == 2 or len(_rsplit2) == 3:
             if len(_rsplit2) == 2:
-                _rsplit2.append('1')
-            if (_rsplit2[0] == _rsplit2[1]):
+                _rsplit2.append("1")
+            if _rsplit2[0] == _rsplit2[1]:
                 raise NameError("Wrong range '{0}' in string '{1}'".format(_r, rngstr))
-            if (int(_rsplit2[0]) > int(_rsplit2[1])):
+            if int(_rsplit2[0]) > int(_rsplit2[1]):
                 raise NameError("Wrong range '{0}' in string '{1}'".format(_r, rngstr))
-            _rng.extend(range(int(_rsplit2[0]), int(_rsplit2[1])+1, int(_rsplit2[2])))
+            _rng.extend(range(int(_rsplit2[0]), int(_rsplit2[1]) + 1, int(_rsplit2[2])))
         else:
             raise NameError("Too many colon in {0}".format(_r))
 
@@ -94,7 +95,7 @@ def str2rng(rngstr, keeporder=True, rebin=None):
 
     if rebin is not None:
         try:
-            _rngout = _rngout[::int(rebin)]
+            _rngout = _rngout[:: int(rebin)]
         except:
             raise NameError("Wrong rebin={0}".format(int(rebin)))
 
@@ -108,6 +109,7 @@ def str2rng(rngstr, keeporder=True, rebin=None):
     else:
         return list(set(_rngout))
 
+
 ################
 # TIME STRINGS #
 ################
@@ -116,7 +118,9 @@ def str2rng(rngstr, keeporder=True, rebin=None):
 def get_timestamp() -> str:
     """return a custom time stamp string: YYY-MM-DD_HHMM"""
     import time
-    return '{0:04d}-{1:02d}-{2:02d}_{3:02d}{4:02d}'.format(*time.localtime())
+
+    return "{0:04d}-{1:02d}-{2:02d}_{3:02d}{4:02d}".format(*time.localtime())
+
 
 ###################
 # Natural Sorting #
@@ -151,7 +155,9 @@ def natural_keys(text):
 
     """
     import re
-    return [_atoi(c) for c in re.split(r'(\d+)', text)]
+
+    return [_atoi(c) for c in re.split(r"(\d+)", text)]
+
 
 ##################
 # Slice function #
@@ -176,8 +182,13 @@ def slice_func(list_in, filter_str=None):
     if filter_str is None:
         return list_in
     assert isinstance(list_in, list), "`list_in` should be a list"
-    list_out = inlist[slice(*map(lambda x: int(x.strip()) if x.strip() else None, filter.split(':')))]
+    list_out = list_in[
+        slice(
+            *map(lambda x: int(x.strip()) if x.strip() else None, filter_str.split(":"))
+        )
+    ]
     return list_out
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     pass
