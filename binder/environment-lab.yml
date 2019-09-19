@@ -38,8 +38,6 @@ dependencies:
         - flake8       #: wrapper around pyflakes, pycodestyle and mccabe
         - black
         - pydocstyle   #: linter for docstring style checking
-        - python-language-server
-        - pyls-black   #: black plugin for python-language-server
         #: Build docs
         - sphinx>=1.5
         - sphinxcontrib-napoleon
@@ -57,6 +55,7 @@ dependencies:
         - jupyterlab-git
         - jupyterlab_latex
         #: Base (sci)libs
+        - pandas
         - xraydb
         - hdf5plugin
         - lmfit>=0.9.13
