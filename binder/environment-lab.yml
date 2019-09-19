@@ -1,10 +1,9 @@
 #Python environment for: https://github.com/maurov/xraysloth
 #Target: local development environment based on Jupyterlab + code editing
-#Usage: conda env create -f environment.yml
+#Usage: conda env create -f environment-lab.yml
 name: sloth-lab
 channels:
     - defaults
-    #NOTE: specific channels are given per-package, not here!
 dependencies:
     - python=3.6
     - pip
@@ -38,6 +37,7 @@ dependencies:
         - flake8       #: wrapper around pyflakes, pycodestyle and mccabe
         - black
         - pydocstyle   #: linter for docstring style checking
+        - doc8
         #: Build docs
         - sphinx>=1.5
         - sphinxcontrib-napoleon
