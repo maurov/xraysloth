@@ -13,17 +13,28 @@ Current fitting backend: Lmfit_
 #: BASE
 import numpy as np
 from matplotlib.pyplot import cm
+
 #: LMFIT IMPORTS
-from lmfit.models import (ConstantModel, VoigtModel)
+from lmfit.models import ConstantModel, VoigtModel
+
 #: SLOTH
 from sloth.utils.matplotlib import get_colors
 from sloth.utils.logging import getLogger
-_logger = getLogger('sloth.fit.peakfit_lmfit', level='INFO')
+
+_logger = getLogger("sloth.fit.peakfit_lmfit", level="INFO")
 
 
-def fit_peak(x, y, num=1, positions=[None], amplitudes=[None],
-             widths=[None], expressions=None, bkgModel=None,
-             peakModel=None):
+def fit_peak(
+    x,
+    y,
+    num=1,
+    positions=[None],
+    amplitudes=[None],
+    widths=[None],
+    expressions=None,
+    bkgModel=None,
+    peakModel=None,
+):
     """peak fit with lmfit
 
     Description
@@ -149,14 +160,24 @@ def get_curves_fit(x, fitobj, components="p", with_initial_guess=False):
              ]
     """
     curves = []
-    curve = [x, fitobj.best_fit, {"legend": "best fit", "color": "red", "linewidth": 1}]
+    curve_dict = {
+        "legend": "best fit",
+        "label": "best fit",
+        "color": "red",
+        "linewidth": 1,
+        "linestyle": "-",
+    }
+    curve = [x, fitobj.best_fit, curve_dict]
     curves.append(curve)
     if with_initial_guess:
-        curve = [
-            x,
-            fitobj.init_fit,
-            {"legend": "initial guess", "color": "gray", "linewidth": 0.5},
-        ]
+        guess_dict = {
+            "legend": "initial guess",
+            "label": "initial guess",
+            "color": "gray",
+            "linewidth": 0.5,
+            "linestyle": "-",
+        }
+        curve = [x, fitobj.init_fit, guess_dict]
         curves.append(curve)
     if components:
         comps = fitobj.eval_components()
@@ -164,11 +185,14 @@ def get_curves_fit(x, fitobj, components="p", with_initial_guess=False):
         colors = get_colors(len(comps.keys()), colormap=cm.viridis)
         for icomp, kcomp in enumerate(comps.keys()):
             if kcomp.startswith(components):
-                curve = [
-                    x,
-                    comps[kcomp],
-                    {"legend": f"{kcomp}", "color": colors[icomp], "linewidth": 1},
-                ]
+                comp_dict = {
+                    "legend": f"{kcomp}",
+                    "label": f"{kcomp}",
+                    "color": colors[icomp],
+                    "linewidth": 1,
+                    "linestyle": "-",
+                }
+                curve = [x, comps[kcomp], comp_dict]
                 curves.append(curve)
     return curves
 
@@ -188,30 +212,36 @@ def main_test():
     y1 = _get_gauss(x, 100, 0, 5, 0.2)
     y2 = _get_gauss(x, 60, -18, 10, 0.1)
     y3 = _get_gauss(x, 90, 10, 10, 0.2)
-    y = 0.0015*x + y1 +y2 + y3
-    figname = 'test_peakfit_lmfit'
+    y = 0.0015 * x + y1 + y2 + y3
+    figname = "test_peakfit_lmfit"
 
     ymax = y.max()
     xmax = x[np.argmax(y)]
-    fitobj = fit_peak(x, y, num=3, positions=[xmax, xmax-20, xmax+17],
-                      amplitudes=[ymax, ymax/2., ymax/3.],
-                      peakModel=GaussianModel)
+    fitobj = fit_peak(
+        x,
+        y,
+        num=3,
+        positions=[xmax, xmax - 20, xmax + 17],
+        amplitudes=[ymax, ymax / 2.0, ymax / 3.0],
+        widths=[1, 1, 1],
+        peakModel=GaussianModel,
+    )
 
     fit_curves = get_curves_fit(x, fitobj, with_initial_guess=True)
     #: plot
     plt.ion()
     plt.close(figname)
     fig, ax = plt.subplots(num=figname)
-    ax.plot(x, y, label='data', color='black')
+    ax.plot(x, y, label="data", color="black")
 
     for fc in fit_curves:
-        ax.plot(fc[0], fc[1], label=fc[2]['legend'], color=fc[2]['color'])
+        ax.plot(fc[0], fc[1], label=fc[2]["legend"], color=fc[2]["color"])
 
-    ax.legend(loc='best')
+    ax.legend(loc="best")
     plt.show()
 
     return fig, ax
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     fig, ax = main_test()
