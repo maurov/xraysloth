@@ -9,14 +9,16 @@ dependencies:
     - pip
     - nodejs
     - pyqt=5
+    - wxpython>=4.0.3
     - numpy>=1.16
     - scipy>=1.2
     - matplotlib>=3.0
     - h5py>=2.8
+    - scikit-image
+    - scikit-learn
+    - requests
     - sqlalchemy>=0.9
     - conda-forge::xraylib
-    - GSECARS::wxmplot>=0.9
-    - GSECARS::wxutils>=0.2
     - pip:
         #: utils
         - termcolor
@@ -26,13 +28,16 @@ dependencies:
         - asteval>=0.9
         - uncertainties>=3.1
         - pyshortcuts>=1.4
+        #: Wx (-> Larch)
+        - wxmplot>=0.9
+        - wxutils>=0.2
         #: Jupyter
         - jupyterlab_server
         - jupyterlab>=1.0
         - ipywidgets>=7.5
         - jupyterhub
         - ipympl
-        - widgetsnbextension
+        - widgetsnbextension>=3.5.0
         - jupyterlab-git
         #: Base (sci)libs
         - pandas
