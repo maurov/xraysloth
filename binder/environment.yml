@@ -1,10 +1,9 @@
-ù#Python environment for: https://github.com/maurov/xraysloth
+#Python environment for: https://github.com/maurov/xraysloth
 #Target: running on mybinder.org
 #Usage: automatically built
 name: sloth-binder
 channels:
     - defaults
-    #NOTE: specific channels are given per-package, not here!
 dependencies:
     - python=3.6
     - pip
