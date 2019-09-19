@@ -9,27 +9,41 @@ dependencies:
     - python=3.6
     - pip
     - nodejs
+    - pyqt=5
     - numpy>=1.16
-    - scipy>=1.2.0
-    - matplotlib>=2.0
+    - scipy>=1.2
+    - matplotlib>=3.0
     - h5py>=2.8
-    - pyyaml
-    - termcolor
     - sqlalchemy>=0.9
-    - conda-forge::ipywidgets
-    - conda-forge::ipympl
-    - conda-forge::widgetsnbextension
-    - conda-forge::jupyterlab
     - conda-forge::xraylib
-    - conda-forge::peakutils>=1.0.0
-    - conda-forge::asteval>=0.9.12
-    - conda-forge::uncertainties>=3.0.3
-    - conda-forge::lmfit>=0.9.13
-    - GSECARS::pyshortcuts>=1.3
+    - GSECARS::wxmplot>=0.9
+    - GSECARS::wxutils>=0.2
     - pip:
+        #: utils
+        - termcolor
+        - pyyaml
+        - palettable
+        - peakutils>=1.3
+        - asteval>=0.9
+        - uncertainties>=3.1
+        - pyshortcuts>=1.4
+        #: Jupyter
         - jupyterlab_server
+        - jupyterlab>=1.0
+        - ipywidgets>=7.5
+        - jupyterhub
+        - ipympl
+        - nbsphinx
+        - widgetsnbextension
         - jupyterlab-git
+        #: Base (sci)libs
+        - pandas
+        - xraydb
+        - hdf5plugin
+        - lmfit>=0.9.13
         - silx>=0.11
+        - pymca>=5.5.1
         - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl; sys_platform == 'linux'
+        #: From source
         - git+https://github.com/xraypy/xraylarch
         - git+https://github.com/maurov/xraysloth
