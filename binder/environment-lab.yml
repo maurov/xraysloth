@@ -41,6 +41,8 @@ dependencies:
         - black
         - pydocstyle   #: linter for docstring style checking
         - doc8
+        - python-language-server
+        - pyls-black
         #: Build docs
         - sphinx>=1.5
         - sphinxcontrib-napoleon
