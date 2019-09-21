@@ -24,8 +24,9 @@ class DataSourceSpecH5(object):
         """init with file name and default attributes"""
         if logger is None:
             from sloth.utils.logging import getLogger
+
             _logger_name = "sloth.io.DataSourceSpecH5"
-            self._logger = getLogger(_logger_name, level='INFO')
+            self._logger = getLogger(_logger_name, level="INFO")
         else:
             self._logger = logger
 
@@ -50,7 +51,7 @@ class DataSourceSpecH5(object):
             self._logger.error(f"cannot open {self.fname}")
             self._sf = None
 
-    def open(self, mode='r'):
+    def open(self, mode="r"):
         """Open the source file object with h5py in given mode"""
         try:
             self._sf = h5py.File(self.fname, mode)
@@ -65,9 +66,9 @@ class DataSourceSpecH5(object):
 
     def _set_urls(self):
         """Set default SpecH5 urls"""
-        self._mots_url = 'instrument/positioners'
-        self._cnts_url = 'measurement'
-        self._title_url = 'title'
+        self._mots_url = "instrument/positioners"
+        self._cnts_url = "measurement"
+        self._title_url = "title"
 
     def _get_sg(self):
         """Safe get self._sg"""
@@ -80,6 +81,7 @@ class DataSourceSpecH5(object):
         """Init TreeView GUI"""
         from sloth.gui.hdf5.view import TreeView
         from sloth.gui.hdf5.model import TreeModel
+
         self._view = TreeView()
         self._model = TreeModel()
         self._view.setModel(self._model)
@@ -143,8 +145,7 @@ class DataSourceSpecH5(object):
         try:
             self._sg = self._sf[self._scan_url]
             self._scan_title = self.get_title()
-            self._logger.info(
-                f"selected scan {self._scan_url}: '{self._scan_title}'")
+            self._logger.info(f"selected scan {self._scan_url}: '{self._scan_title}'")
         except KeyError:
             self._sg = None
             self._scan_title = None
@@ -159,8 +160,7 @@ class DataSourceSpecH5(object):
         try:
             return [i for i in self._get_sg()[url_str].keys()]
         except Exception:
-            self._logger.error(
-                f"'{url_str}' not found -> use 'set_scan' method first")
+            self._logger.error(f"'{url_str}' not found -> use 'set_scan' method first")
 
     def get_motors(self):
         """Get list of motors names"""
@@ -188,14 +188,13 @@ class DataSourceSpecH5(object):
 
     def get_scan_axis(self):
         """Get the name of the scanned axis from title"""
-        _title_splitted = self.get_title().split(' ')
+        _title_splitted = self.get_title().split(" ")
         _axisout = _title_splitted[1]
-        if _axisout == '':
+        if _axisout == "":
             _axisout = _title_splitted[2]
         _mots, _cnts = self.get_motors(), self.get_counters()
         if not ((_axisout in _mots) and (_axisout in _cnts)):
-            self._logger.warning(
-                f"'{_axisout}' not present in counters and motors")
+            self._logger.warning(f"'{_axisout}' not present in counters and motors")
         return _axisout
 
     def get_array(self, cnt, scan_n=None, group_url=None):
@@ -223,12 +222,13 @@ class DataSourceSpecH5(object):
             cnt = cnts[cnt]
             self._logger.info(f"selected counter '{cnt}'")
         if cnt in cnts:
-            sel_cnt = f'{self._cnts_url}/{cnt}'
+            sel_cnt = f"{self._cnts_url}/{cnt}"
             return self._get_sg()[sel_cnt][()]
         else:
             self._logger.error(
-                f"'{cnt}' not found among the available counters: {cnts}")
-            sel_cnt = f'{self._cnts_url}/{cnts[0]}'
+                f"'{cnt}' not found among the available counters: {cnts}"
+            )
+            sel_cnt = f"{self._cnts_url}/{cnts[0]}"
             return np.zeros_like(self._get_sg()[sel_cnt][()])
 
     def get_value(self, mot, scan_n=None, group_url=None):
@@ -256,16 +256,21 @@ class DataSourceSpecH5(object):
             mot = mots[mot]
             self._logger.info(f"selected motor '{mot}'")
         if mot in mots:
-            sel_mot = f'{self._mots_url}/{mot}'
+            sel_mot = f"{self._mots_url}/{mot}"
             return self._get_sg()[sel_mot][()]
         else:
-            self._logger.error(
-                f"'{mot}' not found in available motors: {mots}")
+            self._logger.error(f"'{mot}' not found in available motors: {mots}")
             return 0
 
-    def write_scans_to_h5(self, scans, fname_out, scans_groups=None,
-                          h5path=None, overwrite=False,
-                          conf_dict=None):
+    def write_scans_to_h5(
+        self,
+        scans,
+        fname_out,
+        scans_groups=None,
+        h5path=None,
+        overwrite=False,
+        conf_dict=None,
+    ):
         """Export a selected range of scans to HDF5 file
 
         .. note:: This is a simple wrapper to
@@ -288,6 +293,7 @@ class DataSourceSpecH5(object):
             configuration dictionary saved as '{hdfpath}/0.1_conf'
         """
         from silx.io.convert import write_to_h5
+
         self._fname_out = fname_out
         self._logger.info(f"output file: {self._fname_out}")
         if os.path.isfile(self._fname_out) and os.access(self._fname_out, os.R_OK):
@@ -299,21 +305,26 @@ class DataSourceSpecH5(object):
         #: out hdf5 file
         if overwrite and _fileExists:
             os.remove(self._fname_out)
-        h5out = h5py.File(self._fname_out, mode='a', track_order=True)
+        h5out = h5py.File(self._fname_out, mode="a", track_order=True)
 
         #: h5path
         if h5path is None:
-            h5path = '/'
+            h5path = "/"
         else:
-            h5path += '/'
+            h5path += "/"
 
         #: write group configuration dictionary, if given
         if conf_dict is not None:
             from silx.io.dictdump import dicttoh5
-            _h5path = f'{h5path}0.1-conf/'
-            dicttoh5(conf_dict, h5out, h5path=_h5path,
-                     create_dataset_args=dict(track_order=True))
-            self._logger.info(f'written dictionary: {_h5path}')
+
+            _h5path = f"{h5path}0.1-conf/"
+            dicttoh5(
+                conf_dict,
+                h5out,
+                h5path=_h5path,
+                create_dataset_args=dict(track_order=True),
+            )
+            self._logger.info(f"written dictionary: {_h5path}")
 
         #: write scans
         def _loop_scans(scns, group=None):
@@ -322,18 +333,22 @@ class DataSourceSpecH5(object):
                 if self._sg is None:
                     continue
                 if group is not None:
-                    _h5path = f'{h5path}{group}/{self._scan_str}/'
+                    _h5path = f"{h5path}{group}/{self._scan_str}/"
                 else:
-                    _h5path = f'{h5path}{self._scan_str}/'
-                write_to_h5(self._sg, h5out, h5path=_h5path,
-                            create_dataset_args=dict(track_order=True))
-                self._logger.info(f'written scan: {_h5path}')
+                    _h5path = f"{h5path}{self._scan_str}/"
+                write_to_h5(
+                    self._sg,
+                    h5out,
+                    h5path=_h5path,
+                    create_dataset_args=dict(track_order=True),
+                )
+                self._logger.info(f"written scan: {_h5path}")
 
         if type(scans) is list:
-            assert type(
-                scans_groups) is list, "'scans_groups' should be a list"
+            assert type(scans_groups) is list, "'scans_groups' should be a list"
             assert len(scans) == len(
-                scans_groups), "'scans_groups' not matching 'scans'"
+                scans_groups
+            ), "'scans_groups' not matching 'scans'"
             for scns, group in zip(scans, scans_groups):
                 _loop_scans(str2rng(scns), group=group)
         else:
@@ -346,6 +361,7 @@ class DataSourceSpecH5(object):
 def main():
     """test"""
     from sloth.examples import _examplesDir
+
     test_specfile = os.path.join(_examplesDir, "specfiledata_tests.dat")
     test_ds = DataSourceSpecH5(test_specfile)
     test_ds.set_scan(1)
@@ -353,5 +369,5 @@ def main():
     return test_ds
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     t = main()
