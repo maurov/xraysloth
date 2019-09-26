@@ -212,6 +212,72 @@
     <span class="k">return</span> <span class="n">axis</span><span class="p">,</span> <span class="n">zsum</span></div>
 
 
+<div class="viewcode-block" id="rebin_piecewise_constant"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.arrays.rebin_piecewise_constant">[docs]</a><span class="k">def</span> <span class="nf">rebin_piecewise_constant</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Rebin histogram values y1 from old bin edges x1 to new edges x2.</span>
+
+<span class="sd">    Code taken from: https://github.com/jhykes/rebin/blob/master/rebin.py</span>
+
+<span class="sd">    It follows the procedure described in Figure 18.13 (chapter 18.IV.B.</span>
+<span class="sd">    Spectrum Alignment, page 703) of Knoll [1]</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    [1] Glenn Knoll, Radiation Detection and Measurement, third edition,</span>
+<span class="sd">        Wiley, 2000.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">     - x1 : m+1 array of old bin edges.</span>
+<span class="sd">     - y1 : m array of old histogram values.</span>
+<span class="sd">            This is the total number in each bin, not an average.</span>
+<span class="sd">     - x2 : n+1 array of new bin edges.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">     - y2 : n array of rebinned histogram values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span>
+    <span class="n">y1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y1</span><span class="p">)</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span>
+
+    <span class="c1"># the fractional bin locations of the new bins in the old bins</span>
+    <span class="n">i_place</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x1</span><span class="p">)))</span>
+
+    <span class="n">cum_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">y1</span><span class="p">)]</span>
+
+    <span class="c1"># calculate bins where lower and upper bin edges span</span>
+    <span class="c1"># greater than or equal to one original bin.</span>
+    <span class="c1"># This is the contribution from the &#39;intact&#39; bins (not including the</span>
+    <span class="c1"># fractional start and end parts.</span>
+    <span class="n">whole_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">i_place</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">i_place</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="mf">1.</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">cum_sum</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">i_place</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)]</span>
+    <span class="n">finish</span> <span class="o">=</span> <span class="n">cum_sum</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">i_place</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)]</span>
+
+    <span class="n">y2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">whole_bins</span><span class="p">,</span> <span class="n">finish</span> <span class="o">-</span> <span class="n">start</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
+
+    <span class="n">bin_loc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">i_place</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">y1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># fractional contribution for bins where the new bin edges are in the same</span>
+    <span class="c1"># original bin.</span>
+    <span class="n">same_cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">i_place</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">i_place</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">frac</span> <span class="o">=</span> <span class="n">i_place</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">i_place</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">contrib</span> <span class="o">=</span> <span class="p">(</span><span class="n">frac</span> <span class="o">*</span> <span class="n">y1</span><span class="p">[</span><span class="n">bin_loc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+    <span class="n">y2</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">same_cell</span><span class="p">,</span> <span class="n">contrib</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
+
+    <span class="c1"># fractional contribution for bins where the left and right bin edges are in</span>
+    <span class="c1"># different original bins.</span>
+    <span class="n">different_cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">i_place</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">i_place</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">frac_left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">i_place</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="n">i_place</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">contrib</span> <span class="o">=</span> <span class="p">(</span><span class="n">frac_left</span> <span class="o">*</span> <span class="n">y1</span><span class="p">[</span><span class="n">bin_loc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+
+    <span class="n">frac_right</span> <span class="o">=</span> <span class="n">i_place</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">i_place</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="n">contrib</span> <span class="o">+=</span> <span class="p">(</span><span class="n">frac_right</span> <span class="o">*</span> <span class="n">y1</span><span class="p">[</span><span class="n">bin_loc</span><span class="p">[</span><span class="mi">1</span><span class="p">:]])</span>
+
+    <span class="n">y2</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">different_cell</span><span class="p">,</span> <span class="n">contrib</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">y2</span></div>
+
+
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="k">pass</span>
 </pre></div>

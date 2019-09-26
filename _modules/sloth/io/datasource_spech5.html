@@ -172,6 +172,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">h5py</span>
 <span class="kn">from</span> <span class="nn">silx.io.utils</span> <span class="k">import</span> <span class="nb">open</span> <span class="k">as</span> <span class="n">silx_open</span>
+<span class="kn">from</span> <span class="nn">sloth.utils.strings</span> <span class="k">import</span> <span class="n">str2rng</span>
 
 
 <div class="viewcode-block" id="DataSourceSpecH5"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5">[docs]</a><span class="k">class</span> <span class="nc">DataSourceSpecH5</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -182,8 +183,9 @@
         <span class="sd">&quot;&quot;&quot;init with file name and default attributes&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">logger</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">sloth.utils.logging</span> <span class="k">import</span> <span class="n">getLogger</span>
+
             <span class="n">_logger_name</span> <span class="o">=</span> <span class="s2">&quot;sloth.io.DataSourceSpecH5&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="n">_logger_name</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s1">&#39;INFO&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="n">_logger_name</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logger</span>
 
@@ -208,7 +210,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;cannot open </span><span class="si">{self.fname}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sf</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="DataSourceSpecH5.open"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.open">[docs]</a>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="DataSourceSpecH5.open"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.open">[docs]</a>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Open the source file object with h5py in given mode&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sf</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fname</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
@@ -223,9 +225,9 @@
 
     <span class="k">def</span> <span class="nf">_set_urls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set default SpecH5 urls&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_mots_url</span> <span class="o">=</span> <span class="s1">&#39;instrument/positioners&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_cnts_url</span> <span class="o">=</span> <span class="s1">&#39;measurement&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_title_url</span> <span class="o">=</span> <span class="s1">&#39;title&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mots_url</span> <span class="o">=</span> <span class="s2">&quot;instrument/positioners&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cnts_url</span> <span class="o">=</span> <span class="s2">&quot;measurement&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_title_url</span> <span class="o">=</span> <span class="s2">&quot;title&quot;</span>
 
     <span class="k">def</span> <span class="nf">_get_sg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Safe get self._sg&quot;&quot;&quot;</span>
@@ -238,6 +240,7 @@
         <span class="sd">&quot;&quot;&quot;Init TreeView GUI&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">sloth.gui.hdf5.view</span> <span class="k">import</span> <span class="n">TreeView</span>
         <span class="kn">from</span> <span class="nn">sloth.gui.hdf5.model</span> <span class="k">import</span> <span class="n">TreeModel</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_view</span> <span class="o">=</span> <span class="n">TreeView</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">TreeModel</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_view</span><span class="o">.</span><span class="n">setModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">)</span>
@@ -315,7 +318,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sg</span><span class="p">()[</span><span class="n">url_str</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
-        <span class="k">except</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;&#39;</span><span class="si">{url_str}</span><span class="s2">&#39; not found -&gt; use &#39;set_scan&#39; method first&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DataSourceSpecH5.get_motors"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_motors">[docs]</a>    <span class="k">def</span> <span class="nf">get_motors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -344,9 +347,9 @@
 
 <div class="viewcode-block" id="DataSourceSpecH5.get_scan_axis"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_scan_axis">[docs]</a>    <span class="k">def</span> <span class="nf">get_scan_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the name of the scanned axis from title&quot;&quot;&quot;</span>
-        <span class="n">_title_splitted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_title</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="n">_title_splitted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_title</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
         <span class="n">_axisout</span> <span class="o">=</span> <span class="n">_title_splitted</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">_axisout</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">_axisout</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="n">_axisout</span> <span class="o">=</span> <span class="n">_title_splitted</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
         <span class="n">_mots</span><span class="p">,</span> <span class="n">_cnts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_motors</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_counters</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">_axisout</span> <span class="ow">in</span> <span class="n">_mots</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">_axisout</span> <span class="ow">in</span> <span class="n">_cnts</span><span class="p">)):</span>
@@ -378,11 +381,13 @@
             <span class="n">cnt</span> <span class="o">=</span> <span class="n">cnts</span><span class="p">[</span><span class="n">cnt</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;selected counter &#39;</span><span class="si">{cnt}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cnt</span> <span class="ow">in</span> <span class="n">cnts</span><span class="p">:</span>
-            <span class="n">sel_cnt</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{self._cnts_url}</span><span class="s1">/</span><span class="si">{cnt}</span><span class="s1">&#39;</span>
+            <span class="n">sel_cnt</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{self._cnts_url}</span><span class="s2">/</span><span class="si">{cnt}</span><span class="s2">&quot;</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sg</span><span class="p">()[</span><span class="n">sel_cnt</span><span class="p">][()]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;&#39;</span><span class="si">{cnt}</span><span class="s2">&#39; not found among the available counters: </span><span class="si">{cnts}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">sel_cnt</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{self._cnts_url}</span><span class="s1">/</span><span class="si">{cnts[0]}</span><span class="s1">&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;&#39;</span><span class="si">{cnt}</span><span class="s2">&#39; not found among the available counters: </span><span class="si">{cnts}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="n">sel_cnt</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{self._cnts_url}</span><span class="s2">/</span><span class="si">{cnts[0]}</span><span class="s2">&quot;</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_sg</span><span class="p">()[</span><span class="n">sel_cnt</span><span class="p">][()])</span></div>
 
 <div class="viewcode-block" id="DataSourceSpecH5.get_value"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mot</span><span class="p">,</span> <span class="n">scan_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">group_url</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -410,14 +415,21 @@
             <span class="n">mot</span> <span class="o">=</span> <span class="n">mots</span><span class="p">[</span><span class="n">mot</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;selected motor &#39;</span><span class="si">{mot}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">mot</span> <span class="ow">in</span> <span class="n">mots</span><span class="p">:</span>
-            <span class="n">sel_mot</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{self._mots_url}</span><span class="s1">/</span><span class="si">{mot}</span><span class="s1">&#39;</span>
+            <span class="n">sel_mot</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{self._mots_url}</span><span class="s2">/</span><span class="si">{mot}</span><span class="s2">&quot;</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sg</span><span class="p">()[</span><span class="n">sel_mot</span><span class="p">][()]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;&#39;</span><span class="si">{mot}</span><span class="s2">&#39; not found in available motors: </span><span class="si">{mots}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="mi">0</span></div>
 
-<div class="viewcode-block" id="DataSourceSpecH5.write_scans_to_h5"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.write_scans_to_h5">[docs]</a>    <span class="k">def</span> <span class="nf">write_scans_to_h5</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="n">fname_out</span><span class="p">,</span> <span class="n">h5path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                          <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">conf_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DataSourceSpecH5.write_scans_to_h5"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.write_scans_to_h5">[docs]</a>    <span class="k">def</span> <span class="nf">write_scans_to_h5</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">scans</span><span class="p">,</span>
+        <span class="n">fname_out</span><span class="p">,</span>
+        <span class="n">scans_groups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">h5path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">conf_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Export a selected range of scans to HDF5 file</span>
 
 <span class="sd">        .. note:: This is a simple wrapper to</span>
@@ -425,10 +437,13 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        scans : list of ints</span>
-<span class="sd">            scan numbers to export</span>
+<span class="sd">        scans : str, list of ints or list of lists (str/ints)</span>
+<span class="sd">            scan numbers to export (parsed by sloth.utils.strings.str2rng)</span>
+<span class="sd">            if a list of lists, scans_groups is required</span>
 <span class="sd">        fname_out : str</span>
 <span class="sd">            output file name</span>
+<span class="sd">        scans_groups : list of strings</span>
+<span class="sd">            groups of scans</span>
 <span class="sd">        h5path : str (optional)</span>
 <span class="sd">            path inside HDF5 [None -&gt; &#39;/&#39;]</span>
 <span class="sd">        overwrite : boolean (optional)</span>
@@ -437,6 +452,7 @@
 <span class="sd">            configuration dictionary saved as &#39;{hdfpath}/0.1_conf&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">silx.io.convert</span> <span class="k">import</span> <span class="n">write_to_h5</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_fname_out</span> <span class="o">=</span> <span class="n">fname_out</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;output file: </span><span class="si">{self._fname_out}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fname_out</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fname_out</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">R_OK</span><span class="p">):</span>
@@ -444,38 +460,67 @@
             <span class="n">_fileExists</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">_fileExists</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1">#: out hdf5 file</span>
+        <span class="k">if</span> <span class="n">overwrite</span> <span class="ow">and</span> <span class="n">_fileExists</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fname_out</span><span class="p">)</span>
+        <span class="n">h5out</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fname_out</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">track_order</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
         <span class="c1">#: h5path</span>
         <span class="k">if</span> <span class="n">h5path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">h5path</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span>
+            <span class="n">h5path</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">h5path</span> <span class="o">+=</span> <span class="s1">&#39;/&#39;</span>
-        <span class="c1">#: write configuration dictionary, if given</span>
+            <span class="n">h5path</span> <span class="o">+=</span> <span class="s2">&quot;/&quot;</span>
+
+        <span class="c1">#: write group configuration dictionary, if given</span>
         <span class="k">if</span> <span class="n">conf_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">silx.io.dictdump</span> <span class="k">import</span> <span class="n">dicttoh5</span>
-            <span class="n">_h5path</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{h5path}</span><span class="s1">0.1-conf/&#39;</span>
-            <span class="n">dicttoh5</span><span class="p">(</span><span class="n">conf_dict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fname_out</span><span class="p">,</span> <span class="n">h5path</span><span class="o">=</span><span class="n">_h5path</span><span class="p">,</span>
-                     <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">overwrite_data</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span>
-                     <span class="n">create_dataset_args</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">track_order</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;written dictionary: </span><span class="si">{_h5path}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="n">_h5path</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{h5path}</span><span class="s2">0.1-conf/&quot;</span>
+            <span class="n">dicttoh5</span><span class="p">(</span>
+                <span class="n">conf_dict</span><span class="p">,</span>
+                <span class="n">h5out</span><span class="p">,</span>
+                <span class="n">h5path</span><span class="o">=</span><span class="n">_h5path</span><span class="p">,</span>
+                <span class="n">create_dataset_args</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">track_order</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;written dictionary: </span><span class="si">{_h5path}</span><span class="s2">&quot;</span><span class="p">)</span>
+
         <span class="c1">#: write scans</span>
-        <span class="k">for</span> <span class="n">iscan</span><span class="p">,</span> <span class="n">scan</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">scans</span><span class="p">):</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">iscan</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">overwrite</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">_fileExists</span><span class="p">)):</span>
-                <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;w&#39;</span>  <span class="c1"># overwrite</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;a&#39;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_scan</span><span class="p">(</span><span class="n">scan</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="n">_h5path</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{h5path}{self._scan_str}</span><span class="s1">/&#39;</span>
-            <span class="n">write_to_h5</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fname_out</span><span class="p">,</span> <span class="n">h5path</span><span class="o">=</span><span class="n">_h5path</span><span class="p">,</span>
-                        <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">overwrite_data</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span>
-                        <span class="n">create_dataset_args</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">track_order</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;written scan: </span><span class="si">{_h5path}</span><span class="s1">&#39;</span><span class="p">)</span></div></div>
+        <span class="k">def</span> <span class="nf">_loop_scans</span><span class="p">(</span><span class="n">scns</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">scn</span> <span class="ow">in</span> <span class="n">scns</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_scan</span><span class="p">(</span><span class="n">scn</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">_h5path</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{h5path}{group}</span><span class="s2">/</span><span class="si">{self._scan_str}</span><span class="s2">/&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">_h5path</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{h5path}{self._scan_str}</span><span class="s2">/&quot;</span>
+                <span class="n">write_to_h5</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_sg</span><span class="p">,</span>
+                    <span class="n">h5out</span><span class="p">,</span>
+                    <span class="n">h5path</span><span class="o">=</span><span class="n">_h5path</span><span class="p">,</span>
+                    <span class="n">create_dataset_args</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">track_order</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;written scan: </span><span class="si">{_h5path}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">scans</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">scans_groups</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">,</span> <span class="s2">&quot;&#39;scans_groups&#39; should be a list&quot;</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">scans</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span>
+                <span class="n">scans_groups</span>
+            <span class="p">),</span> <span class="s2">&quot;&#39;scans_groups&#39; not matching &#39;scans&#39;&quot;</span>
+            <span class="k">for</span> <span class="n">scns</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">scans</span><span class="p">,</span> <span class="n">scans_groups</span><span class="p">):</span>
+                <span class="n">_loop_scans</span><span class="p">(</span><span class="n">str2rng</span><span class="p">(</span><span class="n">scns</span><span class="p">),</span> <span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_loop_scans</span><span class="p">(</span><span class="n">str2rng</span><span class="p">(</span><span class="n">scans</span><span class="p">))</span>
+
+        <span class="c1">#: close output file</span>
+        <span class="n">h5out</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
 
 
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;test&quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">sloth.examples</span> <span class="k">import</span> <span class="n">_examplesDir</span>
+
     <span class="n">test_specfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_examplesDir</span><span class="p">,</span> <span class="s2">&quot;specfiledata_tests.dat&quot;</span><span class="p">)</span>
     <span class="n">test_ds</span> <span class="o">=</span> <span class="n">DataSourceSpecH5</span><span class="p">(</span><span class="n">test_specfile</span><span class="p">)</span>
     <span class="n">test_ds</span><span class="o">.</span><span class="n">set_scan</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -483,7 +528,7 @@
     <span class="k">return</span> <span class="n">test_ds</span></div>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">t</span> <span class="o">=</span> <span class="n">main</span><span class="p">()</span>
 </pre></div>
 

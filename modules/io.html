@@ -337,7 +337,7 @@ via silx.io.open</p>
 
 <dl class="method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.write_scans_to_h5">
-<code class="sig-name descname">write_scans_to_h5</code><span class="sig-paren">(</span><em class="sig-param">scans</em>, <em class="sig-param">fname_out</em>, <em class="sig-param">h5path=None</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">conf_dict=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.write_scans_to_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.write_scans_to_h5" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_scans_to_h5</code><span class="sig-paren">(</span><em class="sig-param">scans</em>, <em class="sig-param">fname_out</em>, <em class="sig-param">scans_groups=None</em>, <em class="sig-param">h5path=None</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">conf_dict=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.write_scans_to_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.write_scans_to_h5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export a selected range of scans to HDF5 file</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -347,8 +347,10 @@ via silx.io.open</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>scans</strong> (<em>list of ints</em>) – scan numbers to export</p></li>
+<li><p><strong>scans</strong> (<em>str</em><em>, </em><em>list of ints</em><em> or </em><em>list of lists</em><em> (</em><em>str/ints</em><em>)</em>) – scan numbers to export (parsed by sloth.utils.strings.str2rng)
+if a list of lists, scans_groups is required</p></li>
 <li><p><strong>fname_out</strong> (<em>str</em>) – output file name</p></li>
+<li><p><strong>scans_groups</strong> (<em>list of strings</em>) – groups of scans</p></li>
 <li><p><strong>h5path</strong> (<em>str</em><em> (</em><em>optional</em><em>)</em>) – path inside HDF5 [None -&gt; ‘/’]</p></li>
 <li><p><strong>overwrite</strong> (<em>boolean</em><em> (</em><em>optional</em><em>)</em>) – force overwrite if the file exists [False]</p></li>
 <li><p><strong>conf_dict</strong> (<em>None</em><em> or </em><em>dict</em><em> (</em><em>optional</em><em>)</em>) – configuration dictionary saved as ‘{hdfpath}/0.1_conf’</p></li>

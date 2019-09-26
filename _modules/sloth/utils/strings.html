@@ -168,13 +168,17 @@
 <span class="sd">.. note:: each function has its own imports and checks.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="c1">#: module logger</span>
+<span class="kn">from</span> <span class="nn">sloth.utils.logging</span> <span class="k">import</span> <span class="n">getLogger</span>
+
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;sloth.utils.strings&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">)</span>
 
 <span class="c1">####################</span>
 <span class="c1"># COLORIZED OUTPUT #</span>
 <span class="c1">####################</span>
 
 
-<div class="viewcode-block" id="colorstr"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.strings.colorstr">[docs]</a><span class="k">def</span> <span class="nf">colorstr</span><span class="p">(</span><span class="n">instr</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">on_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;bold&#39;</span><span class="p">]):</span>
+<div class="viewcode-block" id="colorstr"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.strings.colorstr">[docs]</a><span class="k">def</span> <span class="nf">colorstr</span><span class="p">(</span><span class="n">instr</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">on_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bold&quot;</span><span class="p">]):</span>
     <span class="sd">&quot;&quot;&quot;colorized string</span>
 
 <span class="sd">    Parameters</span>
@@ -193,9 +197,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">termcolor</span> <span class="k">import</span> <span class="n">colored</span>
+
         <span class="k">return</span> <span class="n">colored</span><span class="p">(</span><span class="n">instr</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">on_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">instr</span></div>
+
 
 <span class="c1">###################</span>
 <span class="c1"># STRING TO RANGE #</span>
@@ -219,21 +225,27 @@
 <span class="sd">    &gt; [7, 8, 9, 14, 16, 17, 18, 100, 130, 135, 140]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">rngstr</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">([</span><span class="nb">type</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">rngstr</span><span class="p">]),</span> <span class="s2">&quot;&#39;rngstr&#39; not list of ints&quot;</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[str2rng] &#39;rngstr&#39; given as list of integers&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">rngstr</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">rngstr</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;&#39;rngstr&#39; should be a string&quot;</span>
     <span class="n">_rng</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">_r</span> <span class="ow">in</span> <span class="n">rngstr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">):</span>  <span class="c1"># the space is important!</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">_r</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">_r</span> <span class="ow">in</span> <span class="n">rngstr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="p">):</span>  <span class="c1"># the space is important!</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_r</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;Space after comma(s) is missing in &#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_r</span><span class="p">))</span>
-        <span class="n">_rsplit2</span> <span class="o">=</span> <span class="n">_r</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">_rsplit2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">_rsplit2</span> <span class="o">=</span> <span class="n">_r</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_rsplit2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">_rng</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_r</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">_rsplit2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">_rsplit2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_rsplit2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="p">:</span>
-                <span class="n">_rsplit2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">_rsplit2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">_rsplit2</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">_rsplit2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">_rsplit2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_rsplit2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">_rsplit2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">_rsplit2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">_rsplit2</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
                 <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;Wrong range &#39;</span><span class="si">{0}</span><span class="s2">&#39; in string &#39;</span><span class="si">{1}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_r</span><span class="p">,</span> <span class="n">rngstr</span><span class="p">))</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">_rsplit2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="n">_rsplit2</span><span class="p">[</span><span class="mi">1</span><span class="p">])):</span>
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">_rsplit2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="n">_rsplit2</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
                 <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;Wrong range &#39;</span><span class="si">{0}</span><span class="s2">&#39; in string &#39;</span><span class="si">{1}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_r</span><span class="p">,</span> <span class="n">rngstr</span><span class="p">))</span>
-            <span class="n">_rng</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">_rsplit2</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">_rsplit2</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">_rsplit2</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span>
+            <span class="n">_rng</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">_rsplit2</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">_rsplit2</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">_rsplit2</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;Too many colon in </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_r</span><span class="p">))</span>
 
@@ -242,7 +254,7 @@
 
     <span class="k">if</span> <span class="n">rebin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">_rngout</span> <span class="o">=</span> <span class="n">_rngout</span><span class="p">[::</span><span class="nb">int</span><span class="p">(</span><span class="n">rebin</span><span class="p">)]</span>
+            <span class="n">_rngout</span> <span class="o">=</span> <span class="n">_rngout</span><span class="p">[::</span> <span class="nb">int</span><span class="p">(</span><span class="n">rebin</span><span class="p">)]</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;Wrong rebin=</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">rebin</span><span class="p">)))</span>
 
@@ -256,6 +268,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">_rngout</span><span class="p">))</span></div>
 
+
 <span class="c1">################</span>
 <span class="c1"># TIME STRINGS #</span>
 <span class="c1">################</span>
@@ -264,10 +277,79 @@
 <div class="viewcode-block" id="get_timestamp"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.strings.get_timestamp">[docs]</a><span class="k">def</span> <span class="nf">get_timestamp</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;return a custom time stamp string: YYY-MM-DD_HHMM&quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">time</span>
-    <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0:04d}</span><span class="s1">-</span><span class="si">{1:02d}</span><span class="s1">-</span><span class="si">{2:02d}</span><span class="s1">_</span><span class="si">{3:02d}{4:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">())</span></div>
+
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{0:04d}</span><span class="s2">-</span><span class="si">{1:02d}</span><span class="s2">-</span><span class="si">{2:02d}</span><span class="s2">_</span><span class="si">{3:02d}{4:02d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">())</span></div>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="c1">###################</span>
+<span class="c1"># Natural Sorting #</span>
+<span class="c1">###################</span>
+
+
+<span class="k">def</span> <span class="nf">_atoi</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="k">if</span> <span class="n">text</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="k">else</span> <span class="n">text</span>
+
+
+<div class="viewcode-block" id="natural_keys"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.strings.natural_keys">[docs]</a><span class="k">def</span> <span class="nf">natural_keys</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    FROM: https://stackoverflow.com/questions/5967500/how-to-correctly-sort-a-string-with-a-number-inside</span>
+
+<span class="sd">    alist.sort(key=natural_keys) sorts in human order</span>
+<span class="sd">    http://nedbatchelder.com/blog/200712/human_sorting.html</span>
+<span class="sd">    (See Toothy&#39;s implementation in the comments)</span>
+
+<span class="sd">    Usage</span>
+<span class="sd">    -----</span>
+
+<span class="sd">    alist=[</span>
+<span class="sd">        &quot;something1&quot;,</span>
+<span class="sd">        &quot;something12&quot;,</span>
+<span class="sd">        &quot;something17&quot;,</span>
+<span class="sd">        &quot;something2&quot;,</span>
+<span class="sd">        &quot;something25&quot;,</span>
+<span class="sd">        &quot;something29&quot;]</span>
+
+<span class="sd">    alist.sort(key=natural_keys)</span>
+<span class="sd">    print(alist)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">re</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="n">_atoi</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(\d+)&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)]</span></div>
+
+
+<span class="c1">##################</span>
+<span class="c1"># Slice function #</span>
+<span class="c1">##################</span>
+
+
+<div class="viewcode-block" id="slice_func"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.strings.slice_func">[docs]</a><span class="k">def</span> <span class="nf">slice_func</span><span class="p">(</span><span class="n">list_in</span><span class="p">,</span> <span class="n">filter_str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Utility to slice a list with a function of string parameter</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    list_in : list</span>
+<span class="sd">        input string to slice</span>
+<span class="sd">    filter_str : None or str</span>
+<span class="sd">        filter to apply represented by a string [None -&gt; no filter, input list]</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Sliced list</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">filter_str</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">list_in</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">list_in</span><span class="p">,</span> <span class="nb">list</span><span class="p">),</span> <span class="s2">&quot;`list_in` should be a list&quot;</span>
+    <span class="n">list_out</span> <span class="o">=</span> <span class="n">list_in</span><span class="p">[</span>
+        <span class="nb">slice</span><span class="p">(</span>
+            <span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span> <span class="n">filter_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">))</span>
+        <span class="p">)</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="n">list_out</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="k">pass</span>
 </pre></div>
 
