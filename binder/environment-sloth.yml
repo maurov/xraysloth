@@ -12,8 +12,9 @@ dependencies:
     - numpy>=1.16
     - scipy>=1.2
     - matplotlib>=3.0
-    - h5py>=2.8
+    - h5py>=2.9
     - sqlalchemy>=0.9
+    - pandas
     - qtconsole
     - ipython
     - ipykernel
