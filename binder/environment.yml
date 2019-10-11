@@ -39,6 +39,7 @@ dependencies:
         - ipympl
         - widgetsnbextension>=3.5.0
         - jupyterlab-git
+        - jupyterlab_hdf
         #: Base (sci)libs
         - pandas
         - xraydb

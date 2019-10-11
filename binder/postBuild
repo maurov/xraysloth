@@ -3,36 +3,43 @@
 # =====================
 
 # Script automatically run by mybinder.org / or manually on `sloth-lab`
+# Packages specified in `environment.yml`
 
 # NOTE: if required, set proxy first:
 #npm config set proxy "http://domain\username:password@servername:port/"
 #npm confit set proxy "http://proxy.esrf.fr:3128/"
 
+# ------------------------
+# COMMON REQUIREMENTS FOR:
+# - jupyter-matplotlib
+# - plotly
+# ------------------------
+jupyter labextension install @jupyter-widgets/jupyterlab-manager --no-build
+
 # ---------------------------
 # IPYMPL / JUPYTER-MATPLOTLIB
 # ---------------------------
 # https://github.com/matplotlib/jupyter-matplotlib
-jupyter labextension install @jupyter-widgets/jupyterlab-manager
-jupyter labextension install jupyter-matplotlib
+jupyter labextension install jupyter-matplotlib --no-build
 
 # ------
 # DRAWIO
 # ------
 # https://github.com/QuantStack/jupyterlab-drawio
-jupyter labextension install jupyterlab-drawio
+jupyter labextension install jupyterlab-drawio --no-build
 
 # ---
 # GIT
 # ---
 # https://github.com/jupyterlab/jupyterlab-git
-jupyter labextension install @jupyterlab/git
-jupyter serverextension enable --py jupyterlab_git
+# jupyter labextension install @jupyterlab/git --no-build
+# jupyter serverextension enable --py jupyterlab_git
 
 # ---
 # TOC
 # ---
 # https://github.com/jupyterlab/jupyterlab-toc
-jupyter labextension install @jupyterlab/toc
+jupyter labextension install @jupyterlab/toc --no-build
 
 # -------------------------------------
 # EXPERIMENTAL FEATURES: SLOTH-LAB ONLY
@@ -43,16 +50,22 @@ if [[ $CONDA_DEFAULT_ENV = *"sloth-lab"* ]]; then
   # Packages specified in `environment-lab.yml`
 
   # -----
+  # JUPYTERLAB-HDF5
+  # -----
+  # https://github.com/jupyterlab/jupyterlab-hdf5
+  jupyter labextension install @jupyterlab/hdf5 --no-build
+
+  # -----
   # LATEX
   # -----
   # https://github.com/jupyterlab/jupyterlab-latex
-  jupyter labextension install @jupyterlab/latex
+  jupyter labextension install @jupyterlab/latex --no-build
 
   # ----------------------
   # CODE FORMATTER (BLACK)
   # ----------------------
   # https://github.com/ryantam626/jupyterlab_code_formatter
-  jupyter labextension install @ryantam626/jupyterlab_code_formatter
+  jupyter labextension install @ryantam626/jupyterlab_code_formatter --no-build
   jupyter serverextension enable --py jupyterlab_code_formatter
 
   # ------
@@ -63,15 +76,15 @@ if [[ $CONDA_DEFAULT_ENV = *"sloth-lab"* ]]; then
   # (OS X/Linux)
   export NODE_OPTIONS=--max-old-space-size=4096
   # Jupyter widgets extension
-  jupyter labextension install @jupyter-widgets/jupyterlab-manager@1.0 --no-build
+  #jupyter labextension install @jupyter-widgets/jupyterlab-manager@1.0 --no-build
   # jupyterlab renderer support
-  jupyter labextension install jupyterlab-plotly@1.1.0 --no-build
+  jupyter labextension install jupyterlab-plotly --no-build
   # FigureWidget support
-  jupyter labextension install plotlywidget@1.1.0 --no-build
+  jupyter labextension install plotlywidget --no-build
   # JupyterLab chart editor support (optional)
-  jupyter labextension install jupyterlab-chart-editor@1.2 --no-build
+  jupyter labextension install jupyterlab-chart-editor --no-build
   # Build extensions (must be done to activate extensions since --no-build is used above)
-  jupyter lab build
+  #jupyter lab build
   # Unset NODE_OPTIONS environment variable
   # (OS X/Linux)
   unset NODE_OPTIONS
@@ -83,3 +96,6 @@ if [[ $CONDA_DEFAULT_ENV = *"sloth-lab"* ]]; then
   #jupyter labextension install @jupyterlab/google-drive
 
 fi;
+
+#: Build everything in one run
+jupyter lab build
