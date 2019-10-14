@@ -36,11 +36,11 @@ dependencies:
         - jupyterlab_server
         - jupyterlab>=1.0
         - ipywidgets>=7.5
+        - notebook
         - jupyterhub
         - ipympl
         - widgetsnbextension>=3.5.0
         - jupyterlab-git
-        - jupyterlab_hdf
         #: Base (sci)libs
         - xraydb
         - hdf5plugin

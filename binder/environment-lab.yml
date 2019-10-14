@@ -53,6 +53,7 @@ dependencies:
         - jupyterlab_server
         - jupyterlab>=1.0
         - ipywidgets>=7.5
+        - notebook
         - jupyterhub
         - ipympl
         - nbsphinx
@@ -60,12 +61,13 @@ dependencies:
         - jupyterlab_code_formatter
         - jupyterlab-git
         - jupyterlab_latex
+        - jupyterlab_hdf
         #: Base (sci)libs
         - xraydb
         - hdf5plugin
         - lmfit>=0.9.13
         - silx>=0.11
-        - pymca>=5.5.1
+        - pymca>=5.5.2
         - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl; sys_platform == 'linux'
 
 #: -> run 'postBuild' script to complete install of Jupyter extensions
