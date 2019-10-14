@@ -13,7 +13,8 @@ dependencies:
     - numpy>=1.16
     - scipy>=1.2
     - matplotlib>=3.0
-    - h5py>=2.8
+    - h5py>=2.9
+    - pandas
     - scikit-image
     - scikit-learn
     - requests
@@ -41,7 +42,6 @@ dependencies:
         - jupyterlab-git
         - jupyterlab_hdf
         #: Base (sci)libs
-        - pandas
         - xraydb
         - hdf5plugin
         - lmfit>=0.9.13
