@@ -42,7 +42,6 @@ dependencies:
         - jupyterhub
         - ipympl
         - widgetsnbextension>=3.5.0
-        - jupyterlab-git
         #: Base (sci)libs
         - lmfit>=0.9.13
         - silx>=0.11

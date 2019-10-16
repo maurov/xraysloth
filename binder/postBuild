@@ -29,13 +29,6 @@ jupyter labextension install jupyter-matplotlib --no-build
 jupyter labextension install jupyterlab-drawio --no-build
 
 # ---
-# GIT
-# ---
-# https://github.com/jupyterlab/jupyterlab-git
-jupyter labextension install @jupyterlab/git --no-build
-jupyter serverextension enable --py jupyterlab_git
-
-# ---
 # TOC
 # ---
 # https://github.com/jupyterlab/jupyterlab-toc
@@ -88,6 +81,14 @@ if [[ $CONDA_DEFAULT_ENV = *"sloth-lab"* ]]; then
   # Unset NODE_OPTIONS environment variable
   # (OS X/Linux)
   unset NODE_OPTIONS
+
+  # ---
+  # GIT
+  # ---
+  # /!\ SECURITY ISSUE /!\ -> do not enable this extension on Binderhub !!!
+  # https://github.com/jupyterlab/jupyterlab-git
+  #jupyter labextension install @jupyterlab/git --no-build
+  #jupyter serverextension enable --py jupyterlab_git
 
   # ------------
   # GOOGLE-DRIVE
