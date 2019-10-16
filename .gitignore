@@ -65,3 +65,13 @@ docs/source/_build
 # Visual studio code
 .vscode/
 .empty/
+
+# Stuff created by Binderhub at cloning level
+.bash_logout
+.bashrc
+.profile
+.conda/
+.config/
+.jupyter/
+.local/
+.npm/
