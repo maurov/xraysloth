@@ -290,7 +290,7 @@ class DataSourceSpecH5(object):
         overwrite : boolean (optional)
             force overwrite if the file exists [False]
         conf_dict : None or dict (optional)
-            configuration dictionary saved as '{hdfpath}/0.1_conf'
+            configuration dictionary saved as '{hdfpath}/.config'
         """
         from silx.io.convert import write_to_h5
 
@@ -317,7 +317,7 @@ class DataSourceSpecH5(object):
         if conf_dict is not None:
             from silx.io.dictdump import dicttoh5
 
-            _h5path = f"{h5path}0.1-conf/"
+            _h5path = f"{h5path}.config/"
             dicttoh5(
                 conf_dict,
                 h5out,
