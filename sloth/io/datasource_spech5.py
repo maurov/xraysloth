@@ -20,8 +20,20 @@ class DataSourceSpecH5(object):
     """Data source utility wrapper for a Spec file read as HDF5 object
     via silx.io.open"""
 
-    def __init__(self, fname=None, logger=None):
-        """init with file name and default attributes"""
+    def __init__(self, fname=None, logger=None, urls_fmt="silx"):
+        """init with file name and default attributes
+        
+        Parameters
+        ----------
+        fname : str
+            path string of a file that can be read by silx.io.open() [None]
+        logger : logging.getLogger() instance
+            [None -> sloth.utils.logging.getLogger()]
+        urls_fmt : str
+            how the data are organized in the HDF5 container
+            'silx' : default
+            'spec2nexus' : as converted by spec2nexus
+        """
         if logger is None:
             from sloth.utils.logging import getLogger
 
@@ -37,7 +49,13 @@ class DataSourceSpecH5(object):
         self._scan_n = None
         self._scan_str = None
         self._sg = None  # ScanGroup
-        self._set_urls()
+        if urls_fmt == 'silx':
+            self._set_urls_silx()
+        elif urls_fmt == 'spec2nexus':
+            self._set_urls_spec2nexus()
+        else:
+            self._urls_fmt = None
+            self._logger.error("'urls_fmt' not understood")
         self.set_group()
         # show data in a TreeView
         # self.view()
@@ -64,11 +82,19 @@ class DataSourceSpecH5(object):
         self._sf.close()
         self._sf = None
 
-    def _set_urls(self):
+    def _set_urls_silx(self):
         """Set default SpecH5 urls"""
         self._mots_url = "instrument/positioners"
         self._cnts_url = "measurement"
         self._title_url = "title"
+        self._urls_fmt = "silx"
+
+    def _set_urls_spec2nexus(self):
+        """Set default spec2nexus urls"""
+        self._mots_url = "positioners"
+        self._cnts_url = "data"
+        self._title_url = "title"
+        self._urls_fmt = "spec2nexus"
 
     def _get_sg(self):
         """Safe get self._sg"""
@@ -135,7 +161,13 @@ class DataSourceSpecH5(object):
             self._scan_n, self._scan_str, self._scan_url, self._sg
         """
         self._scan_n = scan_n
-        self._scan_str = f"{scan_n}.{scan_idx}"
+        if self._urls_fmt == "silx":
+            self._scan_str = f"{scan_n}.{scan_idx}"
+        elif self._urls_fmt == "spec2nexus":
+            self._scan_str = f"S{scan_n}"
+        else:
+            self._logger.error("wrong 'urls_fmt'")
+            return
         if group_url is not None:
             self.set_group(group_url)
         if self._group_url is not None:
@@ -188,10 +220,21 @@ class DataSourceSpecH5(object):
 
     def get_scan_axis(self):
         """Get the name of the scanned axis from title"""
-        _title_splitted = self.get_title().split(" ")
-        _axisout = _title_splitted[1]
+        _title = self.get_title()
+        if isinstance(_title, np.ndarray):
+            _title = np.char.decode(_title)[0]
+        _title_splitted = _title.split(" ")
+        _iax = 1
+        _axisout = _title_splitted[_iax]
         if _axisout == "":
-            _axisout = _title_splitted[2]
+            _iax += 1
+            _axisout = _title_splitted[_iax]
+        if "scan" in _axisout:
+            _iax += 1
+            _axisout = _title_splitted[_iax]
+        if _axisout == "":
+            _iax += 1
+            _axisout = _title_splitted[_iax]
         _mots, _cnts = self.get_motors(), self.get_counters()
         if not ((_axisout in _mots) and (_axisout in _cnts)):
             self._logger.warning(f"'{_axisout}' not present in counters and motors")
