@@ -13,6 +13,7 @@ import os
 import numpy as np
 import h5py
 from silx.io.utils import open as silx_open
+from silx.io.convert import write_to_h5, _is_commonh5_group
 from sloth.utils.strings import str2rng
 
 
@@ -49,9 +50,9 @@ class DataSourceSpecH5(object):
         self._scan_n = None
         self._scan_str = None
         self._sg = None  # ScanGroup
-        if urls_fmt == 'silx':
+        if urls_fmt == "silx":
             self._set_urls_silx()
-        elif urls_fmt == 'spec2nexus':
+        elif urls_fmt == "spec2nexus":
             self._set_urls_spec2nexus()
         else:
             self._urls_fmt = None
@@ -314,7 +315,7 @@ class DataSourceSpecH5(object):
         overwrite=False,
         conf_dict=None,
     ):
-        """Export a selected range of scans to HDF5 file
+        """Export a selected list of scans to HDF5 file
 
         .. note:: This is a simple wrapper to
             :func:`silx.io.convert.write_to_h5`
@@ -335,8 +336,6 @@ class DataSourceSpecH5(object):
         conf_dict : None or dict (optional)
             configuration dictionary saved as '{hdfpath}/.config'
         """
-        from silx.io.convert import write_to_h5
-
         self._fname_out = fname_out
         self._logger.info(f"output file: {self._fname_out}")
         if os.path.isfile(self._fname_out) and os.access(self._fname_out, os.R_OK):
@@ -373,14 +372,17 @@ class DataSourceSpecH5(object):
         def _loop_scans(scns, group=None):
             for scn in scns:
                 self.set_scan(scn)
-                if self._sg is None:
+                _sg = self._sg
+                if _sg is None:
                     continue
+                if not _is_commonh5_group(_sg):
+                    self._logger.error("scan '%s' is not commonh5 group", scn)
                 if group is not None:
                     _h5path = f"{h5path}{group}/{self._scan_str}/"
                 else:
                     _h5path = f"{h5path}{self._scan_str}/"
                 write_to_h5(
-                    self._sg,
+                    _sg,
                     h5out,
                     h5path=_h5path,
                     create_dataset_args=dict(track_order=True),
