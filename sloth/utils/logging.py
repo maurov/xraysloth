@@ -4,6 +4,9 @@
 Handling loggers
 """
 import sys
+# try:
+#     from zenlog import logging
+# except ImportError:
 import logging
 # import tempfile
 
