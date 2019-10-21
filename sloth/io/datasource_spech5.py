@@ -195,6 +195,10 @@ class DataSourceSpecH5(object):
         except Exception:
             self._logger.error(f"'{url_str}' not found -> use 'set_scan' method first")
 
+    def get_scans(self):
+        """Get list of scans"""
+        return list(self._sf.keys())
+
     def get_motors(self):
         """Get list of motors names"""
         return self._list_from_url(self._mots_url)
