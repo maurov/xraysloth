@@ -37,7 +37,8 @@ from sloth import __version__ as sloth_version
 
 #: module logger
 from sloth.utils.logging import getLogger
-_logger = getLogger('sloth.groups.h5base', level='INFO')
+
+_logger = getLogger("sloth.groups.h5base", level="INFO")
 
 ##########
 # GROUPS #
@@ -49,12 +50,8 @@ class BaseGroup(commonh5.Group):
 
     def __init__(self, name, parent=None, attrs=None, logger=None):
         """Constructor"""
-        super(BaseGroup, self).__init__(name,
-                                        parent=parent, attrs=attrs)
-        if logger is None:
-            self._logger = _logger
-        else:
-            self._logger = logger
+        super(BaseGroup, self).__init__(name, parent=parent, attrs=attrs)
+        self._logger = logger or _logger
 
     def add_group(self, name, attrs=None, cls=None):
         """Add Group"""
@@ -79,15 +76,15 @@ class BaseGroup(commonh5.Group):
         else:
             ret = f"{'|'*level}+---{self.basename}\n"
         for child in self._get_children():
-            ret += child.__str__(level+1)
+            ret += child.__str__(level + 1)
         return ret
 
     def write_to_h5(self, filename, overwrite=False):
         """Write the whole tree to file"""
         self._fname_out = filename
         import os
-        if os.path.isfile(self._fname_out) and os.access(self._fname_out,
-                                                         os.R_OK):
+
+        if os.path.isfile(self._fname_out) and os.access(self._fname_out, os.R_OK):
             _fileExists = True
         else:
             _fileExists = False
@@ -95,13 +92,18 @@ class BaseGroup(commonh5.Group):
             self._logger.info(f"Output file exists and 'overwrite' is {overwrite}")
             return
         if overwrite:
-            mode = 'w'
+            mode = "w"
         else:
-            mode = 'a'
+            mode = "a"
         from silx.io.convert import write_to_h5
-        write_to_h5(self, self._fname_out,
-                    mode=mode, overwrite_data=overwrite,
-                    create_dataset_args=dict(track_order=True))
+
+        write_to_h5(
+            self,
+            self._fname_out,
+            mode=mode,
+            overwrite_data=overwrite,
+            create_dataset_args=dict(track_order=True),
+        )
         self._logger.info(f"{self.basename} written to {filename}")
         self._logger.warning("FIXME: the order of groups is currently not kept")
 
@@ -111,16 +113,17 @@ class RootGroup(BaseGroup):
 
     def __init__(self, name="", logger=None, mode=None):
         """Constructor with default NXroot class"""
-        attrs = {"NX_class": "NXroot",
-                 "created": datetime.datetime.now().isoformat(),
-                 "creator": "sloth %s" % sloth_version
-                 }
+        attrs = {
+            "NX_class": "NXroot",
+            "created": datetime.datetime.now().isoformat(),
+            "creator": "sloth %s" % sloth_version,
+        }
         super(RootGroup, self).__init__(name, parent=None, attrs=attrs, logger=logger)
 
         self._file_name = name
         if mode is None:
             mode = "r"
-        assert(mode in ["r", "w"])
+        assert mode in ["r", "w"]
         self._mode = mode
 
     @property
@@ -135,6 +138,7 @@ class RootGroup(BaseGroup):
     def h5_class(self):
         """Returns the :class:`h5py.File` class"""
         from silx.io.utils import H5Type
+
         return H5Type.FILE
 
     def __enter__(self):
@@ -164,8 +168,9 @@ class EntryGroup(BaseGroup):
             attrs.update(_attrs)
         else:
             attrs = _attrs
-        super(EntryGroup, self).__init__(name, parent=parent, attrs=attrs,
-                                         logger=logger)
+        super(EntryGroup, self).__init__(
+            name, parent=parent, attrs=attrs, logger=logger
+        )
 
 
 ############
@@ -183,8 +188,7 @@ class BaseDataset(commonh5.Dataset):
             attrs.update(_attrs)
         else:
             attrs = _attrs
-        super(BaseDataset, self).__init__(name, data,
-                                          parent=parent, attrs=attrs)
+        super(BaseDataset, self).__init__(name, data, parent=parent, attrs=attrs)
 
     def __str__(self, level=0):
         """Dataset representation"""
@@ -194,34 +198,37 @@ class BaseDataset(commonh5.Dataset):
 
 def test_example(write=True, view=True):
     """Test example for :mod:`sloth.groups.h5base`"""
-    t = RootGroup('test', logger=_logger)
+    t = RootGroup("test", logger=_logger)
     t._logger.info("Data model example: 't' is the root instance")
-    t.add_group('Z9entry1', cls=EntryGroup)
-    t.add_group('A0entry2')
-    t['Z9entry1'].add_group('ZZsubentry1')
-    t['Z9entry1'].add_group('ZAsubentry2')
-    t['A0entry2'].add_group('AAsubentry1')
-    t['A0entry2'].add_group('AZsubentry2')
-    t['A0entry2/AZsubentry2'].add_group('Bsubsubentry1')
-    t['A0entry2/AZsubentry2'].add_group('Dsubsubentry2')
-    t['A0entry2/AZsubentry2'].add_group('Asubsubentry3')
+    t.add_group("Z9entry1", cls=EntryGroup)
+    t.add_group("A0entry2")
+    t["Z9entry1"].add_group("ZZsubentry1")
+    t["Z9entry1"].add_group("ZAsubentry2")
+    t["A0entry2"].add_group("AAsubentry1")
+    t["A0entry2"].add_group("AZsubentry2")
+    t["A0entry2/AZsubentry2"].add_group("Bsubsubentry1")
+    t["A0entry2/AZsubentry2"].add_group("Dsubsubentry2")
+    t["A0entry2/AZsubentry2"].add_group("Asubsubentry3")
 
     #: +dataset
     import numpy as np
-    x = np.arange(10)
-    t['Z9entry1'].add_dataset('x', x)
-    t['Z9entry1/ZZsubentry1'].add_dataset('x', x)
 
-    t._logger.info('print(t):\n%s', t)
+    x = np.arange(10)
+    t["Z9entry1"].add_dataset("x", x)
+    t["Z9entry1/ZZsubentry1"].add_dataset("x", x)
+
+    t._logger.info("print(t):\n%s", t)
 
     if write:
         #: +write to file
         import tempfile
-        ft = tempfile.mktemp(prefix='test_', suffix='.hfd5')
+
+        ft = tempfile.mktemp(prefix="test_", suffix=".hfd5")
         t.write_to_h5(ft)
 
     if view:
         from silx import sx
+
         sx.enable_gui()
         # from silx.app.view.Viewer import Viewer
         # v = Viewer()
@@ -229,8 +236,9 @@ def test_example(write=True, view=True):
         # v.setMinimumSize(1280, 800)
         # v.show()
         from sloth.gui.hdf5.view import TreeViewWidget
+
         v = TreeViewWidget()
-        #v.model().appendFile(t._fname_out)
+        # v.model().appendFile(t._fname_out)
         v.model().insertH5pyObject(t)
         v.show()
         input("Press ENTER to close the view window...")
@@ -238,5 +246,5 @@ def test_example(write=True, view=True):
     return t
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     t = test_example(write=True, view=True)
