@@ -1,28 +1,31 @@
-Sloth: slowly evolving utilities for X-ray spectroscopists
+Sloth: slowly evolving utilities for x-ray spectroscopists
 ==========================================================
 
-Sloth is a Python library oriented to X-ray instrumentation/optics and data
-reduction/analysis for X-ray Absorption Spectroscopy (XAS, XANES/EXAFS), X-ray
-emission spectroscopy (XES) and Resonant Inelastic X-ray Scattering (RIXS)
-techniques.
+Sloth is a collection of Python scripts that may result useful in the field of
+x-ray instrumentation/optics and data reduction/analysis for x-ray Absorption
+Spectroscopy (XAS, XANES/EXAFS), x-ray emission spectroscopy (XES) and Resonant
+Inelastic x-ray Scattering (RIXS) techniques.
 
-Sloth is lazy by nature and the main motto is *do not reinvent the Python
-wheel!*, this nerdy statement wants simply to point out that in the Python
-open-source ecosystem there are tons of libraries that implements more or less
-similar things for the simple reason of reducing dependencies... well, here is
-the contrary! Apart few very basic libraries that are required, many other are
-used randomly in various parts and you will discover them by usage, so I
-strongly encourage to read the code and the work-in-progress documentation.
+Sloth is lazy by nature and tries reusing as much as possible the existing
+open-source libraries of the Python ecosystem. Nevertheless, apart few very
+basic libraries that are mandatory, many other are used randomly in various
+parts and you will discover them by usage, so I strongly encourage to read the
+code and the work-in-progress documentation.
 
-**WARNING** In the current status, the library is not stable enough to be used
-in production environments. This is simply due to the fact that there is only
-one developer for a single user, that is, myself!. For this reason, the
-library performs as a partial random snapshot of daily work/research in X-ray
-instrumentation and still-to-implement ideas (mainly due to lack of time).
-Feel free to use/hack it and do not hesitate to drop me a line if you find
-them useful. This will force me to stabilize the project. Furthermore, I
-appreciate if you could report bugs, enhancements or comments directly in
-`Github Issues <https://github.com/maurov/xraysloth/issues>`_
+**WARNING** Sloth is designed as a library, but it should not be used in
+production environments, because its API is changing rapidily and backward
+compatibility is not guarenteed. The main reason is the fact that there is only
+one developer for a single user, myself!. Thus, the library performs as a
+partial random snapshot of daily work/research and still-to-implement ideas
+(mainly due to lack of time). Feel free to use/hack it and do not hesitate to
+drop me a line if you find any script useful. Furthermore, I appreciate if bugs,
+enhancements or comments  could be reported directly in `Github Issues
+<https://github.com/maurov/xraysloth/issues>`_
+
+This project works in close collaboration with `Larch
+<https://github.com/xraypy/xraylarch>`_ and the goal is to transfer stable
+portions of the code there. This means that **it is recommended to use Larch in
+production environments**.
 
 Finally, I recommend visiting the `Sloth appreciation society
 <http://www.slothville.com/>`_ and I acknowledge them for inspiring the logo.
