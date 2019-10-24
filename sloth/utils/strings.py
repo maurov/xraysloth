@@ -50,15 +50,23 @@ def colorstr(instr, color="green", on_color=None, attrs=["bold"]):
 
 
 def str2rng(rngstr, keeporder=True, rebin=None):
-    """simple utility to convert a generic string representing a compact
-    list of scans to a sorted list of integers
+    """Convert a string to a range of intergers
+    
+    Description
+    -----------
+    This utility converts a string representing list or range of intergers (=scans)
+    to a sorted list of integers
 
     Parameters
     ----------
-    rngstr : string with given syntax (see Example below)
-    keeporder : boolean [True], to keep the original order
-                keeporder=False turn into a sorted list
-    rebin : integer [None], force rebinning of the final range
+    rngstr : str
+        Strig following a given syntax (see Example below)
+    keeporder : boolean
+        Control the order output [True -> keep the original order]
+        keeporder=False -> turn into a sorted list
+    rebin : int
+        if set, force rebinning of the final range [None]
+        .. note: useful for selecting scans every a given bunch.
 
     Example
     -------
@@ -66,6 +74,8 @@ def str2rng(rngstr, keeporder=True, rebin=None):
     > [7, 8, 9, 14, 16, 17, 18, 100, 130, 135, 140]
 
     """
+    if rngstr is None:
+        raise NameError("Provide a string or list of scans to load")
     if type(rngstr) is list:
         assert all([type(elem) is int for elem in rngstr]), "'rngstr' not list of ints"
         _logger.info("[str2rng] 'rngstr' given as list of integers")

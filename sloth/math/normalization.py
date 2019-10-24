@@ -6,7 +6,9 @@
 """
 import numpy as np
 
-def norm1D(y, norm=None, **kws):
+from sloth.utils.logging import getLogger
+
+def norm1D(y, norm=None, logger=None, **kws):
     """collection of simple normalization methods
 
     Parameters
@@ -24,6 +26,7 @@ def norm1D(y, norm=None, **kws):
     ynorm : array of float
 
     """
+    _logger = logger or getLogger("sloth.math.normalization.norm1D")
     if norm == "max":
         return y / np.max(y)
     elif norm == "max-min":
@@ -36,7 +39,7 @@ def norm1D(y, norm=None, **kws):
     elif norm == "sum":
         return (y - np.min(y)) / np.sum(y)
     elif norm == "larch":
-        print("TODO!")
+        _logger.error("NOT IMPLEMENTED YET!")
         return y
         # try:
         #     d = DataGroupXanes()
@@ -49,7 +52,7 @@ def norm1D(y, norm=None, **kws):
         #     print('ERROR: Larch normalization failed')
         #     return y
     else:
-        print("WARNING: normalization method not known")
+        _logger.warning("Normalization method not known")
         return y
 
 if __name__ == '__main__':

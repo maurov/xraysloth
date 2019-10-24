@@ -46,11 +46,17 @@ def sum_arrays_1d(xdats, zdats, axis=None):
     """
     if axis is None:
         axis = xdats[0]
-    zsum = np.zeros_like(axis)
-    for xdat, zdat in zip(xdats, zdats):
-        fdat = interp1d(xdat, zdat)
-        zsum += fdat(axis)
-    return axis, zsum
+    try:
+        #: sum element-by-element
+        arr_zdats = np.array(zdats)
+        return axis, np.sum(arr_zdats, 0)
+    except Exception:
+        #: sum by interpolation
+        zsum = np.zeros_like(axis)
+        for xdat, zdat in zip(xdats, zdats):
+            fdat = interp1d(xdat, zdat)
+            zsum += fdat(axis)
+        return axis, zsum
 
 
 def rebin_piecewise_constant(x1, y1, x2):

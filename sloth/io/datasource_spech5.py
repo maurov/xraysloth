@@ -195,6 +195,10 @@ class DataSourceSpecH5(object):
         except Exception:
             self._logger.error(f"'{url_str}' not found -> use 'set_scan' method first")
 
+    # ================== #
+    #: READ DATA METHODS
+    # ================== #
+
     def get_scans(self):
         """Get list of scans"""
         return list(self._sf.keys())
@@ -309,6 +313,133 @@ class DataSourceSpecH5(object):
         else:
             self._logger.error(f"'{mot}' not found in available motors: {mots}")
             return 0
+
+    def get_axis_data(self, ax_name=None, to_energy=None):
+        """Get data for the scan axis
+        
+        Description
+        -----------
+        This method returns the data (=label and array) for a given axis of the
+        selected scan. It is primarily targeted to a "scanning" axis, but any
+        counter can be used. It is possible to control common conversions, like
+        Bragg angle to energy.
+        
+        Parameters
+        ----------
+        ax_name : str or None
+            
+        norm : dict
+            Controls the normalization of the signal [None]
+            {
+                "monitor": "str",  #: name of counter used for normalization
+                "cps": bool,  #: multiply back to np.average(monitor)
+            }
+        deglitch : dict
+            Controls :func:`sloth.math.deglitch.remove_spikes_medfilt1d` [None]
+
+        Returns
+        -------
+        label, data
+        """
+        if (ax_name is not None) and (ax_name not in self.get_counters()):
+            self._logger.error("%s not a counter", ax_name)
+            return None, None
+        ax_label = ax_name or self.get_scan_axis()
+        ax_data = self.get_array(ax_label)
+        if to_energy is not None:
+            from sloth.utils.bragg import ang2kev
+
+            bragg_ax = to_energy["bragg_ax"]
+            bragg_ax_type = to_energy["bragg_ax_type"]
+            bragg_d = to_energy["bragg_d"]
+            if bragg_ax_type == "counter":
+                bragg_deg = self.get_array(bragg_ax).mean()
+            elif bragg_ax_type == "motor":
+                bragg_deg = self.get_value(bragg_ax)
+            else:
+                self._logger.error("wrong 'bragg_ax_type' (motor or counter?)")
+            if "enc" in bragg_ax:
+                bragg_deg = (np.abs(bragg_deg) / to_energy["bragg_enc_units"]) * 360
+            ax_abs_deg = bragg_deg + np.rad2deg(ax_data) / 1000.0
+            ax_abs_ev = ang2kev(ax_abs_deg, bragg_d) * 1000.0
+            ax_data = ax_abs_ev
+            ax_label += "_abs_ev"
+            self._logger.debug("Converted axis %s", ax_label)
+            xmin = ax_data.min()
+            xmax = ax_data.max()
+            self._logger.info("%s range: [%.3f, %.3f]", ax_label, xmin, xmax)
+            return ax_label, ax_data
+
+    def get_signal_data(self, sig_name, mon=None, deglitch=None, norm=None):
+        """Get data for the signal counter
+
+        Description
+        -----------
+        This method returns the data (=label and array) for a given signal of the
+        selected scan. It is possible to control normalization and/or deglitching.
+        
+        Basic processing: raw data -> norm by monitor signal -> deglitch -> norm2
+
+        Parameters
+        ----------
+        sig_name : str
+        mon : dict
+            Controls the normalization of the signal by a monitor signal [None]
+            {
+                "monitor": "str",  #: name of counter used for normalization
+                "cps": bool,  #: multiply back to np.average(monitor)
+            }
+        deglitch : dict
+            Controls :func:`sloth.math.deglitch.remove_spikes_medfilt1d` [None]
+        norm : dict
+            Controls the normalization by given method
+
+        Returns
+        -------
+        label, data
+        """
+        if sig_name not in self.get_counters():
+            self._logger.error("%s not a counter", sig_name)
+            return None, None
+        sig_data = self.get_array(sig_name)
+        sig_label = sig_name
+        if mon is not None:
+            mon_name = mon["monitor"]
+            mon_data = self.get_array(mon_name)
+            sig_data /= mon_data
+            sig_label += f"_mon({mon_name})"
+            if norm["cps"]:
+                sig_data *= np.average(mon_data)  #: put back in counts
+                sig_label += "_cps"
+        if deglitch is not None:
+            from sloth.math.deglitch import remove_spikes_medfilt1d
+
+            sig_data = remove_spikes_medfilt1d(sig_data, **deglitch)
+            sig_label += "_dgl"
+        if norm is not None:
+            from sloth.math.normalization import norm1D
+
+            norm_meth = norm["method"]
+            sig_data = norm1D(sig_data, norm=norm_meth, logger=self._logger)
+            sig_label += f"_norm({norm_meth})"
+        self._logger.info("Loaded signal: %s", sig_label)
+        return sig_label, sig_data
+
+    def get_curve(self, *args, **kwargs):
+        """Get XY data (=curve) for current scan"""
+        pass
+
+    def get_curves(self, *args, **kwargs):
+        """Get list of XY data (=curves) for selected scans"""
+        pass
+
+    def get_merged(self, *args, **kwargs):
+        """Get merged list of XY data with a given action"""
+        pass
+
+    # =================== #
+    #: WRITE DATA METHODS
+    # =================== #
 
     def write_scans_to_h5(
         self,
