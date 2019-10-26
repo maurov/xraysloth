@@ -133,7 +133,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change Log</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../todo.html">To Do</a></li>
 </ul>
 
             
@@ -757,14 +756,17 @@ copy</p></li>
 <dl class="function">
 <dt id="sloth.utils.strings.str2rng">
 <code class="sig-prename descclassname">sloth.utils.strings.</code><code class="sig-name descname">str2rng</code><span class="sig-paren">(</span><em class="sig-param">rngstr</em>, <em class="sig-param">keeporder=True</em>, <em class="sig-param">rebin=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/strings.html#str2rng"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.strings.str2rng" title="Permalink to this definition">¶</a></dt>
-<dd><p>simple utility to convert a generic string representing a compact
-list of scans to a sorted list of integers</p>
+<dd><p>Convert a string to a range of intergers</p>
+<p>This utility converts a string representing list or range of intergers (=scans)
+to a sorted list of integers</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>rngstr</strong> (<em>string with given syntax</em><em> (</em><em>see Example below</em><em>)</em>) – </p></li>
-<li><p><strong>keeporder</strong> (<em>boolean</em><em> [</em><em>True</em><em>]</em><em>, </em><em>to keep the original order</em>) – keeporder=False turn into a sorted list</p></li>
-<li><p><strong>rebin</strong> (<em>integer</em><em> [</em><em>None</em><em>]</em><em>, </em><em>force rebinning of the final range</em>) – </p></li>
+<li><p><strong>rngstr</strong> (<em>str</em>) – Strig following a given syntax (see Example below)</p></li>
+<li><p><strong>keeporder</strong> (<em>boolean</em>) – Control the order output [True -&gt; keep the original order]
+keeporder=False -&gt; turn into a sorted list</p></li>
+<li><p><strong>rebin</strong> (<em>int</em>) – if set, force rebinning of the final range [None]
+.. note: useful for selecting scans every a given bunch.</p></li>
 </ul>
 </dd>
 </dl>

@@ -93,7 +93,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../data_model/index.html">Notes on the data model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../todo.html">To Do</a></li>
 </ul>
 
             
@@ -165,7 +164,9 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<div class="viewcode-block" id="norm1D"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.normalization.norm1D">[docs]</a><span class="k">def</span> <span class="nf">norm1D</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+<span class="kn">from</span> <span class="nn">sloth.utils.logging</span> <span class="k">import</span> <span class="n">getLogger</span>
+
+<div class="viewcode-block" id="norm1D"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.normalization.norm1D">[docs]</a><span class="k">def</span> <span class="nf">norm1D</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;collection of simple normalization methods</span>
 
 <span class="sd">    Parameters</span>
@@ -183,6 +184,7 @@
 <span class="sd">    ynorm : array of float</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_logger</span> <span class="o">=</span> <span class="n">logger</span> <span class="ow">or</span> <span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;sloth.math.normalization.norm1D&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">norm</span> <span class="o">==</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">y</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">norm</span> <span class="o">==</span> <span class="s2">&quot;max-min&quot;</span><span class="p">:</span>
@@ -195,7 +197,7 @@
     <span class="k">elif</span> <span class="n">norm</span> <span class="o">==</span> <span class="s2">&quot;sum&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">y</span><span class="p">))</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">norm</span> <span class="o">==</span> <span class="s2">&quot;larch&quot;</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;TODO!&quot;</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;NOT IMPLEMENTED YET!&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">y</span>
         <span class="c1"># try:</span>
         <span class="c1">#     d = DataGroupXanes()</span>
@@ -208,7 +210,7 @@
         <span class="c1">#     print(&#39;ERROR: Larch normalization failed&#39;)</span>
         <span class="c1">#     return y</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING: normalization method not known&quot;</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Normalization method not known&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">y</span></div>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>

@@ -93,7 +93,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../data_model/index.html">Notes on the data model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../todo.html">To Do</a></li>
 </ul>
 
             
@@ -205,11 +204,17 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">axis</span> <span class="o">=</span> <span class="n">xdats</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">zsum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">xdat</span><span class="p">,</span> <span class="n">zdat</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xdats</span><span class="p">,</span> <span class="n">zdats</span><span class="p">):</span>
-        <span class="n">fdat</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">xdat</span><span class="p">,</span> <span class="n">zdat</span><span class="p">)</span>
-        <span class="n">zsum</span> <span class="o">+=</span> <span class="n">fdat</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">axis</span><span class="p">,</span> <span class="n">zsum</span></div>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1">#: sum element-by-element</span>
+        <span class="n">arr_zdats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">zdats</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">axis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">arr_zdats</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="c1">#: sum by interpolation</span>
+        <span class="n">zsum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">xdat</span><span class="p">,</span> <span class="n">zdat</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xdats</span><span class="p">,</span> <span class="n">zdats</span><span class="p">):</span>
+            <span class="n">fdat</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">xdat</span><span class="p">,</span> <span class="n">zdat</span><span class="p">)</span>
+            <span class="n">zsum</span> <span class="o">+=</span> <span class="n">fdat</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">axis</span><span class="p">,</span> <span class="n">zsum</span></div>
 
 
 <div class="viewcode-block" id="rebin_piecewise_constant"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.arrays.rebin_piecewise_constant">[docs]</a><span class="k">def</span> <span class="nf">rebin_piecewise_constant</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>

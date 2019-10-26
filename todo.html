@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>To Do &mdash; Sloth 0.3.0-dev documentation</title>
+  <title>&lt;no title&gt; &mdash; Sloth 0.3.0-dev documentation</title>
   
 
   
@@ -88,18 +88,12 @@
             
             
               <p class="caption"><span class="caption-text">Contents</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html#usage">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_model/index.html">Notes on the data model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules/index.html">Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Change Log</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">To Do</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#bug-fixes">Bug fixes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#new-features">New features</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#refactoring">Refactoring</a></li>
-</ul>
-</li>
 </ul>
 
             
@@ -145,7 +139,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>To Do</li>
+      <li>&lt;no title&gt;</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -164,131 +158,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="to-do">
-<h1>To Do<a class="headerlink" href="#to-do" title="Permalink to this headline">¶</a></h1>
-<p>A list of tasks that should be implemented and come up to my mind
-while coding. Everything is collected in a single file instead of
-dispersing <em>TODO</em> tags in the code. Another approach is to create
-issues and self-assign them, but it is definitively overkill.</p>
-<div class="section" id="bug-fixes">
-<h2>Bug fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="new-features">
-<h2>New features<a class="headerlink" href="#new-features" title="Permalink to this headline">¶</a></h2>
-<p>Here well defined tasks ready for implementation, grouped by
-modules. No particular priority order is given.</p>
-<ul class="simple">
-<li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth</span></code></p>
-<ul>
-<li><p>[ ] clean imports</p></li>
-</ul>
-</li>
-<li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.genericutils</span></code></p>
-<ul>
-<li><p>[ ] clean imports</p></li>
-</ul>
-</li>
-<li><p><a class="reference internal" href="modules/utils.html#module-sloth.utils.xdata" title="sloth.utils.xdata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.xdata</span></code></a></p>
-<ul>
-<li><p>[ ] make a single API for both <cite>xraylib</cite> and <cite>larch</cite> backends.</p></li>
-</ul>
-</li>
-<li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.gui.sloth_main</span></code></p>
-<ul>
-<li><p>[ ] load data workflow.</p></li>
-<li><p>[ ] 2D plots</p></li>
-<li><p>[ ] Rowland circle</p></li>
-<li><p>…</p></li>
-</ul>
-</li>
-<li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit.peakfit</span></code></p>
-<ul>
-<li><p>[ ] implement everything with the choice of backend: <cite>silx</cite> or <cite>lmfit</cite></p></li>
-<li><p>[ ] <code class="xref py py-func docutils literal notranslate"><span class="pre">fit_silx()</span></code> move to a <code class="xref py py-class docutils literal notranslate"><span class="pre">FitManager</span></code></p></li>
-<li><p>[ ] <code class="xref py py-func docutils literal notranslate"><span class="pre">fit_splitpvoigt()</span></code> move to <code class="xref py py-class docutils literal notranslate"><span class="pre">Specfit</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">FitManager</span></code></p></li>
-</ul>
-</li>
-<li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.genericutils</span></code></p>
-<ul>
-<li><p>[ ] restructure/refresh/collect sparse pieces of code elsewhere</p></li>
-</ul>
-</li>
-<li><p><a class="reference internal" href="modules/utils.html#module-sloth.utils.pymca" title="sloth.utils.pymca"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.pymca</span></code></a></p>
-<ul>
-<li><p>class:<cite>myPyMcaMain</cite></p>
-<ul>
-<li><p>add method to change configuration on the fly without clicking</p></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p><a class="reference internal" href="modules/math.html#module-sloth.math.deglitch" title="sloth.math.deglitch"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math.deglitch</span></code></a></p>
-<ul>
-<li><p>[ ] document/improve <code class="xref py py-func docutils literal notranslate"><span class="pre">remove_spikes()</span></code>, get rid of Pandas</p></li>
-</ul>
-</li>
-<li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing.shadow_jscyl</span></code></p>
-<ul>
-<li><p>[ ] migrate from <cite>wippy</cite></p></li>
-</ul>
-</li>
-<li><p><a class="reference internal" href="modules/collects.html#module-sloth.collects.datagroup" title="sloth.collects.datagroup"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects.datagroup</span></code></a></p>
-<ul>
-<li><p>[ ] <em>REFACTOR THE WHOLE THING!!!</em></p></li>
-<li><p>[ ] move self.getkwsd() to the respective data objects</p></li>
-<li><p>[ ] move 1D parts to datagroup1D</p></li>
-<li><p>[ ] use map() instead of for loops…</p></li>
-<li><p>[ ] use update() for kwsd: see <a href="#id1"><span class="problematic" id="id2">`https://github.com/xraypy/xraylarch/issues/66#issuecomment-30948135`_</span></a></p></li>
-<li><p>[ ] control multiple plot windows (‘win’ keyword argument) when plotting</p></li>
-<li><p>[ ] plotting with SILX instead of PyMca</p></li>
-</ul>
-</li>
-<li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects.datagroup1D</span></code></p>
-<ul>
-<li><p>[ ] mksum</p></li>
-<li><p>[ ] plotxy: self.pw.setGeometry(700, 50, 900, 900), use config!</p></li>
-</ul>
-</li>
-<li><p><a class="reference internal" href="modules/math.html#module-sloth.math.normalization" title="sloth.math.normalization"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math.normalization</span></code></a></p>
-<ul>
-<li><p>[ ] <code class="xref py py-func docutils literal notranslate"><span class="pre">norm1D()</span></code> add XANES normalization with Larch</p></li>
-</ul>
-</li>
-<li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.rixs.rixdata</span></code></p>
-<ul>
-<li><p>[ ] move self.getkwsd() to ConfigParser</p></li>
-</ul>
-</li>
-<li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.rixs.rixdata_plotter</span></code></p>
-<ul>
-<li><dl class="simple">
-<dt>[ ] make possible more than one data set in the same figure</dt><dd><p>controlled by the ‘replace’ variable</p>
-</dd>
-</dl>
-</li>
-<li><p>[ ] RixsDataPlotter should inherit directly from RixsData class !</p></li>
-<li><dl class="simple">
-<dt>[ ] remove the model/controller from the plot method (view):</dt><dd><p>e.g. move in a separate method the line cuts</p>
-</dd>
-</dl>
-</li>
-<li><p>[ ] interactive cuts with mouse selection</p></li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="section" id="refactoring">
-<h2>Refactoring<a class="headerlink" href="#refactoring" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p><a class="reference internal" href="modules/raytracing.html#module-sloth.raytracing" title="sloth.raytracing"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing</span></code></a></p>
-<ul>
-<li><p>[ ] revise the whole thing… currently a mess!</p></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-
+  
 
            </div>
            

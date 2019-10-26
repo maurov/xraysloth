@@ -117,7 +117,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change Log</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../todo.html">To Do</a></li>
 </ul>
 
             
@@ -199,7 +198,7 @@ have a unified data loading experience for many types of data files.</p>
 </ul>
 <dl class="class">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5">
-<em class="property">class </em><code class="sig-prename descclassname">sloth.io.datasource_spech5.</code><code class="sig-name descname">DataSourceSpecH5</code><span class="sig-paren">(</span><em class="sig-param">fname=None</em>, <em class="sig-param">logger=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">sloth.io.datasource_spech5.</code><code class="sig-name descname">DataSourceSpecH5</code><span class="sig-paren">(</span><em class="sig-param">fname=None</em>, <em class="sig-param">logger=None</em>, <em class="sig-param">urls_fmt='silx'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Data source utility wrapper for a Spec file read as HDF5 object
 via silx.io.open</p>
 <dl class="method">
@@ -256,6 +255,12 @@ via silx.io.open</p>
 <dd class="field-odd"><p>set attributes</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_scans">
+<code class="sig-name descname">get_scans</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_scans"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_scans" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get list of scans</p>
 </dd></dl>
 
 <dl class="method">
@@ -336,9 +341,91 @@ via silx.io.open</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_axis_data">
+<code class="sig-name descname">get_axis_data</code><span class="sig-paren">(</span><em class="sig-param">ax_name=None</em>, <em class="sig-param">to_energy=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_axis_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_axis_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get data for the scan axis</p>
+<p>This method returns the data (=label and array) for a given axis of the
+selected scan. It is primarily targeted to a “scanning” axis, but any
+counter can be used. It is possible to control common conversions, like
+Bragg angle to energy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ax_name</strong> (<em>str</em><em> or </em><em>None</em>) – </p></li>
+<li><p><strong>norm</strong> (<em>dict</em>) – <p>Controls the normalization of the signal [None]
+{</p>
+<blockquote>
+<div><p>”monitor”: “str”,  #: name of counter used for normalization
+“cps”: bool,  #: multiply back to np.average(monitor)</p>
+</div></blockquote>
+<p>}</p>
+</p></li>
+<li><p><strong>deglitch</strong> (<em>dict</em>) – Controls <a class="reference internal" href="math.html#sloth.math.deglitch.remove_spikes_medfilt1d" title="sloth.math.deglitch.remove_spikes_medfilt1d"><code class="xref py py-func docutils literal notranslate"><span class="pre">sloth.math.deglitch.remove_spikes_medfilt1d()</span></code></a> [None]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>label, data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_signal_data">
+<code class="sig-name descname">get_signal_data</code><span class="sig-paren">(</span><em class="sig-param">sig_name</em>, <em class="sig-param">mon=None</em>, <em class="sig-param">deglitch=None</em>, <em class="sig-param">norm=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_signal_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_signal_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get data for the signal counter</p>
+<p>This method returns the data (=label and array) for a given signal of the
+selected scan. It is possible to control normalization and/or deglitching.</p>
+<p>Basic processing: raw data -&gt; norm by monitor signal -&gt; deglitch -&gt; norm2</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sig_name</strong> (<em>str</em>) – </p></li>
+<li><p><strong>mon</strong> (<em>dict</em>) – <p>Controls the normalization of the signal by a monitor signal [None]
+{</p>
+<blockquote>
+<div><p>”monitor”: “str”,  #: name of counter used for normalization
+“cps”: bool,  #: multiply back to np.average(monitor)</p>
+</div></blockquote>
+<p>}</p>
+</p></li>
+<li><p><strong>deglitch</strong> (<em>dict</em>) – Controls <a class="reference internal" href="math.html#sloth.math.deglitch.remove_spikes_medfilt1d" title="sloth.math.deglitch.remove_spikes_medfilt1d"><code class="xref py py-func docutils literal notranslate"><span class="pre">sloth.math.deglitch.remove_spikes_medfilt1d()</span></code></a> [None]</p></li>
+<li><p><strong>norm</strong> (<em>dict</em>) – Controls the normalization by given method</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>label, data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_curve">
+<code class="sig-name descname">get_curve</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_curve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_curve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get XY data (=curve) for current scan</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_curves">
+<code class="sig-name descname">get_curves</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_curves"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_curves" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get list of XY data (=curves) for selected scans</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_merged">
+<code class="sig-name descname">get_merged</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_merged"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_merged" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get merged list of XY data with a given action</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.write_scans_to_h5">
 <code class="sig-name descname">write_scans_to_h5</code><span class="sig-paren">(</span><em class="sig-param">scans</em>, <em class="sig-param">fname_out</em>, <em class="sig-param">scans_groups=None</em>, <em class="sig-param">h5path=None</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">conf_dict=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.write_scans_to_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.write_scans_to_h5" title="Permalink to this definition">¶</a></dt>
-<dd><p>Export a selected range of scans to HDF5 file</p>
+<dd><p>Export a selected list of scans to HDF5 file</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This is a simple wrapper to
@@ -353,7 +440,7 @@ if a list of lists, scans_groups is required</p></li>
 <li><p><strong>scans_groups</strong> (<em>list of strings</em>) – groups of scans</p></li>
 <li><p><strong>h5path</strong> (<em>str</em><em> (</em><em>optional</em><em>)</em>) – path inside HDF5 [None -&gt; ‘/’]</p></li>
 <li><p><strong>overwrite</strong> (<em>boolean</em><em> (</em><em>optional</em><em>)</em>) – force overwrite if the file exists [False]</p></li>
-<li><p><strong>conf_dict</strong> (<em>None</em><em> or </em><em>dict</em><em> (</em><em>optional</em><em>)</em>) – configuration dictionary saved as ‘{hdfpath}/0.1_conf’</p></li>
+<li><p><strong>conf_dict</strong> (<em>None</em><em> or </em><em>dict</em><em> (</em><em>optional</em><em>)</em>) – configuration dictionary saved as ‘{hdfpath}/.config’</p></li>
 </ul>
 </dd>
 </dl>
