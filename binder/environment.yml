@@ -13,7 +13,7 @@ dependencies:
     - numpy>=1.16
     - scipy>=1.2
     - matplotlib>=3.0
-    - h5py>=2.9
+    - h5py>=2.10
     - pandas
     - scikit-image
     - scikit-learn
