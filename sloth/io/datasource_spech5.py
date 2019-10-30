@@ -56,7 +56,7 @@ class DataSourceSpecH5(object):
             "mon": None,
             "deglitch": None,
             "norm": None,
-        } 
+        }
         self._sg = None  # ScanGroup
         if urls_fmt == "silx":
             self._set_urls_silx()
@@ -175,7 +175,8 @@ class DataSourceSpecH5(object):
         """
         self._scan_n = scan_n
         if scan_kws is not None:
-            from sloth.utils.dicts import update_nested 
+            from sloth.utils.dicts import update_nested
+
             self._scan_kws = update_nested(scan_kws)
         if self._urls_fmt == "silx":
             self._scan_str = f"{scan_n}.{scan_idx}"
@@ -418,27 +419,61 @@ class DataSourceSpecH5(object):
         return sig_label, sig_data
 
     def get_curve(
-        self, sig_name, ax_name=None, to_energy=None, mon=None, deglitch=None, norm=None
+        self,
+        sig_name,
+        ax_name=None,
+        to_energy=None,
+        mon=None,
+        deglitch=None,
+        norm=None,
+        **kws,
     ):
-        """Get XY data (=curve) for current scan"""
+        """Get XY data (=curve) for current scan
+
+        Parameters
+        ----------
+        *args, **kws -> self.get_axis_data() and self.get_signal_data()
+
+        Returns
+        -------
+        [ax_data, sig_data, attrs] : list of [array, array, dict]
+
+        """
         ax_label, ax_data = self.get_axis_data(ax_name=ax_name, to_energy=to_energy)
         sig_label, sig_data = self.get_signal_data(
             sig_name, mon=mon, deglitch=deglitch, norm=norm
         )
         attrs = dict(xlabel=ax_label, ylabel=sig_label)
-        return ax_data, sig_data, attrs
+        return [sig_label, sig_data, attrs]
 
-    def get_curves(self, *args, **kwargs):
-        """Get list of XY data (=curves) for selected scans"""
-        pass
+    def get_curves(self, scans, **kwargs):
+        """Get list of XY data (=curves) for given scans"""
+        raise NotImplementedError("TODO")
 
-    def get_merged(self, *args, **kwargs):
+    def get_stack(self, *args, **kwargs):
+        """Get a stack dictionary of curves
+
+        Returns
+        -------
+        stack : dict of dicts
+
+        {
+            'A': {'curves': [[x1, y1, info1], ..., [xN, yN, infoN]]},
+            'B': {'curves': ...},
+            ...
+            'Z': {}
+        }
+
+        """
+        raise NotImplementedError("TODO")
+
+    def get_mrg(self, curves, action="sum", **kws):
         """Get merged list of XY data with a given action"""
-        pass
+        raise NotImplementedError("TODO")
 
-    def get_merged_by(self, *args, **kwargs):
+    def get_mrg_by(self, *args, **kwargs):
         """Get merged list of XY data with a given action grouped by nbins"""
-        pass
+        raise NotImplementedError("TODO")
 
     # =================== #
     #: WRITE DATA METHODS
