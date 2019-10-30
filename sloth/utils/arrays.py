@@ -125,5 +125,22 @@ def rebin_piecewise_constant(x1, y1, x2):
     return y2
 
 
+def reject_outliers(data, m=2.0, return_mask=False):
+    """Reject outliers
+
+    Modified from: https://stackoverflow.com/questions/11686720/is-there-a-numpy-builtin-to-reject-outliers-from-a-list
+    """
+    if not isinstance(data, np.ndarray):
+        data = np.array(data)
+    d = np.abs(data - np.median(data))
+    mdev = np.median(d)
+    s = d / (mdev if mdev else 1.0)
+    mask = s < m
+    if return_mask:
+        return data[mask], mask
+    else:
+        return data[mask]
+
+
 if __name__ == '__main__':
     pass

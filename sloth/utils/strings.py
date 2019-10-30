@@ -51,7 +51,7 @@ def colorstr(instr, color="green", on_color=None, attrs=["bold"]):
 
 def str2rng(rngstr, keeporder=True, rebin=None):
     """Convert a string to a range of intergers
-    
+
     Description
     -----------
     This utility converts a string representing list or range of intergers (=scans)

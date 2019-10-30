@@ -23,7 +23,7 @@ class DataSourceSpecH5(object):
 
     def __init__(self, fname=None, logger=None, urls_fmt="silx"):
         """init with file name and default attributes
-        
+
         Parameters
         ----------
         fname : str
@@ -49,6 +49,14 @@ class DataSourceSpecH5(object):
             self._init_source_file()
         self._scan_n = None
         self._scan_str = None
+        self._scan_kws = {  # to get data from scan
+            "ax_name": None,
+            "to_energy": None,
+            "sig_name": None,
+            "mon": None,
+            "deglitch": None,
+            "norm": None,
+        } 
         self._sg = None  # ScanGroup
         if urls_fmt == "silx":
             self._set_urls_silx()
@@ -100,7 +108,9 @@ class DataSourceSpecH5(object):
     def _get_sg(self):
         """Safe get self._sg"""
         if self._sg is None:
-            raise AttributeError("group not selected yet")
+            raise AttributeError(
+                "Group/Scan not selected -> use 'self.set_scan()' first"
+            )
         else:
             return self._sg
 
@@ -142,9 +152,9 @@ class DataSourceSpecH5(object):
         """
         self._group_url = group_url
         if self._group_url is not None:
-            self._logger.info(f"selected group {self._group_url}")
+            self._logger.info(f"Selected group {self._group_url}")
 
-    def set_scan(self, scan_n, scan_idx=1, group_url=None):
+    def set_scan(self, scan_n, scan_idx=1, group_url=None, scan_kws=None):
         """Select a given scan number
 
         Parameters
@@ -155,6 +165,8 @@ class DataSourceSpecH5(object):
             scan repetition index [1]
         group_url : str
             hdf5 url with respect to / where scans are stored [None -> /scans]
+        scan_kws : None or dict
+            additional keyword arguments used to get data from scan
 
         Returns
         -------
@@ -162,6 +174,9 @@ class DataSourceSpecH5(object):
             self._scan_n, self._scan_str, self._scan_url, self._sg
         """
         self._scan_n = scan_n
+        if scan_kws is not None:
+            from sloth.utils.dicts import update_nested 
+            self._scan_kws = update_nested(scan_kws)
         if self._urls_fmt == "silx":
             self._scan_str = f"{scan_n}.{scan_idx}"
         elif self._urls_fmt == "spec2nexus":
@@ -211,24 +226,18 @@ class DataSourceSpecH5(object):
         """Get list of motors names"""
         return self._list_from_url(self._cnts_url)
 
-    def get_title(self, scan_n=None):
-        """Get title str for a given scan
-
-        Parameters
-        ----------
-        scan_n : int (optional)
-            scan number [None -> self._scan_n]
+    def get_title(self):
+        """Get title str for the current scan
 
         Returns
         -------
         title (str): scan title self._sg[self._title_url][()]
         """
-        if scan_n is not None:
-            self.set_scan(scan_n)
-        return self._get_sg()[self._title_url][()]
+        sg = self._get_sg()
+        return sg[self._title_url][()]
 
     def get_scan_axis(self):
-        """Get the name of the scanned axis from title"""
+        """Get the name of the scanned axis from scan title"""
         _title = self.get_title()
         if isinstance(_title, np.ndarray):
             _title = np.char.decode(_title)[0]
@@ -249,93 +258,79 @@ class DataSourceSpecH5(object):
             self._logger.warning(f"'{_axisout}' not present in counters and motors")
         return _axisout
 
-    def get_array(self, cnt, scan_n=None, group_url=None):
+    def get_array(self, cnt):
         """Get array of a given counter
 
         Parameters
         ----------
         cnt : str or int
             counter name or index in the list of counters
-        scan_n : int (optional)
-            optional scan number [None -> self._scan_n]
-        group_url : str (optional)
-            group name [None -> self._group_url]
 
         Returns
         -------
         array
         """
-        if group_url is not None:
-            self.set_group(group_url)
-        if scan_n is not None:
-            self.set_scan(scan_n)
+        sg = self._get_sg()
         cnts = self.get_counters()
         if type(cnt) is int:
             cnt = cnts[cnt]
-            self._logger.info(f"selected counter '{cnt}'")
+            self._logger.info("Selected counter %s", cnt)
         if cnt in cnts:
             sel_cnt = f"{self._cnts_url}/{cnt}"
-            return self._get_sg()[sel_cnt][()]
+            return sg[sel_cnt][()]
         else:
-            self._logger.error(
-                f"'{cnt}' not found among the available counters: {cnts}"
-            )
+            self._logger.error(f"'{cnt}' not found in available counters: {cnts}")
             sel_cnt = f"{self._cnts_url}/{cnts[0]}"
-            return np.zeros_like(self._get_sg()[sel_cnt][()])
+            return np.zeros_like(sg[sel_cnt][()])
 
-    def get_value(self, mot, scan_n=None, group_url=None):
+    def get_value(self, mot):
         """Get motor position
 
         Parameters
         ----------
         mot : str or int
             motor name or index in the list of motors
-        scan_n : int (optional)
-            optional scan number [None -> self._scan_n]
-        group_url : str (optional)
-            group name [None -> self._group_url]
 
         Returns
         -------
         value
         """
-        if group_url is not None:
-            self.set_group(group_url)
-        if scan_n is not None:
-            self.set_scan(scan_n)
+        sg = self._get_sg()
         mots = self.get_motors()
         if type(mot) is int:
             mot = mots[mot]
-            self._logger.info(f"selected motor '{mot}'")
+            self._logger.info(f"Selected motor '{mot}'")
         if mot in mots:
             sel_mot = f"{self._mots_url}/{mot}"
-            return self._get_sg()[sel_mot][()]
+            return sg[sel_mot][()]
         else:
             self._logger.error(f"'{mot}' not found in available motors: {mots}")
-            return 0
+            return None
 
     def get_axis_data(self, ax_name=None, to_energy=None):
         """Get data for the scan axis
-        
+
         Description
         -----------
         This method returns the data (=label and array) for a given axis of the
         selected scan. It is primarily targeted to a "scanning" axis, but any
         counter can be used. It is possible to control common conversions, like
         Bragg angle to energy.
-        
+
         Parameters
         ----------
         ax_name : str or None
-            
-        norm : dict
-            Controls the normalization of the signal [None]
+
+        to_energy : dict
+            Controls the conversion of the signal to energy [None]
+
+            .. note:: Bragg angle assumed in mrad, output in eV
+
             {
-                "monitor": "str",  #: name of counter used for normalization
-                "cps": bool,  #: multiply back to np.average(monitor)
+                "bragg_ax": "str",  #: name of counter used for Bragg angale
+                "bragg_ax_type": "str",  #: 'motor' or 'counter'
+                "bragg_enc_units": float, #: units to convert encoder to deg (bragg_ax should contain 'enc')
             }
-        deglitch : dict
-            Controls :func:`sloth.math.deglitch.remove_spikes_medfilt1d` [None]
 
         Returns
         -------
@@ -368,7 +363,7 @@ class DataSourceSpecH5(object):
             xmin = ax_data.min()
             xmax = ax_data.max()
             self._logger.info("%s range: [%.3f, %.3f]", ax_label, xmin, xmax)
-            return ax_label, ax_data
+        return ax_label, ax_data
 
     def get_signal_data(self, sig_name, mon=None, deglitch=None, norm=None):
         """Get data for the signal counter
@@ -377,8 +372,8 @@ class DataSourceSpecH5(object):
         -----------
         This method returns the data (=label and array) for a given signal of the
         selected scan. It is possible to control normalization and/or deglitching.
-        
-        Basic processing: raw data -> norm by monitor signal -> deglitch -> norm2
+
+        Basic processing: raw data -> divide by monitor signal -> deglitch -> norm
 
         Parameters
         ----------
@@ -398,9 +393,6 @@ class DataSourceSpecH5(object):
         -------
         label, data
         """
-        if sig_name not in self.get_counters():
-            self._logger.error("%s not a counter", sig_name)
-            return None, None
         sig_data = self.get_array(sig_name)
         sig_label = sig_name
         if mon is not None:
@@ -425,9 +417,16 @@ class DataSourceSpecH5(object):
         self._logger.info("Loaded signal: %s", sig_label)
         return sig_label, sig_data
 
-    def get_curve(self, *args, **kwargs):
+    def get_curve(
+        self, sig_name, ax_name=None, to_energy=None, mon=None, deglitch=None, norm=None
+    ):
         """Get XY data (=curve) for current scan"""
-        pass
+        ax_label, ax_data = self.get_axis_data(ax_name=ax_name, to_energy=to_energy)
+        sig_label, sig_data = self.get_signal_data(
+            sig_name, mon=mon, deglitch=deglitch, norm=norm
+        )
+        attrs = dict(xlabel=ax_label, ylabel=sig_label)
+        return ax_data, sig_data, attrs
 
     def get_curves(self, *args, **kwargs):
         """Get list of XY data (=curves) for selected scans"""
@@ -435,6 +434,10 @@ class DataSourceSpecH5(object):
 
     def get_merged(self, *args, **kwargs):
         """Get merged list of XY data with a given action"""
+        pass
+
+    def get_merged_by(self, *args, **kwargs):
+        """Get merged list of XY data with a given action grouped by nbins"""
         pass
 
     # =================== #
