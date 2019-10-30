@@ -26,7 +26,11 @@ def update_nested(d, u):
         if not isinstance(dv, collectionsAbc.Mapping):
             d[k] = v
         elif isinstance(v, collectionsAbc.Mapping):
-            d[k] = update(dv, v)
+            d[k] = update_nested(dv, v)
         else:
             d[k] = v
     return d
+
+
+if __name__ == "__main__":
+    pass
