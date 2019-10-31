@@ -29,34 +29,103 @@ def imax(arr, debug=False):
     return _im
 
 
-def sum_arrays_1d(xdats, zdats, axis=None):
-    """Sum list of 1D arrays by interpolation on a reference axis
+def lists_to_matrix(xdats, zdats, axis=None, **kws):
+    """Convert a list of 1D arrays to a 2D matrix
 
     Parameters
     ----------
     xdats, zdats : lists of 1D arrays
-        data to sum
-    axis : array 1D (optional)
+        data
+    axis : None or array 1D, optional
         a reference axis used for the interpolation [None -> xdats[0]]
+    **kws : optional
+        keyword arguments for scipy.interpolate.interp1d()
+
+    Returns
+    -------
+    axis, outmat : arrays
+    """
+    assert isinstance(xdats, list), "'xdats' not a list"
+    assert isinstance(zdats, list), "'zdats' not a list"
+    assert len(xdats) == len(zdats), "lists of data not of the same length"
+    assert all(isinstance(z, np.ndarray) for z in zdats), "data in list must be arrays"
+    if axis is None:
+        axis = xdats[0]
+    assert isinstance(axis, np.ndarray), "axis must be array"
+    if all(z.size == axis.size for z in zdats):
+        #: all same size
+        return axis, np.array(zdats)
+    else:
+        #: interpolate
+        outmat = np.zeros((len(zdats), axis.size))
+        for idat, (xdat, zdat) in enumerate(zip(xdats, zdats)):
+            fdat = interp1d(xdat, zdat, **kws)
+            znew = fdat(axis)
+            outmat[idat] = znew
+        return axis, outmat
+
+
+def sum_arrays_1d(xdats, zdats, axis=None, **kws):
+    """Sum list of 1D arrays by interpolation on a reference axis
+
+    Parameters
+    ----------
+    *args, **kws : see :func:`lists_to_matrix`
 
     Returns
     -------
     axis, zsum : 1D arrays
         sum(zdats)
     """
-    if axis is None:
-        axis = xdats[0]
-    try:
-        #: sum element-by-element
-        arr_zdats = np.array(zdats)
-        return axis, np.sum(arr_zdats, 0)
-    except Exception:
-        #: sum by interpolation
-        zsum = np.zeros_like(axis)
-        for xdat, zdat in zip(xdats, zdats):
-            fdat = interp1d(xdat, zdat)
-            zsum += fdat(axis)
-        return axis, zsum
+    ax, mat = lists_to_matrix(xdats, zdats, axis=axis)
+    return ax, np.sum(mat, 0)
+
+
+def avg_arrays_1d(xdats, zdats, axis=None, weights=None, **kws):
+    """Average list of 1D arrays by interpolation on a reference axis
+
+    Parameters
+    ----------
+    *args, **kws : see :func:`lists_to_matrix`
+    weights : None or array
+        weights for the average
+
+    Returns
+    -------
+    axis, zavg : 1D arrays
+        np.average(zdats)
+    """
+    ax, mat = lists_to_matrix(xdats, zdats, axis=axis)
+    return ax, np.average(mat, axis=0, weights=weights)
+
+
+def merge_arrays_1d(xdats, zdats, axis=None, method="average", weights=None, **kws):
+    """Merge a list of 1D arrays by interpolation on a reference axis
+
+    Parameters
+    ----------
+    xdats, zdats : lists of 1D arrays
+        data to merge
+    axis : None or array 1D, optional
+        a reference axis used for the interpolation [None -> xdats[0]]
+    method : str, optional
+        method used to merge, available methods are:
+            - "average" : uses np.average()
+            - "sum" : uses np.sum()
+    weights : None or array 1D, optional
+        used if method == "average"
+
+    Returns
+    -------
+    axis, zmrg : 1D arrays
+        merge(zdats)
+    """
+    if method == "sum":
+        return sum_arrays_1d(xdats, zdats, axis=axis, **kws)
+    elif method == "average":
+        return avg_arrays_1d(xdats, zdats, axis=axis, weights=weights, **kws)
+    else:
+        raise NameError("wrong 'method': %s" % method)
 
 
 def rebin_piecewise_constant(x1, y1, x2):
