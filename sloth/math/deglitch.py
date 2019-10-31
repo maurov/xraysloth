@@ -8,7 +8,8 @@
 import numpy as np
 
 import logging
-_logger = logging.getLogger('sloth.utils.deglitch')
+
+_logger = logging.getLogger("sloth.utils.deglitch")
 
 
 def remove_spikes_medfilt1d(y_spiky, kernel_size=3, threshold=0.1):
@@ -34,12 +35,13 @@ def remove_spikes_medfilt1d(y_spiky, kernel_size=3, threshold=0.1):
     try:
         from silx.math.medianfilter import medfilt1d
     except ImportError:
-        _logger.warning('medfilt1d not found! -> returning zeros')
+        _logger.warning("medfilt1d not found! -> returning zeros")
         return ynew
-    y_filtered = medfilt1d(y_spiky, kernel_size=kernel_size, conditional=True,
-                           mode='nearest', cval=0)
-    diff = y_filtered-y_spiky
-    rel_diff = diff/y_filtered
+    y_filtered = medfilt1d(
+        y_spiky, kernel_size=kernel_size, conditional=True, mode="nearest", cval=0
+    )
+    diff = y_filtered - y_spiky
+    rel_diff = diff / y_filtered
     ynew = np.where(abs(rel_diff) > threshold, y_filtered, y_spiky)
     return ynew
 
@@ -69,24 +71,33 @@ def remove_spikes_pandas(y, window=3, threshold=3):
     try:
         import pandas as pd
     except ImportError:
-        _logger.error('pandas not found! -> returning zeros')
+        _logger.error("pandas not found! -> returning zeros")
         return ynew
     df = pd.DataFrame(y)
     try:
-        yf = pd.rolling_median(df, window=window, center=True).fillna(method='bfill').fillna(method='ffill')
-        diff = yf.as_matrix()-y
+        yf = (
+            pd.rolling_median(df, window=window, center=True)
+            .fillna(method="bfill")
+            .fillna(method="ffill")
+        )
+        diff = yf.as_matrix() - y
         mean = diff.mean()
-        sigma = (y - mean)**2
-        sigma = np.sqrt(sigma.sum()/float(len(sigma)))
+        sigma = (y - mean) ** 2
+        sigma = np.sqrt(sigma.sum() / float(len(sigma)))
         ynew = np.where(abs(diff) > threshold * sigma, yf.as_matrix(), y)
-    except:
-        yf = df.rolling(window, center=True).median().fillna(method='bfill').fillna(method='ffill')
+    except Exception:
+        yf = (
+            df.rolling(window, center=True)
+            .median()
+            .fillna(method="bfill")
+            .fillna(method="ffill")
+        )
 
-        diff = yf.values-y
+        diff = yf.values - y
         mean = diff.mean()
-        sigma = (y - mean)**2
-        sigma = np.sqrt(sigma.sum()/float(len(sigma)))
+        sigma = (y - mean) ** 2
+        sigma = np.sqrt(sigma.sum() / float(len(sigma)))
         ynew = np.where(abs(diff) > threshold * sigma, yf.values, y)
 
-        #ynew = np.array(yf.values).reshape(len(x))
+        # ynew = np.array(yf.values).reshape(len(x))
     return ynew

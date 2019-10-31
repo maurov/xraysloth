@@ -8,11 +8,12 @@ import numpy as np
 
 from sloth.utils.logging import getLogger
 
+
 def norm1D(y, norm=None, logger=None, **kws):
     """collection of simple normalization methods
 
     Parameters
-    ==========
+    ----------
     y : array of float, to normalize
     norm : string, available options
            "max"     -> y / np.max(y)
@@ -22,7 +23,7 @@ def norm1D(y, norm=None, logger=None, **kws):
            "larch"   -> TODO!!!
 
     Returns
-    =======
+    -------
     ynorm : array of float
 
     """
@@ -33,8 +34,8 @@ def norm1D(y, norm=None, logger=None, **kws):
         return (y - np.min(y)) / (np.max(y) - np.min(y))
     elif norm == "area":
         try:
-            return (y - np.min(y)) / np.trapz(y, x=kws.get('x'))
-        except:
+            return (y - np.min(y)) / np.trapz(y, x=kws.get("x"))
+        except Exception:
             return (y - np.min(y)) / np.trapz(y)
     elif norm == "sum":
         return (y - np.min(y)) / np.sum(y)
@@ -52,8 +53,9 @@ def norm1D(y, norm=None, logger=None, **kws):
         #     print('ERROR: Larch normalization failed')
         #     return y
     else:
-        _logger.warning("Normalization method not known")
+        _logger.debug("Normalization method not applied")
         return y
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     pass
