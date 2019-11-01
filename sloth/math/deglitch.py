@@ -9,10 +9,10 @@ import numpy as np
 
 import logging
 
-_logger = logging.getLogger("sloth.utils.deglitch")
+_logger = logging.getLogger("sloth.math.deglitch")
 
 
-def remove_spikes_medfilt1d(y_spiky, kernel_size=3, threshold=0.1):
+def remove_spikes_medfilt1d(y_spiky, backend="silx", kernel_size=3, threshold=0.1):
     """Remove spikes in a 1D array using medfilt from silx.math
 
     Parameters
@@ -20,8 +20,14 @@ def remove_spikes_medfilt1d(y_spiky, kernel_size=3, threshold=0.1):
     y_spiky : array
         spiky data
 
+    backend : str, optional
+        library to use as backend
+        - 'silx' -> from silx.math.medianfilter import medfilt1d
+        - 'pymca' -> from PyMca5.PyMcaMath.PyMcaSciPy.signal import medfilt1d
+        - 'pandas' : TODO
+
     kernel_size : int, optional
-        kernel size where to calculate median [3]
+        kernel size where to calculate median, must be odd [3]
 
     threshold : float, optional
         relative difference between filtered and spiky data [0.1]
@@ -32,10 +38,46 @@ def remove_spikes_medfilt1d(y_spiky, kernel_size=3, threshold=0.1):
         filtered array
     """
     ynew = np.zeros_like(y_spiky)
+    if not (kernel_size % 2):
+        kernel_size += 1
+        _logger.warning("'kernel_size' must be odd -> adjusted to %d", kernel_size)
+    if backend == "silx":
+        return remove_spikes_silx(y_spiky, kernel_size=kernel_size, threshold=threshold)
+    elif backend == "pymca":
+        return remove_spikes_silx(y_spiky, kernel_size=kernel_size, threshold=threshold)
+    elif backend == "pandas":
+        raise NotImplementedError(
+            "sloth.math.deglitch.remove_spikes_pandas not ported yet"
+        )
+    else:
+        _logger.warning("backend for medfilt1d not found! -> returning zeros")
+        return ynew
+
+
+def remove_spikes_silx(y_spiky, kernel_size=3, threshold=0.1):
+    """Remove spikes in a 1D array using medfilt from silx.math
+
+    Parameters
+    ----------
+    y_spiky : array
+        spiky data
+
+    kernel_size : int, optional
+        kernel size where to calculate median, must be odd [3]
+
+    threshold : float, optional
+        difference between filtered and spiky data relative [0.1]
+
+    Returns
+    -------
+    array
+        filtered array
+    """
+    ynew = np.zeros_like(y_spiky)
     try:
         from silx.math.medianfilter import medfilt1d
     except ImportError:
-        _logger.warning("medfilt1d not found! -> returning zeros")
+        _logger.warning("medfilt1d (from SILX) not found! -> returning zeros")
         return ynew
     y_filtered = medfilt1d(
         y_spiky, kernel_size=kernel_size, conditional=True, mode="nearest", cval=0
@@ -43,6 +85,40 @@ def remove_spikes_medfilt1d(y_spiky, kernel_size=3, threshold=0.1):
     diff = y_filtered - y_spiky
     rel_diff = diff / y_filtered
     ynew = np.where(abs(rel_diff) > threshold, y_filtered, y_spiky)
+    return ynew
+
+
+def remove_spikes_pymca(y_spiky, kernel_size=9, threshold=0.66):
+    """Remove spikes in a 1D array using medfilt from PyMca5.PyMcaMath.PyMcaScipy.signal
+
+    Parameters
+    ----------
+    y_spiky : array
+        spiky data
+
+    kernel_size : int, optional
+        kernel size where to calculate median, should be odd [9]
+
+    threshold : float, optional
+        difference between filtered and spiky data in sigma units [0.66]
+
+    Returns
+    -------
+    array
+        filtered array
+    """
+    ynew = np.zeros_like(y_spiky)
+    try:
+        from PyMca5.PyMcaMath.PyMcaSciPy.signal import medfilt1d
+    except ImportError:
+        _logger.warning("medfilt1d (from PyMca5) not found! -> returning zeros")
+        return ynew
+    y_filtered = medfilt1d(y_spiky, kernel_size)
+    diff = y_filtered - y_spiky
+    mean = diff.mean()
+    sigma = (y_spiky - mean) ** 2
+    sigma = np.sqrt(sigma.sum() / float(len(sigma)))
+    ynew = np.where(abs(diff) > threshold * sigma, y_filtered, y_spiky)
     return ynew
 
 
