@@ -10,14 +10,15 @@ import numpy as np
 from scipy.interpolate import interp1d
 
 from .logging import getLogger
-_logger = getLogger('sloth.utils.arrays')
+
+_logger = getLogger("sloth.utils.arrays")
 
 
 def imin(arr, debug=False):
     """index of minimum value"""
     _im = np.argmin(arr)
     if debug:
-        _logger.debug('Check: {0} = {1}'.format(np.min(arr), arr[_im]))
+        _logger.debug("Check: {0} = {1}".format(np.min(arr), arr[_im]))
     return _im
 
 
@@ -25,17 +26,20 @@ def imax(arr, debug=False):
     """index of maximum value"""
     _im = np.argmax(arr)
     if debug:
-        _logger.debug('Check: {0} = {1}'.format(np.max(arr), arr[_im]))
+        _logger.debug("Check: {0} = {1}".format(np.max(arr), arr[_im]))
     return _im
 
 
-def lists_to_matrix(xdats, zdats, axis=None, **kws):
-    """Convert a list of 1D arrays to a 2D matrix
+def lists_to_matrix(data, axis=None, **kws):
+    """Convert two lists of 1D arrays to a 2D matrix
 
     Parameters
     ----------
-    xdats, zdats : lists of 1D arrays
-        data
+    data : list of lists of 1D arrays
+        [
+            [x1, ... xN]
+            [z1, ... zN]
+        ]
     axis : None or array 1D, optional
         a reference axis used for the interpolation [None -> xdats[0]]
     **kws : optional
@@ -45,6 +49,8 @@ def lists_to_matrix(xdats, zdats, axis=None, **kws):
     -------
     axis, outmat : arrays
     """
+    assert len(data) == 2, "'data' should be a list of two lists"
+    xdats, zdats = data
     assert isinstance(xdats, list), "'xdats' not a list"
     assert isinstance(zdats, list), "'zdats' not a list"
     assert len(xdats) == len(zdats), "lists of data not of the same length"
@@ -65,28 +71,93 @@ def lists_to_matrix(xdats, zdats, axis=None, **kws):
         return axis, outmat
 
 
-def sum_arrays_1d(xdats, zdats, axis=None, **kws):
-    """Sum list of 1D arrays by interpolation on a reference axis
+def curves_to_matrix(curves, axis=None, **kws):
+    """Convert a list of curves to a 2D data matrix
 
     Parameters
     ----------
-    *args, **kws : see :func:`lists_to_matrix`
+    curves : list of lists of [np.array, np.array, dict]
+        [
+            [x1, y1, label1, info1],
+            ...
+            [xN, yN, labelN, infoN]
+        ]
+    axis : None or array 1D, optional
+        a reference axis used for the interpolation [None -> curves[0][0]]
+    **kws : optional
+        keyword arguments for func:`scipy.interpolate.interp1d`
+
+    Returns
+    -------
+    axis, outmat : arrays
+    """
+    assert isinstance(curves, list), "'curves' not a list"
+    assert all(
+        (isinstance(curve, list) and len(curve) == 3) for curve in curves
+    ), "curves should be lists of three elements"
+    if axis is None:
+        axis = curves[0][0]
+    assert isinstance(axis, np.ndarray), "axis must be array"
+    outmat = np.zeros((len(curves), axis.size))
+    for icurve, curve in enumerate(curves):
+        assert len(curve) == 4, "wrong curve format, should contain four elements"
+        x, y, label, info = curve
+        try:
+            assert isinstance(x, np.ndarray), "not array!"
+            assert isinstance(y, np.ndarray), "not array!"
+        except AssertionError:
+            _logger.error(
+                "[curve_to_matrix] Curve %d (%s) not containing arrays -> ADDING ZEROS",
+                icurve,
+                label,
+            )
+            continue
+        if (x.size == axis.size) and (y.size == axis.size):
+            #: all same length
+            outmat[icurve] = y
+        else:
+            #: interpolate
+            fdat = interp1d(x, y, **kws)
+            ynew = fdat(axis)
+            outmat[icurve] = ynew
+            _logger.debug("[curve_to_matrix] Curve %d (%s) interpolated", icurve, label)
+    return axis, outmat
+
+
+def sum_arrays_1d(data, data_fmt="curves", axis=None, **kws):
+    """Sum list of 1D arrays or curves by interpolation on a reference axis
+
+    Parameters
+    ----------
+    data : lists of lists
+    data_fmt : str
+        define data format
+        - "curves" -> :func:`curves_to_matrix`
+        - "lists" -> :func:`curves_to_matrix`
 
     Returns
     -------
     axis, zsum : 1D arrays
-        sum(zdats)
     """
-    ax, mat = lists_to_matrix(xdats, zdats, axis=axis)
+    if data_fmt == "curves":
+        ax, mat = curves_to_matrix(data, axis=axis, **kws)
+    elif data_fmt == "lists":
+        ax, mat = lists_to_matrix(data, axis=axis, **kws)
+    else:
+        raise NameError("'data_fmt' not understood")
     return ax, np.sum(mat, 0)
 
 
-def avg_arrays_1d(xdats, zdats, axis=None, weights=None, **kws):
-    """Average list of 1D arrays by interpolation on a reference axis
+def avg_arrays_1d(data, data_fmt="curves", axis=None, weights=None, **kws):
+    """Average list of 1D arrays or curves by interpolation on a reference axis
 
     Parameters
     ----------
-    *args, **kws : see :func:`lists_to_matrix`
+    data : lists of lists
+    data_fmt : str
+        define data format
+        - "curves" -> :func:`curves_to_matrix`
+        - "lists" -> :func:`curves_to_matrix`
     weights : None or array
         weights for the average
 
@@ -95,17 +166,27 @@ def avg_arrays_1d(xdats, zdats, axis=None, weights=None, **kws):
     axis, zavg : 1D arrays
         np.average(zdats)
     """
-    ax, mat = lists_to_matrix(xdats, zdats, axis=axis)
+    if data_fmt == "curves":
+        ax, mat = curves_to_matrix(data, axis=axis, **kws)
+    elif data_fmt == "lists":
+        ax, mat = lists_to_matrix(data, axis=axis, **kws)
+    else:
+        raise NameError("'data_fmt' not understood")
     return ax, np.average(mat, axis=0, weights=weights)
 
 
-def merge_arrays_1d(xdats, zdats, axis=None, method="average", weights=None, **kws):
+def merge_arrays_1d(
+    data, data_fmt="curves", axis=None, method="average", weights=None, **kws
+):
     """Merge a list of 1D arrays by interpolation on a reference axis
 
     Parameters
     ----------
-    xdats, zdats : lists of 1D arrays
-        data to merge
+    data : lists of lists
+    data_fmt : str
+        define data format
+        - "curves" -> :func:`curves_to_matrix`
+        - "lists" -> :func:`curves_to_matrix`
     axis : None or array 1D, optional
         a reference axis used for the interpolation [None -> xdats[0]]
     method : str, optional
@@ -121,9 +202,9 @@ def merge_arrays_1d(xdats, zdats, axis=None, method="average", weights=None, **k
         merge(zdats)
     """
     if method == "sum":
-        return sum_arrays_1d(xdats, zdats, axis=axis, **kws)
+        return sum_arrays_1d(data, axis=axis, **kws)
     elif method == "average":
-        return avg_arrays_1d(xdats, zdats, axis=axis, weights=weights, **kws)
+        return avg_arrays_1d(data, axis=axis, weights=weights, **kws)
     else:
         raise NameError("wrong 'method': %s" % method)
 
@@ -165,11 +246,11 @@ def rebin_piecewise_constant(x1, y1, x2):
     # greater than or equal to one original bin.
     # This is the contribution from the 'intact' bins (not including the
     # fractional start and end parts.
-    whole_bins = np.floor(i_place[1:]) - np.ceil(i_place[:-1]) >= 1.
+    whole_bins = np.floor(i_place[1:]) - np.ceil(i_place[:-1]) >= 1.0
     start = cum_sum[np.ceil(i_place[:-1]).astype(int)]
     finish = cum_sum[np.floor(i_place[1:]).astype(int)]
 
-    y2 = np.where(whole_bins, finish - start, 0.)
+    y2 = np.where(whole_bins, finish - start, 0.0)
 
     bin_loc = np.clip(np.floor(i_place).astype(int), 0, len(y1) - 1)
 
@@ -177,19 +258,19 @@ def rebin_piecewise_constant(x1, y1, x2):
     # original bin.
     same_cell = np.floor(i_place[1:]) == np.floor(i_place[:-1])
     frac = i_place[1:] - i_place[:-1]
-    contrib = (frac * y1[bin_loc[:-1]])
-    y2 += np.where(same_cell, contrib, 0.)
+    contrib = frac * y1[bin_loc[:-1]]
+    y2 += np.where(same_cell, contrib, 0.0)
 
     # fractional contribution for bins where the left and right bin edges are in
     # different original bins.
     different_cell = np.floor(i_place[1:]) > np.floor(i_place[:-1])
     frac_left = np.ceil(i_place[:-1]) - i_place[:-1]
-    contrib = (frac_left * y1[bin_loc[:-1]])
+    contrib = frac_left * y1[bin_loc[:-1]]
 
     frac_right = i_place[1:] - np.floor(i_place[1:])
-    contrib += (frac_right * y1[bin_loc[1:]])
+    contrib += frac_right * y1[bin_loc[1:]]
 
-    y2 += np.where(different_cell, contrib, 0.)
+    y2 += np.where(different_cell, contrib, 0.0)
 
     return y2
 
@@ -211,5 +292,5 @@ def reject_outliers(data, m=2.0, return_mask=False):
         return data[mask]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pass
