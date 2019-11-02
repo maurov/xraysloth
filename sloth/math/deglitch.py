@@ -46,9 +46,7 @@ def remove_spikes_medfilt1d(y_spiky, backend="silx", kernel_size=3, threshold=0.
     elif backend == "pymca":
         return remove_spikes_silx(y_spiky, kernel_size=kernel_size, threshold=threshold)
     elif backend == "pandas":
-        raise NotImplementedError(
-            "sloth.math.deglitch.remove_spikes_pandas not ported yet"
-        )
+        return remove_spikes_pandas(y_spiky, window=kernel_size, threshold=threshold)
     else:
         _logger.warning("backend for medfilt1d not found! -> returning zeros")
         return ynew
