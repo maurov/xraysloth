@@ -374,7 +374,11 @@ class DataSourceSpecH5(object):
         This method returns the data (=label and array) for a given signal of the
         selected scan. It is possible to control normalization and/or deglitching.
 
-        Basic processing: raw data -> divide by monitor signal -> deglitch -> norm
+        Order followed in the basic processing:
+            - raw data
+            - divide by monitor signal (+ multiply back by average)
+            - deglitch
+            - norm
 
         Parameters
         ----------
@@ -394,27 +398,32 @@ class DataSourceSpecH5(object):
         -------
         label, data
         """
+        #: get raw data
         sig_data = self.get_array(sig_name)
         sig_label = sig_name
+        #: (opt) divide by monitor signal + multiply back by average
         if mon is not None:
             mon_name = mon["monitor"]
             mon_data = self.get_array(mon_name)
             sig_data /= mon_data
             sig_label += f"_mon({mon_name})"
-            if norm["cps"]:
+            if mon["cps"]:
                 sig_data *= np.average(mon_data)  #: put back in counts
                 sig_label += "_cps"
+        #: (opt) deglitch
         if deglitch is not None:
             from sloth.math.deglitch import remove_spikes_medfilt1d
 
             sig_data = remove_spikes_medfilt1d(sig_data, **deglitch)
             sig_label += "_dgl"
+        #: (opt) normalization
         if norm is not None:
             from sloth.math.normalization import norm1D
 
             norm_meth = norm["method"]
             sig_data = norm1D(sig_data, norm=norm_meth, logger=self._logger)
-            sig_label += f"_norm({norm_meth})"
+            if norm_meth is not None:
+                sig_label += f"_norm({norm_meth})"
         self._logger.info("Loaded signal: %s", sig_label)
         return sig_label, sig_data
 
