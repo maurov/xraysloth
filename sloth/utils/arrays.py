@@ -93,8 +93,8 @@ def curves_to_matrix(curves, axis=None, **kws):
     """
     assert isinstance(curves, list), "'curves' not a list"
     assert all(
-        (isinstance(curve, list) and len(curve) == 3) for curve in curves
-    ), "curves should be lists of three elements"
+        (isinstance(curve, list) and len(curve) == 4) for curve in curves
+    ), "curves should be lists of four elements"
     if axis is None:
         axis = curves[0][0]
     assert isinstance(axis, np.ndarray), "axis must be array"
@@ -124,7 +124,7 @@ def curves_to_matrix(curves, axis=None, **kws):
     return axis, outmat
 
 
-def sum_arrays_1d(data, data_fmt="curves", axis=None, **kws):
+def sum_arrays_1d(data, axis=None, **kws):
     """Sum list of 1D arrays or curves by interpolation on a reference axis
 
     Parameters
@@ -139,6 +139,7 @@ def sum_arrays_1d(data, data_fmt="curves", axis=None, **kws):
     -------
     axis, zsum : 1D arrays
     """
+    data_fmt = kws.pop("data_fmt", "curves")
     if data_fmt == "curves":
         ax, mat = curves_to_matrix(data, axis=axis, **kws)
     elif data_fmt == "lists":
@@ -148,7 +149,7 @@ def sum_arrays_1d(data, data_fmt="curves", axis=None, **kws):
     return ax, np.sum(mat, 0)
 
 
-def avg_arrays_1d(data, data_fmt="curves", axis=None, weights=None, **kws):
+def avg_arrays_1d(data, axis=None, weights=None, **kws):
     """Average list of 1D arrays or curves by interpolation on a reference axis
 
     Parameters
@@ -166,6 +167,7 @@ def avg_arrays_1d(data, data_fmt="curves", axis=None, weights=None, **kws):
     axis, zavg : 1D arrays
         np.average(zdats)
     """
+    data_fmt = kws.pop("data_fmt", "curves")
     if data_fmt == "curves":
         ax, mat = curves_to_matrix(data, axis=axis, **kws)
     elif data_fmt == "lists":
@@ -175,9 +177,7 @@ def avg_arrays_1d(data, data_fmt="curves", axis=None, weights=None, **kws):
     return ax, np.average(mat, axis=0, weights=weights)
 
 
-def merge_arrays_1d(
-    data, data_fmt="curves", axis=None, method="average", weights=None, **kws
-):
+def merge_arrays_1d(data, method="average", axis=None, weights=None, **kws):
     """Merge a list of 1D arrays by interpolation on a reference axis
 
     Parameters
