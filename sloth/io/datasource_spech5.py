@@ -10,6 +10,7 @@ Requirements
 
 """
 import os
+import copy
 import numpy as np
 import h5py
 from silx.io.utils import open as silx_open
@@ -192,7 +193,7 @@ class DataSourceSpecH5(object):
         else:
             self._scan_url = f"{self._scan_str}"
         try:
-            self._sg = self._sf[self._scan_url]
+            self._sg = copy.deepcopy(self._sf[self._scan_url])
             self._scan_title = self.get_title()
             self._logger.info(f"selected scan {self._scan_url}: '{self._scan_title}'")
         except KeyError:
@@ -278,7 +279,7 @@ class DataSourceSpecH5(object):
             self._logger.info("Selected counter %s", cnt)
         if cnt in cnts:
             sel_cnt = f"{self._cnts_url}/{cnt}"
-            return sg[sel_cnt][()]
+            return copy.deepcopy(sg[sel_cnt][()])
         else:
             self._logger.error(f"'{cnt}' not found in available counters: {cnts}")
             sel_cnt = f"{self._cnts_url}/{cnts[0]}"
@@ -303,7 +304,7 @@ class DataSourceSpecH5(object):
             self._logger.info(f"Selected motor '{mot}'")
         if mot in mots:
             sel_mot = f"{self._mots_url}/{mot}"
-            return sg[sel_mot][()]
+            return copy.deepcopy(sg[sel_mot][()])
         else:
             self._logger.error(f"'{mot}' not found in available motors: {mots}")
             return None
