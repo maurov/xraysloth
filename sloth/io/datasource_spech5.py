@@ -193,7 +193,7 @@ class DataSourceSpecH5(object):
         else:
             self._scan_url = f"{self._scan_str}"
         try:
-            self._sg = copy.deepcopy(self._sf[self._scan_url])
+            self._sg = self._sf[self._scan_url]
             self._scan_title = self.get_title()
             self._logger.info(f"selected scan {self._scan_url}: '{self._scan_title}'")
         except KeyError:
