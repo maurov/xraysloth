@@ -76,7 +76,7 @@ ELEMENTS = ('H', 'He',
             'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir',
             'Pt', 'Au', 'Hg',
             'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn',
-            'Fr', 'Ra', 'Ac', 'Th', 'Pa', 'U', 'Np', 'Pu', 'Am')
+            'Fr', 'Ra', 'Ac', 'Th', 'Pa', 'U', 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es', 'Fm', 'Md', 'No', 'Lr', 'Rf', 'Db', 'Sg', 'Bh', 'Hs', 'Mt')
 
 #: SHELLS / EDGES
 #: K = 1 (s)
@@ -288,7 +288,7 @@ def find_line(emin, emax, elements=None, lines=None, outDict=False):
         eln = get_element(el)
         for ln in lines:
             try:
-                line = xl.LineEnergy(eln[1], getattr(xl, ln+'_LINE'))*1000
+                line = xl.LineEnergy(eln[1], getattr(xl, ln + '_LINE')) * 1000
             except Exception:
                 _logger.debug('{0}.{1} none'.format(el, ln))
                 continue
