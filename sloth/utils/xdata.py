@@ -35,7 +35,7 @@ except ImportError:
     HAS_XRAYLIB = False
     pass
 
-from sloth.math.lineshapes import lorentzian
+from sloth.math.lineshapes import lorentzian, fwhm2sigma
 
 #: MODULE LOGGER
 from .logging import getLogger
