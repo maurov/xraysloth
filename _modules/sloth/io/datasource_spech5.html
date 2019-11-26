@@ -168,6 +168,7 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">h5py</span>
 <span class="kn">from</span> <span class="nn">silx.io.utils</span> <span class="k">import</span> <span class="nb">open</span> <span class="k">as</span> <span class="n">silx_open</span>
@@ -181,7 +182,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">urls_fmt</span><span class="o">=</span><span class="s2">&quot;silx&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;init with file name and default attributes</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        fname : str</span>
@@ -207,6 +208,14 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_init_source_file</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_scan_n</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_scan_str</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scan_kws</span> <span class="o">=</span> <span class="p">{</span>  <span class="c1"># to get data from scan</span>
+            <span class="s2">&quot;ax_name&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;to_energy&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;sig_name&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;mon&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;deglitch&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;norm&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sg</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># ScanGroup</span>
         <span class="k">if</span> <span class="n">urls_fmt</span> <span class="o">==</span> <span class="s2">&quot;silx&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_urls_silx</span><span class="p">()</span>
@@ -258,7 +267,9 @@
     <span class="k">def</span> <span class="nf">_get_sg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Safe get self._sg&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;group not selected yet&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="s2">&quot;Group/Scan not selected -&gt; use &#39;self.set_scan()&#39; first&quot;</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sg</span>
 
@@ -300,9 +311,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_url</span> <span class="o">=</span> <span class="n">group_url</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;selected group </span><span class="si">{self._group_url}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Selected group </span><span class="si">{self._group_url}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DataSourceSpecH5.set_scan"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.set_scan">[docs]</a>    <span class="k">def</span> <span class="nf">set_scan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scan_n</span><span class="p">,</span> <span class="n">scan_idx</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">group_url</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DataSourceSpecH5.set_scan"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.set_scan">[docs]</a>    <span class="k">def</span> <span class="nf">set_scan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scan_n</span><span class="p">,</span> <span class="n">scan_idx</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">group_url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scan_kws</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Select a given scan number</span>
 
 <span class="sd">        Parameters</span>
@@ -313,6 +324,8 @@
 <span class="sd">            scan repetition index [1]</span>
 <span class="sd">        group_url : str</span>
 <span class="sd">            hdf5 url with respect to / where scans are stored [None -&gt; /scans]</span>
+<span class="sd">        scan_kws : None or dict</span>
+<span class="sd">            additional keyword arguments used to get data from scan</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -320,6 +333,10 @@
 <span class="sd">            self._scan_n, self._scan_str, self._scan_url, self._sg</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_scan_n</span> <span class="o">=</span> <span class="n">scan_n</span>
+        <span class="k">if</span> <span class="n">scan_kws</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">sloth.utils.dicts</span> <span class="k">import</span> <span class="n">update_nested</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_scan_kws</span> <span class="o">=</span> <span class="n">update_nested</span><span class="p">(</span><span class="n">scan_kws</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_urls_fmt</span> <span class="o">==</span> <span class="s2">&quot;silx&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_scan_str</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{scan_n}</span><span class="s2">.</span><span class="si">{scan_idx}</span><span class="s2">&quot;</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_urls_fmt</span> <span class="o">==</span> <span class="s2">&quot;spec2nexus&quot;</span><span class="p">:</span>
@@ -369,24 +386,18 @@
         <span class="sd">&quot;&quot;&quot;Get list of motors names&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_list_from_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cnts_url</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DataSourceSpecH5.get_title"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_title">[docs]</a>    <span class="k">def</span> <span class="nf">get_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scan_n</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get title str for a given scan</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        scan_n : int (optional)</span>
-<span class="sd">            scan number [None -&gt; self._scan_n]</span>
+<div class="viewcode-block" id="DataSourceSpecH5.get_title"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_title">[docs]</a>    <span class="k">def</span> <span class="nf">get_title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get title str for the current scan</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        title (str): scan title self._sg[self._title_url][()]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">scan_n</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_scan</span><span class="p">(</span><span class="n">scan_n</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sg</span><span class="p">()[</span><span class="bp">self</span><span class="o">.</span><span class="n">_title_url</span><span class="p">][()]</span></div>
+        <span class="n">sg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sg</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">sg</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_title_url</span><span class="p">][()]</span></div>
 
 <div class="viewcode-block" id="DataSourceSpecH5.get_scan_axis"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_scan_axis">[docs]</a>    <span class="k">def</span> <span class="nf">get_scan_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the name of the scanned axis from title&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get the name of the scanned axis from scan title&quot;&quot;&quot;</span>
         <span class="n">_title</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_title</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_title</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="n">_title</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">_title</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
@@ -407,93 +418,79 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;&#39;</span><span class="si">{_axisout}</span><span class="s2">&#39; not present in counters and motors&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_axisout</span></div>
 
-<div class="viewcode-block" id="DataSourceSpecH5.get_array"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_array">[docs]</a>    <span class="k">def</span> <span class="nf">get_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cnt</span><span class="p">,</span> <span class="n">scan_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">group_url</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DataSourceSpecH5.get_array"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_array">[docs]</a>    <span class="k">def</span> <span class="nf">get_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cnt</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get array of a given counter</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        cnt : str or int</span>
 <span class="sd">            counter name or index in the list of counters</span>
-<span class="sd">        scan_n : int (optional)</span>
-<span class="sd">            optional scan number [None -&gt; self._scan_n]</span>
-<span class="sd">        group_url : str (optional)</span>
-<span class="sd">            group name [None -&gt; self._group_url]</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        array</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">group_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_group</span><span class="p">(</span><span class="n">group_url</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">scan_n</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_scan</span><span class="p">(</span><span class="n">scan_n</span><span class="p">)</span>
+        <span class="n">sg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sg</span><span class="p">()</span>
         <span class="n">cnts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_counters</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">cnt</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
             <span class="n">cnt</span> <span class="o">=</span> <span class="n">cnts</span><span class="p">[</span><span class="n">cnt</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;selected counter &#39;</span><span class="si">{cnt}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Selected counter </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">cnt</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cnt</span> <span class="ow">in</span> <span class="n">cnts</span><span class="p">:</span>
             <span class="n">sel_cnt</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{self._cnts_url}</span><span class="s2">/</span><span class="si">{cnt}</span><span class="s2">&quot;</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sg</span><span class="p">()[</span><span class="n">sel_cnt</span><span class="p">][()]</span>
+            <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">sg</span><span class="p">[</span><span class="n">sel_cnt</span><span class="p">][()])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                <span class="n">f</span><span class="s2">&quot;&#39;</span><span class="si">{cnt}</span><span class="s2">&#39; not found among the available counters: </span><span class="si">{cnts}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;&#39;</span><span class="si">{cnt}</span><span class="s2">&#39; not found in available counters: </span><span class="si">{cnts}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">sel_cnt</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{self._cnts_url}</span><span class="s2">/</span><span class="si">{cnts[0]}</span><span class="s2">&quot;</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_sg</span><span class="p">()[</span><span class="n">sel_cnt</span><span class="p">][()])</span></div>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">sg</span><span class="p">[</span><span class="n">sel_cnt</span><span class="p">][()])</span></div>
 
-<div class="viewcode-block" id="DataSourceSpecH5.get_value"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mot</span><span class="p">,</span> <span class="n">scan_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">group_url</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DataSourceSpecH5.get_value"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mot</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get motor position</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        mot : str or int</span>
 <span class="sd">            motor name or index in the list of motors</span>
-<span class="sd">        scan_n : int (optional)</span>
-<span class="sd">            optional scan number [None -&gt; self._scan_n]</span>
-<span class="sd">        group_url : str (optional)</span>
-<span class="sd">            group name [None -&gt; self._group_url]</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">group_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_group</span><span class="p">(</span><span class="n">group_url</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">scan_n</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_scan</span><span class="p">(</span><span class="n">scan_n</span><span class="p">)</span>
+        <span class="n">sg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sg</span><span class="p">()</span>
         <span class="n">mots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_motors</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">mot</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
             <span class="n">mot</span> <span class="o">=</span> <span class="n">mots</span><span class="p">[</span><span class="n">mot</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;selected motor &#39;</span><span class="si">{mot}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Selected motor &#39;</span><span class="si">{mot}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">mot</span> <span class="ow">in</span> <span class="n">mots</span><span class="p">:</span>
             <span class="n">sel_mot</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{self._mots_url}</span><span class="s2">/</span><span class="si">{mot}</span><span class="s2">&quot;</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sg</span><span class="p">()[</span><span class="n">sel_mot</span><span class="p">][()]</span>
+            <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">sg</span><span class="p">[</span><span class="n">sel_mot</span><span class="p">][()])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;&#39;</span><span class="si">{mot}</span><span class="s2">&#39; not found in available motors: </span><span class="si">{mots}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="mi">0</span></div>
+            <span class="k">return</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="DataSourceSpecH5.get_axis_data"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_axis_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_axis_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_energy</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get data for the scan axis</span>
-<span class="sd">        </span>
+
 <span class="sd">        Description</span>
 <span class="sd">        -----------</span>
 <span class="sd">        This method returns the data (=label and array) for a given axis of the</span>
 <span class="sd">        selected scan. It is primarily targeted to a &quot;scanning&quot; axis, but any</span>
 <span class="sd">        counter can be used. It is possible to control common conversions, like</span>
 <span class="sd">        Bragg angle to energy.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        ax_name : str or None</span>
-<span class="sd">            </span>
-<span class="sd">        norm : dict</span>
-<span class="sd">            Controls the normalization of the signal [None]</span>
+
+<span class="sd">        to_energy : dict</span>
+<span class="sd">            Controls the conversion of the signal to energy [None]</span>
+
+<span class="sd">            .. note:: Bragg angle assumed in mrad, output in eV</span>
+
 <span class="sd">            {</span>
-<span class="sd">                &quot;monitor&quot;: &quot;str&quot;,  #: name of counter used for normalization</span>
-<span class="sd">                &quot;cps&quot;: bool,  #: multiply back to np.average(monitor)</span>
+<span class="sd">                &quot;bragg_ax&quot;: &quot;str&quot;,  #: name of counter used for Bragg angale</span>
+<span class="sd">                &quot;bragg_ax_type&quot;: &quot;str&quot;,  #: &#39;motor&#39; or &#39;counter&#39;</span>
+<span class="sd">                &quot;bragg_enc_units&quot;: float, #: units to convert encoder to deg (bragg_ax should contain &#39;enc&#39;)</span>
 <span class="sd">            }</span>
-<span class="sd">        deglitch : dict</span>
-<span class="sd">            Controls :func:`sloth.math.deglitch.remove_spikes_medfilt1d` [None]</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -526,7 +523,7 @@
             <span class="n">xmin</span> <span class="o">=</span> <span class="n">ax_data</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
             <span class="n">xmax</span> <span class="o">=</span> <span class="n">ax_data</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> range: [</span><span class="si">%.3f</span><span class="s2">, </span><span class="si">%.3f</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="n">ax_label</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">ax_label</span><span class="p">,</span> <span class="n">ax_data</span></div>
+        <span class="k">return</span> <span class="n">ax_label</span><span class="p">,</span> <span class="n">ax_data</span></div>
 
 <div class="viewcode-block" id="DataSourceSpecH5.get_signal_data"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_signal_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_signal_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sig_name</span><span class="p">,</span> <span class="n">mon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">deglitch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get data for the signal counter</span>
@@ -535,8 +532,12 @@
 <span class="sd">        -----------</span>
 <span class="sd">        This method returns the data (=label and array) for a given signal of the</span>
 <span class="sd">        selected scan. It is possible to control normalization and/or deglitching.</span>
-<span class="sd">        </span>
-<span class="sd">        Basic processing: raw data -&gt; norm by monitor signal -&gt; deglitch -&gt; norm2</span>
+
+<span class="sd">        Order followed in the basic processing:</span>
+<span class="sd">            - raw data</span>
+<span class="sd">            - divide by monitor signal (+ multiply back by average)</span>
+<span class="sd">            - deglitch</span>
+<span class="sd">            - norm</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -556,44 +557,91 @@
 <span class="sd">        -------</span>
 <span class="sd">        label, data</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">sig_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_counters</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> not a counter&quot;</span><span class="p">,</span> <span class="n">sig_name</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="c1">#: get raw data</span>
         <span class="n">sig_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="n">sig_name</span><span class="p">)</span>
         <span class="n">sig_label</span> <span class="o">=</span> <span class="n">sig_name</span>
+        <span class="c1">#: (opt) divide by monitor signal + multiply back by average</span>
         <span class="k">if</span> <span class="n">mon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">mon_name</span> <span class="o">=</span> <span class="n">mon</span><span class="p">[</span><span class="s2">&quot;monitor&quot;</span><span class="p">]</span>
             <span class="n">mon_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="n">mon_name</span><span class="p">)</span>
             <span class="n">sig_data</span> <span class="o">/=</span> <span class="n">mon_data</span>
             <span class="n">sig_label</span> <span class="o">+=</span> <span class="n">f</span><span class="s2">&quot;_mon(</span><span class="si">{mon_name}</span><span class="s2">)&quot;</span>
-            <span class="k">if</span> <span class="n">norm</span><span class="p">[</span><span class="s2">&quot;cps&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">mon</span><span class="p">[</span><span class="s2">&quot;cps&quot;</span><span class="p">]:</span>
                 <span class="n">sig_data</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">mon_data</span><span class="p">)</span>  <span class="c1">#: put back in counts</span>
                 <span class="n">sig_label</span> <span class="o">+=</span> <span class="s2">&quot;_cps&quot;</span>
+        <span class="c1">#: (opt) deglitch</span>
         <span class="k">if</span> <span class="n">deglitch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">sloth.math.deglitch</span> <span class="k">import</span> <span class="n">remove_spikes_medfilt1d</span>
 
             <span class="n">sig_data</span> <span class="o">=</span> <span class="n">remove_spikes_medfilt1d</span><span class="p">(</span><span class="n">sig_data</span><span class="p">,</span> <span class="o">**</span><span class="n">deglitch</span><span class="p">)</span>
             <span class="n">sig_label</span> <span class="o">+=</span> <span class="s2">&quot;_dgl&quot;</span>
+        <span class="c1">#: (opt) normalization</span>
         <span class="k">if</span> <span class="n">norm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">sloth.math.normalization</span> <span class="k">import</span> <span class="n">norm1D</span>
 
             <span class="n">norm_meth</span> <span class="o">=</span> <span class="n">norm</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span>
             <span class="n">sig_data</span> <span class="o">=</span> <span class="n">norm1D</span><span class="p">(</span><span class="n">sig_data</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm_meth</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">)</span>
-            <span class="n">sig_label</span> <span class="o">+=</span> <span class="n">f</span><span class="s2">&quot;_norm(</span><span class="si">{norm_meth}</span><span class="s2">)&quot;</span>
+            <span class="k">if</span> <span class="n">norm_meth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">sig_label</span> <span class="o">+=</span> <span class="n">f</span><span class="s2">&quot;_norm(</span><span class="si">{norm_meth}</span><span class="s2">)&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loaded signal: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">sig_label</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">sig_label</span><span class="p">,</span> <span class="n">sig_data</span></div>
 
-<div class="viewcode-block" id="DataSourceSpecH5.get_curve"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_curve">[docs]</a>    <span class="k">def</span> <span class="nf">get_curve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get XY data (=curve) for current scan&quot;&quot;&quot;</span>
-        <span class="k">pass</span></div>
+<div class="viewcode-block" id="DataSourceSpecH5.get_curve"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_curve">[docs]</a>    <span class="k">def</span> <span class="nf">get_curve</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">sig_name</span><span class="p">,</span>
+        <span class="n">ax_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">to_energy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">mon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">deglitch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">norm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kws</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get XY data (=curve) for current scan</span>
 
-<div class="viewcode-block" id="DataSourceSpecH5.get_curves"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_curves">[docs]</a>    <span class="k">def</span> <span class="nf">get_curves</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get list of XY data (=curves) for selected scans&quot;&quot;&quot;</span>
-        <span class="k">pass</span></div>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        *args, **kws -&gt; self.get_axis_data() and self.get_signal_data()</span>
 
-<div class="viewcode-block" id="DataSourceSpecH5.get_merged"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_merged">[docs]</a>    <span class="k">def</span> <span class="nf">get_merged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        [ax_data, sig_data, attrs] : list of [array, array, dict]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ax_label</span><span class="p">,</span> <span class="n">ax_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_axis_data</span><span class="p">(</span><span class="n">ax_name</span><span class="o">=</span><span class="n">ax_name</span><span class="p">,</span> <span class="n">to_energy</span><span class="o">=</span><span class="n">to_energy</span><span class="p">)</span>
+        <span class="n">sig_label</span><span class="p">,</span> <span class="n">sig_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_signal_data</span><span class="p">(</span>
+            <span class="n">sig_name</span><span class="p">,</span> <span class="n">mon</span><span class="o">=</span><span class="n">mon</span><span class="p">,</span> <span class="n">deglitch</span><span class="o">=</span><span class="n">deglitch</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span>
+        <span class="p">)</span>
+        <span class="n">attrs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="n">ax_label</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="n">sig_label</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">sig_label</span><span class="p">,</span> <span class="n">sig_data</span><span class="p">,</span> <span class="n">attrs</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="DataSourceSpecH5.get_curves"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_curves">[docs]</a>    <span class="k">def</span> <span class="nf">get_curves</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get list of XY data (=curves) for given scans&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;TODO&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataSourceSpecH5.get_stack"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_stack">[docs]</a>    <span class="k">def</span> <span class="nf">get_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get a stack dictionary of curves</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        stack : dict of dicts</span>
+
+<span class="sd">        {</span>
+<span class="sd">            &#39;A&#39;: {&#39;curves&#39;: [[x1, y1, info1], ..., [xN, yN, infoN]]},</span>
+<span class="sd">            &#39;B&#39;: {&#39;curves&#39;: ...},</span>
+<span class="sd">            ...</span>
+<span class="sd">            &#39;Z&#39;: {}</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;TODO&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataSourceSpecH5.get_mrg"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_mrg">[docs]</a>    <span class="k">def</span> <span class="nf">get_mrg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curves</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get merged list of XY data with a given action&quot;&quot;&quot;</span>
-        <span class="k">pass</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;TODO&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataSourceSpecH5.get_mrg_by"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_mrg_by">[docs]</a>    <span class="k">def</span> <span class="nf">get_mrg_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get merged list of XY data with a given action grouped by nbins&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;TODO&quot;</span><span class="p">)</span></div>
 
     <span class="c1"># =================== #</span>
     <span class="c1">#: WRITE DATA METHODS</span>

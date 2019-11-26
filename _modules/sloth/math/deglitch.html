@@ -166,10 +166,11 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;sloth.utils.deglitch&#39;</span><span class="p">)</span>
+
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;sloth.math.deglitch&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="remove_spikes_medfilt1d"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.deglitch.remove_spikes_medfilt1d">[docs]</a><span class="k">def</span> <span class="nf">remove_spikes_medfilt1d</span><span class="p">(</span><span class="n">y_spiky</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+<div class="viewcode-block" id="remove_spikes_medfilt1d"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.deglitch.remove_spikes_medfilt1d">[docs]</a><span class="k">def</span> <span class="nf">remove_spikes_medfilt1d</span><span class="p">(</span><span class="n">y_spiky</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;silx&quot;</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Remove spikes in a 1D array using medfilt from silx.math</span>
 
 <span class="sd">    Parameters</span>
@@ -177,8 +178,14 @@
 <span class="sd">    y_spiky : array</span>
 <span class="sd">        spiky data</span>
 
+<span class="sd">    backend : str, optional</span>
+<span class="sd">        library to use as backend</span>
+<span class="sd">        - &#39;silx&#39; -&gt; from silx.math.medianfilter import medfilt1d</span>
+<span class="sd">        - &#39;pymca&#39; -&gt; from PyMca5.PyMcaMath.PyMcaSciPy.signal import medfilt1d</span>
+<span class="sd">        - &#39;pandas&#39; : TODO</span>
+
 <span class="sd">    kernel_size : int, optional</span>
-<span class="sd">        kernel size where to calculate median [3]</span>
+<span class="sd">        kernel size where to calculate median, must be odd [3]</span>
 
 <span class="sd">    threshold : float, optional</span>
 <span class="sd">        relative difference between filtered and spiky data [0.1]</span>
@@ -189,16 +196,85 @@
 <span class="sd">        filtered array</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ynew</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">y_spiky</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">kernel_size</span> <span class="o">%</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="n">kernel_size</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;&#39;kernel_size&#39; must be odd -&gt; adjusted to </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;silx&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">remove_spikes_silx</span><span class="p">(</span><span class="n">y_spiky</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;pymca&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">remove_spikes_silx</span><span class="p">(</span><span class="n">y_spiky</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;pandas&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">remove_spikes_pandas</span><span class="p">(</span><span class="n">y_spiky</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;backend for medfilt1d not found! -&gt; returning zeros&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ynew</span></div>
+
+
+<div class="viewcode-block" id="remove_spikes_silx"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.deglitch.remove_spikes_silx">[docs]</a><span class="k">def</span> <span class="nf">remove_spikes_silx</span><span class="p">(</span><span class="n">y_spiky</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Remove spikes in a 1D array using medfilt from silx.math</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_spiky : array</span>
+<span class="sd">        spiky data</span>
+
+<span class="sd">    kernel_size : int, optional</span>
+<span class="sd">        kernel size where to calculate median, must be odd [3]</span>
+
+<span class="sd">    threshold : float, optional</span>
+<span class="sd">        difference between filtered and spiky data relative [0.1]</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    array</span>
+<span class="sd">        filtered array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ynew</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">y_spiky</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">silx.math.medianfilter</span> <span class="k">import</span> <span class="n">medfilt1d</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-        <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;medfilt1d not found! -&gt; returning zeros&#39;</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;medfilt1d (from SILX) not found! -&gt; returning zeros&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ynew</span>
-    <span class="n">y_filtered</span> <span class="o">=</span> <span class="n">medfilt1d</span><span class="p">(</span><span class="n">y_spiky</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">,</span> <span class="n">conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                           <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">cval</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">diff</span> <span class="o">=</span> <span class="n">y_filtered</span><span class="o">-</span><span class="n">y_spiky</span>
-    <span class="n">rel_diff</span> <span class="o">=</span> <span class="n">diff</span><span class="o">/</span><span class="n">y_filtered</span>
+    <span class="n">y_filtered</span> <span class="o">=</span> <span class="n">medfilt1d</span><span class="p">(</span>
+        <span class="n">y_spiky</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">,</span> <span class="n">conditional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;nearest&quot;</span><span class="p">,</span> <span class="n">cval</span><span class="o">=</span><span class="mi">0</span>
+    <span class="p">)</span>
+    <span class="n">diff</span> <span class="o">=</span> <span class="n">y_filtered</span> <span class="o">-</span> <span class="n">y_spiky</span>
+    <span class="n">rel_diff</span> <span class="o">=</span> <span class="n">diff</span> <span class="o">/</span> <span class="n">y_filtered</span>
     <span class="n">ynew</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">rel_diff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">y_filtered</span><span class="p">,</span> <span class="n">y_spiky</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ynew</span></div>
+
+
+<div class="viewcode-block" id="remove_spikes_pymca"><a class="viewcode-back" href="../../../modules/math.html#sloth.math.deglitch.remove_spikes_pymca">[docs]</a><span class="k">def</span> <span class="nf">remove_spikes_pymca</span><span class="p">(</span><span class="n">y_spiky</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.66</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Remove spikes in a 1D array using medfilt from PyMca5.PyMcaMath.PyMcaScipy.signal</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_spiky : array</span>
+<span class="sd">        spiky data</span>
+
+<span class="sd">    kernel_size : int, optional</span>
+<span class="sd">        kernel size where to calculate median, should be odd [9]</span>
+
+<span class="sd">    threshold : float, optional</span>
+<span class="sd">        difference between filtered and spiky data in sigma units [0.66]</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    array</span>
+<span class="sd">        filtered array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ynew</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">y_spiky</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">PyMca5.PyMcaMath.PyMcaSciPy.signal</span> <span class="k">import</span> <span class="n">medfilt1d</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;medfilt1d (from PyMca5) not found! -&gt; returning zeros&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ynew</span>
+    <span class="n">y_filtered</span> <span class="o">=</span> <span class="n">medfilt1d</span><span class="p">(</span><span class="n">y_spiky</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">)</span>
+    <span class="n">diff</span> <span class="o">=</span> <span class="n">y_filtered</span> <span class="o">-</span> <span class="n">y_spiky</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_spiky</span> <span class="o">-</span> <span class="n">mean</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sigma</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sigma</span><span class="p">)))</span>
+    <span class="n">ynew</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">threshold</span> <span class="o">*</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">y_filtered</span><span class="p">,</span> <span class="n">y_spiky</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ynew</span></div>
 
 
@@ -227,26 +303,35 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-        <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;pandas not found! -&gt; returning zeros&#39;</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;pandas not found! -&gt; returning zeros&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ynew</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">yf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">rolling_median</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;bfill&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;ffill&#39;</span><span class="p">)</span>
-        <span class="n">diff</span> <span class="o">=</span> <span class="n">yf</span><span class="o">.</span><span class="n">as_matrix</span><span class="p">()</span><span class="o">-</span><span class="n">y</span>
+        <span class="n">yf</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">pd</span><span class="o">.</span><span class="n">rolling_median</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;bfill&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;ffill&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">yf</span><span class="o">.</span><span class="n">as_matrix</span><span class="p">()</span> <span class="o">-</span> <span class="n">y</span>
         <span class="n">mean</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-        <span class="n">sigma</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">mean</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
-        <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sigma</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sigma</span><span class="p">)))</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">mean</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sigma</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sigma</span><span class="p">)))</span>
         <span class="n">ynew</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">threshold</span> <span class="o">*</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">yf</span><span class="o">.</span><span class="n">as_matrix</span><span class="p">(),</span> <span class="n">y</span><span class="p">)</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="n">yf</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">median</span><span class="p">()</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;bfill&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;ffill&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">yf</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">median</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;bfill&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;ffill&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
 
-        <span class="n">diff</span> <span class="o">=</span> <span class="n">yf</span><span class="o">.</span><span class="n">values</span><span class="o">-</span><span class="n">y</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">yf</span><span class="o">.</span><span class="n">values</span> <span class="o">-</span> <span class="n">y</span>
         <span class="n">mean</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-        <span class="n">sigma</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">mean</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
-        <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sigma</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sigma</span><span class="p">)))</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">mean</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sigma</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sigma</span><span class="p">)))</span>
         <span class="n">ynew</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">threshold</span> <span class="o">*</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">yf</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
-        <span class="c1">#ynew = np.array(yf.values).reshape(len(x))</span>
+        <span class="c1"># ynew = np.array(yf.values).reshape(len(x))</span>
     <span class="k">return</span> <span class="n">ynew</span></div>
 </pre></div>
 

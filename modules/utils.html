@@ -103,7 +103,7 @@
 <li class="toctree-l2"><a class="reference internal" href="math.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math</span></code>: mathematical utilities</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils</span></code>: utilities</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#module-sloth.utils.xdata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.xdata</span></code>: x-ray databases</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#available-libraries-dbs">Available libraries/dbs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#utility-to-retrieve-x-ray-data-from-external-libraries-databases">Utility to retrieve x-ray data from external libraries/databases</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#module-sloth.utils.bragg"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.bragg</span></code>: Bragg’s law</a></li>
@@ -203,15 +203,19 @@
 <h1><a class="reference internal" href="#module-sloth.utils" title="sloth.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils</span></code></a>: utilities<a class="headerlink" href="#sloth-utils-utilities" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-sloth.utils.xdata">
 <span id="sloth-utils-xdata-x-ray-databases"></span><h2><a class="reference internal" href="#module-sloth.utils.xdata" title="sloth.utils.xdata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.xdata</span></code></a>: x-ray databases<a class="headerlink" href="#module-sloth.utils.xdata" title="Permalink to this headline">¶</a></h2>
-<p>Simple utility to retrieve X-ray data from external
-libraries/databases</p>
-<div class="section" id="available-libraries-dbs">
-<h3>Available libraries/dbs<a class="headerlink" href="#available-libraries-dbs" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
+<div class="section" id="utility-to-retrieve-x-ray-data-from-external-libraries-databases">
+<h3>Utility to retrieve x-ray data from external libraries/databases<a class="headerlink" href="#utility-to-retrieve-x-ray-data-from-external-libraries-databases" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="available-libraries-dbs-and-order-of-usage">
+<h4>Available libraries/dbs and order of usage<a class="headerlink" href="#available-libraries-dbs-and-order-of-usage" title="Permalink to this headline">¶</a></h4>
+<ol class="arabic simple">
 <li><p><a class="reference external" href="https://github.com/tschoonj/xraylib">xraylib</a></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">xraydb_plugin.py</span></code> in <a class="reference external" href="https://github.com/xraypy/xraylarch">Larch</a></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Elements</span></code> in <a class="reference external" href="https://github.com/vasole/pymca">PyMca</a></p></li>
-</ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">xraydb_plugin.py</span></code> in <a class="reference external" href="https://github.com/xraypy/xraylarch">Larch</a></p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference external" href="https://github.com/xraypy/XrayDB">XrayDB</a> has its own package now</p>
+</div>
 <dl class="data">
 <dt id="sloth.utils.xdata.SHELLS">
 <code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">SHELLS</code><em class="property"> = ('K', 'L1', 'L2', 'L3', 'M1', 'M2', 'M3', 'M4', 'M5', 'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'O1', 'O2', 'O3', 'O4', 'O5', 'P1', 'P2', 'P3')</em><a class="headerlink" href="#sloth.utils.xdata.SHELLS" title="Permalink to this definition">¶</a></dt>
@@ -276,7 +280,7 @@ Mz in Hepheastus not in Xraylib (the single transitions yes!)</p>
 
 <dl class="function">
 <dt id="sloth.utils.xdata.find_line">
-<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">find_line</code><span class="sig-paren">(</span><em class="sig-param">emin</em>, <em class="sig-param">emax</em>, <em class="sig-param">elements=None</em>, <em class="sig-param">lines=None</em>, <em class="sig-param">outDict=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#find_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.find_line" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">find_line</code><span class="sig-paren">(</span><em class="sig-param">emin</em>, <em class="sig-param">emax</em>, <em class="sig-param">elements=None</em>, <em class="sig-param">lines=None</em>, <em class="sig-param">outDict=False</em>, <em class="sig-param">backend='xraylib'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#find_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.find_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the emission line energy in a given energy range [emin,emax] (eV)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -452,6 +456,7 @@ list of lines</p>
 
 </div>
 </div>
+</div>
 <div class="section" id="module-sloth.utils.bragg">
 <span id="sloth-utils-bragg-bragg-s-law"></span><h2><a class="reference internal" href="#module-sloth.utils.bragg" title="sloth.utils.bragg"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.bragg</span></code></a>: Bragg’s law<a class="headerlink" href="#module-sloth.utils.bragg" title="Permalink to this headline">¶</a></h2>
 <p>braggutils: utilities around the Bragg’s law ($ n lambda = 2 d sin     heta $)</p>
@@ -609,18 +614,130 @@ crystal (‘Si’, ‘Ge’, ‘all’) [optional, default: ‘all’]</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="sloth.utils.arrays.sum_arrays_1d">
-<code class="sig-prename descclassname">sloth.utils.arrays.</code><code class="sig-name descname">sum_arrays_1d</code><span class="sig-paren">(</span><em class="sig-param">xdats</em>, <em class="sig-param">zdats</em>, <em class="sig-param">axis=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/arrays.html#sum_arrays_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.arrays.sum_arrays_1d" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sum list of 1D arrays by interpolation on a reference axis</p>
+<dt id="sloth.utils.arrays.lists_to_matrix">
+<code class="sig-prename descclassname">sloth.utils.arrays.</code><code class="sig-name descname">lists_to_matrix</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">axis=None</em>, <em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/arrays.html#lists_to_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.arrays.lists_to_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert two lists of 1D arrays to a 2D matrix</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>zdats</strong> (<em>xdats</em><em>,</em>) – data to sum</p></li>
-<li><p><strong>axis</strong> (<em>array 1D</em><em> (</em><em>optional</em><em>)</em>) – a reference axis used for the interpolation [None -&gt; xdats[0]]</p></li>
+<li><p><strong>data</strong> (<em>list of lists of 1D arrays</em>) – <dl class="simple">
+<dt>[</dt><dd><p>[x1, … xN]
+[z1, … zN]</p>
+</dd>
+</dl>
+<p>]</p>
+</p></li>
+<li><p><strong>axis</strong> (<em>None</em><em> or </em><em>array 1D</em><em>, </em><em>optional</em>) – a reference axis used for the interpolation [None -&gt; xdats[0]]</p></li>
+<li><p><strong>**kws</strong> (<em>optional</em>) – keyword arguments for scipy.interpolate.interp1d()</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>axis, zsum</strong> – sum(zdats)</p>
+<dd class="field-even"><p><strong>axis, outmat</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.arrays.curves_to_matrix">
+<code class="sig-prename descclassname">sloth.utils.arrays.</code><code class="sig-name descname">curves_to_matrix</code><span class="sig-paren">(</span><em class="sig-param">curves</em>, <em class="sig-param">axis=None</em>, <em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/arrays.html#curves_to_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.arrays.curves_to_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a list of curves to a 2D data matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>curves</strong> (<em>list of lists of</em><em> [</em><em>np.array</em><em>, </em><em>np.array</em><em>, </em><em>dict</em><em>]</em>) – <dl class="simple">
+<dt>[</dt><dd><p>[x1, y1, label1, info1],
+…
+[xN, yN, labelN, infoN]</p>
+</dd>
+</dl>
+<p>]</p>
+</p></li>
+<li><p><strong>axis</strong> (<em>None</em><em> or </em><em>array 1D</em><em>, </em><em>optional</em>) – a reference axis used for the interpolation [None -&gt; curves[0][0]]</p></li>
+<li><p><strong>**kws</strong> (<em>optional</em>) – keyword arguments for func:<cite>scipy.interpolate.interp1d</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>axis, outmat</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.arrays.sum_arrays_1d">
+<code class="sig-prename descclassname">sloth.utils.arrays.</code><code class="sig-name descname">sum_arrays_1d</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">axis=None</em>, <em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/arrays.html#sum_arrays_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.arrays.sum_arrays_1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sum list of 1D arrays or curves by interpolation on a reference axis</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>lists of lists</em>) – </p></li>
+<li><p><strong>data_fmt</strong> (<em>str</em>) – define data format
+- “curves” -&gt; <a class="reference internal" href="#sloth.utils.arrays.curves_to_matrix" title="sloth.utils.arrays.curves_to_matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">curves_to_matrix()</span></code></a>
+- “lists” -&gt; <a class="reference internal" href="#sloth.utils.arrays.curves_to_matrix" title="sloth.utils.arrays.curves_to_matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">curves_to_matrix()</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>axis, zsum</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>1D arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.arrays.avg_arrays_1d">
+<code class="sig-prename descclassname">sloth.utils.arrays.</code><code class="sig-name descname">avg_arrays_1d</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">axis=None</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/arrays.html#avg_arrays_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.arrays.avg_arrays_1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Average list of 1D arrays or curves by interpolation on a reference axis</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>lists of lists</em>) – </p></li>
+<li><p><strong>data_fmt</strong> (<em>str</em>) – define data format
+- “curves” -&gt; <a class="reference internal" href="#sloth.utils.arrays.curves_to_matrix" title="sloth.utils.arrays.curves_to_matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">curves_to_matrix()</span></code></a>
+- “lists” -&gt; <a class="reference internal" href="#sloth.utils.arrays.curves_to_matrix" title="sloth.utils.arrays.curves_to_matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">curves_to_matrix()</span></code></a></p></li>
+<li><p><strong>weights</strong> (<em>None</em><em> or </em><em>array</em>) – weights for the average</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>axis, zavg</strong> – np.average(zdats)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>1D arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.arrays.merge_arrays_1d">
+<code class="sig-prename descclassname">sloth.utils.arrays.</code><code class="sig-name descname">merge_arrays_1d</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">method='average'</em>, <em class="sig-param">axis=None</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/arrays.html#merge_arrays_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.arrays.merge_arrays_1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merge a list of 1D arrays by interpolation on a reference axis</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>lists of lists</em>) – </p></li>
+<li><p><strong>data_fmt</strong> (<em>str</em>) – define data format
+- “curves” -&gt; <a class="reference internal" href="#sloth.utils.arrays.curves_to_matrix" title="sloth.utils.arrays.curves_to_matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">curves_to_matrix()</span></code></a>
+- “lists” -&gt; <a class="reference internal" href="#sloth.utils.arrays.curves_to_matrix" title="sloth.utils.arrays.curves_to_matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">curves_to_matrix()</span></code></a></p></li>
+<li><p><strong>axis</strong> (<em>None</em><em> or </em><em>array 1D</em><em>, </em><em>optional</em>) – a reference axis used for the interpolation [None -&gt; xdats[0]]</p></li>
+<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – <dl class="simple">
+<dt>method used to merge, available methods are:</dt><dd><ul>
+<li><p>”average” : uses np.average()</p></li>
+<li><p>”sum” : uses np.sum()</p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>weights</strong> (<em>None</em><em> or </em><em>array 1D</em><em>, </em><em>optional</em>) – used if method == “average”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>axis, zmrg</strong> – merge(zdats)</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>1D arrays</p>
@@ -655,6 +772,13 @@ Spectrum Alignment, page 703) of Knoll [1]</p>
 <dd class="field-odd"><p>n array of rebinned histogram values.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.arrays.reject_outliers">
+<code class="sig-prename descclassname">sloth.utils.arrays.</code><code class="sig-name descname">reject_outliers</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">m=2.0</em>, <em class="sig-param">return_mask=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/arrays.html#reject_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.arrays.reject_outliers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reject outliers</p>
+<p>Modified from: <a class="reference external" href="https://stackoverflow.com/questions/11686720/is-there-a-numpy-builtin-to-reject-outliers-from-a-list">https://stackoverflow.com/questions/11686720/is-there-a-numpy-builtin-to-reject-outliers-from-a-list</a></p>
 </dd></dl>
 
 </div>

@@ -593,14 +593,60 @@ and (p20, p21)</p>
 <h3>Deglitch utilities<a class="headerlink" href="#deglitch-utilities" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="sloth.math.deglitch.remove_spikes_medfilt1d">
-<code class="sig-prename descclassname">sloth.math.deglitch.</code><code class="sig-name descname">remove_spikes_medfilt1d</code><span class="sig-paren">(</span><em class="sig-param">y_spiky</em>, <em class="sig-param">kernel_size=3</em>, <em class="sig-param">threshold=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/deglitch.html#remove_spikes_medfilt1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.deglitch.remove_spikes_medfilt1d" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.math.deglitch.</code><code class="sig-name descname">remove_spikes_medfilt1d</code><span class="sig-paren">(</span><em class="sig-param">y_spiky</em>, <em class="sig-param">backend='silx'</em>, <em class="sig-param">kernel_size=3</em>, <em class="sig-param">threshold=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/deglitch.html#remove_spikes_medfilt1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.deglitch.remove_spikes_medfilt1d" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove spikes in a 1D array using medfilt from silx.math</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>y_spiky</strong> (<em>array</em>) – spiky data</p></li>
-<li><p><strong>kernel_size</strong> (<em>int</em><em>, </em><em>optional</em>) – kernel size where to calculate median [3]</p></li>
+<li><p><strong>backend</strong> (<em>str</em><em>, </em><em>optional</em>) – library to use as backend
+- ‘silx’ -&gt; from silx.math.medianfilter import medfilt1d
+- ‘pymca’ -&gt; from PyMca5.PyMcaMath.PyMcaSciPy.signal import medfilt1d
+- ‘pandas’ : TODO</p></li>
+<li><p><strong>kernel_size</strong> (<em>int</em><em>, </em><em>optional</em>) – kernel size where to calculate median, must be odd [3]</p></li>
 <li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – relative difference between filtered and spiky data [0.1]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>filtered array</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.math.deglitch.remove_spikes_silx">
+<code class="sig-prename descclassname">sloth.math.deglitch.</code><code class="sig-name descname">remove_spikes_silx</code><span class="sig-paren">(</span><em class="sig-param">y_spiky</em>, <em class="sig-param">kernel_size=3</em>, <em class="sig-param">threshold=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/deglitch.html#remove_spikes_silx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.deglitch.remove_spikes_silx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove spikes in a 1D array using medfilt from silx.math</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_spiky</strong> (<em>array</em>) – spiky data</p></li>
+<li><p><strong>kernel_size</strong> (<em>int</em><em>, </em><em>optional</em>) – kernel size where to calculate median, must be odd [3]</p></li>
+<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – difference between filtered and spiky data relative [0.1]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>filtered array</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.math.deglitch.remove_spikes_pymca">
+<code class="sig-prename descclassname">sloth.math.deglitch.</code><code class="sig-name descname">remove_spikes_pymca</code><span class="sig-paren">(</span><em class="sig-param">y_spiky</em>, <em class="sig-param">kernel_size=9</em>, <em class="sig-param">threshold=0.66</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/math/deglitch.html#remove_spikes_pymca"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.math.deglitch.remove_spikes_pymca" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove spikes in a 1D array using medfilt from PyMca5.PyMcaMath.PyMcaScipy.signal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_spiky</strong> (<em>array</em>) – spiky data</p></li>
+<li><p><strong>kernel_size</strong> (<em>int</em><em>, </em><em>optional</em>) – kernel size where to calculate median, should be odd [9]</p></li>
+<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – difference between filtered and spiky data in sigma units [0.66]</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
