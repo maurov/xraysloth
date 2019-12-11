@@ -14,11 +14,15 @@ dependencies:
     - scipy>=1.2
     - matplotlib>=3.0
     - h5py>=2.10
-    - pandas
+    - sqlalchemy>=0.9
+    - pandas>=0.25
+    - qtconsole
+    - ipython
+    - ipykernel
     - scikit-image
     - scikit-learn
     - requests
-    - sqlalchemy>=0.9
+    - pandoc
     - conda-forge::xraylib
     - pip:
         #: utils
@@ -38,7 +42,7 @@ dependencies:
         - mccabe
         - pyflakes     #: faster than pylint
         - pycodestyle  #: linter for style checking
-        - flake8       #: wrapper around pyflakes, pycodestyle and mccabe
+        - flake8       #: +pyflakes, +pycodestyle and +mccabe
         - black
         - pydocstyle   #: linter for docstring style checking
         - doc8
@@ -65,11 +69,11 @@ dependencies:
         - jupyterlab_latex
         - jupyterlab_hdf
         #: Base (sci)libs
-        - xraydb
-        - hdf5plugin
+        - hdf5plugin>=2.1
+        - xraydb>=4.3
         - lmfit>=0.9.15
         - silx>=0.11
-        - pymca>=5.5.2
+        - pymca>=5.5.3
         - pyresttable
         - spec2nexus
         - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl; sys_platform == 'linux'
