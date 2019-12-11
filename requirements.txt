@@ -1,5 +1,15 @@
 # pip minimum requirements for sloth
 numpy>=1.16
 matplotlib>=3.0
+h5py>=2.10
+pandas>=0.25
 scipy>=1.2
 silx>=0.11
+shadow3==18.5.30
+lmfit>=0.9.15
+#basic CLI larch:
+sqlalchemy>=0.9
+requests>=2.22
+xraydb>=4.3
+pyshortcuts>=1.5
+xraylarch>=0.9.46

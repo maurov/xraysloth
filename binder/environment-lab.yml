@@ -67,7 +67,7 @@ dependencies:
         #: Base (sci)libs
         - xraydb
         - hdf5plugin
-        - lmfit>=0.9.13
+        - lmfit>=0.9.15
         - silx>=0.11
         - pymca>=5.5.2
         - pyresttable

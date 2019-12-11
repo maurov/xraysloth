@@ -11,37 +11,33 @@ environment called `sloth` and install a minimal version of the library.
 
 - First of all, install `Conda <https://conda.io>`_ on your system. If you are on Linux, this can be done just by::
 
-  wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-  bash miniconda.sh -b -p $HOME/conda
+      wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+      bash miniconda.sh -b -p $HOME/conda
 
 - Open a shell with the Conda `base` environment activated. I refer to it as `(base)$` in the following.
 
-- Create a dedicated conda environment and activate it::
+- Install git::
 
-  (base)$ conda create -q -n sloth python=3.6
-  (base)$ conda activate sloth
+      (base)$ conda install -y git
 
-- In sloth environment install basic tools::
+- Clone Sloth repository::
 
-  (sloth)$ conda install -y git pip
+      (base)$ git clone https://github.com/maurov/xraysloth.git
+      
+.. note:: if you are behind a proxy::
 
-- Clone the repository::
+      (base)$ git config --global http.proxy HOST:PORT
 
-  (sloth)$ git clone https://github.com/maurov/xraysloth.git
+- Create `sloth` Conda environment::
 
-  .. note:: if you are behind a proxy::
+      (base)$ cd xraysloth/binder
+      (base)$ conda env create -f environment.yml
 
-      (sloth)$ git config --global http.proxy HOST:PORT
+- Activate the environment::
 
-- Install requirements::
+      (base)$ conda activate sloth
 
-  (sloth)$ cd xraysloth
-  (sloth)$ pip install -r requirements.txt
-  (sloth)$ pip install .
-
-  .. note:: for developers, to keep symbolic links::
-
-      (sloth)$ pip install -e .
+- Enjoy!
 
 Daily working environment
 .........................

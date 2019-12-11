@@ -13,8 +13,8 @@ parts and you will discover them by usage, so I strongly encourage to read the
 code and the work-in-progress documentation.
 
 **WARNING** Sloth is designed as a library, but it should not be used in
-production environments, because its API is changing rapidily and backward
-compatibility is not guarenteed. The main reason is the fact that there is only
+production environments, because its API is changing rapidily and *backward
+compatibility is not guarenteed*. The main reason is the fact that there is only
 one developer for a single user, myself!. Thus, the library performs as a
 partial random snapshot of daily work/research and still-to-implement ideas
 (mainly due to lack of time). Feel free to use/hack it and do not hesitate to

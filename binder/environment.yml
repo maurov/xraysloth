@@ -1,11 +1,12 @@
 #Python environment for: https://github.com/maurov/xraysloth
-#Target: running on mybinder.org
-#Usage: automatically built
-name: sloth-binder
+#Target: base environment for sloth based on Larch (Wx) + SILX (Qt) + OASYS + Jupyter
+#Usage: conda env create -f environment.yml
+name: sloth
 channels:
     - defaults
 dependencies:
-    - python=3.6
+    - python=3.7
+    - git
     - pip
     - nodejs
     - pyqt=5
@@ -14,16 +15,21 @@ dependencies:
     - scipy>=1.2
     - matplotlib>=3.0
     - h5py>=2.10
-    - pandas
+    - sqlalchemy>=0.9
+    - pandas>=0.25
+    - qtconsole
+    - ipython
+    - ipykernel
     - scikit-image
     - scikit-learn
     - requests
-    - sqlalchemy>=0.9
+    - pandoc
+    - sphinx>=1.5
     - conda-forge::xraylib
     - pip:
         #: utils
-        - xraydb
-        - hdf5plugin
+        - xraydb>=4.3
+        - hdf5plugin>=2.1
         - termcolor
         - pyyaml
         - palettable
@@ -43,9 +49,20 @@ dependencies:
         - ipympl
         - widgetsnbextension>=3.5.0
         #: Base (sci)libs
-        - lmfit>=0.9.13
-        - silx>=0.11
-        - http://ftp.esrf.eu/pub/scisoft/shadow3/wheels/shadow3-18.5.30-cp36-cp36m-linux_x86_64.whl; sys_platform == 'linux'
-        #: From source
+        - lmfit>=0.9.15
+        - silx>=0.1
+        - pymca>=5.5.2
+        #: SHADOW & OASYS
+        - shadow3==18.5.30
+        - resources
+        - oasys-canvas-core
+        - oasys-widget-core
+        - oasys1
+        - srxraylib
+        - syned
+        - wofry
+        - OASYS1-ShadowOui
+        - OASYS1-XOPPY
+        #: From source (Larch & Sloth)
         - git+https://github.com/xraypy/xraylarch
         - git+https://github.com/maurov/xraysloth
