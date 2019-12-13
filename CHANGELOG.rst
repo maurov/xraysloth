@@ -65,6 +65,8 @@ Broken backward compatibility
 
 * The whole library is not backward compatible at this stage!
 
+* Removed :mod:`sloth.utils.genericutils`
+
 * :mod:`sloth.collect`
 
   - `DataGroup` objects and derivative have methods with `_`

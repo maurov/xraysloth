@@ -3,11 +3,6 @@
 :mod:`sloth.utils`: utilities
 =============================
 
-:mod:`sloth.utils.xdata`: x-ray databases
------------------------------------------
-
-.. automodule:: sloth.utils.xdata
-   :members:
 
 :mod:`sloth.utils.bragg`: Bragg's law
 -------------------------------------
@@ -51,9 +46,8 @@
 .. automodule:: sloth.utils.exceptions
   :members:
 
+:mod:`sloth.utils.xdata`: x-ray databases
+-----------------------------------------
 
-:mod:`sloth.utils.genericutils`: generic
-----------------------------------------
-
-.. automodule:: sloth.utils.genericutils
+.. automodule:: sloth.utils.xdata
    :members:

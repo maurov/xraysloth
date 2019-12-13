@@ -5,11 +5,11 @@ build:
   image: latest
 
 python:
-  version: 3.6
+  version: 3.7
   setup_py_install: true
 
 #Too slow -> impossible to build -> use requirements_file
 #conda:
 #  file: environment.yml
 
-requirements_file: requirements_docs.txt
+requirements_file: requirements-docs.txt
