@@ -8,6 +8,9 @@ dependencies:
     - python=3.7
     - pip
     - nodejs
+    - conda-forge::pyopencl
+    - conda-forge::pocl
+    - conda-forge::oclgrind
     - pyqt=5
     - wxpython>=4.0.3
     - numpy>=1.16
@@ -26,6 +29,7 @@ dependencies:
     - conda-forge::xraylib
     - pip:
         #: utils
+        - pytools
         - termcolor
         - pyyaml
         - palettable
