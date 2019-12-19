@@ -34,7 +34,7 @@ Resources
 ---------
 
 - **Documentation**: https://xraysloth.readthedocs.io |rtd|
-- Documentation (*backup*): http://mauro.rovezzi.it/xraysloth |travis|
+- Documentation (*backup*): http://mauro.rovezzi.net/xraysloth |travis|
 - Citation: |zenodo|
 - License: |license|
 - BinderHub (*experimental*): |binder|
