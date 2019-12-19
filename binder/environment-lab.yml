@@ -1,5 +1,5 @@
 #Python environment for: https://github.com/maurov/xraysloth
-#Target: local development environment based on Jupyterlab + code editing
+#Target: local development environment based on Jupyterlab + code editing -> DEPRECATED!!! -> use environment.yml
 #Usage: conda env create -f environment-lab.yml
 name: sloth-lab
 channels:
@@ -39,17 +39,17 @@ dependencies:
         #: Python IDE tools
         - rope         #: completions and renaming
         - yapf         #: code formatting (preferred over autopep8)
-        - mccabe
+        - mccabe       #: used by flake8
         - pyflakes     #: faster than pylint
         - pycodestyle  #: linter for style checking
         - flake8       #: +pyflakes, +pycodestyle and +mccabe
-        - black
+        - black        #: formatter
         - pydocstyle   #: linter for docstring style checking
         - doc8
         - pytest
         - nose
-        - python-language-server
-        - pyls-black
+        #- python-language-server
+        #- pyls-black
         #: Build docs
         - sphinx>=1.5
         - sphinxcontrib-napoleon

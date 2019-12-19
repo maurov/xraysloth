@@ -1,25 +1,26 @@
 #Python environment for: https://github.com/maurov/xraysloth
-#Target: base environment for sloth based on Larch (Wx) + SILX (Qt) + OASYS + Jupyter
+#Target: *FULL* environment for sloth based on Larch (Wx) + SILX (Qt) + OASYS + Jupyter + GL + XRT
 #Usage: conda env create -f environment.yml
+#TODO: *move to pip install* as much packages as possible!
 name: sloth
 channels:
     - defaults
 dependencies:
-    - python=3.7
+    - python == 3.7
     - pip
     - nodejs
-    - conda-forge::pyopencl
-    - conda-forge::pocl
-    - conda-forge::oclgrind
-    - pyqt=5
-    - wxpython>=4.0.3
-    - numpy>=1.16
-    - scipy>=1.2
-    - matplotlib>=3.0
-    - h5py>=2.10
-    - sqlalchemy>=0.9
-    - pandas>=0.25
-    - qtconsole
+    #- conda-forge::pyopencl
+    #- conda-forge::pocl
+    #- conda-forge::oclgrind
+    #- conda-forge::freeglut
+    - qt >= 5.9
+    - wxpython >= 4.0.3
+    - numpy >= 1.16
+    - scipy >= 1.2
+    - matplotlib >= 3.0
+    - h5py >= 2.10
+    - sqlalchemy >= 0.9
+    - pandas >= 0.25
     - ipython
     - ipykernel
     - scikit-image
@@ -27,46 +28,72 @@ dependencies:
     - requests
     - pandoc
     - conda-forge::xraylib
+    - rtree  #: for spyder
     - pip:
+        #: PyOpenGL / PyOpenCL
+        - pyopengl
+        - pyopengl_accelerate
+        - pyopencl[pocl]
+        #: PyQt5
+        - PyQt5 == 5.12
+        - pyqtwebengine == 5.12
+        - spyder >= 4.0.0
         #: utils
         - pytools
         - termcolor
         - pyyaml
         - palettable
-        - peakutils>=1.3
-        - asteval>=0.9
-        - uncertainties>=3.1
-        - pyshortcuts>=1.5
+        - peakutils >= 1.3
+        - asteval >= 0.9
+        - uncertainties >= 3.1
+        - pyshortcuts >= 1.5
+        - xlrd  #: read Excel files
+        - xlwt  #: write Excel files
         #: Wx (-> Larch)
-        - wxmplot>=0.9
-        - wxutils>=0.2
+        - wxmplot >= 0.9
+        - wxutils >= 0.2
+        #: Python IDE tools
+        #: [overview](http://books.agiliq.com/projects/essential-python-tools/en/latest/linters.html)
+        #: [comparison](https://realpython.com/python-code-quality/)
+        #: [full list](https://github.com/vintasoftware/python-linters-and-code-analysis)
+        - rope         #: completions and renaming
+        - pyflakes     #: linter (used by flake8, faster than pylint)
+        - mccabe       #: linter (used by flake8)
+        - pycodestyle  #: linter (used by flake8, for style checking)
+        - flake8       #: linter (wrapper on top of +pyflakes, +pycodestyle and +mccabe)
+        - pydocstyle   #: linter for docstring style checking
+        - black        #: formatter (preferred over: yapf and autopep8)
+        - doc8         #: style checker for rst
+        - pytest
+        - nose
         #: Build docs
-        - sphinx>=1.5
+        - sphinx >= 1.5
         - sphinxcontrib-napoleon
         - sphinx_rtd_theme
         - recommonmark
         #: Jupyter
         - jupyterlab_server
-        - jupyterlab>=1.0
-        - ipywidgets>=7.5
+        - jupyterlab >= 1.0
+        - ipywidgets >= 7.5
         - notebook
         - jupyterhub
         - ipympl
         - nbsphinx
-        - widgetsnbextension>=3.5.0
+        - widgetsnbextension >= 3.5.0
         #: Base (sci)libs
-        - hdf5plugin>=2.1
-        - xraydb>=4.3
-        - lmfit>=0.9.15
-        - silx>=0.11
-        - pymca>=5.5.3
+        - hdf5plugin >= 2.1
+        - xraydb >= 4.3
+        - lmfit >= 0.9.15
+        - silx >= 0.11
+        - pymca >= 5.5.3
+        - xrt >= 1.3.3
         #: NeXus
         - pyresttable
         - spec2nexus
         - nexusformat
         - nexpy
         #: SHADOW & OASYS
-        - shadow3==18.5.30
+        - shadow3 == 18.5.30
         - resources
         - oasys-canvas-core
         - oasys-widget-core
@@ -79,3 +106,5 @@ dependencies:
         #: From source (Larch & Sloth)
         - git+https://github.com/xraypy/xraylarch
         - git+https://github.com/maurov/xraysloth
+
+#: -> run 'postBuild' script to complete install of Jupyter extensions (NOTE: automatically run on binderhub)
