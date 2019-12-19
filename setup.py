@@ -72,7 +72,7 @@ def main():
             "Intended Audience :: Science/Research",
         ],
     )
-    _setup = setup(**setup_kwargs)
+    setup(**setup_kwargs)
 
 
 if __name__ == "__main__":

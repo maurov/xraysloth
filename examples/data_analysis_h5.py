@@ -83,7 +83,8 @@ from sloth.gui.plot.plotarea import PlotArea
 from sloth.io.datasource_spech5 import DataSourceSpecH5
 
 from sloth.utils.logging import getLogger
-_logger = getLogger('sloth.examples.data_analysis_h5', level='INFO')
+
+_logger = getLogger("sloth.examples.data_analysis_h5", level="INFO")
 
 
 class MyDataAnalysisApp(qt.QMainWindow):
@@ -95,7 +96,7 @@ class MyDataAnalysisApp(qt.QMainWindow):
             #: behave as a widget
             self.setWindowFlags(qt.Qt.Widget)
         else:
-            self.setWindowTitle('My Great Data Analysis Box')
+            self.setWindowTitle("My Great Data Analysis Box")
 
         #: logger
         self._logger = _logger
@@ -124,7 +125,10 @@ class MyDataAnalysisApp(qt.QMainWindow):
     def _init_data_source(self, fname=None):
         """init data source"""
         self._ds = DataSourceSpecH5(fname=fname, logger=self._logger)
-        self._logger.info(f"'{self.__class__.__name__}._ds': data source (file={fname})")
+        self._logger.info(
+            f"'{self.__class__.__name__}._ds': data source (file={fname})"
+        )
+
 
 ########
 # MAIN #
@@ -134,8 +138,10 @@ class MyDataAnalysisApp(qt.QMainWindow):
 def main(fname=None):
     """main with the possibility to load a filename"""
     from sloth.utils.jupyter import run_from_ipython
+
     _ipy = run_from_ipython()
     from silx import sx
+
     sx.enable_gui()
     t = MyDataAnalysisApp()
     # t.show()
@@ -149,5 +155,5 @@ def main(fname=None):
     return t
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     t = main()
