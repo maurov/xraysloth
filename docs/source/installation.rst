@@ -20,6 +20,10 @@ environment called `sloth` and install a minimal version of the library.
 
       $ source $HOME/local/conda/bin/activate
 
+- Update to the latest version of `conda`, `python` and `pip`:
+
+      (base)$ conda update -y conda python pip
+
 - Install git (if not yet present in your environment)::
 
       (base)$ conda install -y git
@@ -36,6 +40,10 @@ environment called `sloth` and install a minimal version of the library.
 
       (base)$ cd xraysloth/binder
       (base)$ conda env create -f environment.yml
+
+.. note:: This will install a relatively large number of libraries. If you want to keep a minimal environment and install only those librariers you want, you can manually create the `sloth` environment::
+
+      (base)$ conda create -n sloth python==3.7
 
 - Activate the environment::
 
