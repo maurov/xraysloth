@@ -41,9 +41,13 @@ Current version is |release|.
 :doc:`data_model/index`
   How the data are structured (from file to memory and back).
 
+:doc:`workflows/index`
+  Personal notes on workflows.
+
 :doc:`modules/index`
   Documentation automatically built from the docstrings of the packages
   included in *sloth*.
+
 
 Indices
 -------
