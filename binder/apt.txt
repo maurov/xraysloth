@@ -1,5 +1,6 @@
 build-essential
 libxxf86vm1
+libx11-xcb1
 libqt5x11extras5
 libglu1-mesa-dev
 freeglut3-dev
