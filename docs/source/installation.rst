@@ -1,7 +1,9 @@
 Installation
 ------------
 
-Currently, only installation from source is available.
+Currently, the recommended installation method is from source on a Linux-like environment.
+
+.. note:: For Microsoft Windows users, it is recommended to run the following setup in a `Windows Subsystem for Linux <https://docs.microsoft.com/en-us/windows/wsl/install-win10>`_. Debian or Ubuntu are preferred Linux distributions. Furthermore, an optimized experience is obtained with `MobaXterm <https://mobaxterm.mobatek.net/>`_.
 
 Minimal setup
 .............
@@ -12,11 +14,13 @@ environment called `sloth` and install a minimal version of the library.
 - First of all, install `Conda <https://conda.io>`_ on your system. If you are on Linux, this can be done just by::
 
       wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-      bash miniconda.sh -b -p $HOME/conda
+      bash miniconda.sh -b -p $HOME/local/conda
 
-- Open a shell with the Conda `base` environment activated. I refer to it as `(base)$` in the following.
+- Open a shell with the Conda `base` environment activated. I refer to it as `(base)$` in the following::
 
-- Install git::
+      $ source $HOME/local/conda/bin/activate
+
+- Install git (if not yet present in your environment)::
 
       (base)$ conda install -y git
 
@@ -24,7 +28,7 @@ environment called `sloth` and install a minimal version of the library.
 
       (base)$ git clone https://github.com/maurov/xraysloth.git
       
-.. note:: if you are behind a proxy::
+.. note:: if you are behind a proxy, you may need to configure git for it::
 
       (base)$ git config --global http.proxy HOST:PORT
 
@@ -37,16 +41,32 @@ environment called `sloth` and install a minimal version of the library.
 
       (base)$ conda activate sloth
 
+- Run the `postBuild` script to complete install the Jupyter extensions::
+
+      (sloth)$ bash postBuild
+
 - Enjoy!
 
 Daily working environment
 .........................
 
-For a daily working environment, if you are not familiar with a `Python IDE
-<https://wiki.python.org/moin/IntegratedDevelopmentEnvironments>`_, a good
-choice is to use `Spyder <https://www.spyder-ide.org/>`_::
+For a daily working environment, you should use a `Python IDE
+<https://wiki.python.org/moin/IntegratedDevelopmentEnvironments>`_.
 
-  (sloth)$ conda install -y spyder
+Recommended IDEs are:
+
+- `Microsoft Visual Studio Code <https://code.visualstudio.com/>`_::
+
+      (sloth)$ wget https://go.microsoft.com/fwlink/?LinkID=760868
+      (sloth)$ dpkg -i <downloaded_file.deb>
+
+- `Spyder <https://www.spyder-ide.org/>`_::
+
+      (sloth)$ conda install -y spyder
+
+- `Jupyter lab <https://jupyterlab.readthedocs.io/en/stable/#>`_::
+
+      (sloth)$ jupyter lab
 
 Notes requirements
 ..................

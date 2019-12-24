@@ -1,10 +1,12 @@
 Sloth: slowly evolving utilities for x-ray spectroscopists
 ==========================================================
 
-Sloth is a collection of Python scripts that may result useful in the field of
-x-ray instrumentation/optics and data reduction/analysis for x-ray Absorption
-Spectroscopy (XAS, XANES/EXAFS), x-ray emission spectroscopy (XES) and Resonant
-Inelastic x-ray Scattering (RIXS) techniques.
+Sloth is a collection of Python scripts and examples of workflows that may
+result useful in the field of **x-ray instrumentation, optics and
+spectroscopy**. The goal is to offer the user a full Python environment for data
+reduction/analysis in x-ray Absorption Spectroscopy (XAS, XANES/EXAFS), x-ray
+emission spectroscopy (XES) and Resonant Inelastic x-ray Scattering (RIXS)
+techniques.
 
 Sloth is lazy by nature and tries reusing as much as possible the existing
 open-source libraries of the Python ecosystem. Nevertheless, apart few very
@@ -12,19 +14,19 @@ basic libraries that are mandatory, many other are used randomly in various
 parts and you will discover them by usage, so I strongly encourage to read the
 code and the work-in-progress documentation.
 
-**WARNING** Sloth is designed as a library, but it should not be used in
-production environments, because its API is changing rapidily and *backward
-compatibility is not guarenteed*. The main reason is the fact that there is only
-one developer for a single user, myself!. Thus, the library performs as a
-partial random snapshot of daily work/research and still-to-implement ideas
-(mainly due to lack of time). Feel free to use/hack it and do not hesitate to
-drop me a line if you find any script useful. Furthermore, I appreciate if bugs,
-enhancements or comments  could be reported directly in `Github Issues
-<https://github.com/maurov/xraysloth/issues>`_
+Sloth is designed as a Python environment running on a Linux-like operative
+system (see Installation in the documentation!). On top of this there is a basic
+library and some rudimentary not-yet-finished GUIs. The structure of the code or
+the API is changing rapidily and *backward compatibility is not guarenteed*.
+Thus, the library performs as a partial random snapshot of daily work/research
+and still-to-implement ideas (mainly due to lack of time). Feel free to use/hack
+it and do not hesitate to drop me a line if you find any script useful.
+Furthermore, I appreciate if bugs, enhancements or comments  could be reported
+directly in `Github Issues <https://github.com/maurov/xraysloth/issues>`_
 
 This project works in close collaboration with `Larch
 <https://github.com/xraypy/xraylarch>`_ and the goal is to transfer stable
-portions of the code there. This means that **it is recommended to use Larch in
+portions of the code there. It means that **it is recommended to use Larch in
 production environments**.
 
 Finally, I recommend visiting the `Sloth appreciation society
