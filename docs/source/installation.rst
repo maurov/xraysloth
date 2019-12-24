@@ -3,7 +3,7 @@ Installation
 
 Currently, the recommended installation method is from source on a Linux-like environment.
 
-.. note:: For Microsoft Windows users, it is recommended to run the following setup in a `Windows Subsystem for Linux <https://docs.microsoft.com/en-us/windows/wsl/install-win10>`_. Debian or Ubuntu are preferred Linux distributions. Furthermore, an optimized experience is obtained with `MobaXterm <https://mobaxterm.mobatek.net/>`_.
+.. note:: For Microsoft Windows users, it is recommended to run the following setup in a `Windows Subsystem for Linux (WSL) <https://docs.microsoft.com/en-us/windows/wsl/install-win10>`_. Debian or Ubuntu are preferred Linux distributions. Furthermore, an optimized experience is obtained with `MobaXterm <https://mobaxterm.mobatek.net/>`_.
 
 Minimal setup
 .............
@@ -59,6 +59,8 @@ Recommended IDEs are:
 
       (sloth)$ wget https://go.microsoft.com/fwlink/?LinkID=760868
       (sloth)$ dpkg -i <downloaded_file.deb>
+
+.. note:: Under Windows install it the application the standard way and use the integrated WSL extension.
 
 - `Spyder <https://www.spyder-ide.org/>`_::
 
