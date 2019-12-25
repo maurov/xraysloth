@@ -8,17 +8,9 @@ dependencies:
     - python==3.7
     - pip
     - nodejs
-    - pyopengl
-    - conda-forge::pyopencl
-    - conda-forge::pocl
-    - conda-forge::oclgrind
-    - conda-forge::freeglut
-    - pyqt>=5.9.2
-    - pandoc
     - conda-forge::xraylib
     - pip:
-        - --verbose
-        - -r requirements.txt
+        - -r ../requirements.txt
         - -r requirements-dev.txt  #: IDE/dev tools
         - -r requirements-docs.txt  #: to build docs
         - -r requirements-jupyter.txt  #: Jupyter
