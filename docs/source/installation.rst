@@ -36,6 +36,10 @@ environment called `sloth` and install a minimal version of the library.
 
       (base)$ git config --global http.proxy HOST:PORT
 
+- Make sure the packages listed in `binder/apt.txt` are available in your system, otherwise install them::
+
+      $ cat apt.txt | xargs sudo apt-get install -y
+
 - Create `sloth` Conda environment::
 
       (base)$ cd xraysloth/binder
