@@ -16,11 +16,11 @@ before_install:
     - conda info -a
 
 install:
-    - conda create -q -n sloth-travis python=$TRAVIS_PYTHON_VERSION
-    - source activate sloth-travis
+    - conda create -q -n sloth python=$TRAVIS_PYTHON_VERSION
+    - source activate sloth
     - conda install pip
     - pip install -r requirements.txt
-    - pip install -r requirements-docs.txt
+    - pip install -r binder/requirements-docs.txt
     - pip install .
 
 script:

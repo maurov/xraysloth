@@ -75,3 +75,6 @@ docs/source/_build
 .jupyter/
 .local/
 .npm/
+
+# Conda temporary files
+condaenv*

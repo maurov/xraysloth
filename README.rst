@@ -1,28 +1,31 @@
-Sloth: slowly evolving utilities for x-ray spectroscopists
-==========================================================
+Sloth: slowly evolving utilities for x-ray spectroscopy
+=======================================================
 
-Sloth is a collection of Python scripts and examples of workflows that may
-result useful in the field of **x-ray instrumentation, optics and
-spectroscopy**. The goal is to offer the user a full Python environment for data
-reduction/analysis in x-ray Absorption Spectroscopy (XAS, XANES/EXAFS), x-ray
-emission spectroscopy (XES) and Resonant Inelastic x-ray Scattering (RIXS)
-techniques.
+Sloth is a collection of Python scripts, examples of workflows and documentation
+that may result useful in the field of **x-ray instrumentation, optics and
+spectroscopy**. The project aims providing a full Python environment for the
+generic user of an x-ray spectroscopy beamline. It should help with the tasks of
+data reduction/analysis and simulation for x-ray Absorption Spectroscopy (XAS,
+XANES/EXAFS), x-ray emission spectroscopy (XES) and Resonant Inelastic x-ray
+Scattering (RIXS) techniques.
 
 Sloth is lazy by nature and tries reusing as much as possible the existing
-open-source libraries of the Python ecosystem. Nevertheless, apart few very
-basic libraries that are mandatory, many other are used randomly in various
-parts and you will discover them by usage, so I strongly encourage to read the
-code and the work-in-progress documentation.
+open-source libraries of the Python ecosystem. It results in a large number of
+dependecies. Nevertheless, apart few very basic libraries that are mandatory,
+many other are used randomly in specific modules and you may discover them only
+by usage, so I strongly encourage to read the code and the work-in-progress
+documentation.
 
-Sloth is designed as a Python environment running on a Linux-like operative
-system (see Installation in the documentation!). On top of this there is a basic
-library and some rudimentary not-yet-finished GUIs. The structure of the code or
-the API is changing rapidily and *backward compatibility is not guarenteed*.
-Thus, the library performs as a partial random snapshot of daily work/research
-and still-to-implement ideas (mainly due to lack of time). Feel free to use/hack
-it and do not hesitate to drop me a line if you find any script useful.
-Furthermore, I appreciate if bugs, enhancements or comments  could be reported
-directly in `Github Issues <https://github.com/maurov/xraysloth/issues>`_
+Sloth is designed as a **Python environment running on a Linux-like
+(virtual)machine** (see Installation in the documentation for a full
+description). On top of this, there is a basic library and some rudimentary
+not-yet-finished GUIs. The structure of the code or the API is changing rapidily
+and *backward compatibility is not guarenteed*. Thus, the library performs as a
+partial random snapshot of daily work/research and still-to-implement ideas
+(mainly due to lack of time). Feel free to use/hack it and do not hesitate to
+drop me a line if you find any script useful. Furthermore, I appreciate if bugs,
+enhancements or comments  could be reported directly in `Github Issues
+<https://github.com/maurov/xraysloth/issues>`_
 
 This project works in close collaboration with `Larch
 <https://github.com/xraypy/xraylarch>`_ and the goal is to transfer stable

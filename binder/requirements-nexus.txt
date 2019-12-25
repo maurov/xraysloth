@@ -1,0 +1,6 @@
+#: pip requiremets file for NeXus
+#-r requirements.txt
+pyresttable
+spec2nexus
+nexusformat
+nexpy

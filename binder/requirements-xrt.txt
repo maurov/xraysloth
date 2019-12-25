@@ -1,0 +1,5 @@
+#: pip requirements file for [XRT](https://xrt.readthedocs.io/)
+#PyQt5==5.12
+#pyqtwebengine==5.12
+spyder==4.0.0
+xrt>=1.3.3

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Sloth: some utilies for x-ray spectroscopists
+"""Sloth: utilies for x-ray spectroscopy
 
 Naming
 ======
@@ -20,26 +20,26 @@ warnings.filterwarnings("ignore", message="numpy.dtype size changed")
 warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
 
 __author__ = "Mauro Rovezzi"
-__version__ = "0.3.1.rc2"
+__version__ = "0.3.2"
 
 _libDir = os.path.dirname(os.path.realpath(__file__))
 _resourcesPath = os.path.join(_libDir, "resources")
 
 __pkgs__ = [
     "sloth",
-    "sloth.io",  # input-output
-    "sloth.groups",  # data groups based on HDF5 model
-    "sloth.collects",  # data containers !DEPRECATED! -> sloth.groups
-    "sloth.utils",  # utilities (generic)
-    "sloth.math",  # math&friends
-    "sloth.test",  # main test suite
-    "sloth.fit",  # fit utilities
-    "sloth.gui",  # graphical user interface
-    "sloth.inst",  # instrumentation
-    "sloth.raytracing",  # ray tracing (shadow)
-    "sloth.calculators",  # ab initio calculators
-    #'sloth.examples',     # examples #TODO: fix this under windows!!!
-    "sloth.resources",  # resoureces (= UI files, icons, etc.)
+    "sloth.io",  #: input-output
+    "sloth.groups",  #: data groups based on HDF5 model
+    "sloth.collects",  #: data containers !DEPRECATED! -> sloth.groups
+    "sloth.utils",  #: utilities (generic)
+    "sloth.math",  #: math&friends
+    "sloth.test",  #: main test suite
+    "sloth.fit",  #: fit utilities
+    "sloth.gui",  #: graphical user interface
+    "sloth.inst",  #: instrumentation
+    "sloth.raytracing",  #: ray tracing (shadow)
+    "sloth.calculators",  #: ab initio calculators
+    #'sloth.examples',     #: examples #TODO: fix this under windows!!!
+    "sloth.resources",  #: resources (= UI files, icons, etc.)
 ]
 
 

@@ -1,0 +1,12 @@
+#: pip requirements file for Jupyter ecosystem
+#-r requirements.txt
+ipython>=7.10
+ipykernel>=5.1
+jupyterlab_server
+jupyterlab>=1.0
+ipywidgets>=7.5
+notebook
+jupyterhub
+ipympl
+nbsphinx
+widgetsnbextension>=3.5.0
