@@ -1,7 +1,6 @@
 # pip requirements for sloth (requires pip >= 8.0)
 # NOTE: full environment with `conda env create --file environment.yml`
 
---verbose
 --trusted-host www.silx.org
 --find-links http://www.silx.org/pub/wheelhouse/
 --only-binary numpy,h5py,scipy,PySide2,PyQt5
@@ -13,8 +12,6 @@ scipy >= 1.2
 matplotlib >= 3.0
 h5py >= 2.9
 pyopencl; platform_machine in "i386, x86_64, AMD64"  #: for silx.opencl
-pocl; platform_machine in "i386, x86_64, AMD64"
-oclgrind; platform_machine in "i386, x86_64, AMD64"
 Mako #: for pyopencl reduction
 PyOpenGL  #: for silx.gui.plot3d
 python-dateutil  #: for silx.gui.plot
