@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #: pip requirements file for development tools (linters and formatters)
 #: [overview](http://books.agiliq.com/projects/essential-python-tools/en/latest/linters.html)
 #: [comparison](https://realpython.com/python-code-quality/)
@@ -14,5 +15,5 @@ wheel        #: To build wheels
 lxml         #: (silx-dev) For test coverage in run_test.py
 coverage     #: (silx-dev) For test coverage in run_test.py
 doc8         #: style checker for rst
-pytest
-nose
+pytest       #: test (larch)
+nose         #: test (larch)

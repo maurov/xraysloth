@@ -1,6 +1,7 @@
-# pip requirements for building sloth documentation
+# -*- coding: utf-8 -*-
+# pip requirements file for building sloth documentation
 #-r requirements.txt
-sphinx>=1.8
+sphinx >= 1.8
 pandoc  #: for documentation Qt snapshot updates
 numpydoc
 recommonmark

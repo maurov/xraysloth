@@ -1,15 +1,16 @@
+# -*- coding: utf-8 -*-
 #: pip requirements file for [Larch](https://github.com/xraypy/xraylarch)
 #-r requirements.txt
 scikit-learn
 scikit-image
-peakutils>=1.3
-asteval>=0.9.14
-uncertainties>=3.0
-pyshortcuts>=1.5
-#pyepics>=3.3.3
-#wxpython>=4.0.4
-wxutils>=0.2.3
-wxmplot>=0.9.37
+peakutils >= 1.3
+asteval >= 0.9.14
+uncertainties >= 3.0
+pyshortcuts >= 1.5
+#pyepics >= 3.3.3
+#wxpython >= 4.0.4
+wxutils >= 0.2.3
+wxmplot >= 0.9.37
 pycifrw
-#xraylarch>=0.9.46
+#xraylarch >= 0.9.46
 git+https://github.com/xraypy/xraylarch.git

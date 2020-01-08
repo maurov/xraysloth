@@ -1,7 +1,16 @@
-#Python environment for: https://github.com/maurov/xraysloth
-#Target: *FULL* environment for sloth based on Larch (Wx) + SILX (Qt) + OASYS + Jupyter + GL + XRT
-#NOTE: first install packages in apt.txt
-#Usage: conda env create -f environment.yml
+# -*- coding: utf-8 -*-
+# Conda environment configuration for: https://github.com/maurov/xraysloth
+# Target: *FULL* environment for sloth based on
+#   -> Larch (Wx)
+#   +> SILX (Qt)
+#   +> OASYS
+#   +> Jupyter
+#   +> GL/CL
+#   +> XRT
+#   +> Nexus
+#   +> Dev tools
+# NOTE: first install packages in apt.txt
+# Usage: conda env create -f environment.yml
 name: sloth
 channels:
     - defaults
@@ -12,15 +21,15 @@ dependencies:
     - wxpython >= 4.0.4  # still not working with pip!
     - conda-forge::xraylib
     - pip:
-        - -r ../requirements.txt
-        - -r requirements-dev.txt  #: IDE/dev tools
-        - -r requirements-docs.txt  #: to build docs
-        - -r requirements-jupyter.txt  #: Jupyter
-        - -r requirements-xrt.txt  #: XRT (ray tracing)
-        - -r requirements-nexus.txt  #: NeXus
-        - -r requirements-oasys.txt  #: SHADOW & OASYS
-        - -r requirements-larch.txt  #: Larch
+        - -r ../requirements.txt        #: base
+        - -r requirements-dev.txt       #: IDE/dev tools
+        - -r requirements-docs.txt      #: to build docs
+        - -r requirements-jupyter.txt   #: Jupyter
+        - -r requirements-xrt.txt       #: XRT (ray tracing)
+        - -r requirements-nexus.txt     #: NeXus
+        - -r requirements-oasys.txt     #: SHADOW & OASYS
+        - -r requirements-larch.txt     #: Larch
         #- -e git+https://github.com/maurov/xraysloth.git  #: Sloth dev mode
-        - -e ../  #: Sloth dev mode (local)
+        - -e ../                        #: Sloth dev mode (local)
 
 #: -> run 'postBuild' script to complete install of Jupyter extensions (NOTE: automatically run on binderhub)

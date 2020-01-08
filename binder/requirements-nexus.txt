@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #: pip requiremets file for NeXus
 #-r requirements.txt
 pyresttable

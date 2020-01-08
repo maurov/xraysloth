@@ -16,8 +16,8 @@ Mako #: for pyopencl reduction
 PyOpenGL  #: for silx.gui.plot3d
 python-dateutil  #: for silx.gui.plot
 Pillow  #: for silx.opencl.image.test
-PyQt5==5.12  #: for silx.gui, v5.12 for spyder==4.0.0
-pyqtwebengine==5.12  #: v5.12 for spyder==4.0.0
+PyQt5 == 5.12  #: for silx.gui, v5.12 for spyder==4.0.0
+pyqtwebengine == 5.12  #: v5.12 for spyder==4.0.0
 qtconsole  #: for silx.gui.console
 sqlalchemy >= 1.3
 pandas >= 0.25
