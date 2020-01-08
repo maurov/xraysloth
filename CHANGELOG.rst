@@ -3,8 +3,8 @@
 Change Log
 ==========
 
-v.0.3.0 (dev)
--------------
+v.0.3 (dev)
+-----------
 
 *master branch (not released/tagged yet)*
 
@@ -16,8 +16,8 @@ New features
 * :mod:`sloth.gui.daxs`
 
   - Qt-based GUI application featuring a TreeModel/View from **Marius Retegan**
-    and the SILX group at ESRF. The GUI has an internal Jupyter kernel that give
-    access to core components directly from a Qtconsole.
+    and the SILX group at ESRF. The GUI has an internal Jupyter kernel that
+    give access to core components directly from a Qtconsole.
 
   .. note::
 
@@ -57,7 +57,7 @@ Bug fixes
 
 * :mod:`sloth.__init__`
 
-  - re-enable larch imports in :var:`_slothKit` (currently disabled
+  - re-enable larch imports in `_slothKit` (currently disabled
     because loading seems too slow!!!)
 
 Broken backward compatibility
