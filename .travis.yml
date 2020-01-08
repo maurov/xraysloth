@@ -20,7 +20,7 @@ install:
     - conda create -q -n sloth python=$TRAVIS_PYTHON_VERSION
     - source activate sloth
     - conda install pip
-    - pip install -r requirements-rtd.txt
+    - pip install -r binder/requirements-rtd.txt
     - pip install .
 
 script:
