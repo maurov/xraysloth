@@ -1,7 +1,43 @@
 Personal Git-related notes
 --------------------------
 
-I do not use Git so often to remember all the steps to contribute to open-source projects (usually hosted on Github), so here I write down some notes.
+I do not use Git so often to remember all the steps (and commands) to
+contribute to open-source projects (usually hosted on Github), so here I write
+down some notes.
+
+Howtos
+''''''
+
+- Add upstream tracking of a forked project::
+
+    git remote add --track master upstream https://forked_project.git
+
+- Fetch a specific branch from a source (here the case of `upstream`)::
+
+    git remote -v  # shows all remote sources
+    git fetch upstream remote_branch_name:local_brach_name
+
+- Delete a branch::
+
+    git branch --delete your_branch_name      # locally
+    git push origin --delete your_branch_name # remotely
+
+- `Pull from a given remote branch <https://stackoverflow.com/questions/1709177/git-pull-a-certain-branch-from-github>`_::
+
+    git pull origin other-branch
+
+- `Overwrite any local changes on pull <http://stackoverflow.com/questions/1125968/force-git-to-overwrite-local-files-on-pull>`_::
+
+    git fetch --all
+    git reset --hard origin/master
+
+- `Clone all remote branches <http://stackoverflow.com/questions/67699/clone-all-remote-branches-with-git>`_::
+
+    git clone git://example.com/myproject
+    cd myproject
+    git branch -a # to show all branches
+    git checkout -b experimental origin/experimental  # creates a local tracking branch
+
 
 Configuration
 '''''''''''''
@@ -11,23 +47,21 @@ Configuration
     git config --global user.name "Your Name"
     git config --global user.email "your.email@your_provider.com"
 
-- Temporary cache password
-
-`From Stackoverflow <https://stackoverflow.com/questions/5343068/is-there-a-way-to-skip-password-typing-when-using-https-on-github/5343146#5343146>`_::
+- `Temporary cache password <https://stackoverflow.com/questions/5343068/is-there-a-way-to-skip-password-typing-when-using-https-on-github/5343146#5343146>`_ for one hour::
 
     git config --global credential.helper "cache --timeout=3600"
 
-- Proxy::
+- Proxy (here at ESRF)::
 
     git config --global http.proxy http://proxy.esrf.fr:3128
     git config --global https.proxy https://proxy.esrf.fr:3128
 
 Branching workflow
-'''''''''''''''''''
+''''''''''''''''''
 
-- Click 'fork' button on the repo you want to contribute to
-- Clone it locally to your machine
-- Add upstream track for updates (here example on 'pymca' repo)::
+- Click `fork` button on the repo you want to contribute to.
+- Clone it locally to your machine.
+- Add upstream track for updates (here example on `pymca` repo)::
 
     git remote add --track master upstream git://github.com/vasole/pymca.git
 
@@ -67,35 +101,29 @@ Branching workflow
 Specific cases
 ''''''''''''''
 
-- Fetch a given remote branch::
+- `Fetch a given remote branch <https://stackoverflow.com/questions/9537392/git-fetch-remote-branch>`_::
 
     git checkout --track origin/daves_branch
-
-This is equivalent to::
-
+    # This is equivalent to
     git checkout -b [branch] [remotename]/[branch]
 
-`Source <https://stackoverflow.com/questions/9537392/git-fetch-remote-branch>`_
+- Merge master into a feature branch (`well explained here <https://stackoverflow.com/questions/16955980/git-merge-master-into-feature-branch>`_, see also `gitflow <https://github.com/nvie/gitflow>`_)::
 
-- Merge master into a feature branch::
-
-Well explained `here <https://stackoverflow.com/questions/16955980/git-merge-master-into-feature-branch>`_.
-
-Case 1::
-
+    # Case 1 (single commits of the feature branch will be added to master
+    #        (NOTE: this will pollute the history with fragmented commits)
     git checkout feature1
-    git checkout master
+    git merge master
 
-Case 2: you do not want to have the commits from the bug fixes in your feature branch::
-
+    # Case 2: you do not want to have the commits from the bug fixes in your feature branch
     git checkout feature1
     git rebase master
 
-Manage all conflicts that arise. When you get to the commits with the bugfixes (already in master), git will say that there were no changes and that maybe they were already applied. You then continue the rebase (while skipping the commits already in master) with::
+    # Manage all conflicts that arise. When you get to the commits with the bugfixes
+    # (already in master), git will say that there were no changes and that maybe they
+    # were already applied. You then continue the rebase (while skipping the commits
+    # already in master) with::
 
     git rebase --skip
-
-See also `gitflow <https://github.com/nvie/gitflow>`_
 
 - Useful links
 
@@ -104,9 +132,8 @@ See also `gitflow <https://github.com/nvie/gitflow>`_
     - `Workflow without branch <http://www.pontikis.net/blog/how-to-collaborate-on-github-open-source-projects>`_
     - `Another collaborating workflow example <http://www.eqqon.com/index.php/Collaborative_Github_Workflow>`_
 
-
 Tags
-'''''
+''''
 
 `Basics explained here <https://git-scm.com/book/en/v2/Git-Basics-Tagging>`_
 
@@ -131,29 +158,3 @@ Tags
 
     git tag --delete origin tag_name
 
-Howtos
-''''''
-
-- Fetch a specific branch from upstream::
-
-    git fetch upstream remote_branch_name:local_brach_name
-
-- Add upstream tracking of a forked project::
-
-    git remote add --track master upstream https://forked_project.git
-
-- `Pull from a given remote branch <https://stackoverflow.com/questions/1709177/git-pull-a-certain-branch-from-github>`_::
-
-    git pull origin other-branch
-
-- `Overwrite any local changes on pull <http://stackoverflow.com/questions/1125968/force-git-to-overwrite-local-files-on-pull>`_::
-
-    git fetch --all
-    git reset --hard origin/master
-
-- `Clone all remote branches <http://stackoverflow.com/questions/67699/clone-all-remote-branches-with-git>`_::
-
-    git clone git://example.com/myproject
-    cd myproject
-    git branch -a # to show all branches
-    git checkout -b experimental origin/experimental  # creates a local tracking branch

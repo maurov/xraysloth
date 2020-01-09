@@ -25,72 +25,84 @@ TODO
      'np.argmin(np.abs(ene-(x)))'
 - [] atan_gamma_fdmnes: define atan_gamma as in FDMNES
 """
-MODNAME = '_math'
-DEBUG = 0
-
-import os, sys, math
+import os
+import math
 import subprocess
 from optparse import OptionParser
 from datetime import date
 from string import Template
 import numpy as np
 
+MODNAME = "_math"
+DEBUG = 0
+
 # No deps on Larch: used only if you want to access this as Larch plugin
 HAS_LARCH = False
 try:
     from larch import use_plugin_path
-    use_plugin_path('math')
+
+    use_plugin_path("math")
     HAS_LARCH = True
-except:
+except ImportError:
     pass
 
 # <LINESHAPES> #
+
+
 def gaussian(x, cen=0, sigma=1, fwhm=False, peak=None):
     """1 dimensional Gaussian function (https://en.wikipedia.org/wiki/Gaussian_function)
 
     Parameters
-    ==========
+    ----------
     x     : array
     cen   : [0] center, x0
     sigma : [1] standard deviation, FWHM = 2*sqrt(2*ln(2)) * sigma =~ 2.35482 * sigma
     fwhm  : [False] if True, the given sigma is assumed as fwhm and then converted accordingly
     peak  : [None] if None, peak = 1 / math.sqrt(2*math.pi), the distribution integrate to 1
     """
-    if fwhm is True: sigma = sigma / 2*math.sqrt(2*math.log(2))
-    if peak is None: peak = 1. / math.sqrt(2*math.pi) 
-    return peak * np.exp( -(1.*x-cen)**2 / (2*sigma**2) )
+    if fwhm is True:
+        sigma = sigma / 2 * math.sqrt(2 * math.log(2))
+    if peak is None:
+        peak = 1.0 / math.sqrt(2 * math.pi)
+    return peak * np.exp(-((1.0 * x - cen) ** 2) / (2 * sigma ** 2))
+
 
 def lorentzian(x, cen=0, gamma=1, peak=None):
     """1 dimensional Lorentzian
 
     Parameters
-    ==========
+    ----------
     x     : array
     cen   : [0] center, x0
     gamma : [1] half width at half maximum
     peak  : [None] if None, peak = 1 / (math.pi*sigma), the distribution integrate to 1
     """
-    if peak is None: peak = 1. / (math.pi*gamma)
-    return peak * (1. / (1. + ( (1.*x-cen) / gamma)**2 ) )
+    if peak is None:
+        peak = 1.0 / (math.pi * gamma)
+    return peak * (1.0 / (1.0 + ((1.0 * x - cen) / gamma) ** 2))
+
+
 # </LINESHAPES> #
+
 
 def get_ene_index(ene, cen, hwhm):
     """ returns the min/max indexes for array ene at (cen-hwhm) and (cen+hwhm)
     very similar to index_of in larch
     """
     try:
-        if ((cen-hwhm) <= min(ene)):
+        if (cen - hwhm) <= min(ene):
             ene_imin = 0
         else:
-            ene_imin = max(np.where(ene < (cen-hwhm))[0])
-        if ((cen+hwhm) >= max(ene)):
-            ene_imax = (len(e)-1)
+            ene_imin = max(np.where(ene < (cen - hwhm))[0])
+        if (cen + hwhm) >= max(ene):
+            ene_imax = len(ene) - 1
         else:
-            ene_imax = min(np.where(ene > (cen+hwhm))[0])
+            ene_imax = min(np.where(ene > (cen + hwhm))[0])
         return ene_imin, ene_imax
-    except:
-        print('index not found for {0} +/- {1}'.format(cen, hwhm))
+    except Exception:
+        print("index not found for {0} +/- {1}".format(cen, hwhm))
         return None, None
+
 
 def lin_gamma(ene, fwhm=1.0, linbroad=None):
     """returns constant or linear energy-dependent broadening
@@ -106,39 +118,41 @@ def lin_gamma(ene, fwhm=1.0, linbroad=None):
     """
     w = np.ones_like(ene)
     if linbroad is None:
-        return w*fwhm
+        return w * fwhm
     else:
         try:
             fwhm2 = linbroad[0]
             e1 = linbroad[1]
             e2 = linbroad[2]
-        except:
-            raise ValueError('wrong format for linbroad')
+        except Exception:
+            raise ValueError("wrong format for linbroad")
         for en, ee in enumerate(ene):
             if ee < e1:
                 w[en] *= fwhm
             elif ee <= e2:
-                wlin = (fwhm + (ee - e1) * (fwhm2 - fwhm) / (e2 - e1))
+                wlin = fwhm + (ee - e1) * (fwhm2 - fwhm) / (e2 - e1)
                 w[en] *= wlin
             elif ee >= e2:
                 w[en] *= fwhm2
         return w
 
-def atan_gamma(ene, gamma_hole, gamma_max=15., e0=0, eslope=1.):
+
+def atan_gamma(ene, gamma_hole, gamma_max=15.0, e0=0, eslope=1.0):
     """returns arctangent-like broadening, $\Gamma(E)$
 
     ..math
 
     \Gamma(E) = \Gamma_{hole} + \Gamma_{max} * ( \arctan( \frac{E-E_{0}}{E_{slope}} ) / \pi + 1/2) )
     """
-    if (eslope == 0):
-        print('Warning: eslope cannot be zero, using default value of 1')
-        eslope = 1.
-    return gamma_hole + gamma_max * ( ( np.arctan( (ene - e0) / eslope ) / np.pi ) + 0.5 )
+    if eslope == 0:
+        print("Warning: eslope cannot be zero, using default value of 1")
+        eslope = 1.0
+    return gamma_hole + gamma_max * ((np.arctan((ene - e0) / eslope) / np.pi) + 0.5)
 
-def conv(e, mu, kernel='gaussian', fwhm_e=None, efermi=None):
+
+def conv(e, mu, kernel="gaussian", fwhm_e=None, efermi=None):
     """ linear broadening
-    
+
     Parameters
     ----------
     e : x-axis (energy)
@@ -154,145 +168,153 @@ def conv(e, mu, kernel='gaussian', fwhm_e=None, efermi=None):
     f = np.copy(mu)
     z = np.zeros_like(f)
     if efermi is not None:
-        #ief = index_nearest(e, efermi)
-        ief = np.argmin(np.abs(e-efermi))
+        # ief = index_nearest(e, efermi)
+        ief = np.argmin(np.abs(e - efermi))
         f[0:ief] *= 0
     if e.shape != fwhm_e.shape:
         print("Error: 'fwhm_e' does not have the same shape of 'e'")
         return 0
     # linar fit upper part of the spectrum to avoid border effects
     # polyfit => pf
-    lpf = int(len(e)/2)
+    lpf = int(len(e) / 2)
     cpf = np.polyfit(e[-lpf:], f[-lpf:], 1)
     fpf = np.poly1d(cpf)
     # extend upper energy border to 3*fhwm_e[-1]
-    estep = (e[-1] - e[-2])
-    eup = np.append(e, np.arange(e[-1]+estep, e[-1]+3*fwhm_e[-1], estep))
+    estep = e[-1] - e[-2]
+    eup = np.append(e, np.arange(e[-1] + estep, e[-1] + 3 * fwhm_e[-1], estep))
     for n in range(len(f)):
-        #from now on I change e with eup
-        eimin, eimax = get_ene_index(eup, eup[n], 1.5*fwhm_e[n])
-        if ((eimin is None) or (eimax is None)):
+        # from now on I change e with eup
+        eimin, eimax = get_ene_index(eup, eup[n], 1.5 * fwhm_e[n])
+        if (eimin is None) or (eimax is None):
             if DEBUG:
-                raise IndexError('e[{0}]'.format(n))
+                raise IndexError("e[{0}]".format(n))
         if len(range(eimin, eimax)) % 2 == 0:
-            kx = eup[eimin:eimax+1] # odd range centered at the convolution point
+            kx = eup[eimin:eimax + 1]  # odd range centered at the convolution point
         else:
             kx = eup[eimin:eimax]
-        ### kernel ###
-        hwhm = fwhm_e[n]/2.0
-        if ('gauss' in kernel.lower()):
+        # kernel ###
+        hwhm = fwhm_e[n] / 2.0
+        if "gauss" in kernel.lower():
             ky = gaussian(kx, cen=eup[n], sigma=hwhm)
-        elif ('lor' in kernel.lower()):
+        elif "lor" in kernel.lower():
             ky = lorentzian(kx, cen=eup[n], gamma=hwhm)
         else:
             raise ValueError("convolution kernel '{0}' not implemented".format(kernel))
-        ky = ky/ky.sum() # normalize
+        ky = ky / ky.sum()  # normalize
         zn = 0
         lk = int(len(kx))
-        for mf, mg in zip( range(-int(lk/2), int(lk/2)+1), range(lk) ):
-            if ( ((n+mf) >= 0) and ((n+mf) < len(f)) ):
-                zn += f[n+mf] * ky[mg]
-            elif ((n+mf) >= 0):
-                zn += fpf(eup[n+mf]) * ky[mg]
+        for mf, mg in zip(range(-int(lk / 2), int(lk / 2) + 1), range(lk)):
+            if ((n + mf) >= 0) and ((n + mf) < len(f)):
+                zn += f[n + mf] * ky[mg]
+            elif (n + mf) >= 0:
+                zn += fpf(eup[n + mf]) * ky[mg]
         z[n] = zn
     return z
+
 
 def glinbroad(e, mu, fwhm_e=None, efermi=None, _larch=None):
     """gaussian linear convolution in Larch """
     if _larch is None:
         raise Warning("larch broken?")
-    return conv(e, mu, kernel='gaussian', fwhm_e=fwhm_e, efermi=efermi)
+    return conv(e, mu, kernel="gaussian", fwhm_e=fwhm_e, efermi=efermi)
+
+
 glinbroad.__doc__ = conv.__doc__
 
-### CONVOLUTION WITH FDMNES VIA SYSTEM CALL ###
+# CONVOLUTION WITH FDMNES VIA SYSTEM CALL #
+
+
 class FdmnesConv(object):
     """ Performs convolution with FDMNES within Python """
+
     def __init__(self, opts=None, calcroot=None, fn_in=None, fn_out=None):
         if opts is None:
-            self.opts = dict(creator = 'FDMNES toolbox',
-                             today = date.today(),
-                             calcroot = calcroot,
-                             fn_in = fn_in,
-                             fn_out = fn_out,
-                             fn_ext = 'txt',
-                             estart_sel = '',
-                             estart = '-20.',
-                             efermi_sel = '',
-                             efermi = '-5.36',
-                             spin = '',
-                             core_sel = '!',
-                             core = '!',
-                             hole_sel = '',
-                             hole = '0.5',
-                             conv_const = '!',
-                             conv_sel = '',
-                             ecent = '25.0',
-                             elarg = '20.0',
-                             gamma_max = '10.0',
-                             gamma_type = 'Gamma_fix',
-                             gauss_sel = '',
-                             gaussian = '0.9')
+            self.opts = dict(
+                creator="FDMNES toolbox",
+                today=date.today(),
+                calcroot=calcroot,
+                fn_in=fn_in,
+                fn_out=fn_out,
+                fn_ext="txt",
+                estart_sel="",
+                estart="-20.",
+                efermi_sel="",
+                efermi="-5.36",
+                spin="",
+                core_sel="!",
+                core="!",
+                hole_sel="",
+                hole="0.5",
+                conv_const="!",
+                conv_sel="",
+                ecent="25.0",
+                elarg="20.0",
+                gamma_max="10.0",
+                gamma_type="Gamma_fix",
+                gauss_sel="",
+                gaussian="0.9",
+            )
         else:
             self.opts = opts
         if calcroot is not None:
-            self.opts['calcroot'] = calcroot
-            self.opts['fn_in'] = '{}.{}'.format(calcroot,
-                                                self.opts['fn_ext'])
-            self.opts['fn_out'] = '{}_conv{}.{}'.format(calcroot,
-                                                        self.opts['spin'],
-                                                        self.opts['fn_ext'])
+            self.opts["calcroot"] = calcroot
+            self.opts["fn_in"] = "{}.{}".format(calcroot, self.opts["fn_ext"])
+            self.opts["fn_out"] = "{}_conv{}.{}".format(
+                calcroot, self.opts["spin"], self.opts["fn_ext"]
+            )
         if fn_in is not None:
-            self.opts['calcroot'] = fn_in[:-4]
-            self.opts['fn_in'] = fn_in
-            self.opts['fn_out'] = '{}_conv{}.{}'.format(fn_in[:-4],
-                                                        self.opts['spin'],
-                                                        self.opts['fn_ext'])
+            self.opts["calcroot"] = fn_in[:-4]
+            self.opts["fn_in"] = fn_in
+            self.opts["fn_out"] = "{}_conv{}.{}".format(
+                fn_in[:-4], self.opts["spin"], self.opts["fn_ext"]
+            )
         if fn_out is not None:
-            self.opts['fn_out'] = fn_out
+            self.opts["fn_out"] = fn_out
         # then check all options
         self.checkopts()
 
     def checkopts(self):
-        if (self.opts['calcroot'] is None) or (self.opts['fn_in'] is None):
+        if (self.opts["calcroot"] is None) or (self.opts["fn_in"] is None):
             raise NameError("missing 'calcroot' or 'fn_in'")
-        if self.opts['estart'] == '!':
-            self.opts['estart_sel'] = '!'
-        if self.opts['efermi'] == '!':
-            self.opts['efermi_sel'] = '!'
-        if self.opts['spin'] == 'up':
-            self.opts['core_sel'] = ''
-            self.opts['core'] = '2 !spin up'
-        elif self.opts['spin'] == 'down':
-            self.opts['core_sel'] = ''
-            self.opts['core'] = '1 !spin down'
-        elif self.opts['spin'] == '':
-            self.opts['core_sel'] = '!'
-        elif self.opts['spin'] == 'both':
+        if self.opts["estart"] == "!":
+            self.opts["estart_sel"] = "!"
+        if self.opts["efermi"] == "!":
+            self.opts["efermi_sel"] = "!"
+        if self.opts["spin"] == "up":
+            self.opts["core_sel"] = ""
+            self.opts["core"] = "2 !spin up"
+        elif self.opts["spin"] == "down":
+            self.opts["core_sel"] = ""
+            self.opts["core"] = "1 !spin down"
+        elif self.opts["spin"] == "":
+            self.opts["core_sel"] = "!"
+        elif self.opts["spin"] == "both":
             raise NameError('spin="both" not implemented!')
         else:
-            self.opts['spin'] = ''
-            self.opts['core_sel'] = '!'
-            self.opts['core'] = '!'
-        if self.opts['hole'] == '!':
-            self.opts['hole_sel'] = '!'
-        if self.opts['conv_const'] == '!':
-            self.opts['conv_sel'] = '!'
+            self.opts["spin"] = ""
+            self.opts["core_sel"] = "!"
+            self.opts["core"] = "!"
+        if self.opts["hole"] == "!":
+            self.opts["hole_sel"] = "!"
+        if self.opts["conv_const"] == "!":
+            self.opts["conv_sel"] = "!"
         else:
-            self.opts['conv_sel'] = ''
-        if self.opts['gamma_type'] == 'Gamma_fix':
+            self.opts["conv_sel"] = ""
+        if self.opts["gamma_type"] == "Gamma_fix":
             pass
-        elif self.opts['gamma_type'] == 'Gamma_var':
+        elif self.opts["gamma_type"] == "Gamma_var":
             pass
         else:
             raise NameError('gamma_type="Gamma_fix"/"Gamma_var"')
-        if self.opts['gaussian'] == '!':
-            self.opts['gauss_sel'] = '!'
+        if self.opts["gaussian"] == "!":
+            self.opts["gauss_sel"] = "!"
         else:
-            self.opts['gauss_sel'] = ''
+            self.opts["gauss_sel"] = ""
         # update the output file name
-        self.opts['fn_out'] = '{}_conv{}.{}'.format(self.opts['calcroot'],
-                                                    self.opts['spin'],
-                                                    self.opts['fn_ext'])
+        self.opts["fn_out"] = "{}_conv{}.{}".format(
+            self.opts["calcroot"], self.opts["spin"], self.opts["fn_ext"]
+        )
+
     def setopt(self, opt, value):
         self.opts[opt] = value
         self.checkopts()
@@ -300,27 +322,30 @@ class FdmnesConv(object):
     def wfdmfile(self):
         """ write a simple fdmfile.txt to enable the convolution
         first makes a copy of previous fdmfile.txt if not already done """
-        if os.path.exists('fdmfile.bak'):
-            print('fdmfile.bak exists, good')
+        if os.path.exists("fdmfile.bak"):
+            print("fdmfile.bak exists, good")
         else:
-            subprocess.call('cp fdmfile.txt fdmfile.bak', shell=True)
-            print('copied fdmfile.txt to fmdfile.bak')
+            subprocess.call("cp fdmfile.txt fdmfile.bak", shell=True)
+            print("copied fdmfile.txt to fmdfile.bak")
         #
-        s = Template('!fdmfile.txt automatically created by ${creator} on ${today} (for convolution)\n\
+        s = Template(
+            "!fdmfile.txt automatically created by ${creator} on ${today} (for convolution)\n\
 !--------------------------------------------------------------------!\n\
 ! Number of calculations\n\
  1\n\
 ! FOR CONVOLUTION STEP\n\
 convfile.txt\n\
 !--------------------------------------------------------------------!\n\
-')
+"
+        )
         outstr = s.substitute(self.opts)
-        f = open('fdmfile.txt', 'w')
+        f = open("fdmfile.txt", "w")
         f.write(outstr)
         f.close()
 
     def wconvfile(self):
-        s = Template("""
+        s = Template(
+            """
 !FDMNES convolution file\n\
 !created by ${creator} on ${today}\n\
 !
@@ -341,27 +366,29 @@ ${conv_sel}${ecent} ${elarg} ${gamma_max} !Ecent Elarg Gamma_max\n\
 ${conv_sel}${gamma_type}\n\
 ${gauss_sel}Gaussian\n\
 ${gauss_sel}${gaussian} !Gaussian conv for experimental res\n\
-""")
+"""
+        )
         outstr = s.substitute(self.opts)
-        f = open('convfile.txt', 'w')
+        f = open("convfile.txt", "w")
         f.write(outstr)
         f.close()
-        
+
     def run(self):
         """ runs fdmnes """
         self.wfdmfile()  # write fdmfile.txt
-        self.wconvfile() # write convfile.txt
+        self.wconvfile()  # write convfile.txt
         try:
-            subprocess.call('fdmnes', shell=True) 
+            subprocess.call("fdmnes", shell=True)
         except OSError:
             print("check 'fdmnes' executable exists!")
 
-### LARCH ###    
+
+# LARCH PLUGIN #
+
 def registerLarchPlugin():
-    return (MODNAME, {'glinbroad': glinbroad})
+    return (MODNAME, {"glinbroad": glinbroad})
 
-if __name__ == '__main__':
-    #tests/examples in xraysloth/examples/convolution1D_tests.py
+
+if __name__ == "__main__":
+    # tests/examples in xraysloth/examples/convolution1D_tests.py
     pass
-
-    

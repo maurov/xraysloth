@@ -11,17 +11,17 @@ import math
 
 
 #: SIGMA <-> FWHM
-F2S = 2*math.sqrt(2*math.log(2))
+F2S = 2 * math.sqrt(2 * math.log(2))
 
 
 def fwhm2sigma(fwhm):
     """get sigma from FWHM"""
-    return fwhm/F2S
+    return fwhm / F2S
 
 
 def sigma2fwhm(sigma):
     """get FWHM from sigma"""
-    return sigma*F2S
+    return sigma * F2S
 
 
 def lorentzian(x, amplitude=1.0, center=0.0, sigma=1.0):
@@ -31,4 +31,4 @@ def lorentzian(x, amplitude=1.0, center=0.0, sigma=1.0):
     ((1.0*x-center)/sigma)**2)) / (pi*sigma)
 
     """
-    return (amplitude/(1 + ((1.0*x-center)/sigma)**2)) / (math.pi*sigma)
+    return (amplitude / (1 + ((1.0 * x - center) / sigma) ** 2)) / (math.pi * sigma)

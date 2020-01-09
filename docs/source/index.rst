@@ -6,9 +6,8 @@
 Sloth: slowly evolving utilities for x-ray spectroscopists
 ==========================================================
 
-Sloth is a collection of utilities (library) oriented to X-ray optics
-and data reduction/analysis for XAS (XANES/EXAFS), XES and RIXS
-techniques.
+Sloth is a collection of utilities (library) oriented to X-ray optics and data
+reduction/analysis for XAS (XANES/EXAFS), XES and RIXS techniques.
 
 Current version is |release|.
 
@@ -31,23 +30,23 @@ Current version is |release|.
    changelog.rst
    data_model/index.rst
    modules/index.rst
+   workflows/index.rst
 
 :doc:`installation`
   Step-by-step guide to installation.
 
-:doc:`changelog`
-  List of changes.
+:doc:`workflows/index`
+  Personal notes on workflows.
 
 :doc:`data_model/index`
   How the data are structured (from file to memory and back).
 
-:doc:`workflows/index`
-  Personal notes on workflows.
+:doc:`changelog`
+  List of changes.
 
 :doc:`modules/index`
   Documentation automatically built from the docstrings of the packages
   included in *sloth*.
-
 
 Indices
 -------
