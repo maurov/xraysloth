@@ -35,4 +35,3 @@ hdf5plugin >= 2.1
 fabio >= 0.7
 six
 silx >= 0.11
-pymca >= 5.5.3
