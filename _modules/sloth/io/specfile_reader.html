@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sloth.io.specfile_reader &mdash; Sloth 0.3.0-dev documentation</title>
+  <title>sloth.io.specfile_reader &mdash; Sloth 0.3.2 documentation</title>
   
 
   
@@ -90,9 +90,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../data_model/index.html">Notes on the data model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workflows/index.html">Notes on workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workflows/index.html#notes-on-softwares">Notes on softwares</a></li>
 </ul>
 
             
@@ -181,21 +183,21 @@
 
 <span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">interp1d</span>
-<span class="kn">from</span> <span class="nn">scipy.ndimage</span> <span class="k">import</span> <span class="n">map_coordinates</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
+<span class="kn">from</span> <span class="nn">scipy.ndimage</span> <span class="kn">import</span> <span class="n">map_coordinates</span>
 
 <span class="c1"># to grid X,Y,Z columnar data</span>
 <span class="n">HAS_GRIDXYZ</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="c1">#from larch_plugins.math.gridxyz import gridxyz</span>
-    <span class="kn">from</span> <span class="nn">..math.gridxyz</span> <span class="k">import</span> <span class="n">gridxyz</span>
+    <span class="kn">from</span> <span class="nn">..math.gridxyz</span> <span class="kn">import</span> <span class="n">gridxyz</span>
     <span class="n">HAS_GRIDXYZ</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="k">pass</span>
 
 <span class="n">HAS_SPECFILE</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">silx.io</span> <span class="k">import</span> <span class="n">specfilewrapper</span> <span class="k">as</span> <span class="n">specfile</span>
+    <span class="kn">from</span> <span class="nn">silx.io</span> <span class="kn">import</span> <span class="n">specfilewrapper</span> <span class="k">as</span> <span class="n">specfile</span>
     <span class="n">HAS_SPECFILE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="k">pass</span>
@@ -203,7 +205,7 @@
 <span class="c1"># SimpleMath from PyMca5</span>
 <span class="n">HAS_SIMPLEMATH</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="k">try</span><span class="p">:</span>
-   <span class="kn">from</span> <span class="nn">PyMca5.PyMcaMath</span> <span class="k">import</span> <span class="n">SimpleMath</span>
+   <span class="kn">from</span> <span class="nn">PyMca5.PyMcaMath</span> <span class="kn">import</span> <span class="n">SimpleMath</span>
    <span class="n">HAS_SIMPLEMATH</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
    <span class="k">pass</span>
@@ -211,7 +213,7 @@
 <span class="c1"># SG module from PyMca5</span>
 <span class="n">HAS_SGMODULE</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="k">try</span><span class="p">:</span>
-   <span class="kn">from</span> <span class="nn">PyMca5.PyMcaMath</span> <span class="k">import</span> <span class="n">SGModule</span>
+   <span class="kn">from</span> <span class="nn">PyMca5.PyMcaMath</span> <span class="kn">import</span> <span class="n">SGModule</span>
    <span class="n">HAS_SGMODULE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
    <span class="k">pass</span>
@@ -219,13 +221,13 @@
 <span class="c1"># specfile_writer</span>
 <span class="n">HAS_SFDW</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">.specfile_writer</span> <span class="k">import</span> <span class="n">SpecfileDataWriter</span>
+    <span class="kn">from</span> <span class="nn">.specfile_writer</span> <span class="kn">import</span> <span class="n">SpecfileDataWriter</span>
     <span class="n">HAS_SFDW</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">ImportError</span><span class="p">):</span>
     <span class="k">pass</span>
 
 <span class="c1">### UTILITIES (the class is below!)</span>
-<span class="kn">from</span> <span class="nn">sloth.utils.strings</span> <span class="k">import</span> <span class="n">str2rng</span> <span class="k">as</span> <span class="n">_str2rng</span>
+<span class="kn">from</span> <span class="nn">sloth.utils.strings</span> <span class="kn">import</span> <span class="n">str2rng</span> <span class="k">as</span> <span class="n">_str2rng</span>
 
 <span class="k">def</span> <span class="nf">_mot2array</span><span class="p">(</span><span class="n">motor</span><span class="p">,</span> <span class="n">acopy</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;simple utility to generate a copy of an array containing a</span>
@@ -438,7 +440,7 @@
 <div class="viewcode-block" id="SpecfileData"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.specfile_reader.SpecfileData">[docs]</a><span class="k">class</span> <span class="nc">SpecfileData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;SpecfileData object&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cntx</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cnty</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">csig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cntx</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cnty</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">csig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">cmon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">csec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;reads the given specfile</span>
 
@@ -1060,7 +1062,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014--2019, Mauro Rovezzi
+        &copy; Copyright 2014--2020, Mauro Rovezzi
 
     </p>
   </div>

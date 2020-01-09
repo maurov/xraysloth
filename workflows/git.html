@@ -1,0 +1,415 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Personal Git-related notes &mdash; Sloth 0.3.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Notes on workflows" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Sloth
+          
+
+          
+            
+            <img src="../_static/xraysloth.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_model/index.html">Notes on the data model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Notes on workflows</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html#notes-on-softwares">Notes on softwares</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Personal Git-related notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#howtos">Howtos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#branching-workflow">Branching workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#specific-cases">Specific cases</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tags">Tags</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Sloth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Notes on workflows</a> &raquo;</li>
+        
+      <li>Personal Git-related notes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/workflows/git.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="personal-git-related-notes">
+<h1>Personal Git-related notes<a class="headerlink" href="#personal-git-related-notes" title="Permalink to this headline">¶</a></h1>
+<p>I do not use Git so often to remember all the steps (and commands) to
+contribute to open-source projects (usually hosted on Github), so here I write
+down some notes.</p>
+<div class="section" id="howtos">
+<h2>Howtos<a class="headerlink" href="#howtos" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>Add upstream tracking of a forked project:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">remote</span> <span class="n">add</span> <span class="o">--</span><span class="n">track</span> <span class="n">master</span> <span class="n">upstream</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">forked_project</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+</li>
+<li><p>Fetch a specific branch from a source (here the case of <cite>upstream</cite>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">remote</span> <span class="o">-</span><span class="n">v</span>  <span class="c1"># shows all remote sources</span>
+<span class="n">git</span> <span class="n">fetch</span> <span class="n">upstream</span> <span class="n">remote_branch_name</span><span class="p">:</span><span class="n">local_brach_name</span>
+</pre></div>
+</div>
+</li>
+<li><p>Delete a branch:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">branch</span> <span class="o">--</span><span class="n">delete</span> <span class="n">your_branch_name</span>      <span class="c1"># locally</span>
+<span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="o">--</span><span class="n">delete</span> <span class="n">your_branch_name</span> <span class="c1"># remotely</span>
+</pre></div>
+</div>
+</li>
+<li><p><a class="reference external" href="https://stackoverflow.com/questions/1709177/git-pull-a-certain-branch-from-github">Pull from a given remote branch</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">pull</span> <span class="n">origin</span> <span class="n">other</span><span class="o">-</span><span class="n">branch</span>
+</pre></div>
+</div>
+</li>
+<li><p><a class="reference external" href="http://stackoverflow.com/questions/1125968/force-git-to-overwrite-local-files-on-pull">Overwrite any local changes on pull</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">fetch</span> <span class="o">--</span><span class="nb">all</span>
+<span class="n">git</span> <span class="n">reset</span> <span class="o">--</span><span class="n">hard</span> <span class="n">origin</span><span class="o">/</span><span class="n">master</span>
+</pre></div>
+</div>
+</li>
+<li><p><a class="reference external" href="http://stackoverflow.com/questions/67699/clone-all-remote-branches-with-git">Clone all remote branches</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="p">:</span><span class="o">//</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">myproject</span>
+<span class="n">cd</span> <span class="n">myproject</span>
+<span class="n">git</span> <span class="n">branch</span> <span class="o">-</span><span class="n">a</span> <span class="c1"># to show all branches</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="o">-</span><span class="n">b</span> <span class="n">experimental</span> <span class="n">origin</span><span class="o">/</span><span class="n">experimental</span>  <span class="c1"># creates a local tracking branch</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>Username and email:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">config</span> <span class="o">--</span><span class="k">global</span> <span class="n">user</span><span class="o">.</span><span class="n">name</span> <span class="s2">&quot;Your Name&quot;</span>
+<span class="n">git</span> <span class="n">config</span> <span class="o">--</span><span class="k">global</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span> <span class="s2">&quot;your.email@your_provider.com&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p><a class="reference external" href="https://stackoverflow.com/questions/5343068/is-there-a-way-to-skip-password-typing-when-using-https-on-github/5343146#5343146">Temporary cache password</a> for one hour:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">config</span> <span class="o">--</span><span class="k">global</span> <span class="n">credential</span><span class="o">.</span><span class="n">helper</span> <span class="s2">&quot;cache --timeout=3600&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Proxy (here at ESRF):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">config</span> <span class="o">--</span><span class="k">global</span> <span class="n">http</span><span class="o">.</span><span class="n">proxy</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">proxy</span><span class="o">.</span><span class="n">esrf</span><span class="o">.</span><span class="n">fr</span><span class="p">:</span><span class="mi">3128</span>
+<span class="n">git</span> <span class="n">config</span> <span class="o">--</span><span class="k">global</span> <span class="n">https</span><span class="o">.</span><span class="n">proxy</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">proxy</span><span class="o">.</span><span class="n">esrf</span><span class="o">.</span><span class="n">fr</span><span class="p">:</span><span class="mi">3128</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="branching-workflow">
+<h2>Branching workflow<a class="headerlink" href="#branching-workflow" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>Click <cite>fork</cite> button on the repo you want to contribute to.</p></li>
+<li><p>Clone it locally to your machine.</p></li>
+<li><p>Add upstream track for updates (here example on <cite>pymca</cite> repo):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">remote</span> <span class="n">add</span> <span class="o">--</span><span class="n">track</span> <span class="n">master</span> <span class="n">upstream</span> <span class="n">git</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">vasole</span><span class="o">/</span><span class="n">pymca</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+</li>
+<li><p>To fetch and merge updates from the master original project:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">fetch</span> <span class="n">upstream</span>
+<span class="n">git</span> <span class="n">merge</span> <span class="n">upstream</span><span class="o">/</span><span class="n">master</span>
+</pre></div>
+</div>
+</li>
+<li><p>To show all remote repositories (‘origin’ is the forked one,
+‘upstream’ is the original project):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">remote</span> <span class="o">-</span><span class="n">v</span>
+</pre></div>
+</div>
+</li>
+<li><p>Make a working branch and switch to it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">branch</span> <span class="n">your_branch_name</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">your_branch_name</span>
+<span class="n">git</span> <span class="n">branch</span> <span class="o">-</span><span class="n">a</span> <span class="c1">#(this will show all the branches and put * on working one)</span>
+</pre></div>
+</div>
+</li>
+<li><p>If the working branch exists already remotely:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="n">your_remote_branch</span>
+</pre></div>
+</div>
+</li>
+<li><p>Push your local changes to a remote branch:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="n">your_branch_name</span>
+</pre></div>
+</div>
+</li>
+<li><p>Go to your fork’s webpage on Github and click ‘pull-request’ button give
+pull-request a name, fill in details of what changes you made, click submit
+button.  you’re done!!</p></li>
+<li><p>Once the pull request accepted/rejected you can delete your branch:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">branch</span> <span class="o">--</span><span class="n">delete</span> <span class="n">your_branch_name</span>      <span class="c1">#locally</span>
+<span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="o">--</span><span class="n">delete</span> <span class="n">your_branch_name</span> <span class="c1">#remotely</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="specific-cases">
+<h2>Specific cases<a class="headerlink" href="#specific-cases" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p><a class="reference external" href="https://stackoverflow.com/questions/9537392/git-fetch-remote-branch">Fetch a given remote branch</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="o">--</span><span class="n">track</span> <span class="n">origin</span><span class="o">/</span><span class="n">daves_branch</span>
+<span class="c1"># This is equivalent to</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="o">-</span><span class="n">b</span> <span class="p">[</span><span class="n">branch</span><span class="p">]</span> <span class="p">[</span><span class="n">remotename</span><span class="p">]</span><span class="o">/</span><span class="p">[</span><span class="n">branch</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p>Merge master into a feature branch (<a class="reference external" href="https://stackoverflow.com/questions/16955980/git-merge-master-into-feature-branch">well explained here</a>, see also <a class="reference external" href="https://github.com/nvie/gitflow">gitflow</a>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Case 1 (single commits of the feature branch will be added to master</span>
+<span class="c1">#        (NOTE: this will pollute the history with fragmented commits)</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">feature1</span>
+<span class="n">git</span> <span class="n">merge</span> <span class="n">master</span>
+
+<span class="c1"># Case 2: you do not want to have the commits from the bug fixes in your feature branch</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">feature1</span>
+<span class="n">git</span> <span class="n">rebase</span> <span class="n">master</span>
+
+<span class="c1"># Manage all conflicts that arise. When you get to the commits with the bugfixes</span>
+<span class="c1"># (already in master), git will say that there were no changes and that maybe they</span>
+<span class="c1"># were already applied. You then continue the rebase (while skipping the commits</span>
+<span class="c1"># already in master) with::</span>
+
+<span class="n">git</span> <span class="n">rebase</span> <span class="o">--</span><span class="n">skip</span>
+</pre></div>
+</div>
+</li>
+<li><p>Useful links</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://gun.io/blog/how-to-github-fork-branch-and-pull-request/">Tutorial at gun.io</a></p></li>
+<li><p><a class="reference external" href="http://stackoverflow.com/questions/14680711/how-to-do-a-github-pull-request">Pull request made easy at StackOverflow</a></p></li>
+<li><p><a class="reference external" href="http://www.pontikis.net/blog/how-to-collaborate-on-github-open-source-projects">Workflow without branch</a></p></li>
+<li><p><a class="reference external" href="http://www.eqqon.com/index.php/Collaborative_Github_Workflow">Another collaborating workflow example</a></p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="tags">
+<h2>Tags<a class="headerlink" href="#tags" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://git-scm.com/book/en/v2/Git-Basics-Tagging">Basics explained here</a></p>
+<ul>
+<li><p>New annotated tag:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">tag</span> <span class="o">-</span><span class="n">a</span> <span class="n">v1</span><span class="o">.</span><span class="mi">4</span> <span class="o">-</span><span class="n">m</span> <span class="s2">&quot;my version 1.4&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>List existing tags and show details:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">tag</span>
+<span class="n">git</span> <span class="n">show</span> <span class="n">v1</span><span class="o">.</span><span class="mi">4</span>
+</pre></div>
+</div>
+</li>
+<li><p>Push to remote server:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="n">v1</span><span class="o">.</span><span class="mi">4</span>
+</pre></div>
+</div>
+</li>
+<li><p>Delete local tag:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">tag</span> <span class="o">-</span><span class="n">d</span> <span class="n">tag_name</span>
+</pre></div>
+</div>
+</li>
+<li><p>Delete remote tag:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">tag</span> <span class="o">--</span><span class="n">delete</span> <span class="n">origin</span> <span class="n">tag_name</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Notes on workflows" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014--2020, Mauro Rovezzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

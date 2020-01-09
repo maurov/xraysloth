@@ -1,0 +1,436 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sloth.raytracing.shadow_jscyl &mdash; Sloth 0.3.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Sloth
+          
+
+          
+            
+            <img src="../../../_static/xraysloth.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data_model/index.html">Notes on the data model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workflows/index.html">Notes on workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workflows/index.html#notes-on-softwares">Notes on softwares</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Sloth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sloth.raytracing.shadow_jscyl</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sloth.raytracing.shadow_jscyl</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Shadow ray-tracing of a Johansson cylindrical analyzer</span>
+<span class="sd">=========================================================</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">sloth.utils.logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">sloth.utils.bragg</span> <span class="kn">import</span> <span class="n">bragg_ev</span>
+<span class="kn">from</span> <span class="nn">sloth.raytracing.shadow_utils</span> <span class="kn">import</span> <span class="n">get_src_hdiv</span><span class="p">,</span> <span class="n">get_src_vdiv</span><span class="p">,</span> <span class="n">rotate_rays</span>
+
+<span class="n">_LOGGER</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;shadow_jscyl&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span>
+
+<span class="n">HAS_SHADOW</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">Shadow</span>
+
+    <span class="n">Shadow</span><span class="o">.</span><span class="n">ShadowTools</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">ion</span><span class="p">()</span>
+    <span class="n">HAS_SHADOW</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">_LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Shadow not found!&quot;</span><span class="p">)</span>
+    <span class="k">pass</span>
+
+
+<span class="c1">#########</span>
+<span class="c1"># JSCYL #</span>
+<span class="c1">#########</span>
+
+
+<div class="viewcode-block" id="jscyl"><a class="viewcode-back" href="../../../modules/raytracing.html#sloth.raytracing.shadow_jscyl.jscyl">[docs]</a><span class="k">def</span> <span class="nf">jscyl</span><span class="p">(</span>
+    <span class="n">d</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">refl_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">theta0</span><span class="o">=</span><span class="mf">75.0</span><span class="p">,</span>
+    <span class="n">R</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span>
+    <span class="n">nrays</span><span class="o">=</span><span class="mi">50000</span><span class="p">,</span>
+    <span class="n">aw</span><span class="o">=</span><span class="mf">25.0</span><span class="p">,</span>
+    <span class="n">ah</span><span class="o">=</span><span class="mf">80.0</span><span class="p">,</span>
+    <span class="n">ene0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">ene0_hw</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
+    <span class="n">src_ovf</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
+    <span class="n">src_shape</span><span class="o">=</span><span class="s2">&quot;rectangle&quot;</span><span class="p">,</span>
+    <span class="n">src_x</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+    <span class="n">src_z</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">src_rot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">move</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">run</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;raytrace a Johansson cylindrical analyzer at a given theta angle</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    - units given in mm</span>
+<span class="sd">    - this works/tested *only* for a symmetric vertical Rowland circle geometry</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    d : float</span>
+<span class="sd">        Crystal d-spacing in Ang [None]</span>
+<span class="sd">    refl_file : string</span>
+<span class="sd">        Reflectivity file as calculated by Xcrystal (or Bragg) [None]</span>
+<span class="sd">    theta0 : float</span>
+<span class="sd">        Incidence angle in deg (= Bragg angle) [75.]</span>
+<span class="sd">    nrays : int</span>
+<span class="sd">        Number of rays [50000]</span>
+<span class="sd">    aw : float</span>
+<span class="sd">        Dimension of the flat side (=short side) in mm [25.]</span>
+<span class="sd">    ah : float</span>
+<span class="sd">        Dimension of the curved side (=long side) in mm [80.]</span>
+<span class="sd">    R : float</span>
+<span class="sd">        Bending radius (= diameter Rowland circle) in mm [1000.]</span>
+<span class="sd">    ene0 : float</span>
+<span class="sd">        Source central energy in eV [None]</span>
+<span class="sd">        if None, it is calculated from Bragg angle and d-spacing</span>
+<span class="sd">    ene0_hw : float</span>
+<span class="sd">        Source energy half bandwidth in eV [5]</span>
+<span class="sd">    src_shape : str [&#39;rectangle&#39;]</span>
+<span class="sd">        Spatial source type/shape in X-Z plane. Avaiable</span>
+<span class="sd">        options are: &#39;point&#39;, &#39;rectangle&#39; and &#39;ellipse&#39;</span>
+<span class="sd">    src_ovf : float</span>
+<span class="sd">        add extra divergence to overfill the optical element [0.001]</span>
+<span class="sd">    src_x, src_z : floats</span>
+<span class="sd">        (WXSOU, WZSOU) -&gt; X,Z size of elliptical source [0.2, 0.1]</span>
+<span class="sd">    src_rot : boolean</span>
+<span class="sd">        Rotate the source [False]</span>
+<span class="sd">    move : None or list of floats</span>
+<span class="sd">        optical element movement [None]</span>
+<span class="sd">        [OFFX, OFFY, OFFZ, X_ROT, Y_ROT, Z_ROT]</span>
+<span class="sd">        where:</span>
+<span class="sd">            OFF*: X/Y/Z offset mm</span>
+<span class="sd">            *_ROT: X/Y/Z rotation CCW, deg</span>
+<span class="sd">    run : boolean</span>
+<span class="sd">        run Shadow [True]</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (beam, src, oe) : tuple of :class:`Shadow.Beam`, :class:`Shadow.Source`, :class:`Shadow.OE`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># CHECKS</span>
+    <span class="k">if</span> <span class="n">HAS_SHADOW</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="n">_LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Shadow not found!!!&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;d-spacing not given!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">refl_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;refl_file not given!&quot;</span><span class="p">)</span>
+    <span class="c1">#</span>
+    <span class="n">iwrite</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># write start/end/begin/star files (0=No, 1=Yes) [0]</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">theta0</span><span class="p">))</span>  <span class="c1"># SYMMETRIC RC GEOMETRY</span>
+    <span class="c1"># set src energy</span>
+    <span class="k">if</span> <span class="n">ene0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ene0</span> <span class="o">=</span> <span class="n">bragg_ev</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">theta0</span><span class="p">)</span>
+    <span class="n">ph1</span> <span class="o">=</span> <span class="n">ene0</span> <span class="o">-</span> <span class="n">ene0_hw</span>
+    <span class="n">ph2</span> <span class="o">=</span> <span class="n">ene0</span> <span class="o">+</span> <span class="n">ene0_hw</span>
+    <span class="c1"># set src divergence</span>
+    <span class="n">hdiv</span> <span class="o">=</span> <span class="n">get_src_hdiv</span><span class="p">(</span><span class="n">aw</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">src_ovf</span>
+    <span class="n">vdiv</span> <span class="o">=</span> <span class="n">get_src_vdiv</span><span class="p">(</span><span class="n">ah</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">theta0</span><span class="p">)</span> <span class="o">+</span> <span class="mf">3.5</span> <span class="o">*</span> <span class="n">src_ovf</span>
+    <span class="c1"># initialize shadow3 source (src) and beam</span>
+    <span class="n">beam</span> <span class="o">=</span> <span class="n">Shadow</span><span class="o">.</span><span class="n">Beam</span><span class="p">()</span>
+    <span class="n">src</span> <span class="o">=</span> <span class="n">Shadow</span><span class="o">.</span><span class="n">Source</span><span class="p">()</span>
+    <span class="n">oe</span> <span class="o">=</span> <span class="n">Shadow</span><span class="o">.</span><span class="n">OE</span><span class="p">()</span>
+    <span class="c1"># Define source variables. See meaning of variables in:</span>
+    <span class="c1">#  https://raw.githubusercontent.com/srio/shadow3/master/docs/source.nml</span>
+    <span class="n">src</span><span class="o">.</span><span class="n">ISTAR1</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># seed 0=system clock</span>
+    <span class="n">src</span><span class="o">.</span><span class="n">NPOINT</span> <span class="o">=</span> <span class="n">nrays</span>
+    <span class="c1">#</span>
+    <span class="n">src</span><span class="o">.</span><span class="n">FDISTR</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># uniform</span>
+    <span class="n">src</span><span class="o">.</span><span class="n">HDIV1</span> <span class="o">=</span> <span class="n">hdiv</span>
+    <span class="n">src</span><span class="o">.</span><span class="n">HDIV2</span> <span class="o">=</span> <span class="n">hdiv</span>
+    <span class="n">src</span><span class="o">.</span><span class="n">VDIV1</span> <span class="o">=</span> <span class="n">vdiv</span>
+    <span class="n">src</span><span class="o">.</span><span class="n">VDIV2</span> <span class="o">=</span> <span class="n">vdiv</span>
+    <span class="c1">#</span>
+    <span class="c1"># src.FDISTR = 5 #conical</span>
+    <span class="c1"># src.CONE_MAX = 2*hdiv</span>
+    <span class="c1">#</span>
+    <span class="k">if</span> <span class="n">src_shape</span> <span class="o">==</span> <span class="s2">&quot;point&quot;</span><span class="p">:</span>
+        <span class="n">src</span><span class="o">.</span><span class="n">FSOUR</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">elif</span> <span class="n">src_shape</span> <span class="o">==</span> <span class="s2">&quot;rectangle&quot;</span><span class="p">:</span>
+        <span class="n">src</span><span class="o">.</span><span class="n">FSOUR</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">src_shape</span> <span class="o">==</span> <span class="s2">&quot;ellipse&quot;</span><span class="p">:</span>
+        <span class="n">src</span><span class="o">.</span><span class="n">FSOUR</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;src_shape &quot;</span><span class="si">{0}</span><span class="s1">&quot; not understood!&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src_shape</span><span class="p">))</span>
+    <span class="c1">#</span>
+    <span class="n">src</span><span class="o">.</span><span class="n">WXSOU</span> <span class="o">=</span> <span class="n">src_x</span>
+    <span class="n">src</span><span class="o">.</span><span class="n">WZSOU</span> <span class="o">=</span> <span class="n">src_z</span>
+    <span class="c1">#</span>
+    <span class="n">src</span><span class="o">.</span><span class="n">F_COLOR</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># 3=uniform energy distribution</span>
+    <span class="n">src</span><span class="o">.</span><span class="n">F_PHOT</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># set eV units</span>
+    <span class="n">src</span><span class="o">.</span><span class="n">PH1</span> <span class="o">=</span> <span class="n">ph1</span>
+    <span class="n">src</span><span class="o">.</span><span class="n">PH2</span> <span class="o">=</span> <span class="n">ph2</span>
+    <span class="c1">#</span>
+    <span class="n">src</span><span class="o">.</span><span class="n">IDO_VX</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">src</span><span class="o">.</span><span class="n">IDO_VZ</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">src</span><span class="o">.</span><span class="n">IDO_X_S</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">src</span><span class="o">.</span><span class="n">IDO_Y_S</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">src</span><span class="o">.</span><span class="n">IDO_Z_S</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1"># Define analyzer variables. See meaning of variables in:</span>
+    <span class="c1">#  https://raw.githubusercontent.com/srio/shadow3/master/docs/oe.nml</span>
+    <span class="n">oe</span><span class="o">.</span><span class="n">DUMMY</span> <span class="o">=</span> <span class="mf">0.1</span>  <span class="c1"># mm</span>
+    <span class="n">oe</span><span class="o">.</span><span class="n">FCYL</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">oe</span><span class="o">.</span><span class="n">FHIT_C</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">oe</span><span class="o">.</span><span class="n">FILE_REFL</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">refl_file</span><span class="p">,</span> <span class="s2">&quot;utf8&quot;</span><span class="p">)</span>
+    <span class="n">oe</span><span class="o">.</span><span class="n">FMIRR</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">oe</span><span class="o">.</span><span class="n">FWRITE</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">oe</span><span class="o">.</span><span class="n">F_CRYSTAL</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">oe</span><span class="o">.</span><span class="n">F_EXT</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">oe</span><span class="o">.</span><span class="n">F_JOHANSSON</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">oe</span><span class="o">.</span><span class="n">RLEN1</span> <span class="o">=</span> <span class="n">ah</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="n">oe</span><span class="o">.</span><span class="n">RLEN2</span> <span class="o">=</span> <span class="n">ah</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="n">oe</span><span class="o">.</span><span class="n">RMIRR</span> <span class="o">=</span> <span class="n">R</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="n">oe</span><span class="o">.</span><span class="n">RWIDX1</span> <span class="o">=</span> <span class="n">aw</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="n">oe</span><span class="o">.</span><span class="n">RWIDX2</span> <span class="o">=</span> <span class="n">aw</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="n">oe</span><span class="o">.</span><span class="n">R_JOHANSSON</span> <span class="o">=</span> <span class="n">R</span>
+    <span class="n">oe</span><span class="o">.</span><span class="n">T_IMAGE</span> <span class="o">=</span> <span class="n">p</span>
+    <span class="n">oe</span><span class="o">.</span><span class="n">T_INCIDENCE</span> <span class="o">=</span> <span class="mf">90.0</span> <span class="o">-</span> <span class="n">theta0</span>
+    <span class="n">oe</span><span class="o">.</span><span class="n">T_REFLECTION</span> <span class="o">=</span> <span class="mf">90.0</span> <span class="o">-</span> <span class="n">theta0</span>
+    <span class="n">oe</span><span class="o">.</span><span class="n">T_SOURCE</span> <span class="o">=</span> <span class="n">p</span>
+    <span class="k">if</span> <span class="n">move</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">oe</span><span class="o">.</span><span class="n">F_MOVE</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">oe</span><span class="o">.</span><span class="n">OFFX</span> <span class="o">=</span> <span class="n">move</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">oe</span><span class="o">.</span><span class="n">OFFY</span> <span class="o">=</span> <span class="n">move</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">oe</span><span class="o">.</span><span class="n">OFFZ</span> <span class="o">=</span> <span class="n">move</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">oe</span><span class="o">.</span><span class="n">X_ROT</span> <span class="o">=</span> <span class="n">move</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">oe</span><span class="o">.</span><span class="n">Y_ROT</span> <span class="o">=</span> <span class="n">move</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+        <span class="n">oe</span><span class="o">.</span><span class="n">Z_ROT</span> <span class="o">=</span> <span class="n">move</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">src_rot</span><span class="p">:</span>
+            <span class="c1"># adjust src divergence -&gt; EMPIRICAL ADJUSTMENTS!!!</span>
+            <span class="n">hdiv1</span> <span class="o">=</span> <span class="n">get_src_hdiv</span><span class="p">(</span><span class="mf">1.05</span> <span class="o">*</span> <span class="n">move</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">aw</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="o">+</span> <span class="mi">7</span> <span class="o">*</span> <span class="n">src_ovf</span>
+            <span class="n">hdiv2</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="n">get_src_hdiv</span><span class="p">(</span><span class="mf">1.05</span> <span class="o">*</span> <span class="n">move</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">aw</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="o">-</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">src_ovf</span><span class="p">)</span>
+            <span class="n">vdiv1</span> <span class="o">=</span> <span class="n">get_src_vdiv</span><span class="p">(</span><span class="mf">2.5</span> <span class="o">*</span> <span class="n">move</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">ah</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">theta0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">src_ovf</span>
+            <span class="n">vdiv2</span> <span class="o">=</span> <span class="n">get_src_vdiv</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">move</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">ah</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">theta0</span><span class="p">)</span> <span class="o">+</span> <span class="n">src_ovf</span>
+            <span class="n">src</span><span class="o">.</span><span class="n">HDIV1</span> <span class="o">=</span> <span class="n">hdiv1</span>
+            <span class="n">src</span><span class="o">.</span><span class="n">HDIV2</span> <span class="o">=</span> <span class="n">hdiv2</span>
+            <span class="n">src</span><span class="o">.</span><span class="n">VDIV1</span> <span class="o">=</span> <span class="n">vdiv1</span>
+            <span class="n">src</span><span class="o">.</span><span class="n">VDIV2</span> <span class="o">=</span> <span class="n">vdiv2</span>
+            <span class="c1"># src.CONE_MAX = hdiv1</span>
+            <span class="c1"># rotate source -&gt; NOT WORKING!!!</span>
+        <span class="n">oe</span><span class="o">.</span><span class="n">FSTAT</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">run</span><span class="p">:</span>
+        <span class="c1"># Run SHADOW to create the source</span>
+        <span class="k">if</span> <span class="n">iwrite</span><span class="p">:</span>
+            <span class="n">src</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;start.00&quot;</span><span class="p">)</span>
+        <span class="n">beam</span><span class="o">.</span><span class="n">genSource</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">move</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">src_rot</span><span class="p">:</span>
+            <span class="n">rays</span> <span class="o">=</span> <span class="n">beam</span><span class="o">.</span><span class="n">rays</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="c1"># rays_ry = rotate_rays(rays, move[4], 2)</span>
+            <span class="n">_rz</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan</span><span class="p">(</span><span class="n">move</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">p</span><span class="p">)</span>
+            <span class="n">rz</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">_rz</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>  <span class="c1"># empirical factor to reduce!!!</span>
+            <span class="n">rays_rz</span> <span class="o">=</span> <span class="n">rotate_rays</span><span class="p">(</span><span class="n">rays</span><span class="p">,</span> <span class="n">rz</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="n">p1</span> <span class="o">=</span> <span class="n">p</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">_rz</span><span class="p">)</span>
+            <span class="n">_rx</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan</span><span class="p">(</span><span class="n">move</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">/</span> <span class="n">p1</span><span class="p">)</span>
+            <span class="n">rx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">_rx</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.9</span>  <span class="c1"># empirical factor to reduce!!!</span>
+            <span class="n">rays_rzrx</span> <span class="o">=</span> <span class="n">rotate_rays</span><span class="p">(</span><span class="n">rays_rz</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">beam</span><span class="o">.</span><span class="n">rays</span> <span class="o">=</span> <span class="n">rays_rzrx</span>
+        <span class="k">if</span> <span class="n">iwrite</span><span class="p">:</span>
+            <span class="n">src</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;end.00&quot;</span><span class="p">)</span>
+            <span class="n">beam</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;begin.dat&quot;</span><span class="p">)</span>
+        <span class="c1"># Run optical element 1</span>
+        <span class="c1"># _LOGGER.info(&quot;running optical element: %d&quot;%(1))</span>
+        <span class="k">if</span> <span class="n">iwrite</span><span class="p">:</span>
+            <span class="n">oe</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;start.01&quot;</span><span class="p">)</span>
+        <span class="n">beam</span><span class="o">.</span><span class="n">traceOE</span><span class="p">(</span><span class="n">oe</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">iwrite</span><span class="p">:</span>
+            <span class="n">oe</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;end.01&quot;</span><span class="p">)</span>
+            <span class="n">beam</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;star.01&quot;</span><span class="p">)</span>
+    <span class="n">_LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;JsCBCA =&gt; R=</span><span class="si">{0:.0f}</span><span class="s2"> mm, theta0=</span><span class="si">{1:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">theta0</span><span class="p">))</span>
+    <span class="n">_LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;JsCBCA =&gt; p[q]=</span><span class="si">{0:.4f}</span><span class="s2"> mm , ene0=</span><span class="si">{1:.3f}</span><span class="s2"> eV&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">ene0</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">beam</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">oe</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014--2020, Mauro Rovezzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

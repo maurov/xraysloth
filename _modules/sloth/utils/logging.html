@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sloth.utils.logging &mdash; Sloth 0.3.0-dev documentation</title>
+  <title>sloth.utils.logging &mdash; Sloth 0.3.2 documentation</title>
   
 
   
@@ -90,9 +90,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../data_model/index.html">Notes on the data model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workflows/index.html">Notes on workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workflows/index.html#notes-on-softwares">Notes on softwares</a></li>
 </ul>
 
             
@@ -256,7 +258,7 @@
     <span class="kn">import</span> <span class="nn">tempfile</span>
     <span class="n">flog</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mktemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;test_logger_&#39;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.log&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">getFileHandler</span><span class="p">(</span><span class="n">flog</span><span class="p">))</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;added file handler -&gt; </span><span class="si">{flog}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;added file handler -&gt; </span><span class="si">{flog}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;testing again all log levels:&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;a debug message&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;an info message&#39;</span><span class="p">)</span>
@@ -280,7 +282,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014--2019, Mauro Rovezzi
+        &copy; Copyright 2014--2020, Mauro Rovezzi
 
     </p>
   </div>

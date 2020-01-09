@@ -11,7 +11,7 @@
    :members:
 
 :mod:`sloth.inst.dthetaxz`: analytical expressions for :math:`\Delta\theta` (=crystal analyzers)
-------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
 
 .. automodule:: sloth.inst.dthetaxz
    :members:

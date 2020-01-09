@@ -1,0 +1,897 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sloth.raytracing.shadow_utils &mdash; Sloth 0.3.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Sloth
+          
+
+          
+            
+            <img src="../../../_static/xraysloth.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data_model/index.html">Notes on the data model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workflows/index.html">Notes on workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workflows/index.html#notes-on-softwares">Notes on softwares</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Sloth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sloth.raytracing.shadow_utils</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sloth.raytracing.shadow_utils</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;shadow_utils: simple various utilities for SHADOW3_</span>
+
+<span class="sd">.. _SHADOW3: https://github.com/srio/shadow3</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">splrep</span><span class="p">,</span> <span class="n">sproot</span><span class="p">,</span> <span class="n">splev</span>
+
+<span class="kn">from</span> <span class="nn">silx.gui.plot.StackView</span> <span class="kn">import</span> <span class="n">StackViewMainWindow</span>
+
+<span class="kn">from</span> <span class="nn">sloth.fit.peakfit_silx</span> <span class="kn">import</span> <span class="n">fit_splitpvoigt</span>
+<span class="kn">from</span> <span class="nn">sloth.inst.rowland</span> <span class="kn">import</span> <span class="n">RcHoriz</span><span class="p">,</span> <span class="n">RcVert</span>
+
+<span class="kn">from</span> <span class="nn">sloth.utils.logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;shadow_utils&quot;</span><span class="p">)</span>
+
+<span class="n">HAS_SHADOW</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">Shadow</span>
+    <span class="kn">from</span> <span class="nn">Shadow</span> <span class="kn">import</span> <span class="n">ShadowLibExtensions</span>
+
+    <span class="n">Shadow</span><span class="o">.</span><span class="n">ShadowTools</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">ion</span><span class="p">()</span>
+    <span class="n">HAS_SHADOW</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+<span class="c1">########</span>
+<span class="c1"># MATH #</span>
+<span class="c1">########</span>
+
+
+<div class="viewcode-block" id="fwhm_spl"><a class="viewcode-back" href="../../../modules/raytracing.html#sloth.raytracing.shadow_utils.fwhm_spl">[docs]</a><span class="k">def</span> <span class="nf">fwhm_spl</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determine full-with-half-maximum of a peaked set of points, x and y.</span>
+
+<span class="sd">    Assumes that there is only one peak present in the datasset. The</span>
+<span class="sd">    function uses a spline interpolation of order k.</span>
+
+<span class="sd">    .. note: code taken from StackOverFlow (TODO: put link!!!)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    x, y : arrays of floats</span>
+<span class="sd">        dataset</span>
+
+<span class="sd">    threshold : float</span>
+<span class="sd">        at which level to get the full-width, half-maximum by default [0.5]</span>
+
+<span class="sd">    k : int</span>
+<span class="sd">       order of spline</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    fw : float</span>
+<span class="sd">        full-width-at-threshold/half_maximum</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">MultiplePeaks</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">class</span> <span class="nc">NoPeaksFound</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="n">half_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="n">threshold</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">splrep</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">half_max</span><span class="p">)</span>
+    <span class="n">roots</span> <span class="o">=</span> <span class="n">sproot</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">roots</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">MultiplePeaks</span><span class="p">(</span>
+            <span class="s2">&quot;The dataset appears to have multiple peaks, and thus the FWHM can&#39;t be determined.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">roots</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">NoPeaksFound</span><span class="p">(</span>
+            <span class="s2">&quot;No proper peaks were found in the data set; likely the dataset is flat (e.g. all zeros).&quot;</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">roots</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">roots</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="fwhm_cross"><a class="viewcode-back" href="../../../modules/raytracing.html#sloth.raytracing.shadow_utils.fwhm_cross">[docs]</a><span class="k">def</span> <span class="nf">fwhm_cross</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determine full-with-half-maximum of a peaked set of points X,Y.</span>
+
+<span class="sd">    (alternative method)</span>
+
+<span class="sd">    .. note: code taken from StackOverFlow (TODO: put link!!!)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ==========</span>
+
+<span class="sd">    x, y : arrays of floats</span>
+<span class="sd">        dataset</span>
+
+<span class="sd">    threshold : float</span>
+<span class="sd">        at which level to get the full-width, half-maximum by default [0.5]</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    =======</span>
+
+<span class="sd">    fw : float</span>
+<span class="sd">        full-width-at-threshold/half_maximum</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">half_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="n">threshold</span>
+    <span class="c1"># find when function crosses line half_max (when sign of diff flips)</span>
+    <span class="c1"># take the &#39;derivative&#39; of signum(half_max - y[])</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">half_max</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">half_max</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+    <span class="c1"># plot(x,d) #if you are interested</span>
+    <span class="c1"># find the left and right most indexes</span>
+    <span class="n">left_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">d</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">right_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">d</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="n">right_idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="n">left_idx</span><span class="p">]</span>  <span class="c1"># return the difference (full width)</span></div>
+
+
+<div class="viewcode-block" id="fwhm_bin"><a class="viewcode-back" href="../../../modules/raytracing.html#sloth.raytracing.shadow_utils.fwhm_bin">[docs]</a><span class="k">def</span> <span class="nf">fwhm_bin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determine full-width-at-threshold (default: half-maximum)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ==========</span>
+
+<span class="sd">    x, y : arrays of floats</span>
+<span class="sd">        dataset</span>
+
+<span class="sd">    threshold : float</span>
+<span class="sd">        at which level to get the full-width, half-maximum by default [0.5]</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    =======</span>
+
+<span class="sd">    fw : float</span>
+<span class="sd">        full-width-at-threshold/half_maximum</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y</span> <span class="o">&gt;=</span> <span class="nb">max</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="n">threshold</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="n">tt</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">binSize</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">fw</span> <span class="o">=</span> <span class="n">binSize</span> <span class="o">*</span> <span class="p">(</span><span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fw</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">fw</span></div>
+
+
+<div class="viewcode-block" id="fwhm"><a class="viewcode-back" href="../../../modules/raytracing.html#sloth.raytracing.shadow_utils.fwhm">[docs]</a><span class="k">def</span> <span class="nf">fwhm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;get full-width-at-threshold for a x,y dataset</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ==========</span>
+
+<span class="sd">    x, y : arrays of floats</span>
+<span class="sd">        dataset</span>
+
+<span class="sd">    method : string</span>
+<span class="sd">       which method to use:</span>
+<span class="sd">       - &#39;spl&#39;   -&gt; .. seealso:: :func:`fwhm_spl`</span>
+<span class="sd">       - &#39;cross&#39; -&gt; .. seealso:: :func:`fwhm_cross`</span>
+<span class="sd">       - &#39;bin&#39;   -&gt; .. seealso:: :func:`fwhm_bin`</span>
+<span class="sd">       - &#39;all&#39;   -&gt; all previous, returns a list [default]</span>
+
+<span class="sd">    threshold : float</span>
+<span class="sd">        at which level to get the full-width, half-maximum by default [0.5]</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    =======</span>
+
+<span class="sd">    fw : float or list of floats</span>
+<span class="sd">        full-width-at-threshold/half_maximum</span>
+<span class="sd">        if method=&#39;all&#39; returns [fwhm_bin, fwhm_cross, fwhm_spl]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">methods</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;spl&quot;</span><span class="p">,</span> <span class="s2">&quot;cross&quot;</span><span class="p">,</span> <span class="s2">&quot;bin&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">methods</span><span class="p">:</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;given method not understood!&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_spl</span> <span class="o">=</span> <span class="n">fwhm_spl</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">_spl</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_bin</span> <span class="o">=</span> <span class="n">fwhm_bin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">_bin</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_cross</span> <span class="o">=</span> <span class="n">fwhm_cross</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">_cross</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;spl&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_spl</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;bin&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_bin</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;cross&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_cross</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">_bin</span><span class="p">,</span> <span class="n">_cross</span><span class="p">,</span> <span class="n">_spl</span><span class="p">]</span></div>
+
+
+<span class="c1">###########</span>
+<span class="c1"># SOURCES #</span>
+<span class="c1">###########</span>
+
+
+<div class="viewcode-block" id="get_src_hdiv"><a class="viewcode-back" href="../../../modules/raytracing.html#sloth.raytracing.shadow_utils.get_src_hdiv">[docs]</a><span class="k">def</span> <span class="nf">get_src_hdiv</span><span class="p">(</span><span class="n">oe_xhw</span><span class="p">,</span> <span class="n">oe_ydist</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;get source horizontal divergence</span>
+
+<span class="sd">    :param oe_xhw: optical element X half width</span>
+<span class="sd">    :param oe_ydist: optical element distance from source</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">atan</span><span class="p">(</span><span class="n">oe_xhw</span> <span class="o">/</span> <span class="n">oe_ydist</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_src_vdiv"><a class="viewcode-back" href="../../../modules/raytracing.html#sloth.raytracing.shadow_utils.get_src_vdiv">[docs]</a><span class="k">def</span> <span class="nf">get_src_vdiv</span><span class="p">(</span><span class="n">oe_yhw</span><span class="p">,</span> <span class="n">oe_ydist</span><span class="p">,</span> <span class="n">oe_th</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;get source vertical divergence</span>
+
+<span class="sd">    :param oe_yhw: optical element Y half width</span>
+<span class="sd">    :param oe_ydist: optical element distance from source</span>
+<span class="sd">    :param oe_th: optical element grazing angle in degrees (e.g. Bragg angle)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_rth</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">oe_th</span><span class="p">)</span>
+    <span class="n">_h</span> <span class="o">=</span> <span class="n">oe_yhw</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">_rth</span><span class="p">)</span>
+    <span class="n">_d</span> <span class="o">=</span> <span class="n">oe_ydist</span> <span class="o">+</span> <span class="n">oe_yhw</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">_rth</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">atan</span><span class="p">(</span><span class="n">_h</span> <span class="o">/</span> <span class="n">_d</span><span class="p">)</span></div>
+
+
+<span class="c1">#########</span>
+<span class="c1"># BEAMS #</span>
+<span class="c1">#########</span>
+
+
+<div class="viewcode-block" id="get_beam_from_file"><a class="viewcode-back" href="../../../modules/raytracing.html#sloth.raytracing.shadow_utils.get_beam_from_file">[docs]</a><span class="k">def</span> <span class="nf">get_beam_from_file</span><span class="p">(</span><span class="n">bin_fname</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;get Shadow.Beam() from SHADOW binary file</span>
+
+<span class="sd">    :param bin_fname: SHADOW binary file (e.g. `mirr.01`)</span>
+<span class="sd">    :returns: beam</span>
+<span class="sd">    :rtype: Shadow.Beam() instance</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">beam</span> <span class="o">=</span> <span class="n">ShadowLibExtensions</span><span class="o">.</span><span class="n">Beam</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">beam</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">bin_fname</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: get_beam_from_file cannot load </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bin_fname</span><span class="p">))</span>
+        <span class="n">beam</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">beam</span></div>
+
+
+<div class="viewcode-block" id="merge_beams"><a class="viewcode-back" href="../../../modules/raytracing.html#sloth.raytracing.shadow_utils.merge_beams">[docs]</a><span class="k">def</span> <span class="nf">merge_beams</span><span class="p">(</span><span class="n">beams</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;merge a list of beams</span>
+
+<span class="sd">    :param beams: list of Shadow.Beam() instances</span>
+<span class="sd">    :returns: merged beams</span>
+<span class="sd">    :rtype: Shadow.Beam()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">beam_mrg</span> <span class="o">=</span> <span class="n">Shadow</span><span class="o">.</span><span class="n">Beam</span><span class="p">()</span>
+    <span class="n">beam_mrg</span><span class="o">.</span><span class="n">rays</span> <span class="o">=</span> <span class="n">beams</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">rays</span>
+    <span class="k">for</span> <span class="n">ibeam</span><span class="p">,</span> <span class="n">beam</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">beams</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">ibeam</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">beam_mrg</span><span class="o">.</span><span class="n">rays</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">beam_mrg</span><span class="o">.</span><span class="n">rays</span><span class="p">,</span> <span class="n">beam</span><span class="o">.</span><span class="n">rays</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">beam_mrg</span></div>
+
+
+<div class="viewcode-block" id="rotate_rays"><a class="viewcode-back" href="../../../modules/raytracing.html#sloth.raytracing.shadow_utils.rotate_rays">[docs]</a><span class="k">def</span> <span class="nf">rotate_rays</span><span class="p">(</span><span class="n">rays</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;rotate rays</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rays : array of floats</span>
+<span class="sd">            Shadow rays</span>
+<span class="sd">        angle : float</span>
+<span class="sd">            Rotation angle in degrees</span>
+<span class="sd">        axis : int</span>
+<span class="sd">            Rotation axis number (Shadow&#39;s column)</span>
+<span class="sd">            1: X, 2: Y, 3: Z</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        array</span>
+<span class="sd">            Rotated rays</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">a1</span> <span class="o">=</span> <span class="n">rays</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">rangle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">torot</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">torot</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">torot</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;Wrong axis&quot;</span><span class="p">)</span>
+    <span class="n">costh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">rangle</span><span class="p">)</span>
+    <span class="n">sinth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rangle</span><span class="p">)</span>
+    <span class="n">tstart</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">16</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tstart</span><span class="p">)):</span>
+        <span class="n">newaxis</span> <span class="o">=</span> <span class="n">axis</span> <span class="o">+</span> <span class="n">tstart</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">newaxisi</span> <span class="o">=</span> <span class="n">newaxis</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">newtorot</span> <span class="o">=</span> <span class="n">torot</span> <span class="o">+</span> <span class="n">tstart</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">newtoroti</span> <span class="o">=</span> <span class="n">newtorot</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">rays</span><span class="p">[:,</span> <span class="n">newtoroti</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">a1</span><span class="p">[:,</span> <span class="n">newtoroti</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="n">costh</span> <span class="o">+</span> <span class="n">a1</span><span class="p">[:,</span> <span class="n">newtoroti</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> <span class="n">sinth</span>
+        <span class="p">)</span>
+        <span class="n">rays</span><span class="p">[:,</span> <span class="n">newtoroti</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="o">-</span><span class="n">a1</span><span class="p">[:,</span> <span class="n">newtoroti</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="n">sinth</span> <span class="o">+</span> <span class="n">a1</span><span class="p">[:,</span> <span class="n">newtoroti</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> <span class="n">costh</span>
+        <span class="p">)</span>
+        <span class="n">rays</span><span class="p">[:,</span> <span class="n">newaxisi</span><span class="p">]</span> <span class="o">=</span> <span class="n">a1</span><span class="p">[:,</span> <span class="n">newaxisi</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">rays</span></div>
+
+
+<span class="c1">##################</span>
+<span class="c1"># ROWLAND CIRCLE #</span>
+<span class="c1">##################</span>
+
+
+<div class="viewcode-block" id="get_moverc"><a class="viewcode-back" href="../../../modules/raytracing.html#sloth.raytracing.shadow_utils.get_moverc">[docs]</a><span class="k">def</span> <span class="nf">get_moverc</span><span class="p">(</span><span class="n">Rm</span><span class="p">,</span> <span class="n">theta0</span><span class="p">,</span> <span class="n">chi</span><span class="p">,</span> <span class="n">geom</span><span class="o">=</span><span class="s2">&quot;vertical&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;get optical element movement</span>
+
+<span class="sd">    .. note:: optical element local coordinate system is used</span>
+
+<span class="sd">    :param Rm: radius of the Rowland circle in mm</span>
+<span class="sd">    :param theta0: incidence angle in deg (= Bragg angle)</span>
+<span class="sd">    :param chi: sagittal angle in deg</span>
+<span class="sd">                (= rotation on the sagittal plane around the sample-detector axis)</span>
+<span class="sd">    :param geom: Rowland geometry, &#39;vertical&#39; or &#39;horizontal&#39;</span>
+<span class="sd">    :returns: [OFFX, OFFY, OFFZ, X_ROT, Y_ROT, Z_ROT]</span>
+<span class="sd">    :rtype: list of floats</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">offx</span><span class="p">,</span> <span class="n">offy</span><span class="p">,</span> <span class="n">offz</span><span class="p">,</span> <span class="n">xrot</span><span class="p">,</span> <span class="n">yrot</span><span class="p">,</span> <span class="n">zrot</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="s2">&quot;vert&quot;</span> <span class="ow">in</span> <span class="n">geom</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+        <span class="n">rc</span> <span class="o">=</span> <span class="n">RcVert</span><span class="p">(</span><span class="n">Rm</span><span class="p">,</span> <span class="n">theta0</span><span class="p">,</span> <span class="n">showInfos</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="s2">&quot;hor&quot;</span> <span class="ow">in</span> <span class="n">geom</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+        <span class="n">rc</span> <span class="o">=</span> <span class="n">RcHoriz</span><span class="p">(</span><span class="n">Rm</span><span class="p">,</span> <span class="n">theta0</span><span class="p">,</span> <span class="n">showInfos</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: geometry not known&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">offx</span><span class="p">,</span> <span class="n">offy</span><span class="p">,</span> <span class="n">offz</span><span class="p">,</span> <span class="n">xrot</span><span class="p">,</span> <span class="n">yrot</span><span class="p">,</span> <span class="n">zrot</span><span class="p">]</span>
+    <span class="n">apos0</span> <span class="o">=</span> <span class="n">rc</span><span class="o">.</span><span class="n">get_ana_pos</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">apos1</span> <span class="o">=</span> <span class="n">rc</span><span class="o">.</span><span class="n">get_ana_pos</span><span class="p">(</span><span class="n">chi</span><span class="p">)</span>
+    <span class="n">aoff</span> <span class="o">=</span> <span class="n">apos1</span> <span class="o">-</span> <span class="n">apos0</span>
+    <span class="c1">#</span>
+    <span class="n">offx</span> <span class="o">=</span> <span class="n">aoff</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">offy</span> <span class="o">=</span> <span class="n">aoff</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">offz</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">aoff</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">yrot</span> <span class="o">=</span> <span class="n">chi</span>
+    <span class="c1">#</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">offx</span><span class="p">,</span> <span class="n">offy</span><span class="p">,</span> <span class="n">offz</span><span class="p">,</span> <span class="n">xrot</span><span class="p">,</span> <span class="n">yrot</span><span class="p">,</span> <span class="n">zrot</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="get_chi_TEXS"><a class="viewcode-back" href="../../../modules/raytracing.html#sloth.raytracing.shadow_utils.get_chi_TEXS">[docs]</a><span class="k">def</span> <span class="nf">get_chi_TEXS</span><span class="p">(</span><span class="n">Rm</span><span class="p">,</span> <span class="n">theta0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;get chi angles (deg) for TEXS spectrometer (Rovezzi et al.)</span>
+
+<span class="sd">    :param Rm: radius of the Rowland circle in mm</span>
+<span class="sd">    :param theta0: incidence angle in deg (= Bragg angle)</span>
+<span class="sd">    :returns: [chi0, chi1, chi2, chi3, chi4, chi5]</span>
+<span class="sd">    :rtype: list of floats</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">RcHoriz</span><span class="p">(</span>
+        <span class="n">Rm</span><span class="p">,</span>
+        <span class="n">theta0</span><span class="p">,</span>
+        <span class="n">aW</span><span class="o">=</span><span class="mf">25.0</span><span class="p">,</span>
+        <span class="n">aWext</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+        <span class="n">rSext</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+        <span class="n">aL</span><span class="o">=</span><span class="mf">97.0</span><span class="p">,</span>
+        <span class="n">bender_version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">bender</span><span class="o">=</span><span class="p">(</span><span class="mf">40.0</span><span class="p">,</span> <span class="mf">60.0</span><span class="p">,</span> <span class="mf">28.0</span><span class="p">),</span>
+        <span class="n">actuator</span><span class="o">=</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>
+        <span class="n">showInfos</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">chis</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ana</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]:</span>
+        <span class="n">chi</span> <span class="o">=</span> <span class="n">rc</span><span class="o">.</span><span class="n">get_chi2</span><span class="p">(</span><span class="n">ana</span><span class="p">)</span>
+        <span class="n">chis</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chi</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">chis</span></div>
+
+
+<span class="c1">#########</span>
+<span class="c1"># PLOTS #</span>
+<span class="c1">#########</span>
+
+
+<div class="viewcode-block" id="plot_close_all"><a class="viewcode-back" href="../../../modules/raytracing.html#sloth.raytracing.shadow_utils.plot_close_all">[docs]</a><span class="k">def</span> <span class="nf">plot_close_all</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;close all plots</span>
+
+<span class="sd">    :returns: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Shadow</span><span class="o">.</span><span class="n">ShadowTools</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="plot_energy_histo"><a class="viewcode-back" href="../../../modules/raytracing.html#sloth.raytracing.shadow_utils.plot_energy_histo">[docs]</a><span class="k">def</span> <span class="nf">plot_energy_histo</span><span class="p">(</span><span class="n">beam</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_tkt</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">h1args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;plot rays energy distribution weighted by intensity</span>
+
+<span class="sd">    :param beam: Shadow.Beam() instance</span>
+<span class="sd">    :param fit: boolean fit the data with split-PseudoVoigt [False]</span>
+<span class="sd">    :param return_tkt: boolean if return Matplotlib ticket</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tkt</span> <span class="o">=</span> <span class="n">Shadow</span><span class="o">.</span><span class="n">ShadowTools</span><span class="o">.</span><span class="n">histo1</span><span class="p">(</span><span class="n">beam</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="mi">23</span><span class="p">,</span> <span class="o">**</span><span class="n">h1args</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fit</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">tkt</span><span class="p">[</span><span class="s2">&quot;bin_path&quot;</span><span class="p">]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">tkt</span><span class="p">[</span><span class="s2">&quot;histogram_path&quot;</span><span class="p">]</span>
+        <span class="n">fit</span> <span class="o">=</span> <span class="n">fit_splitpvoigt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">return_tkt</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tkt</span></div>
+
+
+<div class="viewcode-block" id="plot_footprint"><a class="viewcode-back" href="../../../modules/raytracing.html#sloth.raytracing.shadow_utils.plot_footprint">[docs]</a><span class="k">def</span> <span class="nf">plot_footprint</span><span class="p">(</span><span class="n">return_tkt</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">h2args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;plot lost rays on the optical element to check correct overfill</span>
+
+<span class="sd">    :param return_tkt: boolean if return Matplotlib ticket</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># avoid duplicate kwargs</span>
+    <span class="n">_popnolost</span> <span class="o">=</span> <span class="n">h2args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;nolost&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># noqa</span>
+    <span class="n">_popref</span> <span class="o">=</span> <span class="n">h2args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ref&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># noqa</span>
+    <span class="n">_poptitle</span> <span class="o">=</span> <span class="n">h2args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># noqa</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">tkt</span> <span class="o">=</span> <span class="n">Shadow</span><span class="o">.</span><span class="n">ShadowTools</span><span class="o">.</span><span class="n">plotxy</span><span class="p">(</span>
+            <span class="s2">&quot;mirr.01&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nolost</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Footprint&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">h2args</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;probably &quot;mirr.XX&quot; file does not exist!&#39;</span><span class="p">)</span>
+        <span class="n">tkt</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">return_tkt</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tkt</span></div>
+
+
+<div class="viewcode-block" id="plot_image"><a class="viewcode-back" href="../../../modules/raytracing.html#sloth.raytracing.shadow_utils.plot_image">[docs]</a><span class="k">def</span> <span class="nf">plot_image</span><span class="p">(</span><span class="n">beam</span><span class="p">,</span> <span class="n">return_tkt</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">h2args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;plot image at the detector weighted by intensity</span>
+
+<span class="sd">    :param beam: Shadow.Beam() instance</span>
+<span class="sd">    :param return_tkt: boolean if return Matplotlib ticket</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># avoid duplicate kwargs</span>
+    <span class="n">_popnolost</span> <span class="o">=</span> <span class="n">h2args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;nolost&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># noqa</span>
+    <span class="n">_popref</span> <span class="o">=</span> <span class="n">h2args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ref&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># noqa</span>
+    <span class="n">_popcalcw</span> <span class="o">=</span> <span class="n">h2args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;calculate_widths&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># noqa</span>
+    <span class="n">tkt</span> <span class="o">=</span> <span class="n">Shadow</span><span class="o">.</span><span class="n">ShadowTools</span><span class="o">.</span><span class="n">plotxy</span><span class="p">(</span>
+        <span class="n">beam</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="mi">23</span><span class="p">,</span> <span class="n">nolost</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">calculate_widths</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="o">**</span><span class="n">h2args</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">return_tkt</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tkt</span></div>
+
+
+<div class="viewcode-block" id="plot_fpstack"><a class="viewcode-back" href="../../../modules/raytracing.html#sloth.raytracing.shadow_utils.plot_fpstack">[docs]</a><span class="k">def</span> <span class="nf">plot_fpstack</span><span class="p">(</span><span class="n">fps</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;plot a stack of footprints using silx.gui.plot.StackViewMainWindow</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ==========</span>
+
+<span class="sd">    fps : list of histo2 instances</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    =======</span>
+
+<span class="sd">    sv : class:`StackViewMainWindow`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fpStack</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span><span class="p">[</span><span class="s2">&quot;histogram&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fps</span><span class="p">])</span>
+    <span class="n">sv</span> <span class="o">=</span> <span class="n">StackViewMainWindow</span><span class="p">()</span>
+    <span class="n">sv</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;footprints (= lost rays at OE)&quot;</span><span class="p">)</span>
+    <span class="n">sv</span><span class="o">.</span><span class="n">setColormap</span><span class="p">(</span><span class="s2">&quot;viridis&quot;</span><span class="p">)</span>
+    <span class="n">sv</span><span class="o">.</span><span class="n">setKeepDataAspectRatio</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">sv</span><span class="o">.</span><span class="n">setLabels</span><span class="p">([</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;Y [nbins]&quot;</span><span class="p">,</span> <span class="s2">&quot;X [nbins]&quot;</span><span class="p">])</span>
+    <span class="n">sv</span><span class="o">.</span><span class="n">setStack</span><span class="p">(</span><span class="n">fpStack</span><span class="p">)</span>
+    <span class="n">sv</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">sv</span></div>
+
+
+<span class="c1">################</span>
+<span class="c1"># HISTO2 HACKS #</span>
+<span class="c1">################</span>
+
+
+<div class="viewcode-block" id="get_origin_scale"><a class="viewcode-back" href="../../../modules/raytracing.html#sloth.raytracing.shadow_utils.get_origin_scale">[docs]</a><span class="k">def</span> <span class="nf">get_origin_scale</span><span class="p">(</span><span class="n">h2tkt</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;get origin and scale from a Shadow.Beam.histo2() instance</span>
+
+<span class="sd">    #######################################</span>
+<span class="sd">    .. warning:: TEMPORARY, WILL BE REMOVED</span>
+<span class="sd">    #######################################</span>
+
+<span class="sd">    :param h2tkt: Shadow.Beam.histo2()</span>
+<span class="sd">    :returns: origin, scale</span>
+<span class="sd">    :rtype: tuples of floats</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xx</span> <span class="o">=</span> <span class="n">h2tkt</span><span class="p">[</span><span class="s2">&quot;bin_h_edges&quot;</span><span class="p">]</span>
+    <span class="n">yy</span> <span class="o">=</span> <span class="n">h2tkt</span><span class="p">[</span><span class="s2">&quot;bin_v_edges&quot;</span><span class="p">]</span>
+
+    <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">=</span> <span class="n">xx</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">xx</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="n">yy</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">yy</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+    <span class="n">origin</span> <span class="o">=</span> <span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">ymin</span><span class="p">)</span>
+    <span class="n">scale</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="nb">abs</span><span class="p">((</span><span class="n">xmax</span> <span class="o">-</span> <span class="n">xmin</span><span class="p">)</span> <span class="o">/</span> <span class="n">h2tkt</span><span class="p">[</span><span class="s2">&quot;nbins_h&quot;</span><span class="p">]),</span>
+        <span class="nb">abs</span><span class="p">((</span><span class="n">ymax</span> <span class="o">-</span> <span class="n">ymin</span><span class="p">)</span> <span class="o">/</span> <span class="n">h2tkt</span><span class="p">[</span><span class="s2">&quot;nbins_v&quot;</span><span class="p">]),</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="histo2_normed"><a class="viewcode-back" href="../../../modules/raytracing.html#sloth.raytracing.shadow_utils.histo2_normed">[docs]</a><span class="k">def</span> <span class="nf">histo2_normed</span><span class="p">(</span>
+    <span class="n">beam</span><span class="p">,</span>
+    <span class="n">col_h</span><span class="p">,</span>
+    <span class="n">col_v</span><span class="p">,</span>
+    <span class="n">nbins</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>
+    <span class="n">ref</span><span class="o">=</span><span class="mi">23</span><span class="p">,</span>
+    <span class="n">nbins_h</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">nbins_v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">nolost</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">xrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">yrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">normed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">calculate_widths</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Performs 2d histogram to prepare data for a plotxy plot</span>
+
+<span class="sd">    #######################################</span>
+<span class="sd">    .. warning:: TEMPORARY, WILL BE REMOVED</span>
+<span class="sd">    #######################################</span>
+
+<span class="sd">    It uses histogram2d for calculations</span>
+
+<span class="sd">    .. note:: this Shadow.Beam.histo2 was previously called Shadow.Beam.plotxy</span>
+
+<span class="sd">    :param col_h: the horizontal column</span>
+<span class="sd">    :param col_v: the vertical column</span>
+<span class="sd">    :param nbins: number of bins</span>
+<span class="sd">    :param ref:</span>
+<span class="sd">               0, None, &quot;no&quot;, &quot;NO&quot; or &quot;No&quot;:   only count the rays</span>
+<span class="sd">               23, &quot;Yes&quot;, &quot;YES&quot; or &quot;yes&quot;: weight with intensity (look</span>
+<span class="sd">               at col=23 |E|^2 total intensity)</span>
+<span class="sd">               other value: use that column as weight</span>
+<span class="sd">    :param nbins_h: number of bins in H</span>
+<span class="sd">    :param nbins_v: number of bins in V</span>
+<span class="sd">    :param nolost: 0 or None: all rays, 1=good rays, 2=only losses</span>
+<span class="sd">    :param xrange: range for H</span>
+<span class="sd">    :param yrange: range for V</span>
+<span class="sd">    :param normed: normed parameter for numpy.histogram2d</span>
+<span class="sd">    :param calculate_widths: 0=No, 1=calculate FWHM (default),</span>
+<span class="sd">                             2=Calculate FWHM and FW at 25% and 75% if</span>
+<span class="sd">                             Maximum</span>
+
+<span class="sd">    :return: a dictionary with all data needed for plot</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ticket</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">ref</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">ref</span> <span class="o">==</span> <span class="s2">&quot;No&quot;</span><span class="p">:</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">ref</span> <span class="o">==</span> <span class="s2">&quot;NO&quot;</span><span class="p">:</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">ref</span> <span class="o">==</span> <span class="s2">&quot;no&quot;</span><span class="p">:</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="n">ref</span> <span class="o">==</span> <span class="s2">&quot;Yes&quot;</span><span class="p">:</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="mi">23</span>
+    <span class="k">if</span> <span class="n">ref</span> <span class="o">==</span> <span class="s2">&quot;YES&quot;</span><span class="p">:</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="mi">23</span>
+    <span class="k">if</span> <span class="n">ref</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span><span class="p">:</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="mi">23</span>
+
+    <span class="k">if</span> <span class="n">ref</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="s2">&quot;Shadow.Beam.histo2: Warning: weighting with column 1 (X) [not with</span><span class="se">\</span>
+<span class="s2">               intensity as may happen in old versions]&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">nbins_h</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">nbins_h</span> <span class="o">=</span> <span class="n">nbins</span>
+    <span class="k">if</span> <span class="n">nbins_v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">nbins_v</span> <span class="o">=</span> <span class="n">nbins</span>
+
+    <span class="c1"># copy the inputs</span>
+    <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;col_h&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">col_h</span>
+    <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;col_v&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">col_v</span>
+    <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;nolost&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nolost</span>
+    <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;nbins_h&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nbins_h</span>
+    <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;nbins_v&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nbins_v</span>
+    <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;ref&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ref</span>
+
+    <span class="p">(</span><span class="n">col1</span><span class="p">,</span> <span class="n">col2</span><span class="p">)</span> <span class="o">=</span> <span class="n">beam</span><span class="o">.</span><span class="n">getshcol</span><span class="p">((</span><span class="n">col_h</span><span class="p">,</span> <span class="n">col_v</span><span class="p">),</span> <span class="n">nolost</span><span class="o">=</span><span class="n">nolost</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">xrange</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">xrange</span> <span class="o">=</span> <span class="n">beam</span><span class="o">.</span><span class="n">get_good_range</span><span class="p">(</span><span class="n">col_h</span><span class="p">,</span> <span class="n">nolost</span><span class="o">=</span><span class="n">nolost</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">yrange</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">yrange</span> <span class="o">=</span> <span class="n">beam</span><span class="o">.</span><span class="n">get_good_range</span><span class="p">(</span><span class="n">col_v</span><span class="p">,</span> <span class="n">nolost</span><span class="o">=</span><span class="n">nolost</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">ref</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">col1</span> <span class="o">*</span> <span class="mi">0</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">beam</span><span class="o">.</span><span class="n">getshonecol</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">nolost</span><span class="o">=</span><span class="n">nolost</span><span class="p">)</span>
+
+    <span class="p">(</span><span class="n">hh</span><span class="p">,</span> <span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">)</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram2d</span><span class="p">(</span>
+        <span class="n">col1</span><span class="p">,</span>
+        <span class="n">col2</span><span class="p">,</span>
+        <span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="n">nbins_h</span><span class="p">,</span> <span class="n">nbins_v</span><span class="p">],</span>
+        <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="n">xrange</span><span class="p">,</span> <span class="n">yrange</span><span class="p">],</span>
+        <span class="n">normed</span><span class="o">=</span><span class="n">normed</span><span class="p">,</span>
+        <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;xrange&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xrange</span>
+    <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;yrange&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">yrange</span>
+    <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_h_edges&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xx</span>
+    <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_v_edges&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">yy</span>
+    <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_h_left&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_v_left&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">yy</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_h_right&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_v_right&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">yy</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_h_center&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_h_left&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_h_right&quot;</span><span class="p">])</span>
+    <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_v_center&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_v_left&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_v_right&quot;</span><span class="p">])</span>
+    <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;histogram&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hh</span>
+    <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;histogram_h&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hh</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;histogram_v&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hh</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;intensity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">beam</span><span class="o">.</span><span class="n">intensity</span><span class="p">(</span><span class="n">nolost</span><span class="o">=</span><span class="n">nolost</span><span class="p">)</span>
+    <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;nrays&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">beam</span><span class="o">.</span><span class="n">nrays</span><span class="p">(</span><span class="n">nolost</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;good_rays&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">beam</span><span class="o">.</span><span class="n">nrays</span><span class="p">(</span><span class="n">nolost</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># CALCULATE fwhm</span>
+    <span class="k">if</span> <span class="n">calculate_widths</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;histogram_h&quot;</span><span class="p">]</span>
+        <span class="n">tt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">h</span> <span class="o">&gt;=</span> <span class="nb">max</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">h</span><span class="p">[</span><span class="n">tt</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">binSize</span> <span class="o">=</span> <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_h_center&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_h_center&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;fwhm_h&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">binSize</span> <span class="o">*</span> <span class="p">(</span><span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;fwhm_coordinates_h&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_h_center&quot;</span><span class="p">][</span><span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]],</span>
+                <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_h_center&quot;</span><span class="p">][</span><span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;fwhm_h&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">h</span> <span class="o">=</span> <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;histogram_v&quot;</span><span class="p">]</span>
+        <span class="n">tt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">h</span> <span class="o">&gt;=</span> <span class="nb">max</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">h</span><span class="p">[</span><span class="n">tt</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">binSize</span> <span class="o">=</span> <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_v_center&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_v_center&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;fwhm_v&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">binSize</span> <span class="o">*</span> <span class="p">(</span><span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;fwhm_coordinates_v&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_v_center&quot;</span><span class="p">][</span><span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]],</span>
+                <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_v_center&quot;</span><span class="p">][</span><span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;fwhm_v&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">calculate_widths</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="c1"># CALCULATE FW at 25% HEIGHT</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;histogram_h&quot;</span><span class="p">]</span>
+        <span class="n">tt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">h</span> <span class="o">&gt;=</span> <span class="nb">max</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.25</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">h</span><span class="p">[</span><span class="n">tt</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">binSize</span> <span class="o">=</span> <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_h_center&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_h_center&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;fw25%m_h&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">binSize</span> <span class="o">*</span> <span class="p">(</span><span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;fw25%m_h&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">h</span> <span class="o">=</span> <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;histogram_v&quot;</span><span class="p">]</span>
+        <span class="n">tt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">h</span> <span class="o">&gt;=</span> <span class="nb">max</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.25</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">h</span><span class="p">[</span><span class="n">tt</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">binSize</span> <span class="o">=</span> <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_v_center&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_v_center&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;fw25%m_v&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">binSize</span> <span class="o">*</span> <span class="p">(</span><span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;fw25%m_v&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># CALCULATE FW at 75% HEIGHT</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;histogram_h&quot;</span><span class="p">]</span>
+        <span class="n">tt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">h</span> <span class="o">&gt;=</span> <span class="nb">max</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.75</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">h</span><span class="p">[</span><span class="n">tt</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">binSize</span> <span class="o">=</span> <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_h_center&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_h_center&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;fw75%m_h&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">binSize</span> <span class="o">*</span> <span class="p">(</span><span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;fw75%m_h&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">h</span> <span class="o">=</span> <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;histogram_v&quot;</span><span class="p">]</span>
+        <span class="n">tt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">h</span> <span class="o">&gt;=</span> <span class="nb">max</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.75</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">h</span><span class="p">[</span><span class="n">tt</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">binSize</span> <span class="o">=</span> <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_v_center&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;bin_v_center&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;fw75%m_v&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">binSize</span> <span class="o">*</span> <span class="p">(</span><span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ticket</span><span class="p">[</span><span class="s2">&quot;fw75%m_v&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">ticket</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014--2020, Mauro Rovezzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

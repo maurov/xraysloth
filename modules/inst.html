@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sloth.inst: working with instrumentation &mdash; Sloth 0.3.0-dev documentation</title>
+  <title>sloth.inst: working with instrumentation &mdash; Sloth 0.3.2 documentation</title>
   
 
   
@@ -92,6 +92,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_model/index.html">Notes on the data model</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="io.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.io</span></code>: Input-output</a></li>
@@ -103,7 +104,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#rowland-circle-geometry">Rowland circle geometry</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#sloth-inst-dthetaxz-analytical-expressions-for-delta-theta-crystal-analyzers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst.dthetaxz</span></code>: analytical expressions for <span class="math notranslate nohighlight">\(\Delta\theta\)</span> (=crystal analyzers)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sloth.inst.dthetaxz"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst.dthetaxz</span></code>: analytical expressions for <span class="math notranslate nohighlight">\(\Delta\theta\)</span> (=crystal analyzers)</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="raytracing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing</span></code>: x-ray raytracing</a></li>
@@ -113,7 +114,8 @@
 <li class="toctree-l2"><a class="reference internal" href="gui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.gui</span></code>: GUI</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflows/index.html">Notes on workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflows/index.html#notes-on-softwares">Notes on softwares</a></li>
 </ul>
 
             
@@ -572,9 +574,9 @@ TODO: NOT CORRECT CHECK THIS!</p>
 </div>
 </div>
 </div>
-<div class="section" id="sloth-inst-dthetaxz-analytical-expressions-for-delta-theta-crystal-analyzers">
-<h2><a class="reference internal" href="#module-sloth.inst.dthetaxz" title="sloth.inst.dthetaxz"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst.dthetaxz</span></code></a>: analytical expressions for <span class="math notranslate nohighlight">\(\Delta\theta\)</span> (=crystal analyzers)<a class="headerlink" href="#sloth-inst-dthetaxz-analytical-expressions-for-delta-theta-crystal-analyzers" title="Permalink to this headline">¶</a></h2>
-<span class="target" id="module-sloth.inst.dthetaxz"></span><p>Analytical expression of $Delta        heta (x, z)$ from Wittry</p>
+<div class="section" id="module-sloth.inst.dthetaxz">
+<span id="sloth-inst-dthetaxz-analytical-expressions-for-delta-theta-crystal-analyzers"></span><h2><a class="reference internal" href="#module-sloth.inst.dthetaxz" title="sloth.inst.dthetaxz"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst.dthetaxz</span></code></a>: analytical expressions for <span class="math notranslate nohighlight">\(\Delta\theta\)</span> (=crystal analyzers)<a class="headerlink" href="#module-sloth.inst.dthetaxz" title="Permalink to this headline">¶</a></h2>
+<p>Analytical expression of $Delta        heta (x, z)$ from Wittry</p>
 <dl class="function">
 <dt id="sloth.inst.dthetaxz.dThetaXZ">
 <code class="sig-prename descclassname">sloth.inst.dthetaxz.</code><code class="sig-name descname">dThetaXZ</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">z</em>, <em class="sig-param">thetab</em>, <em class="sig-param">case=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/inst/dthetaxz.html#dThetaXZ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.inst.dthetaxz.dThetaXZ" title="Permalink to this definition">¶</a></dt>
@@ -871,7 +873,7 @@ fraction’ units</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014--2019, Mauro Rovezzi
+        &copy; Copyright 2014--2020, Mauro Rovezzi
 
     </p>
   </div>

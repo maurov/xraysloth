@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sloth.utils: utilities &mdash; Sloth 0.3.0-dev documentation</title>
+  <title>sloth.utils: utilities &mdash; Sloth 0.3.2 documentation</title>
   
 
   
@@ -92,6 +92,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_model/index.html">Notes on the data model</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="io.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.io</span></code>: Input-output</a></li>
@@ -102,10 +103,6 @@
 <li class="toctree-l2"><a class="reference internal" href="raytracing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing</span></code>: x-ray raytracing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="math.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math</span></code>: mathematical utilities</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils</span></code>: utilities</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#module-sloth.utils.xdata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.xdata</span></code>: x-ray databases</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#utility-to-retrieve-x-ray-data-from-external-libraries-databases">Utility to retrieve x-ray data from external libraries/databases</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="#module-sloth.utils.bragg"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.bragg</span></code>: Bragg’s law</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-sloth.utils.arrays"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.arrays</span></code>: working with arrays</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#arrays-manipulation-utilities">Arrays manipulation utilities</a></li>
@@ -125,14 +122,18 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#module-sloth.utils.logging"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.logging</span></code>: loggers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-sloth.utils.exceptions"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.exceptions</span></code>: handling exceptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#sloth-utils-genericutils-generic"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.genericutils</span></code>: generic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sloth.utils.xdata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.xdata</span></code>: x-ray databases</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#utility-to-retrieve-x-ray-data-from-external-libraries-databases">Utility to retrieve x-ray data from external libraries/databases</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="calculators.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.calculators</span></code>: interacting with calculators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.gui</span></code>: GUI</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflows/index.html">Notes on workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflows/index.html#notes-on-softwares">Notes on softwares</a></li>
 </ul>
 
             
@@ -201,262 +202,6 @@
             
   <span class="target" id="module-sloth.utils"></span><div class="section" id="sloth-utils-utilities">
 <h1><a class="reference internal" href="#module-sloth.utils" title="sloth.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils</span></code></a>: utilities<a class="headerlink" href="#sloth-utils-utilities" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-sloth.utils.xdata">
-<span id="sloth-utils-xdata-x-ray-databases"></span><h2><a class="reference internal" href="#module-sloth.utils.xdata" title="sloth.utils.xdata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.xdata</span></code></a>: x-ray databases<a class="headerlink" href="#module-sloth.utils.xdata" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="utility-to-retrieve-x-ray-data-from-external-libraries-databases">
-<h3>Utility to retrieve x-ray data from external libraries/databases<a class="headerlink" href="#utility-to-retrieve-x-ray-data-from-external-libraries-databases" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="available-libraries-dbs-and-order-of-usage">
-<h4>Available libraries/dbs and order of usage<a class="headerlink" href="#available-libraries-dbs-and-order-of-usage" title="Permalink to this headline">¶</a></h4>
-<ol class="arabic simple">
-<li><p><a class="reference external" href="https://github.com/tschoonj/xraylib">xraylib</a></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Elements</span></code> in <a class="reference external" href="https://github.com/vasole/pymca">PyMca</a></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">xraydb_plugin.py</span></code> in <a class="reference external" href="https://github.com/xraypy/xraylarch">Larch</a></p></li>
-</ol>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><a class="reference external" href="https://github.com/xraypy/XrayDB">XrayDB</a> has its own package now</p>
-</div>
-<dl class="data">
-<dt id="sloth.utils.xdata.SHELLS">
-<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">SHELLS</code><em class="property"> = ('K', 'L1', 'L2', 'L3', 'M1', 'M2', 'M3', 'M4', 'M5', 'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'O1', 'O2', 'O3', 'O4', 'O5', 'P1', 'P2', 'P3')</em><a class="headerlink" href="#sloth.utils.xdata.SHELLS" title="Permalink to this definition">¶</a></dt>
-<dd><p>SHELLS / EDGES
-K = 1 (s)
-L = 2 (s, p)
-M = 3 (s, p, d)
-N = 4 (s, p, d, f)
-O = 5 (s, p, d, f)
-P = 6 (s, p)</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="sloth.utils.xdata.LEVELS_DICT">
-<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">LEVELS_DICT</code><em class="property"> = {'K': '1s', 'L1': '2s', 'L2': '2p1/2', 'L3': '2p3/2', 'M1': '3s', 'M2': '3p1/2', 'M3': '3p3/2', 'M4': '3d3/2', 'M5': '3d5/2', 'N1': '4s', 'N2': '4p1/2', 'N3': '4p3/2', 'N4': '4d3/2', 'N5': '4d5/2', 'N6': '4f5/2', 'N7': '4f7/2', 'O1': '5s', 'O2': '5p1/2', 'O3': '5p3/2', 'P1': '6s', 'P2': '6p1/2', 'P3': '6p3/2'}</em><a class="headerlink" href="#sloth.utils.xdata.LEVELS_DICT" title="Permalink to this definition">¶</a></dt>
-<dd><p>TRANSITIONS
-1 = s
-2, 3 = p (1/2, 3/2)
-4, 5 = d (3/2, 5/2)
-6, 7 = f (5/2, 7/2)</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="sloth.utils.xdata.LINES_DICT">
-<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">LINES_DICT</code><em class="property"> = {'K': ('KA1', 'KA2', 'KA3', 'KB1', 'KB2', 'KB3', 'KB4', 'KB5'), 'L1': ('LB3', 'LB4', 'LG2', 'LG3'), 'L2': ('LB1', 'LG1', 'LG6', 'LE'), 'L3': ('LA1', 'LA2', 'LB2', 'LB5', 'LB6', 'LL'), 'M3': ('MG',), 'M4': ('MB',), 'M5': ('MA1', 'MA2')}</em><a class="headerlink" href="#sloth.utils.xdata.LINES_DICT" title="Permalink to this definition">¶</a></dt>
-<dd><p>dictionary of lines
-Ln in Hepheastus is LE in Xraylib
-Mz in Hepheastus not in Xraylib (the single transitions yes!)</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sloth.utils.xdata.mapLine2Trans">
-<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">mapLine2Trans</code><span class="sig-paren">(</span><em class="sig-param">line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#mapLine2Trans"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.mapLine2Trans" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns a tuple of strings mapping the transitions for a given line</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sloth.utils.xdata.get_element">
-<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">get_element</code><span class="sig-paren">(</span><em class="sig-param">elem</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#get_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.get_element" title="Permalink to this definition">¶</a></dt>
-<dd><p>get a tuple for element name and number</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sloth.utils.xdata.get_line">
-<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">get_line</code><span class="sig-paren">(</span><em class="sig-param">line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#get_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.get_line" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the line name is a valid name and return it</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sloth.utils.xdata.find_edge">
-<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">find_edge</code><span class="sig-paren">(</span><em class="sig-param">emin</em>, <em class="sig-param">emax</em>, <em class="sig-param">shells=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#find_edge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.find_edge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the edge energy in a given energy range [emin, emax] (eV)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>emax</strong> (<em>emin</em><em>,</em>) – energy range to search for an absorption edege (eV)</p></li>
-<li><p><strong>shells</strong> (<em>list of str</em><em> (</em><em>optional</em><em>)</em>) – list of shells to search for [None -&gt; use SHELLS (=all)]</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="sloth.utils.xdata.find_line">
-<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">find_line</code><span class="sig-paren">(</span><em class="sig-param">emin</em>, <em class="sig-param">emax</em>, <em class="sig-param">elements=None</em>, <em class="sig-param">lines=None</em>, <em class="sig-param">outDict=False</em>, <em class="sig-param">backend='xraylib'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#find_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.find_line" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the emission line energy in a given energy range [emin,emax] (eV)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>emax</strong> (<em>emin</em><em>,</em>) – [minimum, maximum] energy range (eV)</p></li>
-<li><p><strong>elements</strong> (<em>list of str</em><em> (</em><em>optional</em><em>)</em>) – list of elements, [None -&gt; ELEMENTS (all)]</p></li>
-<li><p><strong>lines</strong> (<em>list of str</em><em> (</em><em>optional</em><em>)</em>) – list of lines, [None -&gt; LINES (all)]</p></li>
-<li><p><strong>outDict</strong> (<em>boolean</em><em>, </em><em>False</em>) – returns a dictionary instead of printing to screen with keywords:</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>if outDict:</dt><dd><p>_out[‘el’]: element symbol, list of strs
-_out[‘eln]: element number, list of ints
-_out[‘ln’]: line, list of strs
-_out[‘en’]: energy eV, list of floats
-_out[‘w’] : width eV, list of floats</p>
-</dd>
-<dt>else:</dt><dd><p>prints to screen the results</p>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None or outDict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="sloth.utils.xdata.ene_res">
-<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">ene_res</code><span class="sig-paren">(</span><em class="sig-param">emin, emax, shells=['K']</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#ene_res"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.ene_res" title="Permalink to this definition">¶</a></dt>
-<dd><p>used in spectro.py</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sloth.utils.xdata.fluo_width">
-<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">fluo_width</code><span class="sig-paren">(</span><em class="sig-param">elem=None</em>, <em class="sig-param">line=None</em>, <em class="sig-param">herfd=False</em>, <em class="sig-param">showInfos=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#fluo_width"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.fluo_width" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the fluorescence line width in eV</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>elem</strong> (<em>string</em><em> or </em><em>int</em>) – absorbing element</p></li>
-<li><p><strong>line</strong> (<em>string</em>) – Siegbahn notation for emission line</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>herfd=False (default)</strong> (<em>lw_xas + lw_xes</em>)</p></li>
-<li><p><strong>herfd=True</strong> (<em>1/(math.sqrt(lw_xas**2 + lw_xes**2))</em>)</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="sloth.utils.xdata.fluo_amplitude">
-<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">fluo_amplitude</code><span class="sig-paren">(</span><em class="sig-param">elem</em>, <em class="sig-param">line</em>, <em class="sig-param">excitation=None</em>, <em class="sig-param">barn_unit=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#fluo_amplitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.fluo_amplitude" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the fluorescence cross section for a given element/line</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>elem</strong> (<em>string</em><em> or </em><em>number</em>) – element</p></li>
-<li><p><strong>line</strong> (<em>string</em>) – emission line Siegban (e.g. ‘LA1’) or IUPAC (e.g. ‘L3M5’)</p></li>
-<li><p><strong>excitation</strong> (<em>float</em><em> (</em><em>optional</em><em>)</em>) – excitation energy in eV [None -&gt; 10 keV]</p></li>
-<li><p><strong>barn_unit</strong> (<em>boolean</em>) – use units of barn/atom [None -&gt; cm2/g]</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>fluo_amp (in ‘cm2/g’ or ‘barn/atom’ if barn_unit is True)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="sloth.utils.xdata.xray_line">
-<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">xray_line</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">line=None</em>, <em class="sig-param">initial_level=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#xray_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.xray_line" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the emission energy in eV for a given element/line or level</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>element</strong> (<em>string</em><em> or </em><em>int</em>) – absorbing element</p></li>
-<li><p><strong>line</strong> (<em>string</em><em> (</em><em>optional</em><em>)</em>) – Siegbahn notation, e.g. ‘KA1’ [None -&gt; LINES (all)]</p></li>
-<li><p><strong>initial_level</strong> (<em>string</em>) – initial core level, e.g. ‘K’ [None]</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>dictionary {‘line’</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>[], ‘ene’: []} or a number</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="sloth.utils.xdata.xray_edge">
-<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">xray_edge</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">initial_level=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#xray_edge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.xray_edge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the energy edge in eV for a given element</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>element</strong> – string or number</p></li>
-<li><p><strong>initial_level</strong> – string, initial core level, e.g. ‘K’ or list [None]</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>dictionary {‘edge’ : [], ‘ene’ : []} or a number</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="sloth.utils.xdata.fluo_spectrum">
-<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">fluo_spectrum</code><span class="sig-paren">(</span><em class="sig-param">elem</em>, <em class="sig-param">line</em>, <em class="sig-param">xwidth=3</em>, <em class="sig-param">xstep=0.05</em>, <em class="sig-param">plot=False</em>, <em class="sig-param">showInfos=True</em>, <em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#fluo_spectrum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.fluo_spectrum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate a fluorescence spectrum for a given element/line</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>it generates a Lorentzian function with the following parameters:
-- center: emission energy (eV)
-- sigma: from FWHM of sum of atomic levels widths (XAS+XES)
-- amplitude: CS_FuorLine_Kissel_Cascade
-- xmin, xmax: center -+ xwidth*fwhm</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>elem</strong> (<em>string</em><em> or </em><em>int</em>) – absorbing element</p></li>
-<li><p><strong>line</strong> (<em>string</em>) – emission line Siegban (e.g. ‘LA1’) or IUPAC (e.g. ‘L3M5’)</p></li>
-<li><p><strong>xwidth</strong> (<em>int</em><em> or </em><em>float</em><em> (</em><em>optional</em><em>)</em>) – FWHM multiplication factor to establish xmin, xmax range
-(= center -+ xwidth*fwhm) [3]</p></li>
-<li><p><strong>xstep</strong> (<em>float</em><em> (</em><em>optional</em><em>)</em>) – energy step in eV [0.05]</p></li>
-<li><p><strong>showInfos</strong> (<em>boolean</em><em> (</em><em>optional</em><em>)</em>) – print the <cite>info</cite> dict [True]</p></li>
-<li><p><strong>plot</strong> (<em>boolean</em><em> (</em><em>optional</em><em>)</em>) – plot the line before returning it [False]</p></li>
-<li><p><strong>**kws</strong> (keyword arguments for <a class="reference internal" href="#sloth.utils.xdata.fluo_width" title="sloth.utils.xdata.fluo_width"><code class="xref py py-func docutils literal notranslate"><span class="pre">fluo_width()</span></code></a>, <a class="reference internal" href="#sloth.utils.xdata.fluo_amplitude" title="sloth.utils.xdata.fluo_amplitude"><code class="xref py py-func docutils literal notranslate"><span class="pre">fluo_amplitude()</span></code></a>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>xfluo, yfluo, info</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>XY arrays of floats, dictionary</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="sloth.utils.xdata.fluo_lines">
-<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">fluo_lines</code><span class="sig-paren">(</span><em class="sig-param">elem</em>, <em class="sig-param">lines</em>, <em class="sig-param">retAll=False</em>, <em class="sig-param">**fluokws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#fluo_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.fluo_lines" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate a cumulative emission spectrum of a given element and
-list of lines</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>elem</strong> (<em>string</em><em> or </em><em>int</em>) – </p></li>
-<li><p><strong>lines</strong> (<em>list of str</em>) – emission lines as Siegban (e.g. ‘LA1’) or IUPAC (e.g. ‘L3M5’)</p></li>
-<li><p><strong>**fluokws</strong> (keyword arguments for <a class="reference internal" href="#sloth.utils.xdata.fluo_spectrum" title="sloth.utils.xdata.fluo_spectrum"><code class="xref py py-func docutils literal notranslate"><span class="pre">fluo_spectrum()</span></code></a>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>xcom, ycom</strong> (<em>arrays of floats</em>) – energy/intensity of the whole spectrum</p></li>
-<li><p><em>if retAll</em> – xcom, ycom, [xi, yi, ii]</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-</div>
-</div>
 <div class="section" id="module-sloth.utils.bragg">
 <span id="sloth-utils-bragg-bragg-s-law"></span><h2><a class="reference internal" href="#module-sloth.utils.bragg" title="sloth.utils.bragg"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.bragg</span></code></a>: Bragg’s law<a class="headerlink" href="#module-sloth.utils.bragg" title="Permalink to this headline">¶</a></h2>
 <p>braggutils: utilities around the Bragg’s law ($ n lambda = 2 d sin     heta $)</p>
@@ -1003,8 +748,261 @@ print(alist)</p>
 </dd></dl>
 
 </div>
-<div class="section" id="sloth-utils-genericutils-generic">
-<h2><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.genericutils</span></code>: generic<a class="headerlink" href="#sloth-utils-genericutils-generic" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-sloth.utils.xdata">
+<span id="sloth-utils-xdata-x-ray-databases"></span><h2><a class="reference internal" href="#module-sloth.utils.xdata" title="sloth.utils.xdata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.xdata</span></code></a>: x-ray databases<a class="headerlink" href="#module-sloth.utils.xdata" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="utility-to-retrieve-x-ray-data-from-external-libraries-databases">
+<h3>Utility to retrieve x-ray data from external libraries/databases<a class="headerlink" href="#utility-to-retrieve-x-ray-data-from-external-libraries-databases" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="available-libraries-dbs-and-order-of-usage">
+<h4>Available libraries/dbs and order of usage<a class="headerlink" href="#available-libraries-dbs-and-order-of-usage" title="Permalink to this headline">¶</a></h4>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="https://github.com/tschoonj/xraylib">xraylib</a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Elements</span></code> in <a class="reference external" href="https://github.com/vasole/pymca">PyMca</a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">xraydb_plugin.py</span></code> in <a class="reference external" href="https://github.com/xraypy/xraylarch">Larch</a></p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference external" href="https://github.com/xraypy/XrayDB">XrayDB</a> has its own package now</p>
+</div>
+<dl class="data">
+<dt id="sloth.utils.xdata.SHELLS">
+<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">SHELLS</code><em class="property"> = ('K', 'L1', 'L2', 'L3', 'M1', 'M2', 'M3', 'M4', 'M5', 'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'O1', 'O2', 'O3', 'O4', 'O5', 'P1', 'P2', 'P3')</em><a class="headerlink" href="#sloth.utils.xdata.SHELLS" title="Permalink to this definition">¶</a></dt>
+<dd><p>SHELLS / EDGES
+K = 1 (s)
+L = 2 (s, p)
+M = 3 (s, p, d)
+N = 4 (s, p, d, f)
+O = 5 (s, p, d, f)
+P = 6 (s, p)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sloth.utils.xdata.LEVELS_DICT">
+<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">LEVELS_DICT</code><em class="property"> = {'K': '1s', 'L1': '2s', 'L2': '2p1/2', 'L3': '2p3/2', 'M1': '3s', 'M2': '3p1/2', 'M3': '3p3/2', 'M4': '3d3/2', 'M5': '3d5/2', 'N1': '4s', 'N2': '4p1/2', 'N3': '4p3/2', 'N4': '4d3/2', 'N5': '4d5/2', 'N6': '4f5/2', 'N7': '4f7/2', 'O1': '5s', 'O2': '5p1/2', 'O3': '5p3/2', 'P1': '6s', 'P2': '6p1/2', 'P3': '6p3/2'}</em><a class="headerlink" href="#sloth.utils.xdata.LEVELS_DICT" title="Permalink to this definition">¶</a></dt>
+<dd><p>TRANSITIONS
+1 = s
+2, 3 = p (1/2, 3/2)
+4, 5 = d (3/2, 5/2)
+6, 7 = f (5/2, 7/2)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sloth.utils.xdata.LINES_DICT">
+<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">LINES_DICT</code><em class="property"> = {'K': ('KA1', 'KA2', 'KA3', 'KB1', 'KB2', 'KB3', 'KB4', 'KB5'), 'L1': ('LB3', 'LB4', 'LG2', 'LG3'), 'L2': ('LB1', 'LG1', 'LG6', 'LE'), 'L3': ('LA1', 'LA2', 'LB2', 'LB5', 'LB6', 'LL'), 'M3': ('MG',), 'M4': ('MB',), 'M5': ('MA1', 'MA2')}</em><a class="headerlink" href="#sloth.utils.xdata.LINES_DICT" title="Permalink to this definition">¶</a></dt>
+<dd><p>dictionary of lines
+Ln in Hepheastus is LE in Xraylib
+Mz in Hepheastus not in Xraylib (the single transitions yes!)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.mapLine2Trans">
+<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">mapLine2Trans</code><span class="sig-paren">(</span><em class="sig-param">line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#mapLine2Trans"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.mapLine2Trans" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns a tuple of strings mapping the transitions for a given line</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.get_element">
+<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">get_element</code><span class="sig-paren">(</span><em class="sig-param">elem</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#get_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.get_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a tuple for element name and number</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.get_line">
+<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">get_line</code><span class="sig-paren">(</span><em class="sig-param">line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#get_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.get_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the line name is a valid name and return it</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.find_edge">
+<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">find_edge</code><span class="sig-paren">(</span><em class="sig-param">emin</em>, <em class="sig-param">emax</em>, <em class="sig-param">shells=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#find_edge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.find_edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the edge energy in a given energy range [emin, emax] (eV)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>emax</strong> (<em>emin</em><em>,</em>) – energy range to search for an absorption edege (eV)</p></li>
+<li><p><strong>shells</strong> (<em>list of str</em><em> (</em><em>optional</em><em>)</em>) – list of shells to search for [None -&gt; use SHELLS (=all)]</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.find_line">
+<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">find_line</code><span class="sig-paren">(</span><em class="sig-param">emin</em>, <em class="sig-param">emax</em>, <em class="sig-param">elements=None</em>, <em class="sig-param">lines=None</em>, <em class="sig-param">outDict=False</em>, <em class="sig-param">backend='xraylib'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#find_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.find_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the emission line energy in a given energy range [emin,emax] (eV)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>emax</strong> (<em>emin</em><em>,</em>) – [minimum, maximum] energy range (eV)</p></li>
+<li><p><strong>elements</strong> (<em>list of str</em><em> (</em><em>optional</em><em>)</em>) – list of elements, [None -&gt; ELEMENTS (all)]</p></li>
+<li><p><strong>lines</strong> (<em>list of str</em><em> (</em><em>optional</em><em>)</em>) – list of lines, [None -&gt; LINES (all)]</p></li>
+<li><p><strong>outDict</strong> (<em>boolean</em><em>, </em><em>False</em>) – returns a dictionary instead of printing to screen with keywords:</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>if outDict:</dt><dd><p>_out[‘el’]: element symbol, list of strs
+_out[‘eln]: element number, list of ints
+_out[‘ln’]: line, list of strs
+_out[‘en’]: energy eV, list of floats
+_out[‘w’] : width eV, list of floats</p>
+</dd>
+<dt>else:</dt><dd><p>prints to screen the results</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None or outDict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.ene_res">
+<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">ene_res</code><span class="sig-paren">(</span><em class="sig-param">emin, emax, shells=['K']</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#ene_res"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.ene_res" title="Permalink to this definition">¶</a></dt>
+<dd><p>used in spectro.py</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.fluo_width">
+<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">fluo_width</code><span class="sig-paren">(</span><em class="sig-param">elem=None</em>, <em class="sig-param">line=None</em>, <em class="sig-param">herfd=False</em>, <em class="sig-param">showInfos=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#fluo_width"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.fluo_width" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the fluorescence line width in eV</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>elem</strong> (<em>string</em><em> or </em><em>int</em>) – absorbing element</p></li>
+<li><p><strong>line</strong> (<em>string</em>) – Siegbahn notation for emission line</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>herfd=False (default)</strong> (<em>lw_xas + lw_xes</em>)</p></li>
+<li><p><strong>herfd=True</strong> (<em>1/(math.sqrt(lw_xas**2 + lw_xes**2))</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.fluo_amplitude">
+<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">fluo_amplitude</code><span class="sig-paren">(</span><em class="sig-param">elem</em>, <em class="sig-param">line</em>, <em class="sig-param">excitation=None</em>, <em class="sig-param">barn_unit=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#fluo_amplitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.fluo_amplitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the fluorescence cross section for a given element/line</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>elem</strong> (<em>string</em><em> or </em><em>number</em>) – element</p></li>
+<li><p><strong>line</strong> (<em>string</em>) – emission line Siegban (e.g. ‘LA1’) or IUPAC (e.g. ‘L3M5’)</p></li>
+<li><p><strong>excitation</strong> (<em>float</em><em> (</em><em>optional</em><em>)</em>) – excitation energy in eV [None -&gt; 10 keV]</p></li>
+<li><p><strong>barn_unit</strong> (<em>boolean</em>) – use units of barn/atom [None -&gt; cm2/g]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>fluo_amp (in ‘cm2/g’ or ‘barn/atom’ if barn_unit is True)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.xray_line">
+<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">xray_line</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">line=None</em>, <em class="sig-param">initial_level=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#xray_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.xray_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the emission energy in eV for a given element/line or level</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>element</strong> (<em>string</em><em> or </em><em>int</em>) – absorbing element</p></li>
+<li><p><strong>line</strong> (<em>string</em><em> (</em><em>optional</em><em>)</em>) – Siegbahn notation, e.g. ‘KA1’ [None -&gt; LINES (all)]</p></li>
+<li><p><strong>initial_level</strong> (<em>string</em>) – initial core level, e.g. ‘K’ [None]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>dictionary {‘line’</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>[], ‘ene’: []} or a number</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.xray_edge">
+<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">xray_edge</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">initial_level=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#xray_edge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.xray_edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the energy edge in eV for a given element</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>element</strong> – string or number</p></li>
+<li><p><strong>initial_level</strong> – string, initial core level, e.g. ‘K’ or list [None]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionary {‘edge’ : [], ‘ene’ : []} or a number</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.fluo_spectrum">
+<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">fluo_spectrum</code><span class="sig-paren">(</span><em class="sig-param">elem</em>, <em class="sig-param">line</em>, <em class="sig-param">xwidth=3</em>, <em class="sig-param">xstep=0.05</em>, <em class="sig-param">plot=False</em>, <em class="sig-param">showInfos=True</em>, <em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#fluo_spectrum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.fluo_spectrum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a fluorescence spectrum for a given element/line</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>it generates a Lorentzian function with the following parameters:
+- center: emission energy (eV)
+- sigma: from FWHM of sum of atomic levels widths (XAS+XES)
+- amplitude: CS_FuorLine_Kissel_Cascade
+- xmin, xmax: center -+ xwidth*fwhm</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>elem</strong> (<em>string</em><em> or </em><em>int</em>) – absorbing element</p></li>
+<li><p><strong>line</strong> (<em>string</em>) – emission line Siegban (e.g. ‘LA1’) or IUPAC (e.g. ‘L3M5’)</p></li>
+<li><p><strong>xwidth</strong> (<em>int</em><em> or </em><em>float</em><em> (</em><em>optional</em><em>)</em>) – FWHM multiplication factor to establish xmin, xmax range
+(= center -+ xwidth*fwhm) [3]</p></li>
+<li><p><strong>xstep</strong> (<em>float</em><em> (</em><em>optional</em><em>)</em>) – energy step in eV [0.05]</p></li>
+<li><p><strong>showInfos</strong> (<em>boolean</em><em> (</em><em>optional</em><em>)</em>) – print the <cite>info</cite> dict [True]</p></li>
+<li><p><strong>plot</strong> (<em>boolean</em><em> (</em><em>optional</em><em>)</em>) – plot the line before returning it [False]</p></li>
+<li><p><strong>**kws</strong> (keyword arguments for <a class="reference internal" href="#sloth.utils.xdata.fluo_width" title="sloth.utils.xdata.fluo_width"><code class="xref py py-func docutils literal notranslate"><span class="pre">fluo_width()</span></code></a>, <a class="reference internal" href="#sloth.utils.xdata.fluo_amplitude" title="sloth.utils.xdata.fluo_amplitude"><code class="xref py py-func docutils literal notranslate"><span class="pre">fluo_amplitude()</span></code></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>xfluo, yfluo, info</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>XY arrays of floats, dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sloth.utils.xdata.fluo_lines">
+<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">fluo_lines</code><span class="sig-paren">(</span><em class="sig-param">elem</em>, <em class="sig-param">lines</em>, <em class="sig-param">retAll=False</em>, <em class="sig-param">**fluokws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#fluo_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.fluo_lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a cumulative emission spectrum of a given element and
+list of lines</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>elem</strong> (<em>string</em><em> or </em><em>int</em>) – </p></li>
+<li><p><strong>lines</strong> (<em>list of str</em>) – emission lines as Siegban (e.g. ‘LA1’) or IUPAC (e.g. ‘L3M5’)</p></li>
+<li><p><strong>**fluokws</strong> (keyword arguments for <a class="reference internal" href="#sloth.utils.xdata.fluo_spectrum" title="sloth.utils.xdata.fluo_spectrum"><code class="xref py py-func docutils literal notranslate"><span class="pre">fluo_spectrum()</span></code></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>xcom, ycom</strong> (<em>arrays of floats</em>) – energy/intensity of the whole spectrum</p></li>
+<li><p><em>if retAll</em> – xcom, ycom, [xi, yi, ii]</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
 </div>
 </div>
 
@@ -1028,7 +1026,7 @@ print(alist)</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014--2019, Mauro Rovezzi
+        &copy; Copyright 2014--2020, Mauro Rovezzi
 
     </p>
   </div>

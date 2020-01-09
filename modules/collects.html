@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sloth.collects: Data containers &mdash; Sloth 0.3.0-dev documentation</title>
+  <title>sloth.collects: Data containers &mdash; Sloth 0.3.2 documentation</title>
   
 
   
@@ -92,23 +92,12 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_model/index.html">Notes on the data model</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="io.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.io</span></code>: Input-output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="groups.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.groups</span></code>: data groups</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects</span></code>: Data containers</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#module-sloth.collects.datagroup"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects.datagroup</span></code>: generic data container</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#datagroup-generic-container-for-data-objects">DataGroup: generic container for data objects</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#sloth-collects-datagroup1d-1d-data-scans"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects.datagroup1D</span></code>: 1D data (=scans)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-sloth.collects.datagroup2D"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects.datagroup2D</span></code>: 2D data (=images)</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#datagroup2d-work-with-2d-data-sets-planes-maps-images">DataGroup2D: work with 2D data sets (planes/maps/images)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#datagrouprixs-work-with-rixs-data-sets-2d-maps">DataGroupRixs: work with  RIXS data sets (2D maps)</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects</span></code>: Data containers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fit.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit</span></code>: fitting tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inst.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst</span></code>: working with instrumentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="raytracing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing</span></code>: x-ray raytracing</a></li>
@@ -118,7 +107,8 @@
 <li class="toctree-l2"><a class="reference internal" href="gui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.gui</span></code>: GUI</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflows/index.html">Notes on workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflows/index.html#notes-on-softwares">Notes on softwares</a></li>
 </ul>
 
             
@@ -191,352 +181,6 @@
 <p class="admonition-title">Warning</p>
 <p>This module is <strong>DEPRECATED</strong>, replaced by <a class="reference internal" href="groups.html#module-sloth.groups" title="sloth.groups"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.groups</span></code></a></p>
 </div>
-<div class="section" id="module-sloth.collects.datagroup">
-<span id="sloth-collects-datagroup-generic-data-container"></span><h2><a class="reference internal" href="#module-sloth.collects.datagroup" title="sloth.collects.datagroup"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects.datagroup</span></code></a>: generic data container<a class="headerlink" href="#module-sloth.collects.datagroup" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="datagroup-generic-container-for-data-objects">
-<h3>DataGroup: generic container for data objects<a class="headerlink" href="#datagroup-generic-container-for-data-objects" title="Permalink to this headline">¶</a></h3>
-<p>(=groups in Larch, =generic Python class)</p>
-<ul>
-<li><p>DataGroup
-- DataGroup1D</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>DataGroupXanes
-- DataGroupExafs</p></li>
-<li><p>DataGroupXes</p></li>
-<li><p>DataGroupPeak</p></li>
-</ul>
-</div></blockquote>
-<ul class="simple">
-<li><p>DataGroup2D
-- DataGroupRixs</p></li>
-</ul>
-</li>
-</ul>
-<dl class="class">
-<dt id="sloth.collects.datagroup.DataGroup">
-<em class="property">class </em><code class="sig-prename descclassname">sloth.collects.datagroup.</code><code class="sig-name descname">DataGroup</code><span class="sig-paren">(</span><em class="sig-param">kwsd=None</em>, <em class="sig-param">_larch=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup.html#DataGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup.DataGroup" title="Permalink to this definition">¶</a></dt>
-<dd><p>a list of groups with some wrapped methods from Larch &amp; friends</p>
-<dl class="method">
-<dt id="sloth.collects.datagroup.DataGroup.get_ig_from_label">
-<code class="sig-name descname">get_ig_from_label</code><span class="sig-paren">(</span><em class="sig-param">grepstr</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup.html#DataGroup.get_ig_from_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup.DataGroup.get_ig_from_label" title="Permalink to this definition">¶</a></dt>
-<dd><p>return a list of indexes where ‘grepstr’ is in
-self.gs.label</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup.DataGroup.selector">
-<code class="sig-name descname">selector</code><span class="sig-paren">(</span><em class="sig-param">sel</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup.html#DataGroup.selector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup.DataGroup.selector" title="Permalink to this definition">¶</a></dt>
-<dd><p>initialize a selected list of objects, self.gs_sel</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup.DataGroup.show">
-<code class="sig-name descname">show</code><span class="sig-paren">(</span><em class="sig-param">attr='label'</em>, <em class="sig-param">sel=None</em>, <em class="sig-param">none_value=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup.html#DataGroup.show"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup.DataGroup.show" title="Permalink to this definition">¶</a></dt>
-<dd><p>show a given attribute [‘label’]</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup.DataGroup.kick">
-<code class="sig-name descname">kick</code><span class="sig-paren">(</span><em class="sig-param">selrng</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup.html#DataGroup.kick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup.DataGroup.kick" title="Permalink to this definition">¶</a></dt>
-<dd><p>delete a given element in self.gs list</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup.DataGroup.get">
-<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">attr='label'</em>, <em class="sig-param">sel=None</em>, <em class="sig-param">none_value=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup.html#DataGroup.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup.DataGroup.get" title="Permalink to this definition">¶</a></dt>
-<dd><p>get given attribute</p>
-<dl class="field-list simple">
-<dt class="field-odd">Keyword Arguments</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>attr</strong> (<em>[</em><em>'label'</em><em>] </em><em>attribute to get</em>) – </p></li>
-<li><p><strong>sel</strong> (<em>[</em><em>'*'</em><em>] </em><em>selection of groups</em>) – </p></li>
-<li><p><strong>none_value</strong> (<em>[</em><em>None</em><em>] </em><em>value if the attribute does not exist</em>) – ‘pass’ -&gt; pass the AttributeError</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>List of attribute values</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup.DataGroup.setgroup">
-<code class="sig-name descname">setgroup</code><span class="sig-paren">(</span><em class="sig-param">attr</em>, <em class="sig-param">value</em>, <em class="sig-param">sel=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup.html#DataGroup.setgroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup.DataGroup.setgroup" title="Permalink to this definition">¶</a></dt>
-<dd><p>set attribute to selected list of groups</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup.DataGroup.copyattr">
-<code class="sig-name descname">copyattr</code><span class="sig-paren">(</span><em class="sig-param">attr1</em>, <em class="sig-param">attr2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup.html#DataGroup.copyattr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup.DataGroup.copyattr" title="Permalink to this definition">¶</a></dt>
-<dd><p>copy attr1 to attr2</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup.DataGroup.get_kwsd">
-<code class="sig-name descname">get_kwsd</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup.html#DataGroup.get_kwsd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup.DataGroup.get_kwsd" title="Permalink to this definition">¶</a></dt>
-<dd><p>return a dictionary with default keyword arguments</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="sloth.collects.datagroup.datagroup">
-<code class="sig-prename descclassname">sloth.collects.datagroup.</code><code class="sig-name descname">datagroup</code><span class="sig-paren">(</span><em class="sig-param">kwsd=None</em>, <em class="sig-param">_larch=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup.html#datagroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup.datagroup" title="Permalink to this definition">¶</a></dt>
-<dd><p>utility to perform common operations on a list of data groups</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="sloth.collects.datagroup.EvalData">
-<em class="property">class </em><code class="sig-prename descclassname">sloth.collects.datagroup.</code><code class="sig-name descname">EvalData</code><span class="sig-paren">(</span><em class="sig-param">lcols=None</em>, <em class="sig-param">ldats=None</em>, <em class="sig-param">linfs=None</em>, <em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup.html#EvalData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup.EvalData" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>this is a temporary (=work-in-progress) data object -&gt; DO NOT USE IT IN PRODCTION!</p>
-</div>
-<dl class="method">
-<dt id="sloth.collects.datagroup.EvalData.save_data">
-<code class="sig-name descname">save_data</code><span class="sig-paren">(</span><em class="sig-param">fname_pickle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup.html#EvalData.save_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup.EvalData.save_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>pickle dump evaluation results to file</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup.EvalData.load_data">
-<code class="sig-name descname">load_data</code><span class="sig-paren">(</span><em class="sig-param">fname_pickle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup.html#EvalData.load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup.EvalData.load_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>pickle load evaluation results from file</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup.EvalData.overwrite_labels">
-<code class="sig-name descname">overwrite_labels</code><span class="sig-paren">(</span><em class="sig-param">new_labels</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup.html#EvalData.overwrite_labels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup.EvalData.overwrite_labels" title="Permalink to this definition">¶</a></dt>
-<dd><p>overwrites data labels</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup.EvalData.overwrite_flags">
-<code class="sig-name descname">overwrite_flags</code><span class="sig-paren">(</span><em class="sig-param">new_flags</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup.html#EvalData.overwrite_flags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup.EvalData.overwrite_flags" title="Permalink to this definition">¶</a></dt>
-<dd><p>overwrites data flags</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup.EvalData.show_label">
-<code class="sig-name descname">show_label</code><span class="sig-paren">(</span><em class="sig-param">infd</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup.html#EvalData.show_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup.EvalData.show_label" title="Permalink to this definition">¶</a></dt>
-<dd><p>show label</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup.EvalData.get_labels">
-<code class="sig-name descname">get_labels</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup.html#EvalData.get_labels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup.EvalData.get_labels" title="Permalink to this definition">¶</a></dt>
-<dd><p>labels</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-</div>
-<div class="section" id="sloth-collects-datagroup1d-1d-data-scans">
-<h2><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects.datagroup1D</span></code>: 1D data (=scans)<a class="headerlink" href="#sloth-collects-datagroup1d-1d-data-scans" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-sloth.collects.datagroup2D">
-<span id="sloth-collects-datagroup2d-2d-data-images"></span><h2><a class="reference internal" href="#module-sloth.collects.datagroup2D" title="sloth.collects.datagroup2D"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects.datagroup2D</span></code></a>: 2D data (=images)<a class="headerlink" href="#module-sloth.collects.datagroup2D" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="datagroup2d-work-with-2d-data-sets-planes-maps-images">
-<h3>DataGroup2D: work with 2D data sets (planes/maps/images)<a class="headerlink" href="#datagroup2d-work-with-2d-data-sets-planes-maps-images" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p>DataGroup
-- DataGroup2D</p></li>
-</ul>
-<dl class="class">
-<dt id="sloth.collects.datagroup2D.DataGroup2D">
-<em class="property">class </em><code class="sig-prename descclassname">sloth.collects.datagroup2D.</code><code class="sig-name descname">DataGroup2D</code><span class="sig-paren">(</span><em class="sig-param">kwsd=None</em>, <em class="sig-param">_larch=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup2D.html#DataGroup2D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup2D.DataGroup2D" title="Permalink to this definition">¶</a></dt>
-<dd><p>2D version of DataGroup</p>
-</dd></dl>
-
-</div>
-<span class="target" id="module-sloth.collects.datagroup_rixs"></span><div class="section" id="datagrouprixs-work-with-rixs-data-sets-2d-maps">
-<h3>DataGroupRixs: work with  RIXS data sets (2D maps)<a class="headerlink" href="#datagrouprixs-work-with-rixs-data-sets-2d-maps" title="Permalink to this headline">¶</a></h3>
-<ul>
-<li><p>DataGroup
-- DataGroup2D</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>DataGroupRixs</p></li>
-</ul>
-</div></blockquote>
-</li>
-</ul>
-<dl class="class">
-<dt id="sloth.collects.datagroup_rixs.DataGroupRixs">
-<em class="property">class </em><code class="sig-prename descclassname">sloth.collects.datagroup_rixs.</code><code class="sig-name descname">DataGroupRixs</code><span class="sig-paren">(</span><em class="sig-param">kwsd=None</em>, <em class="sig-param">_larch=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup_rixs.html#DataGroupRixs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup_rixs.DataGroupRixs" title="Permalink to this definition">¶</a></dt>
-<dd><p>DataGroup for RIXS planes</p>
-<dl class="method">
-<dt id="sloth.collects.datagroup_rixs.DataGroupRixs.getspecmap">
-<code class="sig-name descname">getspecmap</code><span class="sig-paren">(</span><em class="sig-param">fname</em>, <em class="sig-param">scans</em>, <em class="sig-param">scanlab=None</em>, <em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup_rixs.html#DataGroupRixs.getspecmap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup_rixs.DataGroupRixs.getspecmap" title="Permalink to this definition">¶</a></dt>
-<dd><p>2D map from a list of scans read from SPEC data files</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup_rixs.DataGroupRixs.plotmap">
-<code class="sig-name descname">plotmap</code><span class="sig-paren">(</span><em class="sig-param">imap</em>, <em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup_rixs.html#DataGroupRixs.plotmap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup_rixs.DataGroupRixs.plotmap" title="Permalink to this definition">¶</a></dt>
-<dd><p>plot for 2D map (e.g. RIXS plane)</p>
-<p>imap : index in gs list</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="sloth.collects.datagroup_rixs.RixsData">
-<em class="property">class </em><code class="sig-prename descclassname">sloth.collects.datagroup_rixs.</code><code class="sig-name descname">RixsData</code><span class="sig-paren">(</span><em class="sig-param">label=None</em>, <em class="sig-param">kwsd=None</em>, <em class="sig-param">logger=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup_rixs.html#RixsData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup_rixs.RixsData" title="Permalink to this definition">¶</a></dt>
-<dd><p>RIXS plane object</p>
-<dl class="method">
-<dt id="sloth.collects.datagroup_rixs.RixsData.get_kwsd">
-<code class="sig-name descname">get_kwsd</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup_rixs.html#RixsData.get_kwsd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup_rixs.RixsData.get_kwsd" title="Permalink to this definition">¶</a></dt>
-<dd><p>return a dictionary of dictionaries with keywords arguments:</p>
-<p>kwsd[‘exp’][‘expdir’] : main working directory (experiment directory)
-………..[‘datdir’] : directory where the raw data (e.g. SPEC data) are stored
-………..[‘evaldir’] : directory where evaluated data are saved
-………..[‘mater’] : material
-………..[‘sample’] : sample name
-………..[‘explab’] : label to identify the experiment
-………..[‘geom’] : data collection geometry (VGI or V## / HGI or H##)
-………..[‘scnt’] : type of scan (EXA, XAN, PRE, RIXS, RIXS_ET)
-………..[‘mode’] : data collection mode ???</p>
-<p>kwsd[‘spec’][‘fname’] : file name to load (full path)
-…………[‘rngstr’] : string to identify the range of loaded scans
-…………[‘cntx’] : name of x-axis counter/motor
-…………[‘cnty’] : name of y-axis counter/motor
-…………[‘csig’] : name for signal
-…………[‘cmon’] : name for monitor (e.g. incoming beam monitor, I0)
-…………[‘cmon2’] : name for a second monitor (e.g. total fluo yield, IF2)
-…………[‘csec’] : name for seconds
-…………[‘norm’] : normalization type (
-…………[‘xystep’] : step in meshgrid</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup_rixs.RixsData.load_from_dict">
-<code class="sig-name descname">load_from_dict</code><span class="sig-paren">(</span><em class="sig-param">rxdict</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup_rixs.html#RixsData.load_from_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup_rixs.RixsData.load_from_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load RIXS data from a dictionary</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>rxdict</strong> (<em>dict</em>) – <p>Required structure
-{</p>
-<blockquote>
-<div><p>’sample_name’: str,
-‘ene_in’: 1D array,
-‘ene_out’: 1D array,
-‘rixs’: 2D array,</p>
-</div></blockquote>
-<p>}</p>
-</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>None, set attributes</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>self.x, self.y, self.zz, self.label</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup_rixs.RixsData.load_from_h5">
-<code class="sig-name descname">load_from_h5</code><span class="sig-paren">(</span><em class="sig-param">fname</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup_rixs.html#RixsData.load_from_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup_rixs.RixsData.load_from_h5" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load RIXS from HDF5 file</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup_rixs.RixsData.loadxyz">
-<code class="sig-name descname">loadxyz</code><span class="sig-paren">(</span><em class="sig-param">fname</em>, <em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup_rixs.html#RixsData.loadxyz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup_rixs.RixsData.loadxyz" title="Permalink to this definition">¶</a></dt>
-<dd><p>load data from a 3 columns ASCII file assuming the format: e_in,
-e_out, signal</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup_rixs.RixsData.gridxyz">
-<code class="sig-name descname">gridxyz</code><span class="sig-paren">(</span><em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup_rixs.html#RixsData.gridxyz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup_rixs.RixsData.gridxyz" title="Permalink to this definition">¶</a></dt>
-<dd><p>create gridded standard groups</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup_rixs.RixsData.load_spec_map">
-<code class="sig-name descname">load_spec_map</code><span class="sig-paren">(</span><em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup_rixs.html#RixsData.load_spec_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup_rixs.RixsData.load_spec_map" title="Permalink to this definition">¶</a></dt>
-<dd><p>load the plane from SPEC file</p>
-<p>TODO: merge this in the previous load_xyz and the SPEC part in
-specfile</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup_rixs.RixsData.crop_old">
-<code class="sig-name descname">crop_old</code><span class="sig-paren">(</span><em class="sig-param">x1</em>, <em class="sig-param">y1</em>, <em class="sig-param">x2</em>, <em class="sig-param">y2</em>, <em class="sig-param">yet=False</em>, <em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup_rixs.html#RixsData.crop_old"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup_rixs.RixsData.crop_old" title="Permalink to this definition">¶</a></dt>
-<dd><p>crop the plane in a given range</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>y1</strong><strong>, </strong><strong>x2</strong><strong>, </strong><strong>y2</strong> (<em>x1</em><em>,</em>) – X/Y initial and new coordinates</p></li>
-<li><p><strong>yet</strong> (<em>boolean</em><em>, </em><em>False</em>) – defines if the Y coordinates are given in emission or
-energy transfer</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup_rixs.RixsData.crop">
-<code class="sig-name descname">crop</code><span class="sig-paren">(</span><em class="sig-param">x1</em>, <em class="sig-param">y1</em>, <em class="sig-param">x2</em>, <em class="sig-param">y2</em>, <em class="sig-param">yet=False</em>, <em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup_rixs.html#RixsData.crop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup_rixs.RixsData.crop" title="Permalink to this definition">¶</a></dt>
-<dd><p>crop the plane in a given range / matrix approach (current)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>y1</strong><strong>, </strong><strong>x2</strong><strong>, </strong><strong>y2</strong> (<em>x1</em><em>,</em>) – X/Y initial and new coordinates</p></li>
-<li><p><strong>yet</strong> (<em>boolean</em><em>, </em><em>False</em>) – defines if the Y coordinates are given in emission or
-energy transfer</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup_rixs.RixsData.norm">
-<code class="sig-name descname">norm</code><span class="sig-paren">(</span><em class="sig-param">zz</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup_rixs.html#RixsData.norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup_rixs.RixsData.norm" title="Permalink to this definition">¶</a></dt>
-<dd><p>normalization to max-min</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup_rixs.RixsData.getPlotter">
-<code class="sig-name descname">getPlotter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup_rixs.html#RixsData.getPlotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup_rixs.RixsData.getPlotter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a default plotter</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup_rixs.RixsData.plot">
-<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param">plotter=None</em>, <em class="sig-param">nlevels=50</em>, <em class="sig-param">crop=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup_rixs.html#RixsData.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup_rixs.RixsData.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Data plotter</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="sloth.collects.datagroup_rixs.RixsDataPlotter">
-<em class="property">class </em><code class="sig-prename descclassname">sloth.collects.datagroup_rixs.</code><code class="sig-name descname">RixsDataPlotter</code><span class="sig-paren">(</span><em class="sig-param">rd</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup_rixs.html#RixsDataPlotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup_rixs.RixsDataPlotter" title="Permalink to this definition">¶</a></dt>
-<dd><p>plotter for a RixsData object</p>
-<dl class="method">
-<dt id="sloth.collects.datagroup_rixs.RixsDataPlotter.updatekwsd">
-<code class="sig-name descname">updatekwsd</code><span class="sig-paren">(</span><em class="sig-param">kwsd</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup_rixs.html#RixsDataPlotter.updatekwsd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup_rixs.RixsDataPlotter.updatekwsd" title="Permalink to this definition">¶</a></dt>
-<dd><p>update plot parameters</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="sloth.collects.datagroup_rixs.RixsDataPlotter.plot">
-<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param">x=None</em>, <em class="sig-param">y=None</em>, <em class="sig-param">zz=None</em>, <em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/collects/datagroup_rixs.html#RixsDataPlotter.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.collects.datagroup_rixs.RixsDataPlotter.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>make the plot</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-</div>
 </div>
 
 
@@ -559,7 +203,7 @@ energy transfer</p></li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014--2019, Mauro Rovezzi
+        &copy; Copyright 2014--2020, Mauro Rovezzi
 
     </p>
   </div>

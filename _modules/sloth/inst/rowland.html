@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sloth.inst.rowland &mdash; Sloth 0.3.0-dev documentation</title>
+  <title>sloth.inst.rowland &mdash; Sloth 0.3.2 documentation</title>
   
 
   
@@ -90,9 +90,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../data_model/index.html">Notes on the data model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workflows/index.html">Notes on workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workflows/index.html#notes-on-softwares">Notes on softwares</a></li>
 </ul>
 
             
@@ -236,7 +238,7 @@
 <span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">..math.rotmatrix</span> <span class="k">import</span> <span class="n">rotate</span>
+<span class="kn">from</span> <span class="nn">..math.rotmatrix</span> <span class="kn">import</span> <span class="n">rotate</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="n">xrange</span>
@@ -314,7 +316,7 @@
 <div class="viewcode-block" id="RowlandCircle"><a class="viewcode-back" href="../../../modules/inst.html#sloth.inst.rowland.RowlandCircle">[docs]</a><span class="k">class</span> <span class="nc">RowlandCircle</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Rowland circle geometry&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Rm</span><span class="o">=</span><span class="mf">500.</span><span class="p">,</span> <span class="n">theta0</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>\
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Rm</span><span class="o">=</span><span class="mf">500.</span><span class="p">,</span> <span class="n">theta0</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>\
                  <span class="n">aW</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">aWext</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">rSext</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">aL</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>\
                  <span class="n">bender_version</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bender</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">),</span> <span class="n">actuator</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">),</span>\
                  <span class="n">inCircle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">useCm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">showInfos</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
@@ -921,7 +923,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;RowlandCircle init</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -982,7 +984,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;RowlandCircle init &quot;&quot;&quot;</span>
         <span class="n">RowlandCircle</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">)</span>
 
@@ -1035,7 +1037,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014--2019, Mauro Rovezzi
+        &copy; Copyright 2014--2020, Mauro Rovezzi
 
     </p>
   </div>

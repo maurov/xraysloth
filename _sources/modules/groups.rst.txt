@@ -5,8 +5,8 @@
 
 This module implements :ref:`data-model`.
 
-:mod:`sloth.groups.h5base`: generic Groups/Datasets
----------------------------------------------------
+:mod:`sloth.groups.h5base`: generic HDF5-like Groups/Datasets
+-------------------------------------------------------------
 
-.. automodule:: sloth.groups.h5base
+.. automodule:: sloth.groups.baseh5
   :members:

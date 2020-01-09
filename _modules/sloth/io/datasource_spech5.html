@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sloth.io.datasource_spech5 &mdash; Sloth 0.3.0-dev documentation</title>
+  <title>sloth.io.datasource_spech5 &mdash; Sloth 0.3.2 documentation</title>
   
 
   
@@ -90,9 +90,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../data_model/index.html">Notes on the data model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workflows/index.html">Notes on workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workflows/index.html#notes-on-softwares">Notes on softwares</a></li>
 </ul>
 
             
@@ -171,16 +173,16 @@
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">h5py</span>
-<span class="kn">from</span> <span class="nn">silx.io.utils</span> <span class="k">import</span> <span class="nb">open</span> <span class="k">as</span> <span class="n">silx_open</span>
-<span class="kn">from</span> <span class="nn">silx.io.convert</span> <span class="k">import</span> <span class="n">write_to_h5</span><span class="p">,</span> <span class="n">_is_commonh5_group</span>
-<span class="kn">from</span> <span class="nn">sloth.utils.strings</span> <span class="k">import</span> <span class="n">str2rng</span>
+<span class="kn">from</span> <span class="nn">silx.io.utils</span> <span class="kn">import</span> <span class="nb">open</span> <span class="k">as</span> <span class="n">silx_open</span>
+<span class="kn">from</span> <span class="nn">silx.io.convert</span> <span class="kn">import</span> <span class="n">write_to_h5</span><span class="p">,</span> <span class="n">_is_commonh5_group</span>
+<span class="kn">from</span> <span class="nn">sloth.utils.strings</span> <span class="kn">import</span> <span class="n">str2rng</span>
 
 
 <div class="viewcode-block" id="DataSourceSpecH5"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5">[docs]</a><span class="k">class</span> <span class="nc">DataSourceSpecH5</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Data source utility wrapper for a Spec file read as HDF5 object</span>
 <span class="sd">    via silx.io.open&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">urls_fmt</span><span class="o">=</span><span class="s2">&quot;silx&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">urls_fmt</span><span class="o">=</span><span class="s2">&quot;silx&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;init with file name and default attributes</span>
 
 <span class="sd">        Parameters</span>
@@ -195,7 +197,7 @@
 <span class="sd">            &#39;spec2nexus&#39; : as converted by spec2nexus</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">logger</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">sloth.utils.logging</span> <span class="k">import</span> <span class="n">getLogger</span>
+            <span class="kn">from</span> <span class="nn">sloth.utils.logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
 
             <span class="n">_logger_name</span> <span class="o">=</span> <span class="s2">&quot;sloth.io.DataSourceSpecH5&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="n">_logger_name</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
@@ -234,7 +236,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sf</span> <span class="o">=</span> <span class="n">silx_open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fname</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;cannot open </span><span class="si">{self.fname}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cannot open </span><span class="si">{self.fname}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sf</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="DataSourceSpecH5.open"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.open">[docs]</a>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">):</span>
@@ -242,7 +244,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sf</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fname</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;cannot open </span><span class="si">{self.fname}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cannot open </span><span class="si">{self.fname}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="DataSourceSpecH5.close"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -275,8 +277,8 @@
 
     <span class="k">def</span> <span class="nf">_initTreeView</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Init TreeView GUI&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">sloth.gui.hdf5.view</span> <span class="k">import</span> <span class="n">TreeView</span>
-        <span class="kn">from</span> <span class="nn">sloth.gui.hdf5.model</span> <span class="k">import</span> <span class="n">TreeModel</span>
+        <span class="kn">from</span> <span class="nn">sloth.gui.hdf5.view</span> <span class="kn">import</span> <span class="n">TreeView</span>
+        <span class="kn">from</span> <span class="nn">sloth.gui.hdf5.model</span> <span class="kn">import</span> <span class="n">TreeModel</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_view</span> <span class="o">=</span> <span class="n">TreeView</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">TreeModel</span><span class="p">()</span>
@@ -311,7 +313,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_url</span> <span class="o">=</span> <span class="n">group_url</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Selected group </span><span class="si">{self._group_url}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Selected group </span><span class="si">{self._group_url}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DataSourceSpecH5.set_scan"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.set_scan">[docs]</a>    <span class="k">def</span> <span class="nf">set_scan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scan_n</span><span class="p">,</span> <span class="n">scan_idx</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">group_url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scan_kws</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Select a given scan number</span>
@@ -334,30 +336,30 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_scan_n</span> <span class="o">=</span> <span class="n">scan_n</span>
         <span class="k">if</span> <span class="n">scan_kws</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">sloth.utils.dicts</span> <span class="k">import</span> <span class="n">update_nested</span>
+            <span class="kn">from</span> <span class="nn">sloth.utils.dicts</span> <span class="kn">import</span> <span class="n">update_nested</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_scan_kws</span> <span class="o">=</span> <span class="n">update_nested</span><span class="p">(</span><span class="n">scan_kws</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_urls_fmt</span> <span class="o">==</span> <span class="s2">&quot;silx&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_scan_str</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{scan_n}</span><span class="s2">.</span><span class="si">{scan_idx}</span><span class="s2">&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_scan_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{scan_n}</span><span class="s2">.</span><span class="si">{scan_idx}</span><span class="s2">&quot;</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_urls_fmt</span> <span class="o">==</span> <span class="s2">&quot;spec2nexus&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_scan_str</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;S</span><span class="si">{scan_n}</span><span class="s2">&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_scan_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;S</span><span class="si">{scan_n}</span><span class="s2">&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;wrong &#39;urls_fmt&#39;&quot;</span><span class="p">)</span>
             <span class="k">return</span>
         <span class="k">if</span> <span class="n">group_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_group</span><span class="p">(</span><span class="n">group_url</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_scan_url</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{self._group_url}</span><span class="s2">/</span><span class="si">{self._scan_str}</span><span class="s2">&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_scan_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{self._group_url}</span><span class="s2">/</span><span class="si">{self._scan_str}</span><span class="s2">&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_scan_url</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{self._scan_str}</span><span class="s2">&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_scan_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{self._scan_str}</span><span class="s2">&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sf</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_scan_url</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_scan_title</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_title</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;selected scan </span><span class="si">{self._scan_url}</span><span class="s2">: &#39;</span><span class="si">{self._scan_title}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;selected scan </span><span class="si">{self._scan_url}</span><span class="s2">: &#39;</span><span class="si">{self._scan_title}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sg</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_scan_title</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;&#39;</span><span class="si">{self._scan_url}</span><span class="s2">&#39; is not valid&quot;</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{self._scan_url}</span><span class="s2">&#39; is not valid&quot;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_list_from_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url_str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Utility method to get a list from a scan url</span>
@@ -368,7 +370,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sg</span><span class="p">()[</span><span class="n">url_str</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;&#39;</span><span class="si">{url_str}</span><span class="s2">&#39; not found -&gt; use &#39;set_scan&#39; method first&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{url_str}</span><span class="s2">&#39; not found -&gt; use &#39;set_scan&#39; method first&quot;</span><span class="p">)</span>
 
     <span class="c1"># ================== #</span>
     <span class="c1">#: READ DATA METHODS</span>
@@ -415,7 +417,7 @@
             <span class="n">_axisout</span> <span class="o">=</span> <span class="n">_title_splitted</span><span class="p">[</span><span class="n">_iax</span><span class="p">]</span>
         <span class="n">_mots</span><span class="p">,</span> <span class="n">_cnts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_motors</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_counters</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">_axisout</span> <span class="ow">in</span> <span class="n">_mots</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">_axisout</span> <span class="ow">in</span> <span class="n">_cnts</span><span class="p">)):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;&#39;</span><span class="si">{_axisout}</span><span class="s2">&#39; not present in counters and motors&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{_axisout}</span><span class="s2">&#39; not present in counters and motors&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_axisout</span></div>
 
 <div class="viewcode-block" id="DataSourceSpecH5.get_array"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_array">[docs]</a>    <span class="k">def</span> <span class="nf">get_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cnt</span><span class="p">):</span>
@@ -436,11 +438,11 @@
             <span class="n">cnt</span> <span class="o">=</span> <span class="n">cnts</span><span class="p">[</span><span class="n">cnt</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Selected counter </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">cnt</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cnt</span> <span class="ow">in</span> <span class="n">cnts</span><span class="p">:</span>
-            <span class="n">sel_cnt</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{self._cnts_url}</span><span class="s2">/</span><span class="si">{cnt}</span><span class="s2">&quot;</span>
+            <span class="n">sel_cnt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{self._cnts_url}</span><span class="s2">/</span><span class="si">{cnt}</span><span class="s2">&quot;</span>
             <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">sg</span><span class="p">[</span><span class="n">sel_cnt</span><span class="p">][()])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;&#39;</span><span class="si">{cnt}</span><span class="s2">&#39; not found in available counters: </span><span class="si">{cnts}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">sel_cnt</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{self._cnts_url}</span><span class="s2">/</span><span class="si">{cnts[0]}</span><span class="s2">&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{cnt}</span><span class="s2">&#39; not found in available counters: </span><span class="si">{cnts}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">sel_cnt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{self._cnts_url}</span><span class="s2">/</span><span class="si">{cnts[0]}</span><span class="s2">&quot;</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">sg</span><span class="p">[</span><span class="n">sel_cnt</span><span class="p">][()])</span></div>
 
 <div class="viewcode-block" id="DataSourceSpecH5.get_value"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mot</span><span class="p">):</span>
@@ -459,12 +461,12 @@
         <span class="n">mots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_motors</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">mot</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
             <span class="n">mot</span> <span class="o">=</span> <span class="n">mots</span><span class="p">[</span><span class="n">mot</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Selected motor &#39;</span><span class="si">{mot}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Selected motor &#39;</span><span class="si">{mot}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">mot</span> <span class="ow">in</span> <span class="n">mots</span><span class="p">:</span>
-            <span class="n">sel_mot</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{self._mots_url}</span><span class="s2">/</span><span class="si">{mot}</span><span class="s2">&quot;</span>
+            <span class="n">sel_mot</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{self._mots_url}</span><span class="s2">/</span><span class="si">{mot}</span><span class="s2">&quot;</span>
             <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">sg</span><span class="p">[</span><span class="n">sel_mot</span><span class="p">][()])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;&#39;</span><span class="si">{mot}</span><span class="s2">&#39; not found in available motors: </span><span class="si">{mots}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{mot}</span><span class="s2">&#39; not found in available motors: </span><span class="si">{mots}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="DataSourceSpecH5.get_axis_data"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_axis_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_axis_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_energy</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -502,7 +504,7 @@
         <span class="n">ax_label</span> <span class="o">=</span> <span class="n">ax_name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_scan_axis</span><span class="p">()</span>
         <span class="n">ax_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="n">ax_label</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">to_energy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">sloth.utils.bragg</span> <span class="k">import</span> <span class="n">ang2kev</span>
+            <span class="kn">from</span> <span class="nn">sloth.utils.bragg</span> <span class="kn">import</span> <span class="n">ang2kev</span>
 
             <span class="n">bragg_ax</span> <span class="o">=</span> <span class="n">to_energy</span><span class="p">[</span><span class="s2">&quot;bragg_ax&quot;</span><span class="p">]</span>
             <span class="n">bragg_ax_type</span> <span class="o">=</span> <span class="n">to_energy</span><span class="p">[</span><span class="s2">&quot;bragg_ax_type&quot;</span><span class="p">]</span>
@@ -565,24 +567,24 @@
             <span class="n">mon_name</span> <span class="o">=</span> <span class="n">mon</span><span class="p">[</span><span class="s2">&quot;monitor&quot;</span><span class="p">]</span>
             <span class="n">mon_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="n">mon_name</span><span class="p">)</span>
             <span class="n">sig_data</span> <span class="o">/=</span> <span class="n">mon_data</span>
-            <span class="n">sig_label</span> <span class="o">+=</span> <span class="n">f</span><span class="s2">&quot;_mon(</span><span class="si">{mon_name}</span><span class="s2">)&quot;</span>
+            <span class="n">sig_label</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;_mon(</span><span class="si">{mon_name}</span><span class="s2">)&quot;</span>
             <span class="k">if</span> <span class="n">mon</span><span class="p">[</span><span class="s2">&quot;cps&quot;</span><span class="p">]:</span>
                 <span class="n">sig_data</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">mon_data</span><span class="p">)</span>  <span class="c1">#: put back in counts</span>
                 <span class="n">sig_label</span> <span class="o">+=</span> <span class="s2">&quot;_cps&quot;</span>
         <span class="c1">#: (opt) deglitch</span>
         <span class="k">if</span> <span class="n">deglitch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">sloth.math.deglitch</span> <span class="k">import</span> <span class="n">remove_spikes_medfilt1d</span>
+            <span class="kn">from</span> <span class="nn">sloth.math.deglitch</span> <span class="kn">import</span> <span class="n">remove_spikes_medfilt1d</span>
 
             <span class="n">sig_data</span> <span class="o">=</span> <span class="n">remove_spikes_medfilt1d</span><span class="p">(</span><span class="n">sig_data</span><span class="p">,</span> <span class="o">**</span><span class="n">deglitch</span><span class="p">)</span>
             <span class="n">sig_label</span> <span class="o">+=</span> <span class="s2">&quot;_dgl&quot;</span>
         <span class="c1">#: (opt) normalization</span>
         <span class="k">if</span> <span class="n">norm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">sloth.math.normalization</span> <span class="k">import</span> <span class="n">norm1D</span>
+            <span class="kn">from</span> <span class="nn">sloth.math.normalization</span> <span class="kn">import</span> <span class="n">norm1D</span>
 
             <span class="n">norm_meth</span> <span class="o">=</span> <span class="n">norm</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span>
             <span class="n">sig_data</span> <span class="o">=</span> <span class="n">norm1D</span><span class="p">(</span><span class="n">sig_data</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm_meth</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">norm_meth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">sig_label</span> <span class="o">+=</span> <span class="n">f</span><span class="s2">&quot;_norm(</span><span class="si">{norm_meth}</span><span class="s2">)&quot;</span>
+                <span class="n">sig_label</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;_norm(</span><span class="si">{norm_meth}</span><span class="s2">)&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loaded signal: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">sig_label</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">sig_label</span><span class="p">,</span> <span class="n">sig_data</span></div>
 
@@ -678,9 +680,9 @@
 <span class="sd">            configuration dictionary saved as &#39;{hdfpath}/.config&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fname_out</span> <span class="o">=</span> <span class="n">fname_out</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;output file: </span><span class="si">{self._fname_out}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;output file: </span><span class="si">{self._fname_out}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fname_out</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fname_out</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">R_OK</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;output file exists (overwrite is </span><span class="si">{overwrite}</span><span class="s2">)&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;output file exists (overwrite is </span><span class="si">{overwrite}</span><span class="s2">)&quot;</span><span class="p">)</span>
             <span class="n">_fileExists</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">_fileExists</span> <span class="o">=</span> <span class="kc">False</span>
@@ -698,16 +700,16 @@
 
         <span class="c1">#: write group configuration dictionary, if given</span>
         <span class="k">if</span> <span class="n">conf_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">silx.io.dictdump</span> <span class="k">import</span> <span class="n">dicttoh5</span>
+            <span class="kn">from</span> <span class="nn">silx.io.dictdump</span> <span class="kn">import</span> <span class="n">dicttoh5</span>
 
-            <span class="n">_h5path</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{h5path}</span><span class="s2">.config/&quot;</span>
+            <span class="n">_h5path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{h5path}</span><span class="s2">.config/&quot;</span>
             <span class="n">dicttoh5</span><span class="p">(</span>
                 <span class="n">conf_dict</span><span class="p">,</span>
                 <span class="n">h5out</span><span class="p">,</span>
                 <span class="n">h5path</span><span class="o">=</span><span class="n">_h5path</span><span class="p">,</span>
                 <span class="n">create_dataset_args</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">track_order</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;written dictionary: </span><span class="si">{_h5path}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;written dictionary: </span><span class="si">{_h5path}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1">#: write scans</span>
         <span class="k">def</span> <span class="nf">_loop_scans</span><span class="p">(</span><span class="n">scns</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -719,16 +721,16 @@
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_commonh5_group</span><span class="p">(</span><span class="n">_sg</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;scan &#39;</span><span class="si">%s</span><span class="s2">&#39; is not commonh5 group&quot;</span><span class="p">,</span> <span class="n">scn</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">_h5path</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{h5path}{group}</span><span class="s2">/</span><span class="si">{self._scan_str}</span><span class="s2">/&quot;</span>
+                    <span class="n">_h5path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{h5path}{group}</span><span class="s2">/</span><span class="si">{self._scan_str}</span><span class="s2">/&quot;</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">_h5path</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{h5path}{self._scan_str}</span><span class="s2">/&quot;</span>
+                    <span class="n">_h5path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{h5path}{self._scan_str}</span><span class="s2">/&quot;</span>
                 <span class="n">write_to_h5</span><span class="p">(</span>
                     <span class="n">_sg</span><span class="p">,</span>
                     <span class="n">h5out</span><span class="p">,</span>
                     <span class="n">h5path</span><span class="o">=</span><span class="n">_h5path</span><span class="p">,</span>
                     <span class="n">create_dataset_args</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">track_order</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
                 <span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;written scan: </span><span class="si">{_h5path}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;written scan: </span><span class="si">{_h5path}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">scans</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
             <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">scans_groups</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">,</span> <span class="s2">&quot;&#39;scans_groups&#39; should be a list&quot;</span>
@@ -746,7 +748,7 @@
 
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;test&quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">sloth.examples</span> <span class="k">import</span> <span class="n">_examplesDir</span>
+    <span class="kn">from</span> <span class="nn">sloth.examples</span> <span class="kn">import</span> <span class="n">_examplesDir</span>
 
     <span class="n">test_specfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_examplesDir</span><span class="p">,</span> <span class="s2">&quot;specfiledata_tests.dat&quot;</span><span class="p">)</span>
     <span class="n">test_ds</span> <span class="o">=</span> <span class="n">DataSourceSpecH5</span><span class="p">(</span><span class="n">test_specfile</span><span class="p">)</span>
@@ -769,7 +771,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014--2019, Mauro Rovezzi
+        &copy; Copyright 2014--2020, Mauro Rovezzi
 
     </p>
   </div>

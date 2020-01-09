@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sloth.math.deglitch &mdash; Sloth 0.3.0-dev documentation</title>
+  <title>sloth.math.deglitch &mdash; Sloth 0.3.2 documentation</title>
   
 
   
@@ -90,9 +90,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../data_model/index.html">Notes on the data model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workflows/index.html">Notes on workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workflows/index.html#notes-on-softwares">Notes on softwares</a></li>
 </ul>
 
             
@@ -231,7 +233,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ynew</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">y_spiky</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">silx.math.medianfilter</span> <span class="k">import</span> <span class="n">medfilt1d</span>
+        <span class="kn">from</span> <span class="nn">silx.math.medianfilter</span> <span class="kn">import</span> <span class="n">medfilt1d</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
         <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;medfilt1d (from SILX) not found! -&gt; returning zeros&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ynew</span>
@@ -265,7 +267,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ynew</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">y_spiky</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">PyMca5.PyMcaMath.PyMcaSciPy.signal</span> <span class="k">import</span> <span class="n">medfilt1d</span>
+        <span class="kn">from</span> <span class="nn">PyMca5.PyMcaMath.PyMcaSciPy.signal</span> <span class="kn">import</span> <span class="n">medfilt1d</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
         <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;medfilt1d (from PyMca5) not found! -&gt; returning zeros&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ynew</span>
@@ -345,7 +347,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014--2019, Mauro Rovezzi
+        &copy; Copyright 2014--2020, Mauro Rovezzi
 
     </p>
   </div>

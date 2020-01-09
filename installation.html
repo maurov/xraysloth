@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation &mdash; Sloth 0.3.0-dev documentation</title>
+  <title>Installation &mdash; Sloth 0.3.2 documentation</title>
   
 
   
@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Notes on the data model" href="data_model/index.html" />
+    <link rel="next" title="Change Log" href="changelog.html" />
     <link rel="prev" title="Sloth: slowly evolving utilities for x-ray spectroscopists" href="index.html" /> 
 </head>
 
@@ -97,9 +97,11 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_model/index.html">Notes on the data model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules/index.html">Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflows/index.html">Notes on workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflows/index.html#notes-on-softwares">Notes on softwares</a></li>
 </ul>
 
             
@@ -166,63 +168,112 @@
             
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<p>Currently, only installation from source is available.</p>
+<p>Currently, the recommended installation method is from source on a Linux-like environment.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For Microsoft Windows users, it is recommended to run the following setup in a <a class="reference external" href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">Windows Subsystem for Linux (WSL)</a>. Debian or Ubuntu are preferred Linux distributions. Furthermore, an optimized experience is obtained with <a class="reference external" href="https://mobaxterm.mobatek.net/">MobaXterm</a>.</p>
+</div>
 <div class="section" id="minimal-setup">
 <h2>Minimal setup<a class="headerlink" href="#minimal-setup" title="Permalink to this headline">¶</a></h2>
 <p>The following instructions will guide you to set-up a dedicated Python
 environment called <cite>sloth</cite> and install a minimal version of the library.</p>
 <ul>
 <li><p>First of all, install <a class="reference external" href="https://conda.io">Conda</a> on your system. If you are on Linux, this can be done just by:</p>
-<p>wget <a class="reference external" href="http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh">http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh</a> -O miniconda.sh
-bash miniconda.sh -b -p $HOME/conda</p>
-</li>
-<li><p>Open a shell with the Conda <cite>base</cite> environment activated. I refer to it as <cite>(base)$</cite> in the following.</p></li>
-<li><p>Create a dedicated conda environment and activate it:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(base)$ conda create -q -n sloth python=3.6
-(base)$ conda activate sloth
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+bash miniconda.sh -b -p $HOME/local/conda
 </pre></div>
 </div>
 </li>
-<li><p>In sloth environment install basic tools:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(sloth)$ conda install -y git pip
+<li><p>Open a shell with the Conda <cite>base</cite> environment activated. I refer to it as <cite>(base)$</cite> in the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ source $HOME/local/conda/bin/activate
 </pre></div>
 </div>
 </li>
-<li><p>Clone the repository:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(sloth)$ git clone https://github.com/maurov/xraysloth.git
+<li><p>Update to the latest version of <cite>conda</cite>, <cite>python</cite> and <cite>pip</cite>:</p>
+<blockquote>
+<div><p>(base)$ conda update -y conda python pip</p>
+</div></blockquote>
+</li>
+<li><p>Install git (if not yet present in your environment):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(base)$ conda install -y git
 </pre></div>
 </div>
+</li>
+<li><p>Clone Sloth repository:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(base)$ git clone https://github.com/maurov/xraysloth.git
+</pre></div>
+</div>
+</li>
+</ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>if you are behind a proxy:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(sloth)$ git config --global http.proxy HOST:PORT
+<p>if you are behind a proxy, you may need to configure git for it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(base)$ git config --global http.proxy HOST:PORT
 </pre></div>
 </div>
+</div>
+<ul>
+<li><p>Make sure the packages listed in <cite>binder/apt.txt</cite> are available in your system, otherwise install them:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cat apt.txt | xargs sudo apt-get install -y
+</pre></div>
 </div>
 </li>
-<li><p>Install requirements:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(sloth)$ cd xraysloth
-(sloth)$ pip install -r requirements.txt
-(sloth)$ pip install .
+<li><p>Create <cite>sloth</cite> Conda environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(base)$ cd xraysloth/binder
+(base)$ conda env create -f environment.yml
 </pre></div>
 </div>
+</li>
+</ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>for developers, to keep symbolic links:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(sloth)$ pip install -e .
+<p>This will install a relatively large number of libraries. If you want to keep a minimal environment and install only those librariers you want, you can manually create the <cite>sloth</cite> environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(base)$ conda create -n sloth python==3.7
 </pre></div>
 </div>
 </div>
+<ul>
+<li><p>Activate the environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(base)$ conda activate sloth
+</pre></div>
+</div>
 </li>
+<li><p>Run the <cite>postBuild</cite> script to complete install the Jupyter extensions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(sloth)$ bash postBuild
+</pre></div>
+</div>
+</li>
+<li><p>Enjoy!</p></li>
 </ul>
 </div>
 <div class="section" id="daily-working-environment">
 <h2>Daily working environment<a class="headerlink" href="#daily-working-environment" title="Permalink to this headline">¶</a></h2>
-<p>For a daily working environment, if you are not familiar with a <a class="reference external" href="https://wiki.python.org/moin/IntegratedDevelopmentEnvironments">Python IDE</a>, a good
-choice is to use <a class="reference external" href="https://www.spyder-ide.org/">Spyder</a>:</p>
+<p>For a daily working environment, you should use a <a class="reference external" href="https://wiki.python.org/moin/IntegratedDevelopmentEnvironments">Python IDE</a>.</p>
+<p>Recommended IDEs are:</p>
+<ul>
+<li><p><a class="reference external" href="https://code.visualstudio.com/">Microsoft Visual Studio Code</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(sloth)$ wget https://go.microsoft.com/fwlink/?LinkID=760868
+(sloth)$ dpkg -i &lt;downloaded_file.deb&gt;
+</pre></div>
+</div>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Under Windows install it the application the standard way and use the integrated WSL extension.</p>
+</div>
+<ul>
+<li><p><a class="reference external" href="https://www.spyder-ide.org/">Spyder</a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(sloth)$ conda install -y spyder
 </pre></div>
 </div>
+</li>
+<li><p><a class="reference external" href="https://jupyterlab.readthedocs.io/en/stable/#">Jupyter lab</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(sloth)$ jupyter lab
+</pre></div>
+</div>
+</li>
+</ul>
 </div>
 <div class="section" id="notes-requirements">
 <h2>Notes requirements<a class="headerlink" href="#notes-requirements" title="Permalink to this headline">¶</a></h2>
@@ -268,7 +319,7 @@ already exposed to Larch.  To load the plugins into Larch is described
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="data_model/index.html" class="btn btn-neutral float-right" title="Notes on the data model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="changelog.html" class="btn btn-neutral float-right" title="Change Log" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral float-left" title="Sloth: slowly evolving utilities for x-ray spectroscopists" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -280,7 +331,7 @@ already exposed to Larch.  To load the plugins into Larch is described
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014--2019, Mauro Rovezzi
+        &copy; Copyright 2014--2020, Mauro Rovezzi
 
     </p>
   </div>

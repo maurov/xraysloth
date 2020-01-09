@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sloth.calculators: interacting with calculators &mdash; Sloth 0.3.0-dev documentation</title>
+  <title>sloth.calculators: interacting with calculators &mdash; Sloth 0.3.2 documentation</title>
   
 
   
@@ -92,6 +92,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_model/index.html">Notes on the data model</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="io.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.io</span></code>: Input-output</a></li>
@@ -103,7 +104,7 @@
 <li class="toctree-l2"><a class="reference internal" href="math.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math</span></code>: mathematical utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils</span></code>: utilities</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.calculators</span></code>: interacting with calculators</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#sloth-calculators-qe-xtl-quantum-espresso-to-xtl"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.calculators.qe_xtl</span></code>: Quantum ESPRESSO to XTL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-sloth.calculators.qe_xtl"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.calculators.qe_xtl</span></code>: Quantum ESPRESSO to XTL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-sloth.calculators.fdmnes"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.calculators.fdmnes</span></code>: FDMNES utils</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#fdmnes-related-stuff">FDMNES-related stuff</a></li>
 </ul>
@@ -113,7 +114,8 @@
 <li class="toctree-l2"><a class="reference internal" href="gui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.gui</span></code>: GUI</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflows/index.html">Notes on workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflows/index.html#notes-on-softwares">Notes on softwares</a></li>
 </ul>
 
             
@@ -184,9 +186,9 @@
 <h1><a class="reference internal" href="#module-sloth.calculators" title="sloth.calculators"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.calculators</span></code></a>: interacting with calculators<a class="headerlink" href="#sloth-calculators-interacting-with-calculators" title="Permalink to this headline">¶</a></h1>
 <p>This module is inspired from <a class="reference external" href="https://wiki.fysik.dtu.dk/ase/">ASE</a>. Despite
 the same name, here only a couple of utilities are present.</p>
-<div class="section" id="sloth-calculators-qe-xtl-quantum-espresso-to-xtl">
-<h2><a class="reference internal" href="#module-sloth.calculators.qe_xtl" title="sloth.calculators.qe_xtl"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.calculators.qe_xtl</span></code></a>: Quantum ESPRESSO to XTL<a class="headerlink" href="#sloth-calculators-qe-xtl-quantum-espresso-to-xtl" title="Permalink to this headline">¶</a></h2>
-<span class="target" id="module-sloth.calculators.qe_xtl"></span><p>Simple utility to convert Quantum ESPRESSO input files to XTL</p>
+<div class="section" id="module-sloth.calculators.qe_xtl">
+<span id="sloth-calculators-qe-xtl-quantum-espresso-to-xtl"></span><h2><a class="reference internal" href="#module-sloth.calculators.qe_xtl" title="sloth.calculators.qe_xtl"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.calculators.qe_xtl</span></code></a>: Quantum ESPRESSO to XTL<a class="headerlink" href="#module-sloth.calculators.qe_xtl" title="Permalink to this headline">¶</a></h2>
+<p>Simple utility to convert Quantum ESPRESSO input files to XTL</p>
 <p>..note:: The starting point of this code is <cite>ase.io.espresso</cite> from the
 Atomic Simulation Environment (ASE) package.</p>
 <dl class="function">
@@ -277,7 +279,7 @@ the lines of text of the espresso input file.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014--2019, Mauro Rovezzi
+        &copy; Copyright 2014--2020, Mauro Rovezzi
 
     </p>
   </div>

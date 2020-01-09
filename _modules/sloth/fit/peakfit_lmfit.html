@@ -1,0 +1,449 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sloth.fit.peakfit_lmfit &mdash; Sloth 0.3.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Sloth
+          
+
+          
+            
+            <img src="../../../_static/xraysloth.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data_model/index.html">Notes on the data model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workflows/index.html">Notes on workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workflows/index.html#notes-on-softwares">Notes on softwares</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Sloth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sloth.fit.peakfit_lmfit</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sloth.fit.peakfit_lmfit</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Simple peak fitting utility with Lmfit</span>
+<span class="sd">======================================</span>
+
+<span class="sd">Current fitting backend: Lmfit_</span>
+
+<span class="sd">.. _Lmfit: https://lmfit.github.io/lmfit-py/</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1">#: BASE</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">import</span> <span class="n">cm</span>
+
+<span class="c1">#: LMFIT IMPORTS</span>
+<span class="kn">from</span> <span class="nn">lmfit.models</span> <span class="kn">import</span> <span class="n">ConstantModel</span><span class="p">,</span> <span class="n">VoigtModel</span>
+
+<span class="c1">#: SLOTH</span>
+<span class="kn">from</span> <span class="nn">sloth.utils.matplotlib</span> <span class="kn">import</span> <span class="n">get_colors</span>
+<span class="kn">from</span> <span class="nn">sloth.utils.logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;sloth.fit.peakfit_lmfit&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="fit_peak"><a class="viewcode-back" href="../../../modules/fit.html#sloth.fit.peakfit_lmfit.fit_peak">[docs]</a><span class="k">def</span> <span class="nf">fit_peak</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">,</span>
+    <span class="n">y</span><span class="p">,</span>
+    <span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">positions</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">],</span>
+    <span class="n">amplitudes</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">],</span>
+    <span class="n">widths</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">],</span>
+    <span class="n">expressions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">bkgModel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">peakModel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;peak fit with lmfit</span>
+
+<span class="sd">    Description</span>
+<span class="sd">    -----------</span>
+<span class="sd">    This peak fitting model is built to fit one to three peaks (with prefixes:</span>
+<span class="sd">    &#39;p1_&#39;, &#39;p2_&#39;, &#39;p3_&#39;). The main control parameter is the initial guess of the</span>
+<span class="sd">    peaks positions.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    For the Gaussian function, amplitude means weighting factor</span>
+<span class="sd">    multiplying a unit-normalized Gaussian, so that the maximum height</span>
+<span class="sd">    at the centroid is Amplitude/(sqrt(2pi)*sigma), and that the</span>
+<span class="sd">    full-width at half maximum is ~2.355 sigma. In the fit, amplitude,</span>
+<span class="sd">    center, and sigma can be varied, while height and fwhm are</span>
+<span class="sd">    reported values, derived from these quantities.</span>
+
+<span class="sd">    To guess the Gaussian amplitude (A) from the peak maximum (H) and</span>
+<span class="sd">    a guess width (W), one could use the simple relation::</span>
+
+<span class="sd">        A ~ 5.90 * H * W</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    num : int</span>
+<span class="sd">        number of peaks to fit: currently between 1 and 3 [1]</span>
+<span class="sd">    positions : list of floats</span>
+<span class="sd">        initial peaks positions</span>
+<span class="sd">    amplitudes : list of floats</span>
+<span class="sd">        initial peaks amplitudes</span>
+<span class="sd">    widths : list of floats</span>
+<span class="sd">        initial peaks widths</span>
+<span class="sd">    expressions : None or dict</span>
+<span class="sd">        parameters expressions</span>
+<span class="sd">    bkgModel : None or lmfit.Model (optional)</span>
+<span class="sd">        if None: ConstantModel</span>
+<span class="sd">    peakModel : None or lmfit.Model (optional)</span>
+<span class="sd">        if None: VoigtModel</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    lmfit.fit object</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">num</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;current model is limited to 3 peaks only!&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">num</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">amplitudes</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">num</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">widths</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">num</span><span class="p">):</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;&#39;positions&#39;/&#39;amplitudes&#39;/&#39;widths&#39; &lt; &#39;num&#39;!&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">bkgModel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">bkgModel</span> <span class="o">=</span> <span class="n">ConstantModel</span>
+    <span class="k">if</span> <span class="n">peakModel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">peakModel</span> <span class="o">=</span> <span class="n">VoigtModel</span>
+
+    <span class="n">bkg</span> <span class="o">=</span> <span class="n">bkgModel</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;bkg_&quot;</span><span class="p">)</span>
+    <span class="n">pars</span> <span class="o">=</span> <span class="n">bkg</span><span class="o">.</span><span class="n">guess</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">pars</span><span class="p">[</span><span class="s2">&quot;bkg_c&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+    <span class="n">mod</span> <span class="o">=</span> <span class="n">bkg</span>
+
+    <span class="k">for</span> <span class="n">ipk</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+        <span class="n">pkPos</span> <span class="o">=</span> <span class="n">positions</span><span class="p">[</span><span class="n">ipk</span><span class="p">]</span>
+        <span class="n">pkAmp</span> <span class="o">=</span> <span class="n">amplitudes</span><span class="p">[</span><span class="n">ipk</span><span class="p">]</span>
+        <span class="n">pkW</span> <span class="o">=</span> <span class="n">widths</span><span class="p">[</span><span class="n">ipk</span><span class="p">]</span>
+        <span class="n">pfx</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;p{ipk+1}_&quot;</span>
+        <span class="n">xmax</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y</span><span class="p">)]</span>
+        <span class="n">ymax</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">pkPos</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{pfx}</span><span class="s2"> center guess at x=</span><span class="si">{xmax}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">pkPos</span> <span class="o">=</span> <span class="n">xmax</span>
+            <span class="n">positions</span><span class="p">[</span><span class="n">ipk</span><span class="p">]</span> <span class="o">=</span> <span class="n">pkPos</span>
+        <span class="k">if</span> <span class="n">pkAmp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{pfx}</span><span class="s2"> amplitude guess at y=</span><span class="si">{ymax}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">pkAmp</span> <span class="o">=</span> <span class="n">ymax</span>
+            <span class="n">amplitudes</span><span class="p">[</span><span class="n">ipk</span><span class="p">]</span> <span class="o">=</span> <span class="n">pkAmp</span>
+        <span class="k">if</span> <span class="n">pkW</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pkW</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{pfx}</span><span class="s2"> width guess </span><span class="si">{pkW}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">widths</span><span class="p">[</span><span class="n">ipk</span><span class="p">]</span> <span class="o">=</span> <span class="n">pkW</span>
+        <span class="n">pk</span> <span class="o">=</span> <span class="n">peakModel</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="n">pfx</span><span class="p">)</span>
+        <span class="n">pars</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">pk</span><span class="o">.</span><span class="n">make_params</span><span class="p">())</span>
+        <span class="n">pars</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{pfx}</span><span class="s2">center&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">pkPos</span><span class="p">)</span>
+        <span class="n">pars</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{pfx}</span><span class="s2">amplitude&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">pkAmp</span><span class="p">)</span>
+        <span class="n">pars</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{pfx}</span><span class="s2">sigma&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">pkW</span><span class="p">)</span>
+        <span class="c1">#: force side peaks to stay same side of the main peak</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">ipk</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">pkPos</span> <span class="o">&lt;</span> <span class="n">positions</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">pars</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{pfx}</span><span class="s2">center&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">pkPos</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">positions</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">pars</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{pfx}</span><span class="s2">center&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">pkPos</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="n">positions</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">mod</span> <span class="o">+=</span> <span class="n">pk</span>
+    <span class="c1">#: set mathematical constraints if given</span>
+    <span class="k">if</span> <span class="n">expressions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">expressions</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">,</span> <span class="s2">&quot;Expressions should be a dictionary&quot;</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">expressions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">pars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">expr</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[fit_peak] cannot set expression &#39;key&#39;:&#39;value&#39;&quot;</span><span class="p">)</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Running fit...&quot;</span><span class="p">)</span>
+    <span class="n">fitobj</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">pars</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fitobj</span></div>
+
+
+<div class="viewcode-block" id="get_curves_fit"><a class="viewcode-back" href="../../../modules/fit.html#sloth.fit.peakfit_lmfit.get_curves_fit">[docs]</a><span class="k">def</span> <span class="nf">get_curves_fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">fitobj</span><span class="p">,</span> <span class="n">components</span><span class="o">=</span><span class="s2">&quot;p&quot;</span><span class="p">,</span> <span class="n">with_initial_guess</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;get a list of curves from the fit object</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : array</span>
+<span class="sd">    fitobj : lmfit.model.fit object</span>
+<span class="sd">    components : False or str (optional)</span>
+<span class="sd">        if give, include components starting with &#39;components&#39; string</span>
+<span class="sd">        default is &#39;p&#39; (=peaks only)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    curves = [[x, y_best, {&#39;legend&#39;: &#39;best fit&#39;, &#39;color&#39;: &#39;red&#39;}]</span>
+<span class="sd">              [x, y_initial, {&#39;legend&#39;: &#39;initial guess&#39;, &#39;color&#39;: &#39;gray&#39;}]</span>
+<span class="sd">              [x, y_componentN], {&#39;legend&#39;: &#39;component prefix N&#39;, &#39;color&#39;: &#39;pink&#39;}]</span>
+<span class="sd">             ]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">curves</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">curve_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;legend&quot;</span><span class="p">:</span> <span class="s2">&quot;best fit&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;best fit&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;linewidth&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">curve</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">fitobj</span><span class="o">.</span><span class="n">best_fit</span><span class="p">,</span> <span class="n">curve_dict</span><span class="p">]</span>
+    <span class="n">curves</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">with_initial_guess</span><span class="p">:</span>
+        <span class="n">guess_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;legend&quot;</span><span class="p">:</span> <span class="s2">&quot;initial guess&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;initial guess&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;gray&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;linewidth&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+            <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">curve</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">fitobj</span><span class="o">.</span><span class="n">init_fit</span><span class="p">,</span> <span class="n">guess_dict</span><span class="p">]</span>
+        <span class="n">curves</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">components</span><span class="p">:</span>
+        <span class="n">comps</span> <span class="o">=</span> <span class="n">fitobj</span><span class="o">.</span><span class="n">eval_components</span><span class="p">()</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Available fit components are: {comps.keys()}&quot;</span><span class="p">)</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="n">get_colors</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">comps</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span> <span class="n">colormap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">icomp</span><span class="p">,</span> <span class="n">kcomp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">comps</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">kcomp</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">components</span><span class="p">):</span>
+                <span class="n">comp_dict</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;legend&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{kcomp}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{kcomp}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">colors</span><span class="p">[</span><span class="n">icomp</span><span class="p">],</span>
+                    <span class="s2">&quot;linewidth&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="s2">&quot;linestyle&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span>
+                <span class="p">}</span>
+                <span class="n">curve</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">comps</span><span class="p">[</span><span class="n">kcomp</span><span class="p">],</span> <span class="n">comp_dict</span><span class="p">]</span>
+                <span class="n">curves</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">curves</span></div>
+
+
+<div class="viewcode-block" id="main_test"><a class="viewcode-back" href="../../../modules/fit.html#sloth.fit.peakfit_lmfit.main_test">[docs]</a><span class="k">def</span> <span class="nf">main_test</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Test and show example usage&quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+    <span class="kn">from</span> <span class="nn">lmfit.lineshapes</span> <span class="kn">import</span> <span class="n">gaussian</span>
+    <span class="kn">from</span> <span class="nn">lmfit.models</span> <span class="kn">import</span> <span class="n">GaussianModel</span>
+
+    <span class="k">def</span> <span class="nf">_get_gauss</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">cen</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">noise</span><span class="p">):</span>
+        <span class="n">signal</span> <span class="o">=</span> <span class="n">gaussian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">amplitude</span><span class="o">=</span><span class="n">amp</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">cen</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="n">signal</span> <span class="o">+=</span> <span class="n">noise</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">signal</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">signal</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+    <span class="n">y1</span> <span class="o">=</span> <span class="n">_get_gauss</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
+    <span class="n">y2</span> <span class="o">=</span> <span class="n">_get_gauss</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="o">-</span><span class="mi">18</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">y3</span> <span class="o">=</span> <span class="n">_get_gauss</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="mf">0.0015</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y1</span> <span class="o">+</span> <span class="n">y2</span> <span class="o">+</span> <span class="n">y3</span>
+    <span class="n">figname</span> <span class="o">=</span> <span class="s2">&quot;test_peakfit_lmfit&quot;</span>
+
+    <span class="n">ymax</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="n">xmax</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y</span><span class="p">)]</span>
+    <span class="n">fitobj</span> <span class="o">=</span> <span class="n">fit_peak</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">,</span>
+        <span class="n">y</span><span class="p">,</span>
+        <span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">positions</span><span class="o">=</span><span class="p">[</span><span class="n">xmax</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">-</span> <span class="mi">20</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">+</span> <span class="mi">17</span><span class="p">],</span>
+        <span class="n">amplitudes</span><span class="o">=</span><span class="p">[</span><span class="n">ymax</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">/</span> <span class="mf">3.0</span><span class="p">],</span>
+        <span class="n">widths</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="n">peakModel</span><span class="o">=</span><span class="n">GaussianModel</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">fit_curves</span> <span class="o">=</span> <span class="n">get_curves_fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">fitobj</span><span class="p">,</span> <span class="n">with_initial_guess</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#: plot</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ion</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">figname</span><span class="p">)</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="n">figname</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">fc</span> <span class="ow">in</span> <span class="n">fit_curves</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">fc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">fc</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="s2">&quot;legend&quot;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">fc</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">])</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;best&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">main_test</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014--2020, Mauro Rovezzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

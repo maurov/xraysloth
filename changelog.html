@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Change Log &mdash; Sloth 0.3.0-dev documentation</title>
+  <title>Change Log &mdash; Sloth 0.3.2 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="&lt;no title&gt;" href="todo.html" />
-    <link rel="prev" title="sloth.gui: GUI" href="modules/gui.html" /> 
+    <link rel="next" title="Notes on the data model" href="data_model/index.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -92,10 +92,8 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html#usage">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="data_model/index.html">Notes on the data model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules/index.html">Reference</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Change Log</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#v-0-3-0-dev">v.0.3.0 (dev)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#v-0-3-dev">v.0.3 (dev)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#new-features">New features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#bug-fixes">Bug fixes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#broken-backward-compatibility">Broken backward compatibility</a></li>
@@ -106,6 +104,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#v0-1-0-2016-11-16">v0.1.0 (2016-11-16)</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="data_model/index.html">Notes on the data model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflows/index.html">Notes on workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflows/index.html#notes-on-softwares">Notes on softwares</a></li>
 </ul>
 
             
@@ -172,8 +174,8 @@
             
   <div class="section" id="change-log">
 <h1>Change Log<a class="headerlink" href="#change-log" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="v-0-3-0-dev">
-<h2>v.0.3.0 (dev)<a class="headerlink" href="#v-0-3-0-dev" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="v-0-3-dev">
+<h2>v.0.3 (dev)<a class="headerlink" href="#v-0-3-dev" title="Permalink to this headline">¶</a></h2>
 <p><em>master branch (not released/tagged yet)</em></p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -185,8 +187,8 @@
 <li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.gui.daxs</span></code></p>
 <ul class="simple">
 <li><p>Qt-based GUI application featuring a TreeModel/View from <strong>Marius Retegan</strong>
-and the SILX group at ESRF. The GUI has an internal Jupyter kernel that give
-access to core components directly from a Qtconsole.</p></li>
+and the SILX group at ESRF. The GUI has an internal Jupyter kernel that
+give access to core components directly from a Qtconsole.</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -216,7 +218,7 @@ analyzers arranged in a _mixed_ Rowland circle)</p></li>
 <li><p>initial GUI layout (mainly an IPython embedded shell).</p></li>
 </ul>
 </li>
-<li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing.shadow_utils</span></code></p>
+<li><p><a class="reference internal" href="modules/raytracing.html#module-sloth.raytracing.shadow_utils" title="sloth.raytracing.shadow_utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing.shadow_utils</span></code></a></p>
 <ul class="simple">
 <li><p>utilities for running SHADOW3 simulations (specific cases).</p></li>
 </ul>
@@ -234,7 +236,7 @@ analyzers arranged in a _mixed_ Rowland circle)</p></li>
 <li><p><a class="reference internal" href="modules/inst.html#sloth.inst.rowland.RcVert" title="sloth.inst.rowland.RcVert"><code class="xref py py-class docutils literal notranslate"><span class="pre">sloth.inst.rowland.RcVert</span></code></a> -&gt; bug in <cite>chi</cite> calculation.</p></li>
 <li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.__init__</span></code></p>
 <ul>
-<li><p>re-enable larch imports in <a href="#id1"><span class="problematic" id="id2">:var:`_slothKit`</span></a> (currently disabled
+<li><p>re-enable larch imports in <cite>_slothKit</cite> (currently disabled
 because loading seems too slow!!!)</p></li>
 </ul>
 </li>
@@ -244,6 +246,7 @@ because loading seems too slow!!!)</p></li>
 <h3>Broken backward compatibility<a class="headerlink" href="#broken-backward-compatibility" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The whole library is not backward compatible at this stage!</p></li>
+<li><p>Removed <code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.genericutils</span></code></p></li>
 <li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collect</span></code></p>
 <ul>
 <li><p><cite>DataGroup</cite> objects and derivative have methods with <cite>_</cite>
@@ -291,10 +294,10 @@ because loading seems too slow!!!)</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="todo.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="data_model/index.html" class="btn btn-neutral float-right" title="Notes on the data model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="modules/gui.html" class="btn btn-neutral float-left" title="sloth.gui: GUI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -303,7 +306,7 @@ because loading seems too slow!!!)</p></li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014--2019, Mauro Rovezzi
+        &copy; Copyright 2014--2020, Mauro Rovezzi
 
     </p>
   </div>

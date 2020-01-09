@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Reference &mdash; Sloth 0.3.0-dev documentation</title>
+  <title>Reference &mdash; Sloth 0.3.2 documentation</title>
   
 
   
@@ -92,6 +92,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_model/index.html">Notes on the data model</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="io.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.io</span></code>: Input-output</a></li>
@@ -106,7 +107,8 @@
 <li class="toctree-l2"><a class="reference internal" href="gui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.gui</span></code>: GUI</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflows/index.html">Notes on workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflows/index.html#notes-on-softwares">Notes on softwares</a></li>
 </ul>
 
             
@@ -181,28 +183,24 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="groups.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.groups</span></code>: data groups</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="groups.html#sloth-groups-h5base-generic-groups-datasets"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.groups.h5base</span></code>: generic Groups/Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="groups.html#module-sloth.groups.baseh5"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.groups.h5base</span></code>: generic HDF5-like Groups/Datasets</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="collects.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects</span></code>: Data containers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="collects.html#module-sloth.collects.datagroup"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects.datagroup</span></code>: generic data container</a></li>
-<li class="toctree-l2"><a class="reference internal" href="collects.html#sloth-collects-datagroup1d-1d-data-scans"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects.datagroup1D</span></code>: 1D data (=scans)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="collects.html#module-sloth.collects.datagroup2D"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects.datagroup2D</span></code>: 2D data (=images)</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="collects.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.collects</span></code>: Data containers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fit.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit</span></code>: fitting tools</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="fit.html#sloth-fit-peakfit-peak-fitting"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit.peakfit</span></code>: peak fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fit.html#module-sloth.fit.peakfit_lmfit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit.peakfit</span></code>: peak fitting with Lmfit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fit.html#module-sloth.fit.peakfit_silx"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit.peakfit</span></code>: peak fitting with SILX/PyMca</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="inst.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst</span></code>: working with instrumentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="inst.html#module-sloth.inst.rowland"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst.rowland</span></code>: Rowland circle geometry (=XES spectrometers)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inst.html#sloth-inst-dthetaxz-analytical-expressions-for-delta-theta-crystal-analyzers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst.dthetaxz</span></code>: analytical expressions for <span class="math notranslate nohighlight">\(\Delta\theta\)</span> (=crystal analyzers)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inst.html#module-sloth.inst.dthetaxz"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst.dthetaxz</span></code>: analytical expressions for <span class="math notranslate nohighlight">\(\Delta\theta\)</span> (=crystal analyzers)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="raytracing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing</span></code>: x-ray raytracing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="raytracing.html#sloth-raytracing-crystal-box-reflectivity-of-bent-crystals"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing.crystal_box</span></code>: reflectivity of bent crystals</a></li>
-<li class="toctree-l2"><a class="reference internal" href="raytracing.html#sloth-raytracing-shadow-utils-shadow3-utilities"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing.shadow_utils</span></code>: SHADOW3 utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="raytracing.html#sloth-raytracing-shadow-utils-johansson-cylindrical-analyzers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing.shadow_utils</span></code>: Johansson cylindrical analyzers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="raytracing.html#module-sloth.raytracing.crystal_box"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing.crystal_box</span></code>: reflectivity of bent crystals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="raytracing.html#module-sloth.raytracing.shadow_utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing.shadow_utils</span></code>: SHADOW3 utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="raytracing.html#module-sloth.raytracing.shadow_jscyl"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing.shadow_utils</span></code>: Johansson cylindrical analyzers</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="math.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.math</span></code>: mathematical utilities</a><ul>
@@ -215,7 +213,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils</span></code>: utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="utils.html#module-sloth.utils.xdata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.xdata</span></code>: x-ray databases</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html#module-sloth.utils.bragg"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.bragg</span></code>: Bragg’s law</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html#module-sloth.utils.arrays"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.arrays</span></code>: working with arrays</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html#module-sloth.utils.pymca"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.pymca</span></code>: working with PyMca5</a></li>
@@ -223,18 +220,15 @@
 <li class="toctree-l2"><a class="reference internal" href="utils.html#module-sloth.utils.strings"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.strings</span></code>: strings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html#module-sloth.utils.logging"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.logging</span></code>: loggers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html#module-sloth.utils.exceptions"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.exceptions</span></code>: handling exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="utils.html#sloth-utils-genericutils-generic"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.genericutils</span></code>: generic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#module-sloth.utils.xdata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.utils.xdata</span></code>: x-ray databases</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="calculators.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.calculators</span></code>: interacting with calculators</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="calculators.html#sloth-calculators-qe-xtl-quantum-espresso-to-xtl"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.calculators.qe_xtl</span></code>: Quantum ESPRESSO to XTL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calculators.html#module-sloth.calculators.qe_xtl"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.calculators.qe_xtl</span></code>: Quantum ESPRESSO to XTL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calculators.html#module-sloth.calculators.fdmnes"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.calculators.fdmnes</span></code>: FDMNES utils</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="gui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.gui</span></code>: GUI</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="gui.html#sloth-gui-sloth-main-main-graphical-interface-prototype"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.gui.sloth_main</span></code>: main graphical interface (prototype)</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.gui</span></code>: GUI</a></li>
 </ul>
 </div>
 </div>
@@ -259,7 +253,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014--2019, Mauro Rovezzi
+        &copy; Copyright 2014--2020, Mauro Rovezzi
 
     </p>
   </div>
