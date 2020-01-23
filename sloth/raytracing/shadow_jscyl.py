@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Shadow ray-tracing of a Johansson cylindrical analyzer
-=========================================================
+"""Ray-tracing of a Johansson cylindrical analyzer with Shadow3
+================================================================
 
 """
 import math
@@ -18,7 +18,7 @@ try:
     Shadow.ShadowTools.plt.ion()
     HAS_SHADOW = True
 except ImportError:
-    _LOGGER.warning("Shadow not found!")
+    _LOGGER.error("Shadow not found!")
     pass
 
 
@@ -110,7 +110,7 @@ def jscyl(
     p = R * math.sin(math.radians(theta0))  # SYMMETRIC RC GEOMETRY
     # set src energy
     if ene0 is None:
-        ene0 = bragg_ev(d, theta0)
+        ene0 = bragg_ev(theta0, d)
     ph1 = ene0 - ene0_hw
     ph2 = ene0 + ene0_hw
     # set src divergence
