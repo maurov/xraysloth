@@ -17,7 +17,7 @@ import subprocess
 import tempfile
 import shutil
 
-PACKAGES = ('numpy')
+PACKAGES = ('numpy', 'cffi', 'pyopencl', 'pyopengl', 'h5py')
 
 
 def install_packages(packages, remove_tmpdir=True):
@@ -33,7 +33,11 @@ def install_packages(packages, remove_tmpdir=True):
 
     for pkg in packages:
         print(f"retreiving {pkg}...")
-        pkwhl = gg.retrieve(_tmpdir, pkg, python=_py, platform=_platform)
+        try:
+            pkwhl = gg.retrieve(_tmpdir, pkg, python=_py, platform=_platform)
+        except KeyError:
+            print(f"{pkg} not found")
+            continue
         subprocess.call(f"pip install {pkwhl[0]}")
 
     if remove_tmpdir:
