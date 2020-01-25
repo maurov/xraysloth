@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
 #: pip requirements file for [XRT](https://xrt.readthedocs.io/)
-spyder == 4.0.0
+spyder >= 4.0.0
 xrt >= 1.3.3

@@ -1,16 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Script for installing on Microsoft Windows
+"""Script for installing packages on Microsoft Windows using wheels
+   from [GOHLKE WINDOWS REPOSITORY](https://www.lfd.uci.edu/~gohlke/pythonlibs/)
 
-Wheels from [GOHLKE WINDOWS REPOSITORY](https://www.lfd.uci.edu/~gohlke/pythonlibs/)
+- Steps to build this environment with Conda from the 'base':
+
+    (base)$ conda create -n py37w python=3.7
+    (base)$ conda activate py37w
 
 """
 
 try:
     from gohlkegrabber import GohlkeGrabber
 except ImportError:
-    print("gohlkegrabber not installed -> 'pip install gohlkegrabber")
+    print("gohlkegrabber not installed -> 'pip install gohlkegrabber'")
     pass
 
 import subprocess
@@ -46,5 +50,6 @@ def install_packages(packages, remove_tmpdir=True):
 
 
 if __name__ == "__main__":
+    install_packages(PACKAGES)
     pass
 
