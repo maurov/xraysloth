@@ -24,32 +24,34 @@ import shutil
 PACKAGES = ('numpy', 'cffi', 'pyopencl', 'pyopengl', 'h5py')
 
 
-def install_packages(packages, remove_tmpdir=True):
+def install_packages(packages, pkgs_dir=None, remove_pkgs_dir=False):
     """main script"""
 
     _py = '3.7'
     _platform = 'win_amd64'
 
-    _tmpdir = tempfile.mkdtemp(prefix='py37w')
-    print(f"Temporary directory is: {_tmpdir}")
+    if pkgs_dir is None:
+        pkgs_dir = tempfile.mkdtemp(prefix='py37w')
+        print(f"Temporary packages directory is: {pkgs_dir}")
+        remove_pkgs_dir = True
 
     gg = GohlkeGrabber()
 
     for pkg in packages:
         print(f"retreiving {pkg}...")
         try:
-            pkwhl = gg.retrieve(_tmpdir, pkg, python=_py, platform=_platform)
+            pkwhl = gg.retrieve(pkgs_dir, pkg, python=_py, platform=_platform)
         except KeyError:
             print(f"{pkg} not found")
             continue
         subprocess.call(f"pip install {pkwhl[0]}")
 
-    if remove_tmpdir:
-        shutil.rmtree(_tmpdir)
+    if remove_pkgs_dir:
+        shutil.rmtree(pkgs_dir)
         print("temporary directory removed")
 
 
 if __name__ == "__main__":
-    install_packages(PACKAGES)
+    print("To install Windows packages from Gohlke, manually run 'install_packages()' function")
+    # install_packages(PACKAGES)
     pass
-
