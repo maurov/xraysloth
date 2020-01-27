@@ -5,4 +5,4 @@ pyresttable
 spec2nexus
 nexusformat
 nexpy
-pymca >= 5.5.3
+pymca >= 5.5.4
