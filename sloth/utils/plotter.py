@@ -9,6 +9,8 @@ widgets). It is intended to be used in Jupyter notebooks (%inline or %notebook).
 
 """
 from itertools import cycle
+from copy import deepcopy
+from os import path
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
@@ -52,11 +54,13 @@ class Plotter(object):
         ncols=1,
         nrows=1,
         fontsize=6,
-        axes_linewidth=0.5,
+        axes_linewidth=1,
         lines_linewidth=1.5,
+        usetex=False,
         title=None,
         titles=None,
         logger=None,
+        outdir=None,
     ):
         """Logger Constructor
 
@@ -75,20 +79,26 @@ class Plotter(object):
             base axes width [0.5]
         lines_linewidth : float
             base lines width [1.5]
+        usetex : bool
+            use TeX
         title : None or str
             figure main title [None -> use self._name]
         titles : None or list
             list of titles for the subplots [None -> 'win=#']
+        logger : instance of getLogger
+        outdir : str
+            path for saving figures [None]
         """
 
         #: general
         self._name = name
         self._logger = logger or getLogger(self._name)
         self._title = title or self._name
+        self._suptitle = title or f"Fig: {self._title}"
         self._titles = titles
 
         #: matplotlib rcParams
-        self._text_usetex = False
+        self._usetex = usetex
         self._fontsize = fontsize
         self._axes_linewidth = axes_linewidth
         self._lines_linewidth = lines_linewidth
@@ -100,24 +110,47 @@ class Plotter(object):
         self._nrows = nrows
         self._nplots = self._nrows * self._ncols
 
-        self._initRcParams()
-        self._initPlots()
+        #: input/output
+        self._outdir = outdir
 
-    def _initRcParams(self, style="seaborn-ticks"):
+        self._init_matplotlib()
+        self._init_subplots()
+
+    def _init_matplotlib(self, style="seaborn-ticks"):
         """init default Matplotlib parameters"""
+        plt.ion()
         plt.style.use(style)
-        rcParams["text.usetex"] = self._text_usetex
-        rcParams["font.size"] = self._fontsize
-        rcParams["axes.titlesize"] = "large"
-        rcParams["axes.linewidth"] = self._axes_linewidth
-        rcParams["xtick.major.width"] = self._axes_linewidth
-        rcParams["ytick.major.width"] = self._axes_linewidth / 2.0
-        rcParams["figure.dpi"] = self._dpi
-        rcParams["figure.figsize"] = self._figsize
-        rcParams["grid.alpha"] = 0.5
-        rcParams["lines.linewidth"] = self._lines_linewidth
+        self._rc = {
+            "text.usetex": self._usetex,
+            "figure.dpi": self._dpi,
+            "figure.figsize": self._figsize,
+            "font.size": self._fontsize,
+            "axes.titlesize": "medium",
+            "axes.linewidth": self._axes_linewidth,
+            "xtick.major.width": self._axes_linewidth,
+            "ytick.major.width": self._axes_linewidth,
+            "lines.linewidth": self._lines_linewidth,
+            "grid.alpha": 0.5,
+        }
+        rcParams.update(self._rc)
+        self._rc = deepcopy(rcParams)
 
-    def _initPlots(self, sharex=False, sharey=False):
+    def _update_matplotlib(self, rcpars):
+        """Update matplotlib base settings
+
+        Parameters
+        ----------
+        rcpars : dict
+            dictionary to update matplotlib.rcParams
+        """
+        self._init_matplotlib()  #: first reset to defaults
+        if rcpars is not None:
+            assert type(rcpars) is dict, "'rcpars' should be a dictionary"
+            rcParams.update(rcpars)
+        #: store updated parameters
+        self._rc = deepcopy(rcParams)
+
+    def _init_subplots(self, sharex=False, sharey=False):
         """instantiate figure and subplots"""
         plt.close(self._name)
         self._fig, _axs = plt.subplots(
@@ -132,7 +165,7 @@ class Plotter(object):
         #: reshape Axes as list
         self._axs = np.array(_axs).reshape(self._nplots)
         # self._axs2 = np.full_like(self._axs, None)
-        self._fig.suptitle(f"Fig: {self._title}", fontsize=self._fontsize + 4)
+        self._fig.suptitle(self._suptitle, fontsize=self._fontsize + 4)
         self._initPlotsTitle(self._titles)
 
     def _initPlotsTitle(self, titles=None):
@@ -226,6 +259,17 @@ class Plotter(object):
             frameon=frameon,
             fancybox=fancybox,
         )
+
+    def savefig(self, fig_out=None, dpi_out=300):
+        """Save figure to .pdf/.png/.svg files"""
+        if fig_out is None:
+            return None
+        if self._outdir is not None:
+            fig_out = path.join(self._outdir, fig_out)
+        self._fig.savefig("{0}.pdf".format(fig_out), dpi=dpi_out, bbox_inches="tight")
+        self._fig.savefig("{0}.png".format(fig_out), dpi=dpi_out, bbox_inches="tight")
+        self._fig.savefig("{0}.svg".format(fig_out), dpi=dpi_out, bbox_inches="tight")
+        self._logger.info("Saved figures .pdf/.png/.svg figures to: %s", fig_out)
 
 
 if __name__ == "__main__":
