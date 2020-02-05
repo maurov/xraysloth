@@ -76,7 +76,8 @@ def curves_to_matrix(curves, axis=None, **kws):
 
     Parameters
     ----------
-    curves : list of lists of [np.array, np.array, dict]
+    curves : list of lists
+        Curves format is the following:
         [
             [x1, y1, label1, info1],
             ...

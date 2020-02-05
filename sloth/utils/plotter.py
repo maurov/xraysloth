@@ -56,6 +56,7 @@ class Plotter(object):
         fontsize=6,
         axes_linewidth=1,
         lines_linewidth=1.5,
+        style="seaborn-paper",
         usetex=False,
         title=None,
         titles=None,
@@ -79,6 +80,8 @@ class Plotter(object):
             base axes width [0.5]
         lines_linewidth : float
             base lines width [1.5]
+        style : str
+            https://matplotlib.org/gallery/style_sheets/style_sheets_reference.html
         usetex : bool
             use TeX
         title : None or str
@@ -102,6 +105,7 @@ class Plotter(object):
         self._fontsize = fontsize
         self._axes_linewidth = axes_linewidth
         self._lines_linewidth = lines_linewidth
+        self._style = style
 
         #: figure/axes parameters
         self._dpi = dpi
@@ -113,13 +117,13 @@ class Plotter(object):
         #: input/output
         self._outdir = outdir
 
+        self.set_style(self._style)
         self._init_matplotlib()
         self._init_subplots()
 
-    def _init_matplotlib(self, style="seaborn-ticks"):
+    def _init_matplotlib(self, **kws):
         """init default Matplotlib parameters"""
         plt.ion()
-        plt.style.use(style)
         self._rc = {
             "text.usetex": self._usetex,
             "figure.dpi": self._dpi,
@@ -134,6 +138,12 @@ class Plotter(object):
         }
         rcParams.update(self._rc)
         self._rc = deepcopy(rcParams)
+
+    def set_style(self, style=None):
+        """Set matplotlib style (reset to default if not given)"""
+        plt.rcdefaults()
+        if style is not None:
+            plt.style.use(style)
 
     def _update_matplotlib(self, rcpars):
         """Update matplotlib base settings
@@ -198,8 +208,13 @@ class Plotter(object):
     def subplots_adjust(self, **kws):
         return self._fig.subplots_adjust(**kws)
 
+    def newplot(self, *args, **kwargs):
+        """Plot command with forced replace=True"""
+        _ = kwargs.pop("replace", True)
+        return self.plot(*args, replace=True, **kwargs)
+
     def plot(
-        self, x, y, label=None, win=0, color=None, side="left", show_legend=None, **kws
+        self, x, y, label=None, win=0, color=None, side="left", show_legend=None, replace=False, xscale="linear", yscale="linear", xlabel=None, ylabel=None, **plotkws
     ):
         """plot in given axis
 
@@ -218,26 +233,49 @@ class Plotter(object):
             'top' -> sharey
         show_legend : None or dict
             if given, it should be a dictonary of parmeters for ax.legend()
+        **plotkws
+            keyword arguments for ax.plot()
+        replace : bool
+            if True, forces axis update
+        xscale, yscale : str
+            "linear", "log", "symlog", "logit", ...
+            The axis scale type to apply. -> https://matplotlib.org/api/axes_api.html
+        xlabel, ylabel : str
+            x, y labels
+
         """
         ax = self.getAxis(win)
+        #: override axis settings
+        if replace:
+            ax.set_xscale(xscale)
+            ax.set_yscale(yscale)
+            ax.set_xlabel(xlabel)
+            ax.set_ylabel(ylabel)
+
         if color is None:
             color = self._getNextColor()
+
         if side == "right":
             ax = ax.twinx()
             # np.append(self._axs, ax)
         if side == "top":
             raise NotImplementedError()
-        ax.plot(x, y, label=label, color=color)
+
+        #: main wrapped method
+        ax.plot(x, y, label=label, color=color, **plotkws)
+
         if show_legend is not None:
             assert type(show_legend) is dict, "show_legend: None or dict"
             ax.legend(**show_legend)
-        self._fig.tight_layout()
+
+        if replace:
+            self._fig.tight_layout()
 
     def legend(
         self,
         win=0,
-        loc="center right",
-        bbox_to_anchor=(0.95, 0.4),
+        loc="upper right",
+        bbox_to_anchor=(1.3, 0.95),
         borderaxespad=0.1,
         title="Legend",
         frameon=True,

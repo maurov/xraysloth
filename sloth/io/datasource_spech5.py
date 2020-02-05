@@ -454,11 +454,40 @@ class DataSourceSpecH5(object):
             sig_name, mon=mon, deglitch=deglitch, norm=norm
         )
         attrs = dict(xlabel=ax_label, ylabel=sig_label)
-        return [sig_label, sig_data, attrs]
+        label = f"S{self._scan_n}_X({ax_label})_Y{sig_label}"
+        return [ax_data, sig_data, label, attrs]
 
-    def get_curves(self, scans, **kwargs):
-        """Get list of XY data (=curves) for given scans"""
+    def get_curves(self, group_type, **kws):
+        """Get list of [Xarr, Yarr, Labstr, Infdict] data (=curves)
+           for a given group (scans or signals)
+
+        """
         raise NotImplementedError("TODO")
+
+    def get_curves_signals(self, signals, **kws):
+        """Get a list of curves from the current scan using a list of signals
+
+        Parameters
+        ----------
+
+        signals : tuple or list of str
+            names of the signals (=counters)
+        **kws :
+            keyword arguments passed to self.get_signal_data()
+
+        Returns
+        -------
+        curves : list of lists of length of signals
+            [
+                [X:(array), Y:(array), info:(dict)]
+                ...
+            ]
+        """
+        curves = []
+        for signal in signals:
+            curve = self.get_curve(signal, **kws)
+            curves.append(curve)
+        return curves
 
     def get_stack(self, *args, **kwargs):
         """Get a stack dictionary of curves
@@ -468,7 +497,7 @@ class DataSourceSpecH5(object):
         stack : dict of dicts
 
         {
-            'A': {'curves': [[x1, y1, info1], ..., [xN, yN, infoN]]},
+            'A': {'curves': [[x1, y1, label1, info1], ..., [xN, yN, label1, infoN]]},
             'B': {'curves': ...},
             ...
             'Z': {}
