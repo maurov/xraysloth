@@ -392,12 +392,13 @@ crystal (‘Si’, ‘Ge’, ‘all’) [optional, default: ‘all’]</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>curves</strong> (<em>list of lists of</em><em> [</em><em>np.array</em><em>, </em><em>np.array</em><em>, </em><em>dict</em><em>]</em>) – <dl class="simple">
-<dt>[</dt><dd><p>[x1, y1, label1, info1],
+<li><p><strong>curves</strong> (<em>list of lists</em>) – <p>Curves format is the following:
+[</p>
+<blockquote>
+<div><p>[x1, y1, label1, info1],
 …
 [xN, yN, labelN, infoN]</p>
-</dd>
-</dl>
+</div></blockquote>
 <p>]</p>
 </p></li>
 <li><p><strong>axis</strong> (<em>None</em><em> or </em><em>array 1D</em><em>, </em><em>optional</em>) – a reference axis used for the interpolation [None -&gt; curves[0][0]]</p></li>
