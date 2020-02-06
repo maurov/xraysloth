@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Matplotlib plotter
-==================
+Matplotlib (inline) plotter
+===========================
 
 This utility is a pure matplotlib visualizer/plotter (no interaction!, no
 widgets). It is intended to be used in Jupyter notebooks (%inline or %notebook).
@@ -214,7 +214,22 @@ class Plotter(object):
         return self.plot(*args, replace=True, **kwargs)
 
     def plot(
-        self, x, y, label=None, win=0, color=None, side="left", show_legend=None, replace=False, xscale="linear", yscale="linear", xlabel=None, ylabel=None, **plotkws
+        self,
+        x,
+        y,
+        label=None,
+        win=0,
+        color=None,
+        side="left",
+        show_legend=None,
+        replace=False,
+        xscale="linear",
+        yscale="linear",
+        xlabel=None,
+        ylabel=None,
+        xlim=None,
+        ylim=None,
+        **plotkws,
     ):
         """plot in given axis
 
@@ -242,7 +257,8 @@ class Plotter(object):
             The axis scale type to apply. -> https://matplotlib.org/api/axes_api.html
         xlabel, ylabel : str
             x, y labels
-
+        xlim, ylim: tuples
+            tuple for x, y limits [(None, None)]
         """
         ax = self.getAxis(win)
         #: override axis settings
@@ -251,6 +267,10 @@ class Plotter(object):
             ax.set_yscale(yscale)
             ax.set_xlabel(xlabel)
             ax.set_ylabel(ylabel)
+            if xlim is not None:
+                ax.set_xlim(xlim)
+            if ylim is not None:
+                ax.set_ylim(ylim)
 
         if color is None:
             color = self._getNextColor()

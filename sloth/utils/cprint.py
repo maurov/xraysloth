@@ -20,7 +20,7 @@ def cprint_set_dark_background():
 
 def cprint_colors_enabled():
     """Check if usage of colors with cprint* functions is enabled """
-    return (CPRINT_PAR["colors"])
+    return CPRINT_PAR["colors"]
 
 
 def cprint_enable_colors():
@@ -30,6 +30,7 @@ def cprint_enable_colors():
 def cprint_disable_colors():
     CPRINT_PAR["colors"] = 0
 
+
 # CONTRAST CHECKS #
 
 
@@ -37,7 +38,7 @@ def _cprint_bad_contrast(fgcolor, bgcolor, bold, underlined):
     """Return 1 if one of the conditions of poor contrast is matched """
 
     # ALL BG
-    _c0 = (fgcolor == bgcolor)
+    _c0 = fgcolor == bgcolor
     _c5 = (fgcolor == 1) and (bgcolor == 5)
     _c6 = (fgcolor == 2) and (bgcolor == 6)
 
@@ -48,7 +49,7 @@ def _cprint_bad_contrast(fgcolor, bgcolor, bold, underlined):
     _c4 = (fgcolor == 8) and (bgcolor == 7) and (CPRINT_PAR["dark_background"])
     _c7 = (fgcolor == 4) and (bgcolor == 6) and (CPRINT_PAR["dark_background"])
 
-    if (_c0 or _c1 or _c2 or _c3 or _c4 or _c5 or _c6 or _c7):
+    if _c0 or _c1 or _c2 or _c3 or _c4 or _c5 or _c6 or _c7:
         return 1
     else:
         return 0
@@ -58,10 +59,20 @@ def _cprint_bad_contrast2(fgcolor, bgcolor, bold, underlined):
     """Return 1 if one of the conditions of poor contrast is matched """
 
     # LIGHT BG
-    _c1 = (fgcolor == 3) and (bgcolor == 8) and (bold == 1) and (CPRINT_PAR["light_background"])
-    _c2 = (fgcolor == 7) and (bgcolor == 8) and (bold == 1) and (CPRINT_PAR["light_background"])
+    _c1 = (
+        (fgcolor == 3)
+        and (bgcolor == 8)
+        and (bold == 1)
+        and (CPRINT_PAR["light_background"])
+    )
+    _c2 = (
+        (fgcolor == 7)
+        and (bgcolor == 8)
+        and (bold == 1)
+        and (CPRINT_PAR["light_background"])
+    )
 
-    if (_c1 or _c2):
+    if _c1 or _c2:
         return 1
     else:
         return 0
@@ -73,10 +84,11 @@ def _cprint_bad_contrast3(fgcolor, bgcolor, bold, underlined):
     # black on black with LIGHT BG
     _c1 = (fgcolor == 8) and (bgcolor == 0) and (CPRINT_PAR["light_background"])
 
-    if (_c1 ):
+    if _c1:
         return 1
     else:
         return 0
+
 
 # COLOR PRINT ###
 
@@ -134,31 +146,31 @@ def cprint(_str, fgcolor, bgcolor, bold, underlined, st, retStr=False):
     _st_str = "\033[9m"
 
     # Formating the color strings.
-    if (_bad_contrast3):
+    if _bad_contrast3:
         # replace (current fg color black) on black by white on black.
         _fg_str = "\033[3{0}m".format(7)
     else:
         _fg_str = "\033[3{0}m".format(fgcolor)
 
-    if (bgcolor >= 0):
+    if bgcolor >= 0:
         _bg_str = "\033[4{0}m".format(bgcolor)
     else:
         _bg_str = ""
 
-    if (CPRINT_PAR["colors"] == 0):
+    if CPRINT_PAR["colors"] == 0:
         _fg_str = ""
         _bg_str = ""
 
     # Formating the modificator strings.
     _mod_str = ""
 
-    if ((bold or _bad_contrast) and (_bad_contrast2 == 0)):
+    if (bold or _bad_contrast) and (_bad_contrast2 == 0):
         _mod_str = _mod_str + _b_str
 
-    if (underlined):
+    if underlined:
         _mod_str = _mod_str + _u_str
 
-    if (st):
+    if st:
         _mod_str = _mod_str + _st_str
 
     _colored_str = "{0}{1}{2}{3}\033[0m\n".format(_mod_str, _fg_str, _bg_str, _str)
@@ -194,5 +206,5 @@ def main():
     cprint_examples()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
