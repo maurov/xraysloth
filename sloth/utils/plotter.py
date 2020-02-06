@@ -62,6 +62,8 @@ class Plotter(object):
         titles=None,
         logger=None,
         outdir=None,
+        sharex=False,
+        sharey=False,
     ):
         """Logger Constructor
 
@@ -119,7 +121,7 @@ class Plotter(object):
 
         self.set_style(self._style)
         self._init_matplotlib()
-        self._init_subplots()
+        self._init_subplots(sharex=sharex, sharey=sharey)
 
     def _init_matplotlib(self, **kws):
         """init default Matplotlib parameters"""
@@ -176,7 +178,8 @@ class Plotter(object):
         self._axs = np.array(_axs).reshape(self._nplots)
         # self._axs2 = np.full_like(self._axs, None)
         self._fig.suptitle(self._suptitle, fontsize=self._fontsize + 4)
-        self._initPlotsTitle(self._titles)
+        if self._titles is not None:
+            self._initPlotsTitle(self._titles)
 
     def _initPlotsTitle(self, titles=None):
         """init title for all subplots"""
@@ -229,6 +232,7 @@ class Plotter(object):
         ylabel=None,
         xlim=None,
         ylim=None,
+        title=None,
         **plotkws,
     ):
         """plot in given axis
@@ -271,6 +275,10 @@ class Plotter(object):
                 ax.set_xlim(xlim)
             if ylim is not None:
                 ax.set_ylim(ylim)
+            if title is not None:
+                ax.set_title(title)
+            else:
+                ax.set_title(f"win={win}")
 
         if color is None:
             color = self._getNextColor()
