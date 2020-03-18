@@ -79,7 +79,7 @@ def mainQtApp(options):
         import hdf5plugin  # noqa
     except ImportError:
         _logger.debug("Backtrace", exc_info=True)
-    import h5py
+    import h5py  # noqa
 
     import silx
     import silx.utils.files
@@ -87,7 +87,7 @@ def mainQtApp(options):
 
     # Make sure matplotlib is configured
     # Needed for Debian 8: compatibility between Qt4/Qt5 and old matplotlib
-    from silx.gui.plot import matplotlib
+    from silx.gui.plot import matplotlib  # noqa
 
     _logger.info('Starting application')
     app = qt.QApplication([])

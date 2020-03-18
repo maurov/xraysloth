@@ -26,24 +26,24 @@
 # ###########################################################################*/
 from __future__ import absolute_import, division
 
-__authors__ = ['Marius Retegan', 'Mauro Rovezzi']
-__license__ = 'MIT'
+__authors__ = ["Marius Retegan", "Mauro Rovezzi"]
+__license__ = "MIT"
 
 import os
-import glob
 
 from silx.gui import qt
 
 from .items import ScanItem
 from .model import TreeModel, HeaderSection
 from .view import TreeView
+
 # from .plot import PlotArea  # original DAXS version
 from sloth.gui.plot.plotarea import PlotArea  # sloth version
 from sloth.gui.console import InternalIPyKernel
 
 from .config import Config
 from .delegates import ComboBoxDelegate
-from .profiling import timeit # noqa
+from .profiling import timeit  # noqa
 from sloth import _resourcesPath
 
 
@@ -53,7 +53,8 @@ class MainWindow(qt.QMainWindow):
 
         if logger is None:
             from sloth.utils.logging import getLogger
-            self._logger = getLogger('sloth.gui.daxs.window')
+
+            self._logger = getLogger("sloth.gui.daxs.window")
         else:
             self._logger = logger
 
@@ -70,46 +71,42 @@ class MainWindow(qt.QMainWindow):
         self.setMenuBar(self.menuBar)
 
         # Add icon to the application
-        ico = qt.QIcon(os.path.join(_resourcesPath, "logo",
-                                    "xraysloth_logo_04.svg"))
+        ico = qt.QIcon(os.path.join(_resourcesPath, "logo", "xraysloth_logo_04.svg"))
         self.setWindowIcon(ico)
         self.setWindowTitle("sloth-daxs")
 
         # Add additional sections to the header.
         values = [
+            HeaderSection(name="Command", roles={qt.Qt.DisplayRole: "command"}),
             HeaderSection(
-                name='Command',
-                roles={qt.Qt.DisplayRole: 'command'}),
+                name="X",
+                roles={qt.Qt.DisplayRole: "xLabel", qt.Qt.EditRole: "counters"},
+                delegate=ComboBoxDelegate,
+            ),
             HeaderSection(
-                name='X',
+                name="Y",
+                roles={qt.Qt.DisplayRole: "yLabel", qt.Qt.EditRole: "counters"},
+                delegate=ComboBoxDelegate,
+            ),
+            HeaderSection(
+                name="Signal",
+                roles={qt.Qt.DisplayRole: "signalLabel", qt.Qt.EditRole: "counters"},
+                delegate=ComboBoxDelegate,
+            ),
+            HeaderSection(
+                name="Monitor",
+                roles={qt.Qt.DisplayRole: "monitorLabel", qt.Qt.EditRole: "counters"},
+                delegate=ComboBoxDelegate,
+            ),
+            HeaderSection(
+                name="Plot",
                 roles={
-                    qt.Qt.DisplayRole: 'xLabel',
-                    qt.Qt.EditRole: 'counters'},
-                delegate=ComboBoxDelegate),
-            HeaderSection(
-                name='Y',
-                roles={
-                    qt.Qt.DisplayRole: 'yLabel',
-                    qt.Qt.EditRole: 'counters'},
-                delegate=ComboBoxDelegate),
-            HeaderSection(
-                name='Signal',
-                roles={
-                    qt.Qt.DisplayRole: 'signalLabel',
-                    qt.Qt.EditRole: 'counters'},
-                delegate=ComboBoxDelegate),
-            HeaderSection(
-                name='Monitor',
-                roles={
-                    qt.Qt.DisplayRole: 'monitorLabel',
-                    qt.Qt.EditRole: 'counters'},
-                delegate=ComboBoxDelegate),
-            HeaderSection(
-                name='Plot',
-                roles={
-                    qt.Qt.DisplayRole: 'currentPlotWindowIndex',
-                    qt.Qt.EditRole: 'plotWindowsIndexes'},
-                delegate=ComboBoxDelegate)]
+                    qt.Qt.DisplayRole: "currentPlotWindowIndex",
+                    qt.Qt.EditRole: "plotWindowsIndexes",
+                },
+                delegate=ComboBoxDelegate,
+            ),
+        ]
 
         for value in values:
             section = len(self.model.header)
@@ -120,19 +117,23 @@ class MainWindow(qt.QMainWindow):
         self.view.setModel(self.model)
 
         self.dockWidget = qt.QDockWidget(parent=self)
-        self.dockWidget.setObjectName('Data View')
+        self.dockWidget.setObjectName("Data View")
         self.dockWidget.setWidget(self.view)
-        self.addDockWidget(qt.Qt.LeftDockWidgetArea, self.dockWidget)
+        self.addDockWidget(qt.Qt.TopDockWidgetArea, self.dockWidget)
 
         self.model.dataChanged.connect(self.updatePlot)
         self.plotArea.changed.connect(self.updateModel)
 
+        # Add default session
+        self.view.addExperiment("Experiment0")
+
         # Add to the model the files from the data folder.
-        dataPath = os.path.join(os.getcwd(), 'data')
-        if os.path.exists(dataPath):
-            self.view.addExperiment('Experiment')
-            for specFile in glob.glob(os.path.join(dataPath, '*.spec')):
-                self.view.addFile(specFile)
+        # dataPath = os.path.join(os.getcwd(), "data")
+        # if os.path.exists(dataPath):
+        #     self.view.addExperiment("Experiment")
+        #     import glob
+        #     for specFile in glob.glob(os.path.join(dataPath, "*.spec")):
+        #         self.view.addFile(specFile)
 
         # Increase by 30 % the column width of the first column of
         # the tree view.
@@ -141,16 +142,16 @@ class MainWindow(qt.QMainWindow):
         self.view.setColumnWidth(column, columnWidth + columnWidth * 0.3)
         self.view.expandAll()
 
-        # Add two plot windows to the plot area.
+        # Add one plot windows to the plot area.
         self.plotArea.addPlotWindow()
 
         if self._with_ipykernel:
             # Initialize internal ipykernel
             self._ipykernel = InternalIPyKernel()
-            self._ipykernel.init_kernel(backend='qt')
-            self._ipykernel.add_to_namespace('app', self)
-            self._ipykernel.add_to_namespace('view', self.view)
-            self._ipykernel.add_to_namespace('plotArea', self.plotArea)
+            self._ipykernel.init_kernel(backend="qt")
+            self._ipykernel.add_to_namespace("app", self)
+            self._ipykernel.add_to_namespace("view", self.view)
+            self._ipykernel.add_to_namespace("plotArea", self.plotArea)
             # Add IPython console at menu
             self._initConsoleMenu()
         else:
@@ -172,8 +173,9 @@ class MainWindow(qt.QMainWindow):
         bottomRightItem = self.model.itemFromIndex(bottomRight)
 
         if topLeftItem is not bottomRightItem:
-            self._logger.error('The indices to not point to the same '
-                         'item in the model')
+            self._logger.error(
+                "The indices to not point to the same " "item in the model"
+            )
             return
 
         item = topLeftItem
@@ -181,7 +183,7 @@ class MainWindow(qt.QMainWindow):
 
         if item.isChecked:
             if len(plotWindows) == 0:
-                self._logger.info('There are no plot widgets available')
+                self._logger.info("There are no plot widgets available")
                 return
 
         for plotWindow in plotWindows:
@@ -211,27 +213,27 @@ class MainWindow(qt.QMainWindow):
         if self.settings is None:
             return
 
-        self.settings.beginGroup('MainWindow')
+        self.settings.beginGroup("MainWindow")
 
-        state = self.settings.value('State')
+        state = self.settings.value("State")
         if state is not None:
             self.restoreState(qt.QByteArray(state))
 
-        size = self.settings.value('Size')
+        size = self.settings.value("Size")
         if size is not None:
             self.resize(qt.QSize(size))
 
-        pos = self.settings.value('Position')
+        pos = self.settings.value("Position")
         if pos is not None:
             self.move(qt.QPoint(pos))
 
         self.settings.endGroup()
 
     def saveSettings(self):
-        self.settings.beginGroup('MainWindow')
-        self.settings.setValue('State', self.saveState())
-        self.settings.setValue('Size', self.size())
-        self.settings.setValue('Position', self.pos())
+        self.settings.beginGroup("MainWindow")
+        self.settings.setValue("State", self.saveState())
+        self.settings.setValue("Size", self.size())
+        self.settings.setValue("Position", self.pos())
         self.settings.endGroup()
         self.settings.sync()
 
@@ -254,13 +256,17 @@ class MainWindow(qt.QMainWindow):
     def _initConsoleMenu(self):
         self.menuConsole = self.menuBar.addMenu("Console")
 
-        self.newConsoleAction = qt.QAction("&New Qt Console",
-                                           self, shortcut="Ctrl+K",
-                                           triggered=self._ipykernel.new_qt_console)
+        self.newConsoleAction = qt.QAction(
+            "&New Qt Console",
+            self,
+            shortcut="Ctrl+K",
+            triggered=self._ipykernel.new_qt_console,
+        )
         self._addMenuAction(self.menuConsole, self.newConsoleAction)
 
         self.closeConsoleAction = qt.QAction(
-            "&Quit", self, shortcut="Ctrl+Q", triggered=self.onClose)
+            "&Quit", self, shortcut="Ctrl+Q", triggered=self.onClose
+        )
         self._addMenuAction(self.menuConsole, self.closeConsoleAction)
 
     def onClose(self):

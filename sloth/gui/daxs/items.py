@@ -338,30 +338,33 @@ class ScanItem(TreeItem):
 
     @property
     def counters(self):
-        return self.scanData['measurement']
+        try:
+            return self.scanData['measurement']
+        except KeyError:
+            return [None, None, None]
 
     @property
     def command(self):
-        return str(self.scanData['title'].value)
+        return str(self.scanData['title'][()])
 
     @property
     def x(self):
         try:
-            return self.counters[self.xLabel].value
+            return self.counters[self.xLabel][()]
         except KeyError:
             return None
 
     @property
     def signal(self):
         try:
-            return self.counters[self.signalLabel].value
+            return self.counters[self.signalLabel][()]
         except KeyError:
             return None
 
     @property
     def monitor(self):
         try:
-            return self.counters[self.monitorLabel].value
+            return self.counters[self.monitorLabel][()]
         except KeyError:
             return None
 
