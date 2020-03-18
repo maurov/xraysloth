@@ -10,3 +10,4 @@ sphinxcontrib-napoleon
 sphinxcontrib-bibtex
 sphinxcontrib-argdoc
 nbsphinx  #: for converting ipynb in documentation
+rstcheck
