@@ -29,6 +29,7 @@ psutil
 termcolor
 pytools
 palettable
+ptpython >= 2.0
 xlrd  #: read Excel files
 xlwt  #: write Excel files
 hdf5plugin >= 2.1

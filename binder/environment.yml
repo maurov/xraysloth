@@ -19,6 +19,7 @@ dependencies:
     - pip
     - nodejs
     - wxpython >= 4.0.4  # still not working with pip!
+    - rtree  # -> `requirements-xrt.txt` (pip fails for some unknown reason)
     - conda-forge::xraylib
     - pip:
         - -r ../requirements.txt        #: base

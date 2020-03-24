@@ -410,7 +410,7 @@ def find_edge(emin, emax, shells=None):
                 _LOGGER.info("{0} \t {1} \t {2:>.2f} eV".format(el, sh, edge))
 
 
-def find_line(emin, emax, elements=None, lines=None, outDict=False, backend="xraylib"):
+def find_line(emin, emax, elements=None, lines=None, outDict=False, backend="xraylib", skip_zero_width=True):
     """Get the emission line energy in a given energy range [emin,emax] (eV)
 
     Parameters
@@ -422,7 +422,9 @@ def find_line(emin, emax, elements=None, lines=None, outDict=False, backend="xra
     lines : list of str (optional)
         list of lines, [None -> LINES (all)]
     outDict : boolean, False
-        returns a dictionary instead of printing to screen with keywords:
+        returns a dictionary instead of printing to screen
+    skip_zero_width : boolean, True
+        True: if fluo_width == 0, not include in the results
 
     Returns
     -------
@@ -467,6 +469,11 @@ def find_line(emin, emax, elements=None, lines=None, outDict=False, backend="xra
                 continue
             if (line >= emin) and (line <= emax):
                 w = fluo_width(elem=el, line=ln, showInfos=False)
+                if w == 0:
+                    _LOGGER.warning(f"{el}.{ln} zero width")
+                    if skip_zero_width:
+                        _LOGGER.info(f"{el}.{ln} skipped")
+                        continue
                 _out["el"].append(eln[0])
                 _out["eln"].append(eln[1])
                 _out["ln"].append(ln)

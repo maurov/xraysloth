@@ -34,12 +34,11 @@ __authors__ = ['Marius Retegan', 'Mauro Rovezzi']
 __license__ = 'MIT'
 
 import os
-import logging
 
 import silx.io
 from silx.gui import qt
 
-from .items import ExperimentItem, GroupItem, DatasetItem, FileItem, ScanItem
+from .items import ExperimentItem, GroupItem, FileItem, ScanItem
 
 from sloth.utils.logging import getLogger
 logger = getLogger('sloth.gui.daxs.view')
@@ -160,7 +159,7 @@ class TreeView(qt.QTreeView):
     def loadFiles(self):
         paths, _ = qt.QFileDialog.getOpenFileNames(
             self, 'Select Files to Load', os.getcwd(),
-            'Data Files (*.spec *.hdf5);; All Files (*)')
+            'Data Files (*.spec *.hdf5 *.h5);; All Files (*)')
 
         if not paths:
             return
