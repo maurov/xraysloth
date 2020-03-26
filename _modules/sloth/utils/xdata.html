@@ -570,7 +570,7 @@
                 <span class="n">_LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> </span><span class="se">\t</span><span class="s2"> </span><span class="si">{1}</span><span class="s2"> </span><span class="se">\t</span><span class="s2"> </span><span class="si">{2:&gt;.2f}</span><span class="s2"> eV&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">sh</span><span class="p">,</span> <span class="n">edge</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="find_line"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.xdata.find_line">[docs]</a><span class="k">def</span> <span class="nf">find_line</span><span class="p">(</span><span class="n">emin</span><span class="p">,</span> <span class="n">emax</span><span class="p">,</span> <span class="n">elements</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outDict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;xraylib&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="find_line"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.xdata.find_line">[docs]</a><span class="k">def</span> <span class="nf">find_line</span><span class="p">(</span><span class="n">emin</span><span class="p">,</span> <span class="n">emax</span><span class="p">,</span> <span class="n">elements</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outDict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;xraylib&quot;</span><span class="p">,</span> <span class="n">skip_zero_width</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Get the emission line energy in a given energy range [emin,emax] (eV)</span>
 
 <span class="sd">    Parameters</span>
@@ -582,7 +582,9 @@
 <span class="sd">    lines : list of str (optional)</span>
 <span class="sd">        list of lines, [None -&gt; LINES (all)]</span>
 <span class="sd">    outDict : boolean, False</span>
-<span class="sd">        returns a dictionary instead of printing to screen with keywords:</span>
+<span class="sd">        returns a dictionary instead of printing to screen</span>
+<span class="sd">    skip_zero_width : boolean, True</span>
+<span class="sd">        True: if fluo_width == 0, not include in the results</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -627,6 +629,11 @@
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">line</span> <span class="o">&gt;=</span> <span class="n">emin</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">line</span> <span class="o">&lt;=</span> <span class="n">emax</span><span class="p">):</span>
                 <span class="n">w</span> <span class="o">=</span> <span class="n">fluo_width</span><span class="p">(</span><span class="n">elem</span><span class="o">=</span><span class="n">el</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="n">ln</span><span class="p">,</span> <span class="n">showInfos</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">w</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">_LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">el</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">ln</span><span class="si">}</span><span class="s2"> zero width&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">skip_zero_width</span><span class="p">:</span>
+                        <span class="n">_LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">el</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">ln</span><span class="si">}</span><span class="s2"> skipped&quot;</span><span class="p">)</span>
+                        <span class="k">continue</span>
                 <span class="n">_out</span><span class="p">[</span><span class="s2">&quot;el&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eln</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
                 <span class="n">_out</span><span class="p">[</span><span class="s2">&quot;eln&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eln</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
                 <span class="n">_out</span><span class="p">[</span><span class="s2">&quot;ln&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ln</span><span class="p">)</span>

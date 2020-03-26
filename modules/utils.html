@@ -828,7 +828,7 @@ Mz in Hepheastus not in Xraylib (the single transitions yes!)</p>
 
 <dl class="function">
 <dt id="sloth.utils.xdata.find_line">
-<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">find_line</code><span class="sig-paren">(</span><em class="sig-param">emin</em>, <em class="sig-param">emax</em>, <em class="sig-param">elements=None</em>, <em class="sig-param">lines=None</em>, <em class="sig-param">outDict=False</em>, <em class="sig-param">backend='xraylib'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#find_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.find_line" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.utils.xdata.</code><code class="sig-name descname">find_line</code><span class="sig-paren">(</span><em class="sig-param">emin</em>, <em class="sig-param">emax</em>, <em class="sig-param">elements=None</em>, <em class="sig-param">lines=None</em>, <em class="sig-param">outDict=False</em>, <em class="sig-param">backend='xraylib'</em>, <em class="sig-param">skip_zero_width=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/utils/xdata.html#find_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.utils.xdata.find_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the emission line energy in a given energy range [emin,emax] (eV)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -836,7 +836,8 @@ Mz in Hepheastus not in Xraylib (the single transitions yes!)</p>
 <li><p><strong>emax</strong> (<em>emin</em><em>,</em>) – [minimum, maximum] energy range (eV)</p></li>
 <li><p><strong>elements</strong> (<em>list of str</em><em> (</em><em>optional</em><em>)</em>) – list of elements, [None -&gt; ELEMENTS (all)]</p></li>
 <li><p><strong>lines</strong> (<em>list of str</em><em> (</em><em>optional</em><em>)</em>) – list of lines, [None -&gt; LINES (all)]</p></li>
-<li><p><strong>outDict</strong> (<em>boolean</em><em>, </em><em>False</em>) – returns a dictionary instead of printing to screen with keywords:</p></li>
+<li><p><strong>outDict</strong> (<em>boolean</em><em>, </em><em>False</em>) – returns a dictionary instead of printing to screen</p></li>
+<li><p><strong>skip_zero_width</strong> (<em>boolean</em><em>, </em><em>True</em>) – True: if fluo_width == 0, not include in the results</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
