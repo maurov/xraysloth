@@ -436,7 +436,12 @@ class SpecfileData(object):
         else:
             datamon = self.sd.data_column_by_name(cmon)
             labmon = str(cmon)
-        # data cps
+        # data counts
+        if csec == "counts":
+            scan_datz = ( ( datasig / datamon ) * np.mean(datamon) )
+            _zlabel = "((signal/{0})*mean({0}))".format(labmon)
+            csec = None
+        # data counts
         if csec is not None:
             scan_datz = ( ( datasig / datamon ) * np.mean(datamon) ) / self.sd.data_column_by_name(csec)
             _zlabel = "((signal/{0})*mean({0}))/seconds".format(labmon)
