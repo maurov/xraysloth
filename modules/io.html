@@ -198,32 +198,32 @@ have a unified data loading experience for many types of data files.</p>
 <ul class="simple">
 <li><p>silx (<a class="reference external" href="http://www.silx.org/doc/silx/latest/modules/io/spech5.html">http://www.silx.org/doc/silx/latest/modules/io/spech5.html</a>)</p></li>
 </ul>
-<dl class="class">
+<dl class="py class">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5">
-<em class="property">class </em><code class="sig-prename descclassname">sloth.io.datasource_spech5.</code><code class="sig-name descname">DataSourceSpecH5</code><span class="sig-paren">(</span><em class="sig-param">fname=None</em>, <em class="sig-param">logger=None</em>, <em class="sig-param">urls_fmt='silx'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">sloth.io.datasource_spech5.</code><code class="sig-name descname">DataSourceSpecH5</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">urls_fmt</span><span class="o">=</span><span class="default_value">'silx'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Data source utility wrapper for a Spec file read as HDF5 object
 via silx.io.open</p>
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.open">
-<code class="sig-name descname">open</code><span class="sig-paren">(</span><em class="sig-param">mode='r'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.open"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.open" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">open</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'r'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.open"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.open" title="Permalink to this definition">¶</a></dt>
 <dd><p>Open the source file object with h5py in given mode</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.close">
 <code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close source file silx.io.spech5.SpecH5</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.view">
 <code class="sig-name descname">view</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.view"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.view" title="Permalink to this definition">¶</a></dt>
 <dd><p>Init the TreeView and show</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.set_group">
-<code class="sig-name descname">set_group</code><span class="sig-paren">(</span><em class="sig-param">group_url=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.set_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.set_group" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_group</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group_url</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.set_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.set_group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select group url</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -238,9 +238,9 @@ via silx.io.open</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.set_scan">
-<code class="sig-name descname">set_scan</code><span class="sig-paren">(</span><em class="sig-param">scan_n</em>, <em class="sig-param">scan_idx=1</em>, <em class="sig-param">group_url=None</em>, <em class="sig-param">scan_kws=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.set_scan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.set_scan" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_scan</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">scan_n</span></em>, <em class="sig-param"><span class="n">scan_idx</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">group_url</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">scan_kws</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.set_scan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.set_scan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select a given scan number</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -260,25 +260,25 @@ via silx.io.open</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_scans">
 <code class="sig-name descname">get_scans</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_scans"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_scans" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get list of scans</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_motors">
 <code class="sig-name descname">get_motors</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_motors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_motors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get list of motors names</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_counters">
 <code class="sig-name descname">get_counters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_counters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_counters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get list of motors names</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_title">
 <code class="sig-name descname">get_title</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_title"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_title" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get title str for the current scan</p>
@@ -292,15 +292,15 @@ via silx.io.open</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_scan_axis">
 <code class="sig-name descname">get_scan_axis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_scan_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_scan_axis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the name of the scanned axis from scan title</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_array">
-<code class="sig-name descname">get_array</code><span class="sig-paren">(</span><em class="sig-param">cnt</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_array" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cnt</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get array of a given counter</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -315,9 +315,9 @@ via silx.io.open</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_value">
-<code class="sig-name descname">get_value</code><span class="sig-paren">(</span><em class="sig-param">mot</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_value" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mot</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get motor position</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -332,9 +332,9 @@ via silx.io.open</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_axis_data">
-<code class="sig-name descname">get_axis_data</code><span class="sig-paren">(</span><em class="sig-param">ax_name=None</em>, <em class="sig-param">to_energy=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_axis_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_axis_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_axis_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ax_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_energy</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_axis_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_axis_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get data for the scan axis</p>
 <p>This method returns the data (=label and array) for a given axis of the
 selected scan. It is primarily targeted to a “scanning” axis, but any
@@ -368,9 +368,9 @@ Bragg angle to energy.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_signal_data">
-<code class="sig-name descname">get_signal_data</code><span class="sig-paren">(</span><em class="sig-param">sig_name</em>, <em class="sig-param">mon=None</em>, <em class="sig-param">deglitch=None</em>, <em class="sig-param">norm=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_signal_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_signal_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_signal_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sig_name</span></em>, <em class="sig-param"><span class="n">mon</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">deglitch</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">norm</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_signal_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_signal_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get data for the signal counter</p>
 <p>This method returns the data (=label and array) for a given signal of the
 selected scan. It is possible to control normalization and/or deglitching.</p>
@@ -408,9 +408,9 @@ selected scan. It is possible to control normalization and/or deglitching.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_curve">
-<code class="sig-name descname">get_curve</code><span class="sig-paren">(</span><em class="sig-param">sig_name</em>, <em class="sig-param">ax_name=None</em>, <em class="sig-param">to_energy=None</em>, <em class="sig-param">mon=None</em>, <em class="sig-param">deglitch=None</em>, <em class="sig-param">norm=None</em>, <em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_curve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_curve" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_curve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sig_name</span></em>, <em class="sig-param"><span class="n">ax_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_energy</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mon</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">deglitch</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">norm</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kws</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_curve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_curve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get XY data (=curve) for current scan</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -425,16 +425,16 @@ selected scan. It is possible to control normalization and/or deglitching.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_curves">
-<code class="sig-name descname">get_curves</code><span class="sig-paren">(</span><em class="sig-param">group_type</em>, <em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_curves"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_curves" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_curves</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group_type</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kws</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_curves"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_curves" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get list of [Xarr, Yarr, Labstr, Infdict] data (=curves)
 for a given group (scans or signals)</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_curves_signals">
-<code class="sig-name descname">get_curves_signals</code><span class="sig-paren">(</span><em class="sig-param">signals</em>, <em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_curves_signals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_curves_signals" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_curves_signals</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">signals</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kws</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_curves_signals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_curves_signals" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a list of curves from the current scan using a list of signals</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -459,9 +459,9 @@ for a given group (scans or signals)</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_stack">
-<code class="sig-name descname">get_stack</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_stack" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_stack</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_stack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a stack dictionary of curves</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -478,21 +478,21 @@ for a given group (scans or signals)</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_mrg">
-<code class="sig-name descname">get_mrg</code><span class="sig-paren">(</span><em class="sig-param">curves</em>, <em class="sig-param">action='sum'</em>, <em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_mrg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_mrg" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_mrg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">curves</span></em>, <em class="sig-param"><span class="n">action</span><span class="o">=</span><span class="default_value">'sum'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kws</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_mrg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_mrg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get merged list of XY data with a given action</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_mrg_by">
-<code class="sig-name descname">get_mrg_by</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_mrg_by"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_mrg_by" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_mrg_by</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_mrg_by"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_mrg_by" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get merged list of XY data with a given action grouped by nbins</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.write_scans_to_h5">
-<code class="sig-name descname">write_scans_to_h5</code><span class="sig-paren">(</span><em class="sig-param">scans</em>, <em class="sig-param">fname_out</em>, <em class="sig-param">scans_groups=None</em>, <em class="sig-param">h5path=None</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">conf_dict=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.write_scans_to_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.write_scans_to_h5" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_scans_to_h5</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">scans</span></em>, <em class="sig-param"><span class="n">fname_out</span></em>, <em class="sig-param"><span class="n">scans_groups</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">h5path</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">conf_dict</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.write_scans_to_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.write_scans_to_h5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export a selected list of scans to HDF5 file</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -516,7 +516,7 @@ if a list of lists, scans_groups is required</p></li>
 
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="sloth.io.datasource_spech5.main">
 <code class="sig-prename descclassname">sloth.io.datasource_spech5.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.main" title="Permalink to this definition">¶</a></dt>
 <dd><p>test</p>
@@ -540,9 +540,9 @@ if a list of lists, scans_groups is required</p></li>
 </ul>
 </div>
 </div>
-<dl class="class">
+<dl class="py class">
 <dt id="sloth.io.specfile_reader.SpecfileData">
-<em class="property">class </em><code class="sig-prename descclassname">sloth.io.specfile_reader.</code><code class="sig-name descname">SpecfileData</code><span class="sig-paren">(</span><em class="sig-param">fname=None</em>, <em class="sig-param">cntx=1</em>, <em class="sig-param">cnty=None</em>, <em class="sig-param">csig=None</em>, <em class="sig-param">cmon=None</em>, <em class="sig-param">csec=None</em>, <em class="sig-param">norm=None</em>, <em class="sig-param">verbosity=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/specfile_reader.html#SpecfileData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.specfile_reader.SpecfileData" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">sloth.io.specfile_reader.</code><code class="sig-name descname">SpecfileData</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cntx</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">cnty</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">csig</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cmon</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">csec</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">norm</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbosity</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/specfile_reader.html#SpecfileData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.specfile_reader.SpecfileData" title="Permalink to this definition">¶</a></dt>
 <dd><p>SpecfileData object</p>
 </dd></dl>
 

@@ -190,9 +190,9 @@
 <p>crystal_box: a toolbox to work with <a href="#id6"><span class="problematic" id="id7">CRYSTAL_</span></a> from Python via a system
 call to diff_pat</p>
 <p>.._CRYSTAL: <a class="reference external" href="https://github.com/srio/CRYSTAL">https://github.com/srio/CRYSTAL</a></p>
-<dl class="class">
+<dl class="py class">
 <dt id="sloth.raytracing.crystal_box.XCrystalBox">
-<em class="property">class </em><code class="sig-prename descclassname">sloth.raytracing.crystal_box.</code><code class="sig-name descname">XCrystalBox</code><span class="sig-paren">(</span><em class="sig-param">opts=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/crystal_box.html#XCrystalBox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.crystal_box.XCrystalBox" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">sloth.raytracing.crystal_box.</code><code class="sig-name descname">XCrystalBox</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">opts</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/crystal_box.html#XCrystalBox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.crystal_box.XCrystalBox" title="Permalink to this definition">¶</a></dt>
 <dd><p>bragg_file : Name of file with crystal data (from BRAGG)</p>
 <dl>
 <dt>crys_type<span class="classifier">What kind of crystal you want to use:</span></dt><dd><p>[0] Perfect crystal
@@ -245,33 +245,33 @@ in grazing angle [deg] for scan_mode == 4</p>
 </dl>
 <p>poisson_ratio : Poisson ratio</p>
 <p>crys_idx : CrystalIndex: 0,1,2=Si,3=Ge,4=Diamond</p>
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.raytracing.crystal_box.XCrystalBox.check_opts">
 <code class="sig-name descname">check_opts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/crystal_box.html#XCrystalBox.check_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.crystal_box.XCrystalBox.check_opts" title="Permalink to this definition">¶</a></dt>
 <dd><p>performs a global check on setted options</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.raytracing.crystal_box.XCrystalBox.set_opt">
-<code class="sig-name descname">set_opt</code><span class="sig-paren">(</span><em class="sig-param">opt</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/crystal_box.html#XCrystalBox.set_opt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.crystal_box.XCrystalBox.set_opt" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_opt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">opt</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/crystal_box.html#XCrystalBox.set_opt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.crystal_box.XCrystalBox.set_opt" title="Permalink to this definition">¶</a></dt>
 <dd><p>set option and run global check</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.raytracing.crystal_box.XCrystalBox.write_inp_file">
-<code class="sig-name descname">write_inp_file</code><span class="sig-paren">(</span><em class="sig-param">fname='xcrystal.inp'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/crystal_box.html#XCrystalBox.write_inp_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.crystal_box.XCrystalBox.write_inp_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_inp_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span><span class="o">=</span><span class="default_value">'xcrystal.inp'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/crystal_box.html#XCrystalBox.write_inp_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.crystal_box.XCrystalBox.write_inp_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>write xcrystal.inp</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.raytracing.crystal_box.XCrystalBox.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/crystal_box.html#XCrystalBox.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.crystal_box.XCrystalBox.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>runs diff_pat</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.raytracing.crystal_box.XCrystalBox.load_refl">
-<code class="sig-name descname">load_refl</code><span class="sig-paren">(</span><em class="sig-param">fname='diff_pat.dat'</em>, <em class="sig-param">pol='s'</em>, <em class="sig-param">kind='cubic'</em>, <em class="sig-param">fill_value=0.0</em>, <em class="sig-param">plot=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/crystal_box.html#XCrystalBox.load_refl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.crystal_box.XCrystalBox.load_refl" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">load_refl</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span><span class="o">=</span><span class="default_value">'diff_pat.dat'</span></em>, <em class="sig-param"><span class="n">pol</span><span class="o">=</span><span class="default_value">'s'</span></em>, <em class="sig-param"><span class="n">kind</span><span class="o">=</span><span class="default_value">'cubic'</span></em>, <em class="sig-param"><span class="n">fill_value</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">plot</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/crystal_box.html#XCrystalBox.load_refl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.crystal_box.XCrystalBox.load_refl" title="Permalink to this definition">¶</a></dt>
 <dd><p>load reflectivity curve and interpolate</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -292,15 +292,15 @@ the spline interpolator to use.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.raytracing.crystal_box.XCrystalBox.fit_refl">
-<code class="sig-name descname">fit_refl</code><span class="sig-paren">(</span><em class="sig-param">fname='diff_pat.dat'</em>, <em class="sig-param">pol='s'</em>, <em class="sig-param">plot=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/crystal_box.html#XCrystalBox.fit_refl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.crystal_box.XCrystalBox.fit_refl" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fit_refl</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span><span class="o">=</span><span class="default_value">'diff_pat.dat'</span></em>, <em class="sig-param"><span class="n">pol</span><span class="o">=</span><span class="default_value">'s'</span></em>, <em class="sig-param"><span class="n">plot</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/crystal_box.html#XCrystalBox.fit_refl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.crystal_box.XCrystalBox.fit_refl" title="Permalink to this definition">¶</a></dt>
 <dd><p>evaluate diff_pat.dat</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="sloth.raytracing.crystal_box.XCrystalBox.load_pars">
-<code class="sig-name descname">load_pars</code><span class="sig-paren">(</span><em class="sig-param">fname='diff_pat.par'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/crystal_box.html#XCrystalBox.load_pars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.crystal_box.XCrystalBox.load_pars" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">load_pars</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span><span class="o">=</span><span class="default_value">'diff_pat.par'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/crystal_box.html#XCrystalBox.load_pars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.crystal_box.XCrystalBox.load_pars" title="Permalink to this definition">¶</a></dt>
 <dd><p>load DIFF_PAT output (.par file) into self.pars (dictionary)</p>
 <p>‘ext_len_amp_s’ : Extinction length (amplitude) sigma [microns]
 ‘ext_len_amp_p’ : Extinction length (amplitude) pi [microns]
@@ -320,9 +320,9 @@ LENGTH -&gt; along the incident beam path</p>
 <div class="section" id="module-sloth.raytracing.shadow_utils">
 <span id="sloth-raytracing-shadow-utils-shadow3-utilities"></span><h2><a class="reference internal" href="#module-sloth.raytracing.shadow_utils" title="sloth.raytracing.shadow_utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing.shadow_utils</span></code></a>: SHADOW3 utilities<a class="headerlink" href="#module-sloth.raytracing.shadow_utils" title="Permalink to this headline">¶</a></h2>
 <p>shadow_utils: simple various utilities for <a class="reference external" href="https://github.com/srio/shadow3">SHADOW3</a></p>
-<dl class="function">
+<dl class="py function">
 <dt id="sloth.raytracing.shadow_utils.fwhm_spl">
-<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">fwhm_spl</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">threshold=0.5</em>, <em class="sig-param">k=10</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#fwhm_spl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.fwhm_spl" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">fwhm_spl</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">threshold</span><span class="o">=</span><span class="default_value">0.5</span></em>, <em class="sig-param"><span class="n">k</span><span class="o">=</span><span class="default_value">10</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#fwhm_spl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.fwhm_spl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine full-with-half-maximum of a peaked set of points, x and y.</p>
 <p>Assumes that there is only one peak present in the datasset. The
 function uses a spline interpolation of order k.</p>
@@ -343,9 +343,9 @@ function uses a spline interpolation of order k.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="sloth.raytracing.shadow_utils.fwhm_cross">
-<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">fwhm_cross</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">threshold=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#fwhm_cross"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.fwhm_cross" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">fwhm_cross</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">threshold</span><span class="o">=</span><span class="default_value">0.5</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#fwhm_cross"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.fwhm_cross" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine full-with-half-maximum of a peaked set of points X,Y.</p>
 <p>(alternative method)</p>
 <dl class="field-list simple">
@@ -364,9 +364,9 @@ function uses a spline interpolation of order k.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="sloth.raytracing.shadow_utils.fwhm_bin">
-<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">fwhm_bin</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">threshold=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#fwhm_bin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.fwhm_bin" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">fwhm_bin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">threshold</span><span class="o">=</span><span class="default_value">0.5</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#fwhm_bin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.fwhm_bin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine full-width-at-threshold (default: half-maximum)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -384,9 +384,9 @@ function uses a spline interpolation of order k.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="sloth.raytracing.shadow_utils.fwhm">
-<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">fwhm</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">method='all'</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#fwhm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.fwhm" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">fwhm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'all'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#fwhm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.fwhm" title="Permalink to this definition">¶</a></dt>
 <dd><p>get full-width-at-threshold for a x,y dataset</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -410,9 +410,9 @@ if method=’all’ returns [fwhm_bin, fwhm_cross, fwhm_spl]</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="sloth.raytracing.shadow_utils.get_src_hdiv">
-<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">get_src_hdiv</code><span class="sig-paren">(</span><em class="sig-param">oe_xhw</em>, <em class="sig-param">oe_ydist</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#get_src_hdiv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.get_src_hdiv" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">get_src_hdiv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oe_xhw</span></em>, <em class="sig-param"><span class="n">oe_ydist</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#get_src_hdiv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.get_src_hdiv" title="Permalink to this definition">¶</a></dt>
 <dd><p>get source horizontal divergence</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -424,9 +424,9 @@ if method=’all’ returns [fwhm_bin, fwhm_cross, fwhm_spl]</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="sloth.raytracing.shadow_utils.get_src_vdiv">
-<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">get_src_vdiv</code><span class="sig-paren">(</span><em class="sig-param">oe_yhw</em>, <em class="sig-param">oe_ydist</em>, <em class="sig-param">oe_th</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#get_src_vdiv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.get_src_vdiv" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">get_src_vdiv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">oe_yhw</span></em>, <em class="sig-param"><span class="n">oe_ydist</span></em>, <em class="sig-param"><span class="n">oe_th</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#get_src_vdiv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.get_src_vdiv" title="Permalink to this definition">¶</a></dt>
 <dd><p>get source vertical divergence</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -439,9 +439,9 @@ if method=’all’ returns [fwhm_bin, fwhm_cross, fwhm_spl]</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="sloth.raytracing.shadow_utils.get_beam_from_file">
-<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">get_beam_from_file</code><span class="sig-paren">(</span><em class="sig-param">bin_fname</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#get_beam_from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.get_beam_from_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">get_beam_from_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bin_fname</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#get_beam_from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.get_beam_from_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>get Shadow.Beam() from SHADOW binary file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -456,9 +456,9 @@ if method=’all’ returns [fwhm_bin, fwhm_cross, fwhm_spl]</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="sloth.raytracing.shadow_utils.merge_beams">
-<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">merge_beams</code><span class="sig-paren">(</span><em class="sig-param">beams</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#merge_beams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.merge_beams" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">merge_beams</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">beams</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#merge_beams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.merge_beams" title="Permalink to this definition">¶</a></dt>
 <dd><p>merge a list of beams</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -473,9 +473,9 @@ if method=’all’ returns [fwhm_bin, fwhm_cross, fwhm_spl]</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="sloth.raytracing.shadow_utils.rotate_rays">
-<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">rotate_rays</code><span class="sig-paren">(</span><em class="sig-param">rays</em>, <em class="sig-param">angle</em>, <em class="sig-param">axis</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#rotate_rays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.rotate_rays" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">rotate_rays</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rays</span></em>, <em class="sig-param"><span class="n">angle</span></em>, <em class="sig-param"><span class="n">axis</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#rotate_rays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.rotate_rays" title="Permalink to this definition">¶</a></dt>
 <dd><p>rotate rays</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -495,9 +495,9 @@ if method=’all’ returns [fwhm_bin, fwhm_cross, fwhm_spl]</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="sloth.raytracing.shadow_utils.get_moverc">
-<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">get_moverc</code><span class="sig-paren">(</span><em class="sig-param">Rm</em>, <em class="sig-param">theta0</em>, <em class="sig-param">chi</em>, <em class="sig-param">geom='vertical'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#get_moverc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.get_moverc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">get_moverc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Rm</span></em>, <em class="sig-param"><span class="n">theta0</span></em>, <em class="sig-param"><span class="n">chi</span></em>, <em class="sig-param"><span class="n">geom</span><span class="o">=</span><span class="default_value">'vertical'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#get_moverc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.get_moverc" title="Permalink to this definition">¶</a></dt>
 <dd><p>get optical element movement</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -522,9 +522,9 @@ if method=’all’ returns [fwhm_bin, fwhm_cross, fwhm_spl]</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="sloth.raytracing.shadow_utils.get_chi_TEXS">
-<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">get_chi_TEXS</code><span class="sig-paren">(</span><em class="sig-param">Rm</em>, <em class="sig-param">theta0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#get_chi_TEXS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.get_chi_TEXS" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">get_chi_TEXS</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Rm</span></em>, <em class="sig-param"><span class="n">theta0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#get_chi_TEXS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.get_chi_TEXS" title="Permalink to this definition">¶</a></dt>
 <dd><p>get chi angles (deg) for TEXS spectrometer (Rovezzi et al.)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -542,7 +542,7 @@ if method=’all’ returns [fwhm_bin, fwhm_cross, fwhm_spl]</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="sloth.raytracing.shadow_utils.plot_close_all">
 <code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">plot_close_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#plot_close_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.plot_close_all" title="Permalink to this definition">¶</a></dt>
 <dd><p>close all plots</p>
@@ -553,9 +553,9 @@ if method=’all’ returns [fwhm_bin, fwhm_cross, fwhm_spl]</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="sloth.raytracing.shadow_utils.plot_energy_histo">
-<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">plot_energy_histo</code><span class="sig-paren">(</span><em class="sig-param">beam</em>, <em class="sig-param">fit=False</em>, <em class="sig-param">return_tkt=False</em>, <em class="sig-param">**h1args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#plot_energy_histo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.plot_energy_histo" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">plot_energy_histo</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">beam</span></em>, <em class="sig-param"><span class="n">fit</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">return_tkt</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">h1args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#plot_energy_histo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.plot_energy_histo" title="Permalink to this definition">¶</a></dt>
 <dd><p>plot rays energy distribution weighted by intensity</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -568,9 +568,9 @@ if method=’all’ returns [fwhm_bin, fwhm_cross, fwhm_spl]</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="sloth.raytracing.shadow_utils.plot_footprint">
-<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">plot_footprint</code><span class="sig-paren">(</span><em class="sig-param">return_tkt=False</em>, <em class="sig-param">**h2args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#plot_footprint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.plot_footprint" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">plot_footprint</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">return_tkt</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">h2args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#plot_footprint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.plot_footprint" title="Permalink to this definition">¶</a></dt>
 <dd><p>plot lost rays on the optical element to check correct overfill</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -579,9 +579,9 @@ if method=’all’ returns [fwhm_bin, fwhm_cross, fwhm_spl]</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="sloth.raytracing.shadow_utils.plot_image">
-<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">plot_image</code><span class="sig-paren">(</span><em class="sig-param">beam</em>, <em class="sig-param">return_tkt=False</em>, <em class="sig-param">**h2args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#plot_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.plot_image" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">plot_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">beam</span></em>, <em class="sig-param"><span class="n">return_tkt</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">h2args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#plot_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.plot_image" title="Permalink to this definition">¶</a></dt>
 <dd><p>plot image at the detector weighted by intensity</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -593,9 +593,9 @@ if method=’all’ returns [fwhm_bin, fwhm_cross, fwhm_spl]</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="sloth.raytracing.shadow_utils.plot_fpstack">
-<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">plot_fpstack</code><span class="sig-paren">(</span><em class="sig-param">fps</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#plot_fpstack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.plot_fpstack" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">plot_fpstack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fps</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#plot_fpstack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.plot_fpstack" title="Permalink to this definition">¶</a></dt>
 <dd><p>plot a stack of footprints using silx.gui.plot.StackViewMainWindow</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -610,9 +610,9 @@ if method=’all’ returns [fwhm_bin, fwhm_cross, fwhm_spl]</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="sloth.raytracing.shadow_utils.get_origin_scale">
-<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">get_origin_scale</code><span class="sig-paren">(</span><em class="sig-param">h2tkt</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#get_origin_scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.get_origin_scale" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">get_origin_scale</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">h2tkt</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#get_origin_scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.get_origin_scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>get origin and scale from a Shadow.Beam.histo2() instance</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -631,9 +631,9 @@ if method=’all’ returns [fwhm_bin, fwhm_cross, fwhm_spl]</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="sloth.raytracing.shadow_utils.histo2_normed">
-<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">histo2_normed</code><span class="sig-paren">(</span><em class="sig-param">beam</em>, <em class="sig-param">col_h</em>, <em class="sig-param">col_v</em>, <em class="sig-param">nbins=25</em>, <em class="sig-param">ref=23</em>, <em class="sig-param">nbins_h=None</em>, <em class="sig-param">nbins_v=None</em>, <em class="sig-param">nolost=0</em>, <em class="sig-param">xrange=None</em>, <em class="sig-param">yrange=None</em>, <em class="sig-param">normed=False</em>, <em class="sig-param">calculate_widths=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#histo2_normed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.histo2_normed" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.raytracing.shadow_utils.</code><code class="sig-name descname">histo2_normed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">beam</span></em>, <em class="sig-param"><span class="n">col_h</span></em>, <em class="sig-param"><span class="n">col_v</span></em>, <em class="sig-param"><span class="n">nbins</span><span class="o">=</span><span class="default_value">25</span></em>, <em class="sig-param"><span class="n">ref</span><span class="o">=</span><span class="default_value">23</span></em>, <em class="sig-param"><span class="n">nbins_h</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">nbins_v</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">nolost</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">xrange</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">yrange</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">normed</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">calculate_widths</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_utils.html#histo2_normed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_utils.histo2_normed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs 2d histogram to prepare data for a plotxy plot</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -676,9 +676,9 @@ Maximum</p></li>
 <span id="sloth-raytracing-shadow-utils-johansson-cylindrical-analyzers"></span><h2><a class="reference internal" href="#module-sloth.raytracing.shadow_utils" title="sloth.raytracing.shadow_utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.raytracing.shadow_utils</span></code></a>: Johansson cylindrical analyzers<a class="headerlink" href="#module-sloth.raytracing.shadow_jscyl" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="ray-tracing-of-a-johansson-cylindrical-analyzer-with-shadow3">
 <h3>Ray-tracing of a Johansson cylindrical analyzer with Shadow3<a class="headerlink" href="#ray-tracing-of-a-johansson-cylindrical-analyzer-with-shadow3" title="Permalink to this headline">¶</a></h3>
-<dl class="function">
+<dl class="py function">
 <dt id="sloth.raytracing.shadow_jscyl.jscyl">
-<code class="sig-prename descclassname">sloth.raytracing.shadow_jscyl.</code><code class="sig-name descname">jscyl</code><span class="sig-paren">(</span><em class="sig-param">d=None</em>, <em class="sig-param">refl_file=None</em>, <em class="sig-param">theta0=75.0</em>, <em class="sig-param">R=1000.0</em>, <em class="sig-param">nrays=50000</em>, <em class="sig-param">aw=25.0</em>, <em class="sig-param">ah=80.0</em>, <em class="sig-param">ene0=None</em>, <em class="sig-param">ene0_hw=5.0</em>, <em class="sig-param">src_ovf=0.001</em>, <em class="sig-param">src_shape='rectangle'</em>, <em class="sig-param">src_x=0.2</em>, <em class="sig-param">src_z=0.1</em>, <em class="sig-param">src_rot=False</em>, <em class="sig-param">move=None</em>, <em class="sig-param">run=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_jscyl.html#jscyl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_jscyl.jscyl" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sloth.raytracing.shadow_jscyl.</code><code class="sig-name descname">jscyl</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">refl_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">theta0</span><span class="o">=</span><span class="default_value">75.0</span></em>, <em class="sig-param"><span class="n">R</span><span class="o">=</span><span class="default_value">1000.0</span></em>, <em class="sig-param"><span class="n">nrays</span><span class="o">=</span><span class="default_value">50000</span></em>, <em class="sig-param"><span class="n">aw</span><span class="o">=</span><span class="default_value">25.0</span></em>, <em class="sig-param"><span class="n">ah</span><span class="o">=</span><span class="default_value">80.0</span></em>, <em class="sig-param"><span class="n">ene0</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ene0_hw</span><span class="o">=</span><span class="default_value">5.0</span></em>, <em class="sig-param"><span class="n">src_ovf</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">src_shape</span><span class="o">=</span><span class="default_value">'rectangle'</span></em>, <em class="sig-param"><span class="n">src_x</span><span class="o">=</span><span class="default_value">0.2</span></em>, <em class="sig-param"><span class="n">src_z</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">src_rot</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">move</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">run</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/raytracing/shadow_jscyl.html#jscyl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.raytracing.shadow_jscyl.jscyl" title="Permalink to this definition">¶</a></dt>
 <dd><p>raytrace a Johansson cylindrical analyzer at a given theta angle</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
