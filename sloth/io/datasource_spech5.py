@@ -218,7 +218,10 @@ class DataSourceSpecH5(object):
 
     def get_scans(self):
         """Get list of scans"""
-        return list(self._sf.keys())
+        allscans = []
+        for sn, sg in self._sf.items():
+            allscans.append([ sn, sg[self._title_url][()] ])
+        return allscans
 
     def get_motors(self):
         """Get list of motors names"""
