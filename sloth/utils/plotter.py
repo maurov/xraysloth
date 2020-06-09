@@ -119,6 +119,8 @@ class Plotter(object):
         #: input/output
         self._outdir = outdir
 
+        #: plotting
+        self._initColors()
         self.set_style(self._style)
         self._init_matplotlib()
         self._init_subplots(sharex=sharex, sharey=sharey)
