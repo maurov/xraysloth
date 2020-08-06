@@ -11,7 +11,7 @@ pycodestyle  #: linter (used by flake8, for style checking)
 flake8       #: linter (wrapper on top of +pyflakes, +pycodestyle and +mccabe)
 pydocstyle   #: linter for docstring style checking
 black        #: formatter (preferred over: yapf and autopep8)
-wheel        #: To build wheels
+wheel        #: to build wheels
 lxml         #: (silx-dev) For test coverage in run_test.py
 coverage     #: (silx-dev) For test coverage in run_test.py
 doc8         #: style checker for rst

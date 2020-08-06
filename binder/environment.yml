@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # Conda environment configuration for: https://github.com/maurov/xraysloth
 # Target: *FULL* environment for sloth based on
-#   -> Larch (Wx)
-#   +> SILX (Qt)
+#   +> Larch (Wx)
+#   +> SILX  (PyQt5)
 #   +> OASYS
 #   +> Jupyter
 #   +> GL/CL
