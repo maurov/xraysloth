@@ -20,7 +20,7 @@ warnings.filterwarnings("ignore", message="numpy.dtype size changed")
 warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
 
 __author__ = "Mauro Rovezzi"
-__version__ = "0.3.2"
+__version__ = "0.3dev"
 
 _libDir = os.path.dirname(os.path.realpath(__file__))
 _resourcesPath = os.path.join(_libDir, "resources")
@@ -34,7 +34,7 @@ __pkgs__ = [
     "sloth.math",  #: math&friends
     "sloth.test",  #: main test suite
     "sloth.fit",  #: fit utilities
-    "sloth.gui",  #: graphical user interface
+    "sloth.gui",  #: graphical user interfaces
     "sloth.inst",  #: instrumentation
     "sloth.raytracing",  #: ray tracing (shadow)
     "sloth.calculators",  #: ab initio calculators
