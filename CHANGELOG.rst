@@ -13,6 +13,10 @@ v.0.3 (dev)
 New features
 ''''''''''''
 
+* :mod:`sloth.gui.jupyx`
+
+  - Jupyter UI -> :mod:`sloth.utils.jupyter` **deprecated**.
+
 * :mod:`sloth.gui.daxs`
 
   - Qt-based GUI application featuring a TreeModel/View from **Marius Retegan**
