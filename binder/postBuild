@@ -12,14 +12,33 @@
 #npm confit set proxy "http://proxy.esrf.fr:3128/"
 
 # ------------------------
+# JUPYTERLAB EXTENSION
 # COMMON REQUIREMENTS FOR:
+# - ipywidgets
 # - jupyter-matplotlib
 # - plotly
+# - ipytree
 # ------------------------
 # Avoid "JavaScript heap out of memory" errors during extension installation
 # (OS X/Linux)
 export NODE_OPTIONS=--max-old-space-size=4096
 jupyter labextension install @jupyter-widgets/jupyterlab-manager --no-build
+
+# ----------
+# IPYWIDGETS
+# ----------
+# https://ipywidgets.readthedocs.io/en/stable/user_install.html
+jupyter nbextension enable --py widgetsnbextension --sys-prefix
+
+# ------
+# PLOTLY
+# ------
+# https://plotly.com/python/
+# https://plot.ly/python/getting-started/#jupyterlab-support-python-35 
+# Jupyterlab renderer support
+jupyter labextension install jupyterlab-plotly@4.9.0 --no-build
+# Jupyter widgets extension (OPTIONAL)
+jupyter labextension install @jupyter-widgets/jupyterlab-manager plotlywidget@4.9.0
 
 # ---------------------------
 # IPYMPL / JUPYTER-MATPLOTLIB
@@ -39,60 +58,54 @@ jupyter labextension install jupyterlab-drawio --no-build
 # https://github.com/jupyterlab/jupyterlab-toc
 jupyter labextension install @jupyterlab/toc --no-build
 
-# -----------------------------------------
-# EXPERIMENTAL/DEV FEATURES: SLOTH-LAB ONLY
-# -----------------------------------------
-if [[ $CONDA_DEFAULT_ENV = *"sloth-lab"* ]]
-then
-  # Packages specified in `environment-lab.yml`
+# -------
+# IPYTREE
+# -------
+# https://github.com/QuantStack/ipytree
+jupyter labextension install ipytree --no-build
 
-  # -----
-  # JUPYTERLAB-HDF5
-  # -----
-  # https://github.com/jupyterlab/jupyterlab-hdf5
-  jupyter labextension install @jupyterlab/hdf5 --no-build
+# ------------------------------------------------
+# /!\ EXPERIMENTAL PACKAGES: NOT INCLUDED YET /!\
+# ------------------------------------------------
+# Packages specified in `environment-lab.yml`
 
-  # -----
-  # LATEX
-  # -----
-  # https://github.com/jupyterlab/jupyterlab-latex
-  jupyter labextension install @jupyterlab/latex --no-build
+# -----
+# JUPYTERLAB-HDF5
+# -----
+# https://github.com/jupyterlab/jupyterlab-hdf5
+# jupyter labextension install @jupyterlab/hdf5 --no-build
 
-  # ----------------------
-  # CODE FORMATTER (BLACK)
-  # ----------------------
-  # https://github.com/ryantam626/jupyterlab_code_formatter
-  jupyter labextension install @ryantam626/jupyterlab_code_formatter --no-build
-  jupyter serverextension enable --py jupyterlab_code_formatter
+# -----
+# LATEX
+# -----
+# https://github.com/jupyterlab/jupyterlab-latex
+# jupyter labextension install @jupyterlab/latex --no-build
 
-  # ------
-  # PLOTLY
-  # ------
-  # https://plot.ly/python/getting-started/#jupyterlab-support-python-35 
-  # jupyterlab renderer support
-  jupyter labextension install jupyterlab-plotly --no-build
-  # FigureWidget support
-  jupyter labextension install plotlywidget --no-build
-  # JupyterLab chart editor support (optional)
-  jupyter labextension install jupyterlab-chart-editor --no-build
+# ----------------------
+# CODE FORMATTER (BLACK)
+# ----------------------
+# https://github.com/ryantam626/jupyterlab_code_formatter
+# jupyter labextension install @ryantam626/jupyterlab_code_formatter --no-build
+# jupyter serverextension enable --py jupyterlab_code_formatter
 
-  # ---
-  # GIT
-  # ---
-  # /!\ SECURITY ISSUE /!\ -> do not enable this extension on Binderhub !!!
-  # https://github.com/jupyterlab/jupyterlab-git
-  jupyter labextension install @jupyterlab/git --no-build
-  jupyter serverextension enable --py jupyterlab_git
+# ---
+# GIT
+# ---
+# /!\ SECURITY ISSUE /!\ -> do not enable this extension on Binderhub !!!
+# https://github.com/jupyterlab/jupyterlab-git
+# jupyter labextension install @jupyterlab/git --no-build
+# jupyter serverextension enable --py jupyterlab_git
 
-  # ------------
-  # GOOGLE-DRIVE
-  # ------------
-  # https://github.com/jupyterlab/jupyterlab-google-drive
-  jupyter labextension install @jupyterlab/google-drive --no-build
+# ------------
+# GOOGLE-DRIVE
+# ------------
+# https://github.com/jupyterlab/jupyterlab-google-drive
+# jupyter labextension install @jupyterlab/google-drive --no-build
 
-fi
-
-# Build extensions in one run (must be done to activate extensions since --no-build is used above)
+# --------------------------------------------------------------------- 
+# Build extensions in one run
+# (must be done to activate extensions since --no-build is used above)
+# --------------------------------------------------------------------- 
 jupyter lab build
 
 # Unset NODE_OPTIONS environment variable

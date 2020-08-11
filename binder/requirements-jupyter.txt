@@ -1,13 +1,20 @@
 # -*- coding: utf-8 -*-
 #: pip requirements file for Jupyter ecosystem
-#-r requirements.txt
+# Minimum requirements:
+#   conda install nodejs
+#   pip install -r ../requirements.txt
+h5glance
 ipython >= 7.10
 ipykernel >= 5.1
 jupyterlab_server
 jupyterlab >= 1.0
-ipywidgets >= 7.5
-notebook
+ipywidgets >= 7.5  #: in each kernel’s environment that will use ipywidgets
+widgetsnbextension >= 3.5.0  #: in the environment containing the Jupyter Notebook server
+notebook >= 5.3
 jupyterhub
 ipympl
 nbsphinx
-widgetsnbextension >= 3.5.0
+ipytree
+plotly == 4.9.0
+kaleido  #: Static Image Export for plotly
+# run postBuild

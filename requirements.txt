@@ -13,6 +13,7 @@ fabio >= 0.9
 scipy >= 1.2
 matplotlib >= 3.0
 six
+silx >= 0.12
 
 #pyopencl; platform_machine in "i386, x86_64, AMD64"  #: for silx.opencl
 #Mako                   #: for pyopencl reduction
@@ -35,4 +36,4 @@ palettable
 ptpython >= 2.0
 xlrd  #: read Excel files
 xlwt  #: write Excel files
-silx >= 0.12
+
