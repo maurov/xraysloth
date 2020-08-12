@@ -30,9 +30,12 @@ Notes
 
 -
 """
+import tempfile
 import datetime
 
 from silx.io import commonh5
+from silx.io.utils import H5Type
+
 from sloth import __version__ as sloth_version
 
 #: module logger
@@ -109,21 +112,37 @@ class BaseGroup(commonh5.Group):
 
 
 class RootGroup(BaseGroup):
-    """Root group (= '/')"""
+    """Root group (= '/')
 
-    def __init__(self, name="", logger=None, mode=None):
+    Description
+    -----------
+
+    This is inspired from `commonh5.File` providing an equivalent object to
+    `h5py.File`. It creates and open a temporary File object (file or memory)
+    were the data are loaded in.
+
+    """
+
+    def __init__(self, mode=None, logger=None, in_memory=False):
         """Constructor with default NXroot class"""
+        self._logger = logger or _logger
+        if in_memory:
+            import io
+            self._logger.warning("NOT TESTED YET!")
+            ft = io.BytesIO()
+        else:
+            ft = tempfile.mktemp(prefix="sloth_", suffix=".h5")
         attrs = {
             "NX_class": "NXroot",
-            "created": datetime.datetime.now().isoformat(),
+            "file_time": datetime.datetime.now().isoformat(),
+            "file_name": ft,
             "creator": "sloth %s" % sloth_version,
         }
-        super(RootGroup, self).__init__(name, parent=None, attrs=attrs, logger=logger)
-
-        self._file_name = name
+        self._file_name = ft
+        super(RootGroup, self).__init__(self._file_name, parent=None, attrs=attrs, logger=self._logger)
         if mode is None:
-            mode = "r"
-        assert mode in ["r", "w"]
+            mode = "w"
+        assert(mode in ["r", "w"])
         self._mode = mode
 
     @property
@@ -137,8 +156,6 @@ class RootGroup(BaseGroup):
     @property
     def h5_class(self):
         """Returns the :class:`h5py.File` class"""
-        from silx.io.utils import H5Type
-
         return H5Type.FILE
 
     def __enter__(self):
@@ -150,7 +167,7 @@ class RootGroup(BaseGroup):
     def close(self):
         """Close the object, and free up associated resources.
         """
-        # should be implemented in subclass
+        # TODO
         pass
 
 
@@ -221,8 +238,6 @@ def test_example(write=True, view=True):
 
     if write:
         #: +write to file
-        import tempfile
-
         ft = tempfile.mktemp(prefix="test_", suffix=".hfd5")
         t.write_to_h5(ft)
 
