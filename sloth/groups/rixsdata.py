@@ -10,13 +10,14 @@ import numpy as np
 from silx.io.dictdump import dicttoh5, h5todict
 from sloth.math.gridxyz import gridxyz
 from sloth.utils.logging import getLogger
-_logger = getLogger('rixsdata')  #: module logger
+
+_logger = getLogger("rixsdata")  #: module logger
 
 
 class RixsData(object):
     """RIXS plane object"""
 
-    sample_name = 'Unknown'
+    sample_name = "Unknown"
 
     counter_all, counter_signal, counter_norm = None, None, None
 
@@ -25,16 +26,16 @@ class RixsData(object):
     ene_in_crop, ene_out_crop, rixs_map_crop = None, None, None
     ene_grid, ene_unit = None, None
 
-    ene_in_label = 'Incoming energy (eV)'
-    ene_out_label = 'Emitted energy (eV)'
-    ene_et_label = 'Energy transfer (eV)'
+    ene_in_label = "Incoming energy (eV)"
+    ene_out_label = "Emitted energy (eV)"
+    ene_et_label = "Energy transfer (eV)"
 
     _plotter = None
 
     def __init__(self, name=None, logger=None):
         """Constructor"""
 
-        self.__name__ = name or 'RixsData_{0}'.format(hex(id(self)))
+        self.__name__ = name or "RixsData_{0}".format(hex(id(self)))
         self._logger = logger or _logger
 
     def load_from_dict(self, rxdict):
@@ -60,7 +61,7 @@ class RixsData(object):
     def load_from_h5(self, fname):
         """Load RIXS from HDF5 file"""
         rxdict = h5todict(fname)
-        rxdict['sample_name'] = rxdict['sample_name'].tostring().decode()
+        rxdict["sample_name"] = rxdict["sample_name"].tostring().decode()
         self.load_from_dict(rxdict)
         self._logger.info(f"RIXS map loaded from {fname}")
 
@@ -81,10 +82,10 @@ class RixsData(object):
 
         """
         x1, y1, x2, y2 = crop_area
-        ix1 = np.abs(self.ene_in-x1).argmin()
-        iy1 = np.abs(self.ene_out-y1).argmin()
-        ix2 = np.abs(self.ene_in-x2).argmin()
-        iy2 = np.abs(self.ene_out-y2).argmin()
+        ix1 = np.abs(self.ene_in - x1).argmin()
+        iy1 = np.abs(self.ene_out - y1).argmin()
+        ix2 = np.abs(self.ene_in - x2).argmin()
+        iy2 = np.abs(self.ene_out - y2).argmin()
         self._crop_area = crop_area
         self.ene_in_crop = self.ene_in[ix1:ix2]
         self.ene_out_crop = self.ene_out[iy1:iy2]
@@ -93,20 +94,26 @@ class RixsData(object):
     def make_rixs_et_from_col(self):
         """Transform a RIXS map to energy transfer"""
         self.ene_et_col = self.ene_in_col - self.ene_out_col
-        _, self.ene_et, self.rixs_et_map = gridxyz(self.ene_in_col,
-                                                   self.ene_et_col, self.rixs_map_col,
-                                                   xystep=self.ene_grid,
-                                                   lib='scipy',
-                                                   method='nearest')
+        _, self.ene_et, self.rixs_et_map = gridxyz(
+            self.ene_in_col,
+            self.ene_et_col,
+            self.rixs_map_col,
+            xystep=self.ene_grid,
+            lib="scipy",
+            method="nearest",
+        )
 
     def norm(self):
         """Simple map normalization to max-min"""
-        self.rixs_map_norm = self.rixs_map/(np.nanmax(self.rixs_map)-np.nanmin(self.rixs_map))
+        self.rixs_map_norm = self.rixs_map / (
+            np.nanmax(self.rixs_map) - np.nanmin(self.rixs_map)
+        )
 
     def getPlotter(self):
         """Get a default plotter"""
         if self._plotter is None:
             from sloth.gui.plot.plotrixs import RixsPlot2D
+
             self._plotter = RixsPlot2D(logger=self._logger)
         return self._plotter
 
@@ -118,34 +125,40 @@ class RixsData(object):
             self._plotter = plotter
         plotter.clear()
         if rixs_et:
-            plotter.addImage(self.rixs_et_map,
-                             x=self.ene_in,
-                             y=self.ene_et,
-                             title=self.sample_name,
-                             xlabel=self.ene_in_label,
-                             ylabel=self.ene_et_label)
+            plotter.addImage(
+                self.rixs_et_map,
+                x=self.ene_in,
+                y=self.ene_et,
+                title=self.sample_name,
+                xlabel=self.ene_in_label,
+                ylabel=self.ene_et_label,
+            )
             plotter.addContours(nlevels)
             return
         if type(crop) is tuple:
             self.crop(crop)
         if crop:
             _title = f"{self.sample_name} [CROP: {self._crop_area}]"
-            plotter.addImage(self.rixs_map_crop,
-                             x=self.ene_in_crop,
-                             y=self.ene_out_crop,
-                             title=_title,
-                             xlabel=self.ene_in_label,
-                             ylabel=self.ene_out_label)
+            plotter.addImage(
+                self.rixs_map_crop,
+                x=self.ene_in_crop,
+                y=self.ene_out_crop,
+                title=_title,
+                xlabel=self.ene_in_label,
+                ylabel=self.ene_out_label,
+            )
         else:
-            plotter.addImage(self.rixs_map,
-                             x=self.ene_in,
-                             y=self.ene_out,
-                             title=self.sample_name,
-                             xlabel=self.ene_in_label,
-                             ylabel=self.ene_out_label)
+            plotter.addImage(
+                self.rixs_map,
+                x=self.ene_in,
+                y=self.ene_out,
+                title=self.sample_name,
+                xlabel=self.ene_in_label,
+                ylabel=self.ene_out_label,
+            )
         plotter.addContours(nlevels)
         plotter.show()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pass
