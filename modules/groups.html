@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sloth.groups: data groups &mdash; Sloth 0.3.2 documentation</title>
+  <title>sloth.groups: data groups &mdash; Sloth 0.3dev documentation</title>
   
 
   
@@ -244,8 +244,11 @@ The base classes for <em>groups</em> and <em>datasets</em> are, respectively,
 
 <dl class="py class">
 <dt id="sloth.groups.baseh5.RootGroup">
-<em class="property">class </em><code class="sig-prename descclassname">sloth.groups.baseh5.</code><code class="sig-name descname">RootGroup</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/groups/baseh5.html#RootGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.groups.baseh5.RootGroup" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">sloth.groups.baseh5.</code><code class="sig-name descname">RootGroup</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">in_memory</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/groups/baseh5.html#RootGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.groups.baseh5.RootGroup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Root group (= ‘/’)</p>
+<p>This is inspired from <cite>commonh5.File</cite> providing an equivalent object to
+<cite>h5py.File</cite>. It creates and open a temporary File object (file or memory)
+were the data are loaded in.</p>
 <dl class="py method">
 <dt id="sloth.groups.baseh5.RootGroup.h5_class">
 <em class="property">property </em><code class="sig-name descname">h5_class</code><a class="headerlink" href="#sloth.groups.baseh5.RootGroup.h5_class" title="Permalink to this definition">¶</a></dt>

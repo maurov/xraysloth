@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sloth.fit: fitting tools &mdash; Sloth 0.3.2 documentation</title>
+  <title>sloth.fit: fitting tools &mdash; Sloth 0.3dev documentation</title>
   
 
   
@@ -105,10 +105,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#simple-peak-fitting-utility-with-lmfit">Simple peak fitting utility with Lmfit</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#module-sloth.fit.peakfit_silx"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit.peakfit</span></code>: peak fitting with SILX/PyMca</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#simple-peak-fitting-utility-with-pymca-silx">Simple peak fitting utility with PyMCA/SILX</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#sloth-fit-peakfit-peak-fitting-with-silx-pymca"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit.peakfit</span></code>: peak fitting with SILX/PyMca</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="inst.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.inst</span></code>: working with instrumentation</a></li>
@@ -270,130 +267,8 @@ default is ‘p’ (=peaks only)</p></li>
 
 </div>
 </div>
-<div class="section" id="module-sloth.fit.peakfit_silx">
-<span id="sloth-fit-peakfit-peak-fitting-with-silx-pymca"></span><h2><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit.peakfit</span></code>: peak fitting with SILX/PyMca<a class="headerlink" href="#module-sloth.fit.peakfit_silx" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="simple-peak-fitting-utility-with-pymca-silx">
-<h3>Simple peak fitting utility with PyMCA/SILX<a class="headerlink" href="#simple-peak-fitting-utility-with-pymca-silx" title="Permalink to this headline">¶</a></h3>
-<p>Current fitting backends: <a class="reference external" href="https://github.com/vasole/pymca">PyMca</a> or <a class="reference external" href="https://github.com/silx-kit/silx">SILX</a></p>
-<dl class="py function">
-<dt id="sloth.fit.peakfit_silx.fit_silx">
-<code class="sig-prename descclassname">sloth.fit.peakfit_silx.</code><code class="sig-name descname">fit_silx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">theory</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bkg</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/fit/peakfit_silx.html#fit_silx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.fit.peakfit_silx.fit_silx" title="Permalink to this definition">¶</a></dt>
-<dd><p>fit a peak with using silx library</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>y</strong> (<em>x</em><em>,</em>) – </p></li>
-<li><p><strong>theory</strong> (<em>string</em><em> [</em><em>None</em><em>]</em>) – available theories:
-+———————+
-| Gaussians           |
-| Lorentz             |
-| Area Gaussians      |
-| Area Lorentz        |
-| Pseudo-Voigt Line   |
-| Area Pseudo-Voigt   |
-| Split Gaussian      |
-| Split Lorentz       |
-| Split Pseudo-Voigt  |
-| Step Down           |
-| Step Up             |
-| Slit                |
-| Atan                |
-| Hypermet            |
-| Degree 2 Polynomial |
-| Degree 3 Polynomial |
-| Degree 4 Polynomial |
-| Degree 5 Polynomial |
-+———————+</p></li>
-<li><p><strong>bkg</strong> (<em>string</em><em> [</em><em>None</em><em>]</em>) – available bkg theories:
-+———————+
-| No Background       |
-| Constant            |
-| Linear              |
-| Strip               |
-| Snip                |
-| Degree 2 Polynomial |
-| Degree 3 Polynomial |
-| Degree 4 Polynomial |
-| Degree 5 Polynomial |
-+———————+</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>yfit</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>fit array like x</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="sloth.fit.peakfit_silx.fit_splitpvoigt">
-<code class="sig-prename descclassname">sloth.fit.peakfit_silx.</code><code class="sig-name descname">fit_splitpvoigt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">dy</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">theory</span><span class="o">=</span><span class="default_value">'Split Pseudo-Voigt'</span></em>, <em class="sig-param"><span class="n">bkg</span><span class="o">=</span><span class="default_value">'Constant'</span></em>, <em class="sig-param"><span class="n">conf</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">npeaks</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_infos</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">show_res</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">plot</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kws</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/fit/peakfit_silx.html#fit_splitpvoigt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.fit.peakfit_silx.fit_splitpvoigt" title="Permalink to this definition">¶</a></dt>
-<dd><p>simple wrapper to PyMca.Specfit</p>
-<p>the goal is to fit (automagically) a set of 1D data (x,y) with an
-asymmetric PseudoVoigt (splitpvoigt) function plus a constant
-background</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>y</strong> (<em>x</em><em>,</em>) – </p></li>
-<li><p><strong>dy</strong> (<em>boolean</em><em> or </em><em>float</em><em>, </em><em>False</em>) – error bar on y. If dy==True: dy=np.sqrt(y) or give an
-explicit array</p></li>
-<li><p><strong>theory</strong> (<em>str</em><em>, </em><em>[</em><em>'Split Pseudo-Voigt'</em><em>,</em>) – ‘Gaussians’,
-‘Lorentz’,
-‘Area Gaussians’,
-‘Area Lorentz’,
-‘Pseudo-Voigt Line’,
-‘Area Pseudo-Voigt’,
-‘Split Gaussian’,
-‘Split Lorentz’,
-‘Step Down’,
-‘Step Up’,
-‘Slit’,
-‘Atan’,
-‘Hypermet’,
-‘Periodic Gaussians’]</p></li>
-<li><p><strong>bkg</strong> (<em>str</em><em>, </em><em>[</em><em>'Constant'</em><em>, </em><em>'No Background'</em><em>, </em><em>'Linear'</em><em>, </em><em>'Internal'</em><em>]</em>) – </p></li>
-<li><p><strong>conf</strong> (<em>dictionary</em><em>, </em><em>None</em>) – to tune Specfit configuration, default:
-‘FwhmPoints’ : int(len(y)/5.
-‘Sensitivity’ : 5.
-‘EtaFlag’ : 1 (force eta between 0 and 1)
-‘WeightFlag’ : 0 (do not weight by noise)
-‘AutoScaling’ : 1 (auto scale y)
-‘AutoFwhm’ : 1 (auto guess fwhm)</p></li>
-<li><p><strong>npeaks</strong> (<em>int</em><em>, </em><em>1</em>) – limit the number of split-PseudoVoigt peaks to guess</p></li>
-<li><p><strong>show_infos</strong> (<em>boolean</em><em>, </em><em>True</em>) – print information on the peakfit setup</p></li>
-<li><p><strong>show_res</strong> (<em>boolean</em><em>, </em><em>True</em>) – print fit results to standard output</p></li>
-<li><p><strong>plot</strong> (<em>boolean</em><em>, </em><em>True</em>) – plot data, fit and residual with PyMca (ScanWindow)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>PyMca.Specfit.Specfit, PyMca.ScanWindow.ScanWindow (None if plot=False)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="sloth.fit.peakfit_silx.fit_results">
-<code class="sig-prename descclassname">sloth.fit.peakfit_silx.</code><code class="sig-name descname">fit_results</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fitobj</span></em>, <em class="sig-param"><span class="n">output</span><span class="o">=</span><span class="default_value">'print'</span></em>, <em class="sig-param"><span class="n">pk_info</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/fit/peakfit_silx.html#fit_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.fit.peakfit_silx.fit_results" title="Permalink to this definition">¶</a></dt>
-<dd><p>simple report of fit results</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>fitobj</strong> (<em>Specfit object</em>) – </p></li>
-<li><p><strong>output</strong> (<em>'string'</em>) – ‘list’
-‘print’
-‘dict’</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
+<div class="section" id="sloth-fit-peakfit-peak-fitting-with-silx-pymca">
+<h2><code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.fit.peakfit</span></code>: peak fitting with SILX/PyMca<a class="headerlink" href="#sloth-fit-peakfit-peak-fitting-with-silx-pymca" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 

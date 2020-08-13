@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sloth.groups.baseh5 &mdash; Sloth 0.3.2 documentation</title>
+  <title>sloth.groups.baseh5 &mdash; Sloth 0.3dev documentation</title>
   
 
   
@@ -193,9 +193,12 @@
 
 <span class="sd">-</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
 
 <span class="kn">from</span> <span class="nn">silx.io</span> <span class="kn">import</span> <span class="n">commonh5</span>
+<span class="kn">from</span> <span class="nn">silx.io.utils</span> <span class="kn">import</span> <span class="n">H5Type</span>
+
 <span class="kn">from</span> <span class="nn">sloth</span> <span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">sloth_version</span>
 
 <span class="c1">#: module logger</span>
@@ -272,21 +275,37 @@
 
 
 <div class="viewcode-block" id="RootGroup"><a class="viewcode-back" href="../../../modules/groups.html#sloth.groups.baseh5.RootGroup">[docs]</a><span class="k">class</span> <span class="nc">RootGroup</span><span class="p">(</span><span class="n">BaseGroup</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Root group (= &#39;/&#39;)&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Root group (= &#39;/&#39;)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="sd">    Description</span>
+<span class="sd">    -----------</span>
+
+<span class="sd">    This is inspired from `commonh5.File` providing an equivalent object to</span>
+<span class="sd">    `h5py.File`. It creates and open a temporary File object (file or memory)</span>
+<span class="sd">    were the data are loaded in.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Constructor with default NXroot class&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logger</span> <span class="ow">or</span> <span class="n">_logger</span>
+        <span class="k">if</span> <span class="n">in_memory</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">io</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;NOT TESTED YET!&quot;</span><span class="p">)</span>
+            <span class="n">ft</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ft</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mktemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;sloth_&quot;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;.h5&quot;</span><span class="p">)</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;NX_class&quot;</span><span class="p">:</span> <span class="s2">&quot;NXroot&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;created&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+            <span class="s2">&quot;file_time&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+            <span class="s2">&quot;file_name&quot;</span><span class="p">:</span> <span class="n">ft</span><span class="p">,</span>
             <span class="s2">&quot;creator&quot;</span><span class="p">:</span> <span class="s2">&quot;sloth </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">sloth_version</span><span class="p">,</span>
         <span class="p">}</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">RootGroup</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_file_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_name</span> <span class="o">=</span> <span class="n">ft</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">RootGroup</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_name</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">mode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;r&quot;</span>
-        <span class="k">assert</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">]</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;w&quot;</span>
+        <span class="k">assert</span><span class="p">(</span><span class="n">mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">=</span> <span class="n">mode</span>
 
     <span class="nd">@property</span>
@@ -300,8 +319,6 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">h5_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the :class:`h5py.File` class&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">silx.io.utils</span> <span class="kn">import</span> <span class="n">H5Type</span>
-
         <span class="k">return</span> <span class="n">H5Type</span><span class="o">.</span><span class="n">FILE</span>
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -313,7 +330,7 @@
 <div class="viewcode-block" id="RootGroup.close"><a class="viewcode-back" href="../../../modules/groups.html#sloth.groups.baseh5.RootGroup.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Close the object, and free up associated resources.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># should be implemented in subclass</span>
+        <span class="c1"># TODO</span>
         <span class="k">pass</span></div></div>
 
 
@@ -384,8 +401,6 @@
 
     <span class="k">if</span> <span class="n">write</span><span class="p">:</span>
         <span class="c1">#: +write to file</span>
-        <span class="kn">import</span> <span class="nn">tempfile</span>
-
         <span class="n">ft</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mktemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;test_&quot;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;.hfd5&quot;</span><span class="p">)</span>
         <span class="n">t</span><span class="o">.</span><span class="n">write_to_h5</span><span class="p">(</span><span class="n">ft</span><span class="p">)</span>
 
