@@ -233,6 +233,23 @@ class DataSourceSpecH5(object):
     #: READ DATA METHODS
     # ================== #
 
+    def _repr_html_(self):
+        """HTML representation for Jupyter notebook"""
+
+        scns = self.get_scans()
+        html = ["<table>"]
+        html.append("<tr>")
+        html.append("<td><b>Scan</b></td>")
+        html.append("<td><b>Title</b></td>")
+        html.append("</tr>")
+        for scn, tlt in scns:
+            html.append("<tr>")
+            html.append(f"<td>{scn}</td>")
+            html.append(f"<td>{tlt}</td>")
+            html.append("</tr>")
+        html.append("</table>")
+        return ''.join(html)
+
     def get_scans(self):
         """Get list of scans"""
         allscans = []
