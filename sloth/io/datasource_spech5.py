@@ -174,6 +174,23 @@ class DataSourceSpecH5(object):
         none: set attributes
             self._scan_n, self._scan_str, self._scan_url, self._sg
         """
+        # check if scan_n is given already as "scan_n.scan_idx"
+        if isinstance(scan_n, str):
+            scan_split = scan_n.split(".")
+            scan_n = scan_split[0]
+            try:
+                scan_idx = scan_split[1]
+            except IndexError:
+                self._logger.warning("'scan_idx' kept at 1")
+                pass
+            try:
+                scan_n = int(scan_n)
+                scan_idx = int(scan_idx)
+            except ValueError:
+                self._logger.error("scan not selected, wrong 'scan_n'!")
+                return
+        assert isinstance(scan_n, int), "'scan_n' must be an integer"
+        assert isinstance(scan_idx, int), "'scan_idx' must be an integer"
         self._scan_n = scan_n
         if scan_kws is not None:
             from sloth.utils.dicts import update_nested
@@ -261,7 +278,6 @@ class DataSourceSpecH5(object):
              scan_pts : "",
              scan_ct : "",
             }
- 
         """
         iscn = dict(
             scan_type=None,
