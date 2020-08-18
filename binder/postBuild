@@ -64,6 +64,12 @@ jupyter labextension install @jupyterlab/toc --no-build
 # https://github.com/QuantStack/ipytree
 jupyter labextension install ipytree --no-build
 
+# ------
+# PANEL
+# ------
+# https://panel.holoviz.org/
+#jupyter labextension install @pyviz/jupyterlab_pyviz --no-build
+
 # ------------------------------------------------
 # /!\ EXPERIMENTAL PACKAGES: NOT INCLUDED YET /!\
 # ------------------------------------------------
