@@ -128,10 +128,11 @@ class RootGroup(BaseGroup):
         self._logger = logger or _logger
         if in_memory:
             import io
-            self._logger.warning("NOT TESTED YET!")
+            self._logger.warning("IN MEMORY FILE, NOT TESTED YET!")
             ft = io.BytesIO()
         else:
             ft = tempfile.mktemp(prefix="sloth_", suffix=".h5")
+            self._logger.info("Working temporary file is: %s", ft)
         attrs = {
             "NX_class": "NXroot",
             "file_time": datetime.datetime.now().isoformat(),
