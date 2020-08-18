@@ -220,7 +220,7 @@ class DataSourceSpecH5(object):
         """Get list of scans"""
         allscans = []
         for sn, sg in self._sf.items():
-            allscans.append([ sn, sg[self._title_url][()] ])
+            allscans.append([sn, sg[self._title_url][()]])
         return allscans
 
     def get_motors(self):
@@ -241,26 +241,88 @@ class DataSourceSpecH5(object):
         sg = self._get_sg()
         return sg[self._title_url][()]
 
-    def get_scan_axis(self):
-        """Get the name of the scanned axis from scan title"""
+    def get_scan_info_from_title(self):
+        """Parser to get scan information from title
+
+        Known types of scans
+        --------------------
+        'ascan'
+        'Escan'
+        'Emiscan'
+
+        Returns
+        -------
+        iscn : dict of str
+            {
+             scan_type : "type of scan",
+             scan_axis : "scanned axis",
+             scan_start : "",
+             scan_end : "",
+             scan_pts : "",
+             scan_ct : "",
+            }
+ 
+        """
+        iscn = dict(
+            scan_type=None,
+            scan_axis=None,
+            scan_start=None,
+            scan_end=None,
+            scan_pts=None,
+            scan_ct=None,
+        )
         _title = self.get_title()
         if isinstance(_title, np.ndarray):
             _title = np.char.decode(_title)[0]
         _title_splitted = _title.split(" ")
-        _iax = 1
-        _axisout = _title_splitted[_iax]
-        if _axisout == "":
-            _iax += 1
-            _axisout = _title_splitted[_iax]
-        if "scan" in _axisout:
-            _iax += 1
-            _axisout = _title_splitted[_iax]
-        if _axisout == "":
-            _iax += 1
-            _axisout = _title_splitted[_iax]
+        _iax = 0
+        _scntype = _title_splitted[_iax]
+        if _scntype == "ascan":
+            iscn.update(
+                dict(
+                    scan_type=_scntype,
+                    scan_axis=_title_splitted[2],
+                    scan_start=_title_splitted[3],
+                    scan_end=_title_splitted[4],
+                    scan_pts=_title_splitted[6],
+                    scan_ct=_title_splitted[7],
+                )
+            )
+        if _scntype == "Escan":
+            iscn.update(
+                dict(
+                    scan_type=_scntype,
+                    scan_axis="Energy",
+                    scan_start=_title_splitted[1],
+                    scan_end=_title_splitted[2],
+                    scan_pts=_title_splitted[3],
+                    scan_ct=_title_splitted[4],
+                )
+            )
+        if _scntype == "Emiscan":
+            iscn.update(
+                dict(
+                    scan_type=_scntype,
+                    scan_axis="Emi_Energy",
+                    scan_start=_title_splitted[1],
+                    scan_end=_title_splitted[2],
+                    scan_pts=_title_splitted[3],
+                    scan_ct=_title_splitted[4],
+                )
+            )
+        return iscn
+
+    def get_scan_axis(self):
+        """Get the name of the scanned axis from scan title"""
+        iscn = self.get_scan_info_from_title()
+        _axisout = iscn["scan_axis"]
         _mots, _cnts = self.get_motors(), self.get_counters()
-        if not ((_axisout in _mots) and (_axisout in _cnts)):
-            self._logger.warning(f"'{_axisout}' not present in counters and motors")
+        if not (_axisout in _mots):
+            self._logger.info(f"'{_axisout}' not in (real) motors")
+        if not (_axisout in _cnts):
+            self._logger.warning(f"'{_axisout}' not in counters")
+            _axisout = _cnts[0]
+            self._logger.warning(f"using the first counter: '{_axisout}'")
         return _axisout
 
     def get_array(self, cnt):
@@ -449,15 +511,21 @@ class DataSourceSpecH5(object):
 
         Returns
         -------
-        [ax_data, sig_data, attrs] : list of [array, array, dict]
+        [ax_data, sig_data, label, attrs] : list of [array, array, str, dict]
 
         """
         ax_label, ax_data = self.get_axis_data(ax_name=ax_name, to_energy=to_energy)
         sig_label, sig_data = self.get_signal_data(
             sig_name, mon=mon, deglitch=deglitch, norm=norm
         )
-        attrs = dict(xlabel=ax_label, ylabel=sig_label)
         label = f"S{self._scan_n}_X({ax_label})_Y{sig_label}"
+        attrs = dict(
+            xlabel=ax_label,
+            ylabel=sig_label,
+            label=label,
+            ax_label=ax_label,
+            sig_label=sig_label,
+        )
         return [ax_data, sig_data, label, attrs]
 
     def get_curves(self, group_type, **kws):
