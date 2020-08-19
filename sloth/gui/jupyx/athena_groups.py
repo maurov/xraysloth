@@ -8,10 +8,10 @@ Jupyter UI for Athena project files
 try:
     import ipywidgets as widgets
     from IPython.display import display
+
     HAS_IPYWIDGETS = True
 except ImportError:
     HAS_IPYWIDGETS = False
-
 
 
 def edit_athena_groups(aprj):
@@ -42,15 +42,20 @@ def edit_athena_groups(aprj):
     aprj._sels = [grp.sel for grp in aprj.groups.values()]
 
     # store widgets
-    aprj._widgets = [AthenaGroupWidget(idx, lab, grp.sel) for idx, (lab, grp) in enumerate(aprj.groups.items())]
+    aprj._widgets = [
+        AthenaGroupWidget(idx, lab, grp.sel)
+        for idx, (lab, grp) in enumerate(aprj.groups.items())
+    ]
 
-    #make layout and display
+    # make layout and display
     iLabs = [wdg.wlab for wdg in aprj._widgets]
     iSels = [wdg.wsel for wdg in aprj._widgets]
     vLabs = widgets.VBox(iLabs)
     vSels = widgets.VBox(iSels)
     hGrps = widgets.HBox([vLabs, vSels])
-    tLabel = widgets.Label("Edit group names and selection (-> click 'Apply changes' once finished)")
+    tLabel = widgets.Label(
+        "Edit group names and selection (-> click 'Apply changes' once finished)"
+    )
     sButton = widgets.Button(description="Apply changes")
     sButton.on_click(_apply_edit_groups)
 
@@ -60,7 +65,6 @@ def edit_athena_groups(aprj):
 
 
 class AthenaGroupWidget(object):
-
     def __init__(self, idx, lab, sel):
 
         self._changed = False
@@ -74,11 +78,11 @@ class AthenaGroupWidget(object):
 
     def make_widget_label(self):
         self.wlab = widgets.Text(value=self._lab)
-        self.wlab.observe(self.label_changed, 'value')
+        self.wlab.observe(self.label_changed, "value")
 
     def make_widget_sel(self):
         self.wsel = widgets.Checkbox(self._sel)
-        self.wsel.observe(self.sel_changed, 'value')
+        self.wsel.observe(self.sel_changed, "value")
 
     def label_changed(self, change):
         self._newlab = change.new

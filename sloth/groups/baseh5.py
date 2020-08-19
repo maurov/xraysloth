@@ -30,6 +30,7 @@ Notes
 
 -
 """
+import os
 import tempfile
 import datetime
 
@@ -37,6 +38,7 @@ from silx.io import commonh5
 from silx.io.utils import H5Type
 
 from sloth import __version__ as sloth_version
+from sloth.utils.strings import get_timestamp
 
 #: module logger
 from sloth.utils.logging import getLogger
@@ -128,10 +130,11 @@ class RootGroup(BaseGroup):
         self._logger = logger or _logger
         if in_memory:
             import io
+
             self._logger.warning("IN MEMORY FILE, NOT TESTED YET!")
             ft = io.BytesIO()
         else:
-            ft = tempfile.mktemp(prefix="sloth_", suffix=".h5")
+            ft = os.path.join(tempfile.gettempdir(), f"sloth_{get_timestamp()}.h5")
             self._logger.info("Working temporary file is: %s", ft)
         attrs = {
             "NX_class": "NXroot",
@@ -140,11 +143,13 @@ class RootGroup(BaseGroup):
             "creator": "sloth %s" % sloth_version,
         }
         self._file_name = ft
-        super(RootGroup, self).__init__(self._file_name, parent=None, attrs=attrs, logger=self._logger)
         if mode is None:
             mode = "w"
-        assert(mode in ["r", "w"])
+        assert mode in ["r", "w"]
         self._mode = mode
+        super(RootGroup, self).__init__(
+            self._file_name, parent=None, attrs=attrs, logger=self._logger
+        )
 
     @property
     def filename(self):
@@ -216,7 +221,7 @@ class BaseDataset(commonh5.Dataset):
 
 def test_example(write=True, view=True):
     """Test example for :mod:`sloth.groups.h5base`"""
-    t = RootGroup("test", logger=_logger)
+    t = RootGroup(logger=_logger)
     t._logger.info("Data model example: 't' is the root instance")
     t.add_group("Z9entry1", cls=EntryGroup)
     t.add_group("A0entry2")
@@ -239,7 +244,7 @@ def test_example(write=True, view=True):
 
     if write:
         #: +write to file
-        ft = tempfile.mktemp(prefix="test_", suffix=".hfd5")
+        ft = tempfile.mktemp(prefix="test_", suffix=".h5")
         t.write_to_h5(ft)
 
     if view:

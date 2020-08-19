@@ -502,6 +502,8 @@ class DataSourceSpecH5(object):
         sig_label = sig_name
         #: (opt) divide by monitor signal + multiply back by average
         if mon is not None:
+            if isinstance(mon, str):
+                mon = dict(monitor=mon, cps=False)
             mon_name = mon["monitor"]
             mon_data = self.get_array(mon_name)
             sig_data /= mon_data
