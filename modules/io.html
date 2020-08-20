@@ -296,6 +296,34 @@ via silx.io.open</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_scan_info_from_title">
+<code class="sig-name descname">get_scan_info_from_title</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_scan_info_from_title"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_scan_info_from_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parser to get scan information from title</p>
+<p>‘ascan’
+‘Escan’
+‘Emiscan’</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><p><strong>iscn</strong> –</p>
+<dl class="simple">
+<dt>{</dt><dd><p>scan_type : “type of scan”,
+scan_axis : “scanned axis”,
+scan_start : “”,
+scan_end : “”,
+scan_pts : “”,
+scan_ct : “”,</p>
+</dd>
+</dl>
+<p>}</p>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict of str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="sloth.io.datasource_spech5.DataSourceSpecH5.get_scan_axis">
 <code class="sig-name descname">get_scan_axis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/io/datasource_spech5.html#DataSourceSpecH5.get_scan_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sloth.io.datasource_spech5.DataSourceSpecH5.get_scan_axis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the name of the scanned axis from scan title</p>
@@ -420,10 +448,10 @@ selected scan. It is possible to control normalization and/or deglitching.</p>
 <dd class="field-odd"><p><strong>**kws -&gt; self.get_axis_data</strong><strong>(</strong><strong>) </strong><strong>and self.get_signal_data</strong><strong>(</strong><strong>)</strong> (<em>*args</em><em>,</em>) – </p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>[ax_data, sig_data, attrs]</strong></p>
+<dd class="field-even"><p><strong>[ax_data, sig_data, label, attrs]</strong></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list of [array, array, dict]</p>
+<dd class="field-odd"><p>list of [array, array, str, dict]</p>
 </dd>
 </dl>
 </dd></dl>

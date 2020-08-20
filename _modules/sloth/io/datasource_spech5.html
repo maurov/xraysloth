@@ -337,6 +337,23 @@
 <span class="sd">        none: set attributes</span>
 <span class="sd">            self._scan_n, self._scan_str, self._scan_url, self._sg</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check if scan_n is given already as &quot;scan_n.scan_idx&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scan_n</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">scan_split</span> <span class="o">=</span> <span class="n">scan_n</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+            <span class="n">scan_n</span> <span class="o">=</span> <span class="n">scan_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">scan_idx</span> <span class="o">=</span> <span class="n">scan_split</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;&#39;scan_idx&#39; kept at 1&quot;</span><span class="p">)</span>
+                <span class="k">pass</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">scan_n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">scan_n</span><span class="p">)</span>
+                <span class="n">scan_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">scan_idx</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;scan not selected, wrong &#39;scan_n&#39;!&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scan_n</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="s2">&quot;&#39;scan_n&#39; must be an integer&quot;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scan_idx</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="s2">&quot;&#39;scan_idx&#39; must be an integer&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_scan_n</span> <span class="o">=</span> <span class="n">scan_n</span>
         <span class="k">if</span> <span class="n">scan_kws</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">sloth.utils.dicts</span> <span class="kn">import</span> <span class="n">update_nested</span>
@@ -379,11 +396,28 @@
     <span class="c1">#: READ DATA METHODS</span>
     <span class="c1"># ================== #</span>
 
+    <span class="k">def</span> <span class="nf">_repr_html_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;HTML representation for Jupyter notebook&quot;&quot;&quot;</span>
+
+        <span class="n">scns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_scans</span><span class="p">()</span>
+        <span class="n">html</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&lt;table&gt;&quot;</span><span class="p">]</span>
+        <span class="n">html</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&lt;tr&gt;&quot;</span><span class="p">)</span>
+        <span class="n">html</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&lt;td&gt;&lt;b&gt;Scan&lt;/b&gt;&lt;/td&gt;&quot;</span><span class="p">)</span>
+        <span class="n">html</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&lt;td&gt;&lt;b&gt;Title&lt;/b&gt;&lt;/td&gt;&quot;</span><span class="p">)</span>
+        <span class="n">html</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&lt;/tr&gt;&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">scn</span><span class="p">,</span> <span class="n">tlt</span> <span class="ow">in</span> <span class="n">scns</span><span class="p">:</span>
+            <span class="n">html</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&lt;tr&gt;&quot;</span><span class="p">)</span>
+            <span class="n">html</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;td&gt;</span><span class="si">{</span><span class="n">scn</span><span class="si">}</span><span class="s2">&lt;/td&gt;&quot;</span><span class="p">)</span>
+            <span class="n">html</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;td&gt;</span><span class="si">{</span><span class="n">tlt</span><span class="si">}</span><span class="s2">&lt;/td&gt;&quot;</span><span class="p">)</span>
+            <span class="n">html</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&lt;/tr&gt;&quot;</span><span class="p">)</span>
+        <span class="n">html</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&lt;/table&gt;&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+
 <div class="viewcode-block" id="DataSourceSpecH5.get_scans"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_scans">[docs]</a>    <span class="k">def</span> <span class="nf">get_scans</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get list of scans&quot;&quot;&quot;</span>
         <span class="n">allscans</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">sn</span><span class="p">,</span> <span class="n">sg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sf</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">allscans</span><span class="o">.</span><span class="n">append</span><span class="p">([</span> <span class="n">sn</span><span class="p">,</span> <span class="n">sg</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_title_url</span><span class="p">][()]</span> <span class="p">])</span>
+            <span class="n">allscans</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">sn</span><span class="p">,</span> <span class="n">sg</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_title_url</span><span class="p">][()]])</span>
         <span class="k">return</span> <span class="n">allscans</span></div>
 
 <div class="viewcode-block" id="DataSourceSpecH5.get_motors"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_motors">[docs]</a>    <span class="k">def</span> <span class="nf">get_motors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -404,26 +438,87 @@
         <span class="n">sg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sg</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">sg</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_title_url</span><span class="p">][()]</span></div>
 
-<div class="viewcode-block" id="DataSourceSpecH5.get_scan_axis"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_scan_axis">[docs]</a>    <span class="k">def</span> <span class="nf">get_scan_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the name of the scanned axis from scan title&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="DataSourceSpecH5.get_scan_info_from_title"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_scan_info_from_title">[docs]</a>    <span class="k">def</span> <span class="nf">get_scan_info_from_title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parser to get scan information from title</span>
+
+<span class="sd">        Known types of scans</span>
+<span class="sd">        --------------------</span>
+<span class="sd">        &#39;ascan&#39;</span>
+<span class="sd">        &#39;Escan&#39;</span>
+<span class="sd">        &#39;Emiscan&#39;</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        iscn : dict of str</span>
+<span class="sd">            {</span>
+<span class="sd">             scan_type : &quot;type of scan&quot;,</span>
+<span class="sd">             scan_axis : &quot;scanned axis&quot;,</span>
+<span class="sd">             scan_start : &quot;&quot;,</span>
+<span class="sd">             scan_end : &quot;&quot;,</span>
+<span class="sd">             scan_pts : &quot;&quot;,</span>
+<span class="sd">             scan_ct : &quot;&quot;,</span>
+<span class="sd">            }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">iscn</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">scan_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">scan_axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">scan_start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">scan_end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">scan_pts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">scan_ct</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">_title</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_title</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_title</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="n">_title</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">_title</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">_title_splitted</span> <span class="o">=</span> <span class="n">_title</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
-        <span class="n">_iax</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">_axisout</span> <span class="o">=</span> <span class="n">_title_splitted</span><span class="p">[</span><span class="n">_iax</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">_axisout</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="n">_iax</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">_axisout</span> <span class="o">=</span> <span class="n">_title_splitted</span><span class="p">[</span><span class="n">_iax</span><span class="p">]</span>
-        <span class="k">if</span> <span class="s2">&quot;scan&quot;</span> <span class="ow">in</span> <span class="n">_axisout</span><span class="p">:</span>
-            <span class="n">_iax</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">_axisout</span> <span class="o">=</span> <span class="n">_title_splitted</span><span class="p">[</span><span class="n">_iax</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">_axisout</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="n">_iax</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">_axisout</span> <span class="o">=</span> <span class="n">_title_splitted</span><span class="p">[</span><span class="n">_iax</span><span class="p">]</span>
+        <span class="n">_iax</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">_scntype</span> <span class="o">=</span> <span class="n">_title_splitted</span><span class="p">[</span><span class="n">_iax</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">_scntype</span> <span class="o">==</span> <span class="s2">&quot;ascan&quot;</span><span class="p">:</span>
+            <span class="n">iscn</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">scan_type</span><span class="o">=</span><span class="n">_scntype</span><span class="p">,</span>
+                    <span class="n">scan_axis</span><span class="o">=</span><span class="n">_title_splitted</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                    <span class="n">scan_start</span><span class="o">=</span><span class="n">_title_splitted</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                    <span class="n">scan_end</span><span class="o">=</span><span class="n">_title_splitted</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
+                    <span class="n">scan_pts</span><span class="o">=</span><span class="n">_title_splitted</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span>
+                    <span class="n">scan_ct</span><span class="o">=</span><span class="n">_title_splitted</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">_scntype</span> <span class="o">==</span> <span class="s2">&quot;Escan&quot;</span><span class="p">:</span>
+            <span class="n">iscn</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">scan_type</span><span class="o">=</span><span class="n">_scntype</span><span class="p">,</span>
+                    <span class="n">scan_axis</span><span class="o">=</span><span class="s2">&quot;Energy&quot;</span><span class="p">,</span>
+                    <span class="n">scan_start</span><span class="o">=</span><span class="n">_title_splitted</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="n">scan_end</span><span class="o">=</span><span class="n">_title_splitted</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                    <span class="n">scan_pts</span><span class="o">=</span><span class="n">_title_splitted</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                    <span class="n">scan_ct</span><span class="o">=</span><span class="n">_title_splitted</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">_scntype</span> <span class="o">==</span> <span class="s2">&quot;Emiscan&quot;</span><span class="p">:</span>
+            <span class="n">iscn</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">scan_type</span><span class="o">=</span><span class="n">_scntype</span><span class="p">,</span>
+                    <span class="n">scan_axis</span><span class="o">=</span><span class="s2">&quot;Emi_Energy&quot;</span><span class="p">,</span>
+                    <span class="n">scan_start</span><span class="o">=</span><span class="n">_title_splitted</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="n">scan_end</span><span class="o">=</span><span class="n">_title_splitted</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                    <span class="n">scan_pts</span><span class="o">=</span><span class="n">_title_splitted</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                    <span class="n">scan_ct</span><span class="o">=</span><span class="n">_title_splitted</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">iscn</span></div>
+
+<div class="viewcode-block" id="DataSourceSpecH5.get_scan_axis"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_scan_axis">[docs]</a>    <span class="k">def</span> <span class="nf">get_scan_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the name of the scanned axis from scan title&quot;&quot;&quot;</span>
+        <span class="n">iscn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_scan_info_from_title</span><span class="p">()</span>
+        <span class="n">_axisout</span> <span class="o">=</span> <span class="n">iscn</span><span class="p">[</span><span class="s2">&quot;scan_axis&quot;</span><span class="p">]</span>
         <span class="n">_mots</span><span class="p">,</span> <span class="n">_cnts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_motors</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_counters</span><span class="p">()</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">_axisout</span> <span class="ow">in</span> <span class="n">_mots</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">_axisout</span> <span class="ow">in</span> <span class="n">_cnts</span><span class="p">)):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">_axisout</span><span class="si">}</span><span class="s2">&#39; not present in counters and motors&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">_axisout</span> <span class="ow">in</span> <span class="n">_mots</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">_axisout</span><span class="si">}</span><span class="s2">&#39; not in (real) motors&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">_axisout</span> <span class="ow">in</span> <span class="n">_cnts</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">_axisout</span><span class="si">}</span><span class="s2">&#39; not in counters&quot;</span><span class="p">)</span>
+            <span class="n">_axisout</span> <span class="o">=</span> <span class="n">_cnts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;using the first counter: &#39;</span><span class="si">{</span><span class="n">_axisout</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_axisout</span></div>
 
 <div class="viewcode-block" id="DataSourceSpecH5.get_array"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_array">[docs]</a>    <span class="k">def</span> <span class="nf">get_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cnt</span><span class="p">):</span>
@@ -570,6 +665,8 @@
         <span class="n">sig_label</span> <span class="o">=</span> <span class="n">sig_name</span>
         <span class="c1">#: (opt) divide by monitor signal + multiply back by average</span>
         <span class="k">if</span> <span class="n">mon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mon</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">mon</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">monitor</span><span class="o">=</span><span class="n">mon</span><span class="p">,</span> <span class="n">cps</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="n">mon_name</span> <span class="o">=</span> <span class="n">mon</span><span class="p">[</span><span class="s2">&quot;monitor&quot;</span><span class="p">]</span>
             <span class="n">mon_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="n">mon_name</span><span class="p">)</span>
             <span class="n">sig_data</span> <span class="o">/=</span> <span class="n">mon_data</span>
@@ -612,15 +709,21 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        [ax_data, sig_data, attrs] : list of [array, array, dict]</span>
+<span class="sd">        [ax_data, sig_data, label, attrs] : list of [array, array, str, dict]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ax_label</span><span class="p">,</span> <span class="n">ax_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_axis_data</span><span class="p">(</span><span class="n">ax_name</span><span class="o">=</span><span class="n">ax_name</span><span class="p">,</span> <span class="n">to_energy</span><span class="o">=</span><span class="n">to_energy</span><span class="p">)</span>
         <span class="n">sig_label</span><span class="p">,</span> <span class="n">sig_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_signal_data</span><span class="p">(</span>
             <span class="n">sig_name</span><span class="p">,</span> <span class="n">mon</span><span class="o">=</span><span class="n">mon</span><span class="p">,</span> <span class="n">deglitch</span><span class="o">=</span><span class="n">deglitch</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span>
         <span class="p">)</span>
-        <span class="n">attrs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="n">ax_label</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="n">sig_label</span><span class="p">)</span>
         <span class="n">label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;S</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_scan_n</span><span class="si">}</span><span class="s2">_X(</span><span class="si">{</span><span class="n">ax_label</span><span class="si">}</span><span class="s2">)_Y</span><span class="si">{</span><span class="n">sig_label</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">attrs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">xlabel</span><span class="o">=</span><span class="n">ax_label</span><span class="p">,</span>
+            <span class="n">ylabel</span><span class="o">=</span><span class="n">sig_label</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span>
+            <span class="n">ax_label</span><span class="o">=</span><span class="n">ax_label</span><span class="p">,</span>
+            <span class="n">sig_label</span><span class="o">=</span><span class="n">sig_label</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">ax_data</span><span class="p">,</span> <span class="n">sig_data</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">attrs</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="DataSourceSpecH5.get_curves"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_curves">[docs]</a>    <span class="k">def</span> <span class="nf">get_curves</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
