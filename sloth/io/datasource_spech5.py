@@ -97,6 +97,7 @@ class DataSourceSpecH5(object):
         self._mots_url = "instrument/positioners"
         self._cnts_url = "measurement"
         self._title_url = "title"
+        self._time_url = "start_time"
         self._urls_fmt = "silx"
 
     def _set_urls_spec2nexus(self):
@@ -274,6 +275,16 @@ class DataSourceSpecH5(object):
         """
         sg = self._get_sg()
         return sg[self._title_url][()]
+
+    def get_time(self):
+        """Get start time str for the current scan
+
+        Returns
+        -------
+        start_time (str): scan start time self._sg[self._time_url][()]
+        """
+        sg = self._get_sg()
+        return sg[self._time_url][()]
 
     def get_scan_info_from_title(self):
         """Parser to get scan information from title
