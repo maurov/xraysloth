@@ -213,7 +213,8 @@ class DataSourceSpecH5(object):
         try:
             self._sg = self._sf[self._scan_url]
             self._scan_title = self.get_title()
-            self._logger.info(f"selected scan {self._scan_url}: '{self._scan_title}'")
+            self._scan_start = self.get_time()
+            self._logger.info(f"selected scan {self._scan_url}: '{self._scan_title}' ({self._scan_start})")
         except KeyError:
             self._sg = None
             self._scan_title = None
