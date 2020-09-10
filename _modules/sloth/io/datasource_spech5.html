@@ -260,6 +260,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_mots_url</span> <span class="o">=</span> <span class="s2">&quot;instrument/positioners&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cnts_url</span> <span class="o">=</span> <span class="s2">&quot;measurement&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_title_url</span> <span class="o">=</span> <span class="s2">&quot;title&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_time_url</span> <span class="o">=</span> <span class="s2">&quot;start_time&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_urls_fmt</span> <span class="o">=</span> <span class="s2">&quot;silx&quot;</span>
 
     <span class="k">def</span> <span class="nf">_set_urls_spec2nexus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -437,6 +438,16 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sg</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">sg</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_title_url</span><span class="p">][()]</span></div>
+
+<div class="viewcode-block" id="DataSourceSpecH5.get_time"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_time">[docs]</a>    <span class="k">def</span> <span class="nf">get_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get start time str for the current scan</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        start_time (str): scan start time self._sg[self._time_url][()]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sg</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">sg</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_time_url</span><span class="p">][()]</span></div>
 
 <div class="viewcode-block" id="DataSourceSpecH5.get_scan_info_from_title"><a class="viewcode-back" href="../../../modules/io.html#sloth.io.datasource_spech5.DataSourceSpecH5.get_scan_info_from_title">[docs]</a>    <span class="k">def</span> <span class="nf">get_scan_info_from_title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parser to get scan information from title</span>
