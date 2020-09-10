@@ -196,7 +196,7 @@ class DataSourceSpecH5(object):
         if scan_kws is not None:
             from sloth.utils.dicts import update_nested
 
-            self._scan_kws = update_nested(scan_kws)
+            self._scan_kws = update_nested(self._scan_kws, scan_kws)
         if self._urls_fmt == "silx":
             self._scan_str = f"{scan_n}.{scan_idx}"
         elif self._urls_fmt == "spec2nexus":
@@ -252,10 +252,15 @@ class DataSourceSpecH5(object):
         return ''.join(html)
 
     def get_scans(self):
-        """Get list of scans"""
+        """Get list of scans
+        
+        Returns
+        -------
+        list of strings: [['scan.n', 'title', 'start_time'], ... ]
+        """
         allscans = []
         for sn, sg in self._sf.items():
-            allscans.append([sn, sg[self._title_url][()]])
+            allscans.append([ sn, sg[self._title_url][()], sg[self._time_url][()]])
         return allscans
 
     def get_motors(self):
