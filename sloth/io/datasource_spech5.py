@@ -243,11 +243,13 @@ class DataSourceSpecH5(object):
         html.append("<tr>")
         html.append("<td><b>Scan</b></td>")
         html.append("<td><b>Title</b></td>")
+        html.append("<td><b>Start_time</b></td>")
         html.append("</tr>")
-        for scn, tlt in scns:
+        for scn, tlt, sct in scns:
             html.append("<tr>")
             html.append(f"<td>{scn}</td>")
             html.append(f"<td>{tlt}</td>")
+            html.append(f"<td>{sct}</td>")
             html.append("</tr>")
         html.append("</table>")
         return ''.join(html)
