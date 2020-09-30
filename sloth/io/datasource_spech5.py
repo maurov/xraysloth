@@ -11,6 +11,7 @@ Requirements
 """
 import os
 import copy
+import datetime
 import numpy as np
 import h5py
 from silx.io.utils import open as silx_open
@@ -293,6 +294,16 @@ class DataSourceSpecH5(object):
         """
         sg = self._get_sg()
         return sg[self._time_url][()]
+    
+    def get_timestamp(self):
+        """ Get integer timestamp from the start time str"""
+        d, t = self.get_time().split('T')
+        dd = d.split('-')
+        tt = t.split(':')
+        ddd = [int(_dd) for _dd in dd]
+        ttt = [int(_tt) for _tt in tt]
+        dt = ddd + ttt
+        return int(datetime.datetime(*dt).timestamp())
 
     def get_scan_info_from_title(self):
         """Parser to get scan information from title
