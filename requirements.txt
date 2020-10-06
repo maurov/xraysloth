@@ -13,7 +13,7 @@ fabio >= 0.9
 scipy >= 1.2
 matplotlib >= 3.0
 six
-silx >= 0.12
+silx >= 0.13.2
 
 #pyopencl; platform_machine in "i386, x86_64, AMD64"  #: for silx.opencl
 #Mako                   #: for pyopencl reduction
