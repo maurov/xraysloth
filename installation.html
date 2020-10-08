@@ -217,7 +217,7 @@ bash miniconda.sh -b -p $HOME/local/conda
 </div>
 <ul>
 <li><p>Make sure the packages listed in <cite>binder/apt.txt</cite> are available in your system, otherwise install them:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cat apt.txt | xargs sudo apt-get install -y
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ grep -v &#39;^#&#39; apt.txt | xargs sudo apt-get install -y
 </pre></div>
 </div>
 </li>
