@@ -206,6 +206,7 @@ ELEMENTS_INFO = (
     ("Mt", 109, 9, 7, "meitnerium", 268, 0),
 )
 ELEMENTS = [elt[0] for elt in ELEMENTS_INFO]
+ELEMENTS_N = [elt[1] for elt in ELEMENTS_INFO]
 
 #: SHELLS / EDGES
 #: K = 1 (s)
@@ -359,23 +360,14 @@ def mapLine2Trans(line):
 
 
 def get_element(elem):
-    """get a tuple for element name and number"""
+    """get a tuple of information for a given element"""
     _errstr = f"Element {elem} not known!"
-    if (type(elem) is str) and (elem not in ELEMENTS):
-        _LOGGER.error(_errstr)
-        raise NameError(_errstr)
-    if (type(elem) is str) and (elem in ELEMENTS):
-        elem_z = xl.SymbolToAtomicNumber(elem)
-        elem_str = elem
-    elif type(elem) is int:
-        elem_str = xl.AtomicNumberToSymbol(elem)
-        if elem_str is None:
-            raise NameError("Element Z out of range")
-        elem_z = elem
-    else:
-        raise NameError(_errstr)
-    return (elem_str, elem_z)
-
+    if (isinstance(elem, str) and (elem in ELEMENTS)):
+        return [elt for elt in ELEMENTS_INFO if elt[0]==elem][0]
+    if (isinstance(elem, int) and (elem in ELEMENTS_N)):
+        return [elt for elt in ELEMENTS_INFO if elt[1]==elem]
+    _LOGGER.error(_errstr)
+    raise NameError(_errstr)
 
 def get_line(line):
     """Check the line name is a valid name and return it"""
