@@ -35,6 +35,14 @@ except ImportError:
     HAS_XRAYLIB = False
     pass
 
+try:
+    import xraydb
+    HAS_XRAYDB = True
+except ImportError:
+    HAS_XRAYDB = False
+    pass
+
+
 from sloth.math.lineshapes import lorentzian, fwhm2sigma
 
 #: MODULE LOGGER
@@ -42,25 +50,9 @@ from .logging import getLogger
 
 _LOGGER = getLogger("sloth.utils.xdata", level="INFO")
 
-
-def _get_xraydb():
-    """Get Larch X-ray database instance"""
-    try:
-        import larch
-        from larch import Interpreter
-
-        _larch = Interpreter()  #: init larch session
-        from larch_plugins.xray.xraydb_plugin import get_xraydb
-
-        xdb = get_xraydb(_larch)
-        return xdb
-    except ModuleNotFoundError:
-        return None
-        _LOGGER.error("Larch not found")
-        pass
-
-
 #: ERROR MESSAGES
+
+
 def _larch_error(ret=None):
     """Log a missing larch error message and return given 'ret'"""
     _LOGGER.error("Larch not found")
@@ -363,11 +355,12 @@ def get_element(elem):
     """get a tuple of information for a given element"""
     _errstr = f"Element {elem} not known!"
     if (isinstance(elem, str) and (elem in ELEMENTS)):
-        return [elt for elt in ELEMENTS_INFO if elt[0]==elem][0]
+        return [elt for elt in ELEMENTS_INFO if elt[0] == elem][0]
     if (isinstance(elem, int) and (elem in ELEMENTS_N)):
-        return [elt for elt in ELEMENTS_INFO if elt[1]==elem]
+        return [elt for elt in ELEMENTS_INFO if elt[1] == elem]
     _LOGGER.error(_errstr)
     raise NameError(_errstr)
+
 
 def get_line(line):
     """Check the line name is a valid name and return it"""
@@ -393,11 +386,9 @@ def find_edge(emin, emax, shells=None):
     if shells is None:
         shells = SHELLS
     for el in ELEMENTS:
+        eln = get_element(el)
         for sh in shells:
-            edge = (
-                xl.EdgeEnergy(xl.SymbolToAtomicNumber(el), getattr(xl, sh + "_SHELL"))
-                * 1000
-            )
+            edge = (xl.EdgeEnergy(eln[1], getattr(xl, sh + "_SHELL")) * 1000)
             if (edge >= emin) and (edge <= emax):
                 _LOGGER.info("{0} \t {1} \t {2:>.2f} eV".format(el, sh, edge))
 
