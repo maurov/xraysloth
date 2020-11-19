@@ -369,6 +369,7 @@
     <span class="p">(</span><span class="s2">&quot;Mt&quot;</span><span class="p">,</span> <span class="mi">109</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="s2">&quot;meitnerium&quot;</span><span class="p">,</span> <span class="mi">268</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="n">ELEMENTS</span> <span class="o">=</span> <span class="p">[</span><span class="n">elt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">elt</span> <span class="ow">in</span> <span class="n">ELEMENTS_INFO</span><span class="p">]</span>
+<span class="n">ELEMENTS_N</span> <span class="o">=</span> <span class="p">[</span><span class="n">elt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">elt</span> <span class="ow">in</span> <span class="n">ELEMENTS_INFO</span><span class="p">]</span>
 
 <span class="c1">#: SHELLS / EDGES</span>
 <span class="c1">#: K = 1 (s)</span>
@@ -522,23 +523,14 @@
 
 
 <div class="viewcode-block" id="get_element"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.xdata.get_element">[docs]</a><span class="k">def</span> <span class="nf">get_element</span><span class="p">(</span><span class="n">elem</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;get a tuple for element name and number&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;get a tuple of information for a given element&quot;&quot;&quot;</span>
     <span class="n">_errstr</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Element </span><span class="si">{</span><span class="n">elem</span><span class="si">}</span><span class="s2"> not known!&quot;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">elem</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ELEMENTS</span><span class="p">):</span>
-        <span class="n">_LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">_errstr</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="n">_errstr</span><span class="p">)</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">elem</span> <span class="ow">in</span> <span class="n">ELEMENTS</span><span class="p">):</span>
-        <span class="n">elem_z</span> <span class="o">=</span> <span class="n">xl</span><span class="o">.</span><span class="n">SymbolToAtomicNumber</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
-        <span class="n">elem_str</span> <span class="o">=</span> <span class="n">elem</span>
-    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="n">elem_str</span> <span class="o">=</span> <span class="n">xl</span><span class="o">.</span><span class="n">AtomicNumberToSymbol</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">elem_str</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;Element Z out of range&quot;</span><span class="p">)</span>
-        <span class="n">elem_z</span> <span class="o">=</span> <span class="n">elem</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="n">_errstr</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">elem_str</span><span class="p">,</span> <span class="n">elem_z</span><span class="p">)</span></div>
-
+    <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">elem</span> <span class="ow">in</span> <span class="n">ELEMENTS</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">elt</span> <span class="k">for</span> <span class="n">elt</span> <span class="ow">in</span> <span class="n">ELEMENTS_INFO</span> <span class="k">if</span> <span class="n">elt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="n">elem</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">elem</span> <span class="ow">in</span> <span class="n">ELEMENTS_N</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">elt</span> <span class="k">for</span> <span class="n">elt</span> <span class="ow">in</span> <span class="n">ELEMENTS_INFO</span> <span class="k">if</span> <span class="n">elt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="n">elem</span><span class="p">]</span>
+    <span class="n">_LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">_errstr</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="n">_errstr</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="get_line"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.xdata.get_line">[docs]</a><span class="k">def</span> <span class="nf">get_line</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Check the line name is a valid name and return it&quot;&quot;&quot;</span>
