@@ -483,17 +483,10 @@ def ene_res(emin, emax, shells=["K"]):
     s["ch"] = []
     s["dee"] = []
     for el in ELEMENTS:
+        eln = get_element(el)
         for sh in shells:
-            edge = (
-                xl.EdgeEnergy(xl.SymbolToAtomicNumber(el), getattr(xl, sh + "_SHELL"))
-                * 1000
-            )
-            ch = (
-                xl.AtomicLevelWidth(
-                    xl.SymbolToAtomicNumber(el), getattr(xl, sh + "_SHELL")
-                )
-                * 1000
-            )
+            edge = (xl.EdgeEnergy(eln[1], getattr(xl, sh + "_SHELL")) * 1000)
+            ch = (xl.AtomicLevelWidth(eln[1], getattr(xl, sh + "_SHELL")) * 1000)
             if (edge >= emin) and (edge <= emax):
                 s["el"].append(el)
                 s["en"].append(xl.SymbolToAtomicNumber(el))
