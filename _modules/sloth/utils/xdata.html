@@ -198,6 +198,14 @@
     <span class="n">HAS_XRAYLIB</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">pass</span>
 
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">xraydb</span>
+    <span class="n">HAS_XRAYDB</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">HAS_XRAYDB</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">pass</span>
+
+
 <span class="kn">from</span> <span class="nn">sloth.math.lineshapes</span> <span class="kn">import</span> <span class="n">lorentzian</span><span class="p">,</span> <span class="n">fwhm2sigma</span>
 
 <span class="c1">#: MODULE LOGGER</span>
@@ -205,25 +213,9 @@
 
 <span class="n">_LOGGER</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;sloth.utils.xdata&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
 
-
-<span class="k">def</span> <span class="nf">_get_xraydb</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Get Larch X-ray database instance&quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">larch</span>
-        <span class="kn">from</span> <span class="nn">larch</span> <span class="kn">import</span> <span class="n">Interpreter</span>
-
-        <span class="n">_larch</span> <span class="o">=</span> <span class="n">Interpreter</span><span class="p">()</span>  <span class="c1">#: init larch session</span>
-        <span class="kn">from</span> <span class="nn">larch_plugins.xray.xraydb_plugin</span> <span class="kn">import</span> <span class="n">get_xraydb</span>
-
-        <span class="n">xdb</span> <span class="o">=</span> <span class="n">get_xraydb</span><span class="p">(</span><span class="n">_larch</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">xdb</span>
-    <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span>
-        <span class="n">_LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Larch not found&quot;</span><span class="p">)</span>
-        <span class="k">pass</span>
-
-
 <span class="c1">#: ERROR MESSAGES</span>
+
+
 <span class="k">def</span> <span class="nf">_larch_error</span><span class="p">(</span><span class="n">ret</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Log a missing larch error message and return given &#39;ret&#39;&quot;&quot;&quot;</span>
     <span class="n">_LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Larch not found&quot;</span><span class="p">)</span>
@@ -526,11 +518,12 @@
     <span class="sd">&quot;&quot;&quot;get a tuple of information for a given element&quot;&quot;&quot;</span>
     <span class="n">_errstr</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Element </span><span class="si">{</span><span class="n">elem</span><span class="si">}</span><span class="s2"> not known!&quot;</span>
     <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">elem</span> <span class="ow">in</span> <span class="n">ELEMENTS</span><span class="p">)):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">elt</span> <span class="k">for</span> <span class="n">elt</span> <span class="ow">in</span> <span class="n">ELEMENTS_INFO</span> <span class="k">if</span> <span class="n">elt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="n">elem</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">elt</span> <span class="k">for</span> <span class="n">elt</span> <span class="ow">in</span> <span class="n">ELEMENTS_INFO</span> <span class="k">if</span> <span class="n">elt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">elem</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">elem</span> <span class="ow">in</span> <span class="n">ELEMENTS_N</span><span class="p">)):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">elt</span> <span class="k">for</span> <span class="n">elt</span> <span class="ow">in</span> <span class="n">ELEMENTS_INFO</span> <span class="k">if</span> <span class="n">elt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="n">elem</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">elt</span> <span class="k">for</span> <span class="n">elt</span> <span class="ow">in</span> <span class="n">ELEMENTS_INFO</span> <span class="k">if</span> <span class="n">elt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">elem</span><span class="p">]</span>
     <span class="n">_LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">_errstr</span><span class="p">)</span>
     <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="n">_errstr</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="get_line"><a class="viewcode-back" href="../../../modules/utils.html#sloth.utils.xdata.get_line">[docs]</a><span class="k">def</span> <span class="nf">get_line</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Check the line name is a valid name and return it&quot;&quot;&quot;</span>
@@ -556,11 +549,9 @@
     <span class="k">if</span> <span class="n">shells</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">shells</span> <span class="o">=</span> <span class="n">SHELLS</span>
     <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">ELEMENTS</span><span class="p">:</span>
+        <span class="n">eln</span> <span class="o">=</span> <span class="n">get_element</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">sh</span> <span class="ow">in</span> <span class="n">shells</span><span class="p">:</span>
-            <span class="n">edge</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">xl</span><span class="o">.</span><span class="n">EdgeEnergy</span><span class="p">(</span><span class="n">xl</span><span class="o">.</span><span class="n">SymbolToAtomicNumber</span><span class="p">(</span><span class="n">el</span><span class="p">),</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">xl</span><span class="p">,</span> <span class="n">sh</span> <span class="o">+</span> <span class="s2">&quot;_SHELL&quot;</span><span class="p">))</span>
-                <span class="o">*</span> <span class="mi">1000</span>
-            <span class="p">)</span>
+            <span class="n">edge</span> <span class="o">=</span> <span class="p">(</span><span class="n">xl</span><span class="o">.</span><span class="n">EdgeEnergy</span><span class="p">(</span><span class="n">eln</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">xl</span><span class="p">,</span> <span class="n">sh</span> <span class="o">+</span> <span class="s2">&quot;_SHELL&quot;</span><span class="p">))</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">edge</span> <span class="o">&gt;=</span> <span class="n">emin</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">edge</span> <span class="o">&lt;=</span> <span class="n">emax</span><span class="p">):</span>
                 <span class="n">_LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> </span><span class="se">\t</span><span class="s2"> </span><span class="si">{1}</span><span class="s2"> </span><span class="se">\t</span><span class="s2"> </span><span class="si">{2:&gt;.2f}</span><span class="s2"> eV&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">sh</span><span class="p">,</span> <span class="n">edge</span><span class="p">))</span></div>
 
@@ -655,17 +646,10 @@
     <span class="n">s</span><span class="p">[</span><span class="s2">&quot;ch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">s</span><span class="p">[</span><span class="s2">&quot;dee&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">ELEMENTS</span><span class="p">:</span>
+        <span class="n">eln</span> <span class="o">=</span> <span class="n">get_element</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">sh</span> <span class="ow">in</span> <span class="n">shells</span><span class="p">:</span>
-            <span class="n">edge</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">xl</span><span class="o">.</span><span class="n">EdgeEnergy</span><span class="p">(</span><span class="n">xl</span><span class="o">.</span><span class="n">SymbolToAtomicNumber</span><span class="p">(</span><span class="n">el</span><span class="p">),</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">xl</span><span class="p">,</span> <span class="n">sh</span> <span class="o">+</span> <span class="s2">&quot;_SHELL&quot;</span><span class="p">))</span>
-                <span class="o">*</span> <span class="mi">1000</span>
-            <span class="p">)</span>
-            <span class="n">ch</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">xl</span><span class="o">.</span><span class="n">AtomicLevelWidth</span><span class="p">(</span>
-                    <span class="n">xl</span><span class="o">.</span><span class="n">SymbolToAtomicNumber</span><span class="p">(</span><span class="n">el</span><span class="p">),</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">xl</span><span class="p">,</span> <span class="n">sh</span> <span class="o">+</span> <span class="s2">&quot;_SHELL&quot;</span><span class="p">)</span>
-                <span class="p">)</span>
-                <span class="o">*</span> <span class="mi">1000</span>
-            <span class="p">)</span>
+            <span class="n">edge</span> <span class="o">=</span> <span class="p">(</span><span class="n">xl</span><span class="o">.</span><span class="n">EdgeEnergy</span><span class="p">(</span><span class="n">eln</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">xl</span><span class="p">,</span> <span class="n">sh</span> <span class="o">+</span> <span class="s2">&quot;_SHELL&quot;</span><span class="p">))</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
+            <span class="n">ch</span> <span class="o">=</span> <span class="p">(</span><span class="n">xl</span><span class="o">.</span><span class="n">AtomicLevelWidth</span><span class="p">(</span><span class="n">eln</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">xl</span><span class="p">,</span> <span class="n">sh</span> <span class="o">+</span> <span class="s2">&quot;_SHELL&quot;</span><span class="p">))</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">edge</span> <span class="o">&gt;=</span> <span class="n">emin</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">edge</span> <span class="o">&lt;=</span> <span class="n">emax</span><span class="p">):</span>
                 <span class="n">s</span><span class="p">[</span><span class="s2">&quot;el&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
                 <span class="n">s</span><span class="p">[</span><span class="s2">&quot;en&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xl</span><span class="o">.</span><span class="n">SymbolToAtomicNumber</span><span class="p">(</span><span class="n">el</span><span class="p">))</span>
