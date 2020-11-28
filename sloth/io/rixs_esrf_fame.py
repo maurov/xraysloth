@@ -41,7 +41,7 @@ def get_xyz_bm16(logobj, specobj, fit_elastic=False):
     if type(logobj) is str:
         logobj = np.genfromtxt(logobj, delimiter=',', comments='#')
     scans = logobj[:, 0]  # list of scan numers
-    enes = logobj[:, 1]*1000  # in eV
+    enes = logobj[:, 1] * 1000  # in eV
     _counter = 0
     for scan, ene in zip(scans, enes):
         try:
@@ -53,7 +53,7 @@ def get_xyz_bm16(logobj, specobj, fit_elastic=False):
         # perform some data treatment -> TODO: move elsewhere!!!
         if fit_elastic is True:
             fit, pw = fit_splitpvoigt(x, z, bkg='No Background', plot=False)
-            x = x-fit.resdict['position']+ene
+            x = x - fit.resdict['position'] + ene
             # z = fit.residual
         if _counter == 0:
             xcol = x
