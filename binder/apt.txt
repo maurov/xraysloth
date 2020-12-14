@@ -16,3 +16,4 @@ libgtk2.0-dev
 # libxss-dev
 # libasound2-dev
 # python-pyqt5.qtwebkit
+lib64gcc1

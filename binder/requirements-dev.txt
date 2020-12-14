@@ -17,3 +17,6 @@ coverage     #: (silx-dev) For test coverage in run_test.py
 doc8         #: style checker for rst
 pytest       #: test (larch)
 nose         #: test (larch)
+rstcheck
+python-language-server
+snooty
