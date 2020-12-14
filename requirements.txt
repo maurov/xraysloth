@@ -5,27 +5,26 @@
 --find-links http://www.silx.org/pub/wheelhouse/
 --only-binary numpy,h5py,scipy,PySide2,PyQt5
 
-numpy >= 1.16
+numpy == 1.19.2
 setuptools
 Cython >= 0.21.1
-h5py >= 2.9
+h5py >= 3.1
 fabio >= 0.9
 scipy >= 1.2
 matplotlib >= 3.0
 six
-silx >= 0.13.2
-
-#pyopencl; platform_machine in "i386, x86_64, AMD64"  #: for silx.opencl
-#Mako                   #: for pyopencl reduction
+pyopencl; platform_machine in "i386, x86_64, AMD64"  #: for silx.opencl
+Mako                   #: for pyopencl reduction
 qtconsole              #: for silx.gui.console
 PyOpenGL               #: for silx.gui.plot3d
 python-dateutil        #: for silx.gui.plot
 Pillow                 #: for silx.opencl.image.test
-PyQt5 == 5.14          #: for silx.gui, v5.12 for spyder==4.0.0 // oasys >=5.14!
-pyqtwebengine == 5.14  #: v5.12 for spyder==4.0.0
+PyQt5 == 5.11.3          #: for silx.gui, v5.12 for spyder==4.0.0 // oasys >=5.14!
+pyqtwebengine == 5.11.3  #: v5.12 for spyder==4.0.0
+silx >= 0.14
 sqlalchemy >= 1.3
 pandas >= 0.25
-lmfit >= 1.0.0
+lmfit >= 1.0.1
 xraydb >= 4.3
 requests
 pyyaml
@@ -37,3 +36,5 @@ ptpython >= 2.0
 xlrd  #: read Excel files
 xlwt  #: write Excel files
 
+pypushflow >= 0.2.0b
+Pint
