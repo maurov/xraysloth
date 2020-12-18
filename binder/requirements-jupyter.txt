@@ -14,15 +14,16 @@ notebook >= 5.3
 jupyterhub
 ipympl
 nbsphinx
-# The following deps are in EVALUTAION STAGE
+# The following deps are at **EVALUTAION STAGE**
 ipytree
 plotly == 4.9.0
 kaleido  #: Static Image Export for plotly
 #
 h5netcdf
 xarray
-#
-#param  # https://param.holoviz.org/
-#panel  # https://panel.holoviz.org/
+# https://github.com/nitrocalcite/interactive_1d_fitting
+param ~= 1.9.3
+panel ~= 0.10.2
+bokeh ~= 2.2.3
 
 # run postBuild

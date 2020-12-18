@@ -18,6 +18,7 @@ from silx.io.utils import open as silx_open
 from silx.io.convert import write_to_h5, _is_commonh5_group
 from sloth.utils.strings import str2rng
 
+__version__ = "2020.12.1_sloth" #to keep track between larch and sloth
 
 class DataSourceSpecH5(object):
     """Data source utility wrapper for a Spec file read as HDF5 object
