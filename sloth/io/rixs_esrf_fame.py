@@ -38,7 +38,7 @@ def get_xyz_bm16(logobj, specobj, fit_elastic=False):
     xcol, ycol, zcol: 1D arrays
 
     """
-    if type(logobj) is str:
+    if isinstance(logobj, str):
         logobj = np.genfromtxt(logobj, delimiter=',', comments='#')
     scans = logobj[:, 0]  # list of scan numers
     enes = logobj[:, 1] * 1000  # in eV
