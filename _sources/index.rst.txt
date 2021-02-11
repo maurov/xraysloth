@@ -35,8 +35,8 @@ Current version is |release|.
 :doc:`installation`
   Step-by-step guide to installation.
 
-:doc:`workflows/index`
-  Personal notes on workflows.
+:doc:`workflows/git`
+  Personal notes on Git.
 
 :doc:`data_model/index`
   How the data are structured (from file to memory and back).
