@@ -3,7 +3,6 @@
 # Minimum requirements:
 #   conda install nodejs
 #   pip install -r ../requirements.txt
-h5glance
 ipython >= 7.10
 ipykernel >= 5.1
 jupyterlab_server
@@ -14,16 +13,19 @@ notebook >= 5.3
 jupyterhub
 ipympl
 nbsphinx
-# The following deps are at **EVALUTAION STAGE**
+#
+#DEVEL/EVALUATION
 ipytree
 plotly == 4.9.0
 kaleido  #: Static Image Export for plotly
 #
-h5netcdf
-xarray
+#h5glance
+h5web
+#h5netcdf
+#xarray
 # https://github.com/nitrocalcite/interactive_1d_fitting
-param ~= 1.9.3
-panel ~= 0.10.2
-bokeh ~= 2.2.3
+#param ~= 1.9.3
+#panel ~= 0.10.2
+#bokeh ~= 2.2.3
 
 # run postBuild
