@@ -8,6 +8,7 @@
 numpy >= 1.12
 setuptools
 Cython >= 0.21.1
+hdf5plugin
 h5py >= 3.1
 fabio >= 0.9
 six
@@ -21,7 +22,7 @@ python-dateutil        #: for silx.gui.plot
 Pillow                 #: for silx.opencl.image.test
 PyQt5                  #: for silx.gui, v5.12 for spyder==4.0.0 // oasys >=5.14!
 pyqtwebengine          #: v5.12 for spyder==4.0.0
-silx >= 0.14
+silx >= 0.15
 sqlalchemy >= 1.3
 pandas >= 0.25
 lmfit >= 1.0.2
@@ -33,8 +34,7 @@ termcolor
 pytools
 palettable
 ptpython >= 2.0
-xlrd  #: read Excel files
-xlwt  #: write Excel files
-
+openpyxl
 pypushflow >= 0.2.0b
 Pint
+
