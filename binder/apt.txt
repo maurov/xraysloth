@@ -16,4 +16,4 @@ libgtk2.0-dev
 # libxss-dev
 # libasound2-dev
 # python-pyqt5.qtwebkit
-# lib64gcc1 #2021-04-22: not installing on mybinder.org
+# lib64gcc1 #2021-04-22: not installing on mybinder.org (ubuntu bionic)

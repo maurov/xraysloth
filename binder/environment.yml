@@ -10,22 +10,43 @@
 #   +> Nexus
 #   +> Dev tools
 # NOTE: first install packages in apt.txt
-# Usage: conda env create -f environment.yml
+# Usage: mamba/conda env create -f environment.yml
 name: sloth
 channels:
     - defaults
 dependencies:
-    - python == 3.7
+    - python == 3.8
     - pip
     - nodejs
     - wxpython >= 4.0.4  # still not working with pip!
+    - pyqt >= 5.9
+    - conda-forge::pyqtwebengine
+    - qtconsole
+    - h5py == 2.10
+    - numpy >= 1.12
+    - scipy >= 1.2
+    - pandas >= 0.25
+    - matplotlib >= 3.0
+    - lmfit >= 1.0.2
+    - requests
+    - pyyaml
+    - psutil
+    - termcolor
+    - pytools
+    - palettable
+    - openpyxl
+    - conda-forge::pint
+    - esrf-bcu::ptpython >= 3.0.16
+    - conda-forge::silx >= 0.15.0
+    - conda-forge::pymca >= 5.6.5
+    - conda-forge::xraydb >= 4.4
+    - conda-forge::xraylib
     - rtree  # -> `requirements-xrt.txt` (pip fails for some unknown reason)
     #- conda-forge:dask        # for xarray (in requirements-jupyter.txt)
     #- conda-forge:netCDF4     # for xarray (in requirements-jupyter.txt)
     #- conda-forge:bottleneck  # for xarray (in requirements-jupyter.txt)
-    - conda-forge::xraylib
     - pip:
-        - -r ../requirements.txt        #: base
+        #- -r ../requirements.txt        #: base // INSTALLED HERE VIA CONDA!!!
         - -r requirements-dev.txt       #: IDE/dev tools
         - -r requirements-docs.txt      #: to build docs
         - -r requirements-jupyter.txt   #: Jupyter
