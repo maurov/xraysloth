@@ -117,3 +117,6 @@ jupyter lab build
 # Unset NODE_OPTIONS environment variable
 # (OS X/Linux)
 unset NODE_OPTIONS
+
+## NPM ##
+npm install -g configurable-http-proxy
