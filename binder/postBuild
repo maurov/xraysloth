@@ -36,9 +36,9 @@ jupyter nbextension enable --py widgetsnbextension --sys-prefix
 # https://plotly.com/python/
 # https://plot.ly/python/getting-started/#jupyterlab-support-python-35 
 # Jupyterlab renderer support
-jupyter labextension install jupyterlab-plotly@4.9.0 --no-build
+jupyter labextension install jupyterlab-plotly --no-build
 # Jupyter widgets extension (OPTIONAL)
-jupyter labextension install @jupyter-widgets/jupyterlab-manager plotlywidget@4.9.0
+jupyter labextension install @jupyter-widgets/jupyterlab-manager plotlywidget
 
 # ---------------------------
 # IPYMPL / JUPYTER-MATPLOTLIB
@@ -64,11 +64,11 @@ jupyter labextension install @jupyterlab/toc --no-build
 # https://github.com/QuantStack/ipytree
 jupyter labextension install ipytree --no-build
 
-# ------
-# PANEL
-# ------
-# https://panel.holoviz.org/
-#jupyter labextension install @pyviz/jupyterlab_pyviz --no-build
+# -------
+# HOLOVIZ
+# -------
+# https://holoviz.org/
+jupyter labextension install @pyviz/jupyterlab_pyviz --no-build
 
 # ------------------------------------------------
 # /!\ EXPERIMENTAL PACKAGES: NOT INCLUDED YET /!\
