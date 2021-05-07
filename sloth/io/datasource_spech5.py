@@ -3,10 +3,16 @@
 """Utility wrapper for h5py-like API to Spec files
 ===================================================
 
+This is a wrapper on top of `silx.io.open` to read Spec_ files via an HDF5-like API.
+
+.. _SPEC: http://www.certif.com/content/spec
+
 Requirements
 ------------
-
 - silx (http://www.silx.org/doc/silx/latest/modules/io/spech5.html)
+
+__author__ = ["Mauro Rovezzi", "Matt Newville"]
+__version__ = "2021.05.1_sloth"
 
 """
 import os
@@ -18,13 +24,13 @@ from silx.io.utils import open as silx_open
 from silx.io.convert import write_to_h5, _is_commonh5_group
 from sloth.utils.strings import str2rng
 
-__version__ = "2020.12.1_sloth" #to keep track between larch and sloth
+
 
 class DataSourceSpecH5(object):
     """Data source utility wrapper for a Spec file read as HDF5 object
     via silx.io.open"""
 
-    def __init__(self, fname=None, logger=None, urls_fmt="silx"):
+    def __init__(self, fname=None, logger=None, urls_fmt="silx", verbose=False):
         """init with file name and default attributes
 
         Parameters
@@ -46,12 +52,15 @@ class DataSourceSpecH5(object):
         else:
             self._logger = logger
 
+        if verbose:
+            self._logger.set_level("INFO")
+
         self.fname = fname
-        self._sf = None
-        if self.fname is not None:
-            self._init_source_file()
+        self._scanfile = None
+        self._scans = None
         self._scan_n = None
         self._scan_str = None
+
         self._scan_kws = {  # to get data from scan
             "ax_name": None,
             "to_energy": None,
@@ -69,6 +78,9 @@ class DataSourceSpecH5(object):
             self._urls_fmt = None
             self._logger.error("'urls_fmt' not understood")
         self.set_group()
+
+        if self.fname is not None:
+            self._init_source_file()
         # show data in a TreeView
         # self.view()
 
@@ -76,7 +88,9 @@ class DataSourceSpecH5(object):
         """init source file object"""
         #: source file object (h5py-like)
         try:
-            self._sf = silx_open(self.fname)
+            self._scanfile = silx_open(self.fname)
+            self._scans = self.get_scans()
+            self.set_scan(self._scans[0][0]) #set the first scan at init
         except OSError:
             self._logger.error(f"cannot open {self.fname}")
             self._sf = None
@@ -84,15 +98,15 @@ class DataSourceSpecH5(object):
     def open(self, mode="r"):
         """Open the source file object with h5py in given mode"""
         try:
-            self._sf = h5py.File(self.fname, mode)
+            self._scanfile = h5py.File(self.fname, mode)
         except OSError:
             self._logger.error(f"cannot open {self.fname}")
             pass
 
     def close(self):
         """Close source file silx.io.spech5.SpecH5"""
-        self._sf.close()
-        self._sf = None
+        self._scanfile.close()
+        self._scanfile = None
 
     def _set_urls_silx(self):
         """Set default SpecH5 urls"""
@@ -109,14 +123,20 @@ class DataSourceSpecH5(object):
         self._title_url = "title"
         self._urls_fmt = "spec2nexus"
 
-    def _get_sg(self):
-        """Safe get self._sg"""
-        if self._sg is None:
-            raise AttributeError(
-                "Group/Scan not selected -> use 'self.set_scan()' first"
-            )
+    def get_scangroup(self, scan=None):
+        """get current scan group
+
+        Parameters
+        ----------
+        scan  : str, int, or None
+             scan address
+        """
+        if scan is not None:
+            self.set_scan(scan)
+        if self._scangroup is None:
+            raise AttributeError("Group/Scan not selected -> use 'self.set_scan()' first")
         else:
-            return self._sg
+            return self._scangroup
 
     def _initTreeView(self):
         """Init TreeView GUI"""
@@ -155,7 +175,7 @@ class DataSourceSpecH5(object):
         none: sets attribute self._group_url
         """
         self._group_url = group_url
-        if self._group_url is not None:
+        if self._group_url is not None and self.verbose:
             self._logger.info(f"Selected group {self._group_url}")
 
     def set_scan(self, scan_n, scan_idx=1, group_url=None, scan_kws=None):
@@ -163,8 +183,8 @@ class DataSourceSpecH5(object):
 
         Parameters
         ----------
-        scan_n : int
-            scan number
+        scan_n : int or str
+            scan number or address
         scan_idx : int (optional)
             scan repetition index [1]
         group_url : str
@@ -175,7 +195,7 @@ class DataSourceSpecH5(object):
         Returns
         -------
         none: set attributes
-            self._scan_n, self._scan_str, self._scan_url, self._sg
+            self._scan_n, self._scan_str, self._scan_url, self._scangroup
         """
         # check if scan_n is given already as "scan_n.scan_idx"
         if isinstance(scan_n, str):
@@ -213,12 +233,14 @@ class DataSourceSpecH5(object):
         else:
             self._scan_url = f"{self._scan_str}"
         try:
-            self._sg = self._sf[self._scan_url]
+            self._scangroup = self._scanfile[self._scan_url]
             self._scan_title = self.get_title()
             self._scan_start = self.get_time()
-            self._logger.info(f"selected scan {self._scan_url}: '{self._scan_title}' ({self._scan_start})")
+            self._logger.info(
+                f"selected scan {self._scan_url}: '{self._scan_title}' ({self._scan_start})"
+            )
         except KeyError:
-            self._sg = None
+            self._scangroup = None
             self._scan_title = None
             self._logger.error(f"'{self._scan_url}' is not valid")
 
@@ -229,7 +251,7 @@ class DataSourceSpecH5(object):
 
         """
         try:
-            return [i for i in self._get_sg()[url_str].keys()]
+            return [i for i in self.get_scangroup()[url_str].keys()]
         except Exception:
             self._logger.error(f"'{url_str}' not found -> use 'set_scan' method first")
 
@@ -254,59 +276,94 @@ class DataSourceSpecH5(object):
             html.append(f"<td>{sct}</td>")
             html.append("</tr>")
         html.append("</table>")
-        return ''.join(html)
+        return "".join(html)
 
     def get_scans(self):
         """Get list of scans
-        
+
         Returns
         -------
         list of strings: [['scan.n', 'title', 'start_time'], ... ]
         """
         allscans = []
-        for sn, sg in self._sf.items():
-            allscans.append([ sn, sg[self._title_url][()], sg[self._time_url][()]])
+        for sn, sg in self._scanfile.items():
+            allscans.append([sn, sg[self._title_url][()], sg[self._time_url][()]])
         return allscans
 
-    def get_motors(self):
-        """Get list of motors names"""
+    def get_motors(self, scan=None):
+        """Get list of motors names
+
+        Parameters
+        ----------
+        scan  : str, int, or None
+             scan address
+        """
+        if scan is not None:
+            self.set_scan(scan)
         return self._list_from_url(self._mots_url)
 
-    def get_counters(self):
-        """Get list of motors names"""
+    def get_counters(self, scan=None):
+        """Get list of motors names
+
+        Parameters
+        ----------
+        scan  : str, int, or None
+             scan address
+        """
+        if scan is not None:
+            self.set_scan(scan)
         return self._list_from_url(self._cnts_url)
 
-    def get_title(self):
+    def get_title(self, scan=None):
         """Get title str for the current scan
 
+        Parameters
+        ----------
+        scan  : str, int, or None
+             scan address
+
         Returns
         -------
-        title (str): scan title self._sg[self._title_url][()]
+        title (str): scan title self._scangroup[self._title_url][()]
+
         """
-        sg = self._get_sg()
+        sg = self.get_scangroup(scan)
         return sg[self._title_url][()]
 
-    def get_time(self):
+    def get_time(self, scan=None):
         """Get start time str for the current scan
+
+        Parameters
+        ----------
+        scan  : str, int, or None
+             scan address
 
         Returns
         -------
-        start_time (str): scan start time self._sg[self._time_url][()]
+        start_time (str): scan start time self._scangroup[self._time_url][()]
         """
-        sg = self._get_sg()
+        sg = self.get_scangroup(scan)
         return sg[self._time_url][()]
-    
-    def get_timestamp(self):
-        """ Get integer timestamp from the start time str"""
-        d, t = self.get_time().split('T')
-        dd = d.split('-')
-        tt = t.split(':')
+
+    def get_timestamp(self, scan=None):
+        """ Get integer timestamp from the start time str
+
+        Parameters
+        ----------
+        scan  : str, int, or None
+             scan address
+        """
+        if scan is not None:
+            self.set_scan(scan)
+        d, t = self.get_time().split("T")
+        dd = d.split("-")
+        tt = t.split(":")
         ddd = [int(_dd) for _dd in dd]
         ttt = [int(_tt) for _tt in tt]
         dt = ddd + ttt
         return int(datetime.datetime(*dt).timestamp())
 
-    def get_scan_info_from_title(self):
+    def get_scan_info_from_title(self, scan=None):
         """Parser to get scan information from title
 
         Known types of scans
@@ -327,14 +384,12 @@ class DataSourceSpecH5(object):
              scan_ct : "",
             }
         """
-        iscn = dict(
-            scan_type=None,
-            scan_axis=None,
-            scan_start=None,
-            scan_end=None,
-            scan_pts=None,
-            scan_ct=None,
-        )
+        if scan is not None:
+            self.set_scan(scan)
+
+        iscn = dict(scan_type=None, scan_axis=None, scan_start=None,
+                    scan_end=None, scan_pts=None, scan_ct=None)
+
         _title = self.get_title()
         if isinstance(_title, np.ndarray):
             _title = np.char.decode(_title)[0]
@@ -376,20 +431,23 @@ class DataSourceSpecH5(object):
             )
         return iscn
 
-    def get_scan_axis(self):
+    def get_scan_axis(self, scan=None):
         """Get the name of the scanned axis from scan title"""
+        if scan is not None:
+            self.set_scan(scan)
+
         iscn = self.get_scan_info_from_title()
         _axisout = iscn["scan_axis"]
         _mots, _cnts = self.get_motors(), self.get_counters()
         if not (_axisout in _mots):
             self._logger.info(f"'{_axisout}' not in (real) motors")
         if not (_axisout in _cnts):
-            self._logger.warning(f"'{_axisout}' not in counters")
+            self._logger.info(f"'{_axisout}' not in counters")
             _axisout = _cnts[0]
-            self._logger.warning(f"using the first counter: '{_axisout}'")
+            self._logger.info(f"using the first counter: '{_axisout}'")
         return _axisout
 
-    def get_array(self, cnt):
+    def get_array(self, cnt, scan=None):
         """Get array of a given counter
 
         Parameters
@@ -401,7 +459,7 @@ class DataSourceSpecH5(object):
         -------
         array
         """
-        sg = self._get_sg()
+        sg = self.get_scangroup(scan)
         cnts = self.get_counters()
         if type(cnt) is int:
             cnt = cnts[cnt]
@@ -414,7 +472,7 @@ class DataSourceSpecH5(object):
             sel_cnt = f"{self._cnts_url}/{cnts[0]}"
             return np.zeros_like(sg[sel_cnt][()])
 
-    def get_value(self, mot):
+    def get_motor_position(self, mot, scan=None):
         """Get motor position
 
         Parameters
@@ -426,7 +484,7 @@ class DataSourceSpecH5(object):
         -------
         value
         """
-        sg = self._get_sg()
+        sg = self.get_scangroup(scan)
         mots = self.get_motors()
         if type(mot) is int:
             mot = mots[mot]
@@ -655,15 +713,8 @@ class DataSourceSpecH5(object):
     #: WRITE DATA METHODS
     # =================== #
 
-    def write_scans_to_h5(
-        self,
-        scans,
-        fname_out,
-        scans_groups=None,
-        h5path=None,
-        overwrite=False,
-        conf_dict=None,
-    ):
+    def write_scans_to_h5(self, scans, fname_out, scans_groups=None,
+                           h5path=None, overwrite=False, conf_dict=None):
         """Export a selected list of scans to HDF5 file
 
         .. note:: This is a simple wrapper to
@@ -721,17 +772,17 @@ class DataSourceSpecH5(object):
         def _loop_scans(scns, group=None):
             for scn in scns:
                 self.set_scan(scn)
-                _sg = self._sg
-                if _sg is None:
+                _scangroup = self._scangroup
+                if _scangroup is None:
                     continue
-                if not _is_commonh5_group(_sg):
+                if not _is_commonh5_group(_scangroup):
                     self._logger.error("scan '%s' is not commonh5 group", scn)
                 if group is not None:
                     _h5path = f"{h5path}{group}/{self._scan_str}/"
                 else:
                     _h5path = f"{h5path}{self._scan_str}/"
                 write_to_h5(
-                    _sg,
+                    _scangroup,
                     h5out,
                     h5path=_h5path,
                     create_dataset_args=dict(track_order=True),
