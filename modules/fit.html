@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -196,8 +199,8 @@
 <h3>Simple peak fitting utility with Lmfit<a class="headerlink" href="#simple-peak-fitting-utility-with-lmfit" title="Permalink to this headline">¶</a></h3>
 <p>Current fitting backend: <a class="reference external" href="https://lmfit.github.io/lmfit-py/">Lmfit</a></p>
 <dl class="py function">
-<dt id="sloth.fit.peakfit_lmfit.fit_peak">
-<code class="sig-prename descclassname"><span class="pre">sloth.fit.peakfit_lmfit.</span></code><code class="sig-name descname"><span class="pre">fit_peak</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">positions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[None]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amplitudes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[None]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[None]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expressions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bkgModel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peakModel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/fit/peakfit_lmfit.html#fit_peak"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.fit.peakfit_lmfit.fit_peak" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sloth.fit.peakfit_lmfit.fit_peak">
+<span class="sig-prename descclassname"><span class="pre">sloth.fit.peakfit_lmfit.</span></span><span class="sig-name descname"><span class="pre">fit_peak</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">positions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[None]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amplitudes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[None]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[None]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expressions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bkgModel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peakModel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/fit/peakfit_lmfit.html#fit_peak"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.fit.peakfit_lmfit.fit_peak" title="Permalink to this definition">¶</a></dt>
 <dd><p>peak fit with lmfit</p>
 <p>This peak fitting model is built to fit one to three peaks (with prefixes:
 ‘<a href="#id1"><span class="problematic" id="id2">p1_</span></a>’, ‘<a href="#id3"><span class="problematic" id="id4">p2_</span></a>’, ‘<a href="#id5"><span class="problematic" id="id6">p3_</span></a>’). The main control parameter is the initial guess of the
@@ -236,8 +239,8 @@ a guess width (W), one could use the simple relation:</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="sloth.fit.peakfit_lmfit.get_curves_fit">
-<code class="sig-prename descclassname"><span class="pre">sloth.fit.peakfit_lmfit.</span></code><code class="sig-name descname"><span class="pre">get_curves_fit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitobj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'p'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_initial_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/fit/peakfit_lmfit.html#get_curves_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.fit.peakfit_lmfit.get_curves_fit" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sloth.fit.peakfit_lmfit.get_curves_fit">
+<span class="sig-prename descclassname"><span class="pre">sloth.fit.peakfit_lmfit.</span></span><span class="sig-name descname"><span class="pre">get_curves_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitobj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'p'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_initial_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/fit/peakfit_lmfit.html#get_curves_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.fit.peakfit_lmfit.get_curves_fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>get a list of curves from the fit object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -263,8 +266,8 @@ default is ‘p’ (=peaks only)</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="sloth.fit.peakfit_lmfit.main_test">
-<code class="sig-prename descclassname"><span class="pre">sloth.fit.peakfit_lmfit.</span></code><code class="sig-name descname"><span class="pre">main_test</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/fit/peakfit_lmfit.html#main_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.fit.peakfit_lmfit.main_test" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sloth.fit.peakfit_lmfit.main_test">
+<span class="sig-prename descclassname"><span class="pre">sloth.fit.peakfit_lmfit.</span></span><span class="sig-name descname"><span class="pre">main_test</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/fit/peakfit_lmfit.html#main_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.fit.peakfit_lmfit.main_test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test and show example usage</p>
 </dd></dl>
 

@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -222,53 +225,53 @@ The base classes for <em>groups</em> and <em>datasets</em> are, respectively,
 <li></li>
 </ul>
 <dl class="py class">
-<dt id="sloth.groups.baseh5.BaseGroup">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">sloth.groups.baseh5.</span></code><code class="sig-name descname"><span class="pre">BaseGroup</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/groups/baseh5.html#BaseGroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.groups.baseh5.BaseGroup" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sloth.groups.baseh5.BaseGroup">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">sloth.groups.baseh5.</span></span><span class="sig-name descname"><span class="pre">BaseGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/groups/baseh5.html#BaseGroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.groups.baseh5.BaseGroup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base group used to build the tree structure</p>
 <dl class="py method">
-<dt id="sloth.groups.baseh5.BaseGroup.add_group">
-<code class="sig-name descname"><span class="pre">add_group</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/groups/baseh5.html#BaseGroup.add_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.groups.baseh5.BaseGroup.add_group" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sloth.groups.baseh5.BaseGroup.add_group">
+<span class="sig-name descname"><span class="pre">add_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/groups/baseh5.html#BaseGroup.add_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.groups.baseh5.BaseGroup.add_group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add Group</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="sloth.groups.baseh5.BaseGroup.add_dataset">
-<code class="sig-name descname"><span class="pre">add_dataset</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/groups/baseh5.html#BaseGroup.add_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.groups.baseh5.BaseGroup.add_dataset" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sloth.groups.baseh5.BaseGroup.add_dataset">
+<span class="sig-name descname"><span class="pre">add_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/groups/baseh5.html#BaseGroup.add_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.groups.baseh5.BaseGroup.add_dataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add Group</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="sloth.groups.baseh5.BaseGroup.write_to_h5">
-<code class="sig-name descname"><span class="pre">write_to_h5</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/groups/baseh5.html#BaseGroup.write_to_h5"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.groups.baseh5.BaseGroup.write_to_h5" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sloth.groups.baseh5.BaseGroup.write_to_h5">
+<span class="sig-name descname"><span class="pre">write_to_h5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/groups/baseh5.html#BaseGroup.write_to_h5"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.groups.baseh5.BaseGroup.write_to_h5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write the whole tree to file</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="sloth.groups.baseh5.RootGroup">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">sloth.groups.baseh5.</span></code><code class="sig-name descname"><span class="pre">RootGroup</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/groups/baseh5.html#RootGroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.groups.baseh5.RootGroup" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sloth.groups.baseh5.RootGroup">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">sloth.groups.baseh5.</span></span><span class="sig-name descname"><span class="pre">RootGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/groups/baseh5.html#RootGroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.groups.baseh5.RootGroup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Root group (= ‘/’)</p>
 <p>This is inspired from <cite>commonh5.File</cite> providing an equivalent object to
 <cite>h5py.File</cite>. It creates and open a temporary File object (file or memory)
 were the data are loaded in.</p>
-<dl class="py method">
-<dt id="sloth.groups.baseh5.RootGroup.h5_class">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">h5_class</span></code><a class="headerlink" href="#sloth.groups.baseh5.RootGroup.h5_class" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="sloth.groups.baseh5.RootGroup.h5_class">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">h5_class</span></span><a class="headerlink" href="#sloth.groups.baseh5.RootGroup.h5_class" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the <code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code> class</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="sloth.groups.baseh5.RootGroup.close">
-<code class="sig-name descname"><span class="pre">close</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/groups/baseh5.html#RootGroup.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.groups.baseh5.RootGroup.close" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sloth.groups.baseh5.RootGroup.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/groups/baseh5.html#RootGroup.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.groups.baseh5.RootGroup.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close the object, and free up associated resources.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="sloth.groups.baseh5.EntryGroup">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">sloth.groups.baseh5.</span></code><code class="sig-name descname"><span class="pre">EntryGroup</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/groups/baseh5.html#EntryGroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.groups.baseh5.EntryGroup" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sloth.groups.baseh5.EntryGroup">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">sloth.groups.baseh5.</span></span><span class="sig-name descname"><span class="pre">EntryGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/groups/baseh5.html#EntryGroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.groups.baseh5.EntryGroup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generic group entry in the tree structure</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -277,14 +280,14 @@ were the data are loaded in.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="sloth.groups.baseh5.BaseDataset">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">sloth.groups.baseh5.</span></code><code class="sig-name descname"><span class="pre">BaseDataset</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/groups/baseh5.html#BaseDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.groups.baseh5.BaseDataset" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sloth.groups.baseh5.BaseDataset">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">sloth.groups.baseh5.</span></span><span class="sig-name descname"><span class="pre">BaseDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/groups/baseh5.html#BaseDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.groups.baseh5.BaseDataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base dataset used to insert data in a group</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="sloth.groups.baseh5.test_example">
-<code class="sig-prename descclassname"><span class="pre">sloth.groups.baseh5.</span></code><code class="sig-name descname"><span class="pre">test_example</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">write</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">view</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/groups/baseh5.html#test_example"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.groups.baseh5.test_example" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sloth.groups.baseh5.test_example">
+<span class="sig-prename descclassname"><span class="pre">sloth.groups.baseh5.</span></span><span class="sig-name descname"><span class="pre">test_example</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">write</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">view</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/groups/baseh5.html#test_example"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.groups.baseh5.test_example" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test example for <code class="xref py py-mod docutils literal notranslate"><span class="pre">sloth.groups.h5base</span></code></p>
 </dd></dl>
 

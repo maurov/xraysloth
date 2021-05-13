@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -198,55 +201,55 @@ the same name, here only a couple of utilities are present.</p>
 <p>..note:: The starting point of this code is <cite>ase.io.espresso</cite> from the
 Atomic Simulation Environment (ASE) package.</p>
 <dl class="py function">
-<dt id="sloth.calculators.qe_xtl.read_fortran_namelist">
-<code class="sig-prename descclassname"><span class="pre">sloth.calculators.qe_xtl.</span></code><code class="sig-name descname"><span class="pre">read_fortran_namelist</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fileobj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#read_fortran_namelist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.read_fortran_namelist" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sloth.calculators.qe_xtl.read_fortran_namelist">
+<span class="sig-prename descclassname"><span class="pre">sloth.calculators.qe_xtl.</span></span><span class="sig-name descname"><span class="pre">read_fortran_namelist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fileobj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#read_fortran_namelist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.read_fortran_namelist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes a fortran-namelist formatted file and returns appropriate
 dictionaries, followed by lines of text that do not fit this
 pattern.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="sloth.calculators.qe_xtl.f2f">
-<code class="sig-prename descclassname"><span class="pre">sloth.calculators.qe_xtl.</span></code><code class="sig-name descname"><span class="pre">f2f</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#f2f"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.f2f" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sloth.calculators.qe_xtl.f2f">
+<span class="sig-prename descclassname"><span class="pre">sloth.calculators.qe_xtl.</span></span><span class="sig-name descname"><span class="pre">f2f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#f2f"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.f2f" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a fortran-formatted double precision number (e.g.,
 2.323d2) to a python float. value should be a string.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="sloth.calculators.qe_xtl.get_method">
-<code class="sig-prename descclassname"><span class="pre">sloth.calculators.qe_xtl.</span></code><code class="sig-name descname"><span class="pre">get_method</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_no</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#get_method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.get_method" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sloth.calculators.qe_xtl.get_method">
+<span class="sig-prename descclassname"><span class="pre">sloth.calculators.qe_xtl.</span></span><span class="sig-name descname"><span class="pre">get_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_no</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#get_method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.get_method" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the method used in a given section</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="sloth.calculators.qe_xtl.get_cell">
-<code class="sig-prename descclassname"><span class="pre">sloth.calculators.qe_xtl.</span></code><code class="sig-name descname"><span class="pre">get_cell</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#get_cell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.get_cell" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sloth.calculators.qe_xtl.get_cell">
+<span class="sig-prename descclassname"><span class="pre">sloth.calculators.qe_xtl.</span></span><span class="sig-name descname"><span class="pre">get_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#get_cell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.get_cell" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the cell parameters from the lines of text of the espresso
 input file.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="sloth.calculators.qe_xtl.get_atoms">
-<code class="sig-prename descclassname"><span class="pre">sloth.calculators.qe_xtl.</span></code><code class="sig-name descname"><span class="pre">get_atoms</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#get_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.get_atoms" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sloth.calculators.qe_xtl.get_atoms">
+<span class="sig-prename descclassname"><span class="pre">sloth.calculators.qe_xtl.</span></span><span class="sig-name descname"><span class="pre">get_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#get_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.get_atoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the atomic positions of the atoms as an (ordered) list from
 the lines of text of the espresso input file.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="sloth.calculators.qe_xtl.get_negative_pos">
-<code class="sig-prename descclassname"><span class="pre">sloth.calculators.qe_xtl.</span></code><code class="sig-name descname"><span class="pre">get_negative_pos</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">positions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#get_negative_pos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.get_negative_pos" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sloth.calculators.qe_xtl.get_negative_pos">
+<span class="sig-prename descclassname"><span class="pre">sloth.calculators.qe_xtl.</span></span><span class="sig-name descname"><span class="pre">get_negative_pos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">positions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#get_negative_pos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.get_negative_pos" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the minimum negative atomic positions vector</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="sloth.calculators.qe_xtl.read_qe_in">
-<code class="sig-prename descclassname"><span class="pre">sloth.calculators.qe_xtl.</span></code><code class="sig-name descname"><span class="pre">read_qe_in</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fileobj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#read_qe_in"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.read_qe_in" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sloth.calculators.qe_xtl.read_qe_in">
+<span class="sig-prename descclassname"><span class="pre">sloth.calculators.qe_xtl.</span></span><span class="sig-name descname"><span class="pre">read_qe_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fileobj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#read_qe_in"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.read_qe_in" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads espresso input files.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="sloth.calculators.qe_xtl.qe2xtl">
-<code class="sig-prename descclassname"><span class="pre">sloth.calculators.qe_xtl.</span></code><code class="sig-name descname"><span class="pre">qe2xtl</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#qe2xtl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.qe2xtl" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sloth.calculators.qe_xtl.qe2xtl">
+<span class="sig-prename descclassname"><span class="pre">sloth.calculators.qe_xtl.</span></span><span class="sig-name descname"><span class="pre">qe2xtl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/qe_xtl.html#qe2xtl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.calculators.qe_xtl.qe2xtl" title="Permalink to this definition">¶</a></dt>
 <dd><p>converts a QE input to XTL out file</p>
 </dd></dl>
 
@@ -256,8 +259,8 @@ the lines of text of the espresso input file.</p>
 <div class="section" id="fdmnes-related-stuff">
 <h3>FDMNES-related stuff<a class="headerlink" href="#fdmnes-related-stuff" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
-<dt id="sloth.calculators.fdmnes.get_efermi">
-<code class="sig-prename descclassname"><span class="pre">sloth.calculators.fdmnes.</span></code><code class="sig-name descname"><span class="pre">get_efermi</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/fdmnes.html#get_efermi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.calculators.fdmnes.get_efermi" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sloth.calculators.fdmnes.get_efermi">
+<span class="sig-prename descclassname"><span class="pre">sloth.calculators.fdmnes.</span></span><span class="sig-name descname"><span class="pre">get_efermi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sloth/calculators/fdmnes.html#get_efermi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sloth.calculators.fdmnes.get_efermi" title="Permalink to this definition">¶</a></dt>
 <dd><p>get the Fermi level energy from a FDMNES out file</p>
 </dd></dl>
 
