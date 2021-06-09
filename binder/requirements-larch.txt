@@ -12,5 +12,6 @@ pyshortcuts >= 1.7.2
 wxutils >= 0.2.3
 wxmplot >= 0.9.43
 pycifrw
+pymatgen
 #xraylarch >= 0.9.47
 git+https://github.com/xraypy/xraylarch.git
