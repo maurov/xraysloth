@@ -47,14 +47,14 @@ dependencies:
     #- conda-forge:netCDF4     # for xarray (in requirements-jupyter.txt)
     #- conda-forge:bottleneck  # for xarray (in requirements-jupyter.txt)
     - pip:
-        #- -r ../requirements.txt        #: base // INSTALLED HERE VIA CONDA!!!
-        - -r requirements-dev.txt       #: IDE/dev tools
-        - -r requirements-docs.txt      #: to build docs
-        - -r requirements-jupyter.txt   #: Jupyter
-        #- -r requirements-xrt.txt       #: XRT (ray tracing)
-        - -r requirements-nexus.txt     #: NeXus
-        #- -r requirements-oasys.txt     #: SHADOW & OASYS
-        - -r requirements-larch.txt     #: Larch
+        #- -r ../requirements.txt #: base // INSTALLED HERE VIA CONDA!!!
+        - -r requirements-dev.txt #: IDE/dev tools
+        - -r requirements-docs.txt #: to build docs
+        - -r requirements-jupyter.txt #: Jupyter
+        - -r requirements-nexus.txt #: NeXus
+        #- -r requirements-xrt.txt #: XRT (ray tracing)
+        #- -r requirements-oasys.txt #: SHADOW & OASYS
+        - -r requirements-larch.txt #: Larch
         #- -e git+https://github.com/maurov/xraysloth.git  #: Sloth dev mode
         - -e ../                        #: Sloth dev mode (local)
 

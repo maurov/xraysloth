@@ -7,6 +7,7 @@
 
 numpy >= 1.12
 setuptools
+setuptools_scm
 Cython >= 0.21.1
 hdf5plugin
 h5py >= 3.1

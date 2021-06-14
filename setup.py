@@ -53,9 +53,11 @@ def main():
     setup_kwargs = config.todict()
     setup_kwargs.update(
         name=PROJECT,
+        use_scm_version=True,
+        setup_requires=['setuptools_scm'],
         version=sloth.__version__,
         packages=sloth.__pkgs__,
-        description="some utilities for x-ray spectroscopy",
+        description="some (temporary) utilities for x-ray spectroscopy",
         long_description=get_readme(),
         license="BSD",
         author="Mauro Rovezzi",
