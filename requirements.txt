@@ -23,7 +23,7 @@ python-dateutil        #: for silx.gui.plot
 Pillow                 #: for silx.opencl.image.test
 PyQt5                  #: for silx.gui, v5.12 for spyder==4.0.0 // oasys >=5.14!
 pyqtwebengine          #: v5.12 for spyder==4.0.0
-silx >= 0.15
+silx >= 0.15.2
 sqlalchemy >= 1.3
 pandas >= 0.25
 lmfit >= 1.0.2
