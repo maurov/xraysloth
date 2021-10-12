@@ -29,7 +29,7 @@ except ImportError:
 try:
     import xraylib as xl
 
-    xl.SetErrorMessages(0)  #: disable showing error messages
+    #xl.SetErrorMessages(0)  #: disable showing error messages // DEPRECATED since xraylib 4.1.1
     HAS_XRAYLIB = True
 except ImportError:
     HAS_XRAYLIB = False
@@ -42,6 +42,7 @@ except ImportError:
     HAS_XRAYDB = False
     pass
 
+from sloth.bragg import findhkl
 
 from sloth.math.lineshapes import lorentzian, fwhm2sigma
 
