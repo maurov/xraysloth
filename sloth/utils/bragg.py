@@ -263,7 +263,7 @@ def findhkl(energy=None, thetamin=65.0, crystal="all", retAll=False):
                     except Exception:
                         continue
                     if theta >= thetamin:
-                        crys_lab = f"{crystal}({x[0]}, {x[1]}, {x[2]}"
+                        crys_lab = f"{crystal}({x[0]}, {x[1]}, {x[2]})"
                         print(f"{crys_lab}, Bragg {theta:2.2f}")
                         retSf.append((crystal, x[0], x[1], x[2], theta, crys_lab))
             return retSf
@@ -274,13 +274,12 @@ def findhkl(energy=None, thetamin=65.0, crystal="all", retAll=False):
         retDat.extend(_structure_factor(reversed(range(0, HKL_MAX, 2))))
         return retDat
 
-    hkl_out = []
     if crystal == "Si":
-        hkl_out.extend(_find_theta("Si", SI_ALAT))
+        hkl_out = _find_theta("Si", SI_ALAT)
     elif crystal == "Ge":
-        hkl_out.extend(_find_theta("Ge", GE_ALAT))
+        hkl_out = _find_theta("Ge", GE_ALAT)
     else:
-        hkl_out.extend(_find_theta("Si", SI_ALAT))
+        hkl_out = _find_theta("Si", SI_ALAT)
         hkl_out.extend(_find_theta("Ge", GE_ALAT))
 
     if retAll:
