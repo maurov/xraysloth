@@ -238,7 +238,8 @@ def findhkl(energy=None, thetamin=65.0, crystal="all", retAll=False):
     if energy is None:
         print(findhkl.__doc__)
 
-    retDat = [("#crystal", "h", "k", "l", "bragg_deg")]
+    retDat = []
+    #retDat = [("#crystal", "h", "k", "l", "bragg_deg")]
     import itertools
 
     def _find_theta(crystal, alat):
@@ -247,6 +248,7 @@ def findhkl(energy=None, thetamin=65.0, crystal="all", retAll=False):
             are all odd or all even zincblende: as fcc but if all even
             (0 is even) then h+k+l = 4n
             """
+            retSf = []
             # hkl = itertools.product(idx, idx, idx)
             hkl = itertools.combinations_with_replacement(idx, 3)
             for x in hkl:
@@ -261,27 +263,28 @@ def findhkl(energy=None, thetamin=65.0, crystal="all", retAll=False):
                     except Exception:
                         continue
                     if theta >= thetamin:
-                        print(
-                            "{0}({1} {2} {3}), {4} {5:2.2f}".format(
-                                crystal, x[0], x[1], x[2], "Bragg", theta
-                            )
-                        )
-                        if retAll:
-                            retDat.append((crystal, x[0], x[1], x[2], theta))
+                        crys_lab = f"{crystal}({x[0]}, {x[1]}, {x[2]}"
+                        print(f"{crys_lab}, Bragg {theta:2.2f}")
+                        retSf.append((crystal, x[0], x[1], x[2], theta, crys_lab))
+            return retSf
 
         # all permutations of odd (h,k,l)
-        _structure_factor(reversed(range(1, HKL_MAX, 2)))
+        retDat.extend(_structure_factor(reversed(range(1, HKL_MAX, 2))))
         # all permutations of even (h,k,l)
-        _structure_factor(reversed(range(0, HKL_MAX, 2)))
+        retDat.extend(_structure_factor(reversed(range(0, HKL_MAX, 2))))
+        return retDat
 
+    hkl_out = []
     if crystal == "Si":
-        _find_theta("Si", SI_ALAT)
+        hkl_out.extend(_find_theta("Si", SI_ALAT))
     elif crystal == "Ge":
-        _find_theta("Ge", GE_ALAT)
+        hkl_out.extend(_find_theta("Ge", GE_ALAT))
     else:
-        _find_theta("Si", SI_ALAT)
-        _find_theta("Ge", GE_ALAT)
+        hkl_out.extend(_find_theta("Si", SI_ALAT))
+        hkl_out.extend(_find_theta("Ge", GE_ALAT))
 
+    if retAll:
+        return hkl_out
 
 if __name__ == "__main__":
     pass
