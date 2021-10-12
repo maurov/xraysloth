@@ -42,7 +42,7 @@ except ImportError:
     HAS_XRAYDB = False
     pass
 
-from sloth.bragg import findhkl
+from sloth.utils.bragg import findhkl
 
 from sloth.math.lineshapes import lorentzian, fwhm2sigma
 
