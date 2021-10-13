@@ -217,7 +217,7 @@ def get_dspacing(mat, hkl):
     return dspacing
 
 
-def findhkl(energy=None, thetamin=65.0, crystal="all", retAll=False):
+def findhkl(energy=None, thetamin=65.0, crystal="all", retAll=False, retBest=False):
     """findhkl: for a given energy (eV) finds the Si and Ge reflections
     with relative Bragg angle
 
@@ -233,22 +233,23 @@ def findhkl(energy=None, thetamin=65.0, crystal="all", retAll=False):
     ======
     String: "Crystal(hkl), Bragg angle (deg)"
 
-    if retAll: ("crystal", h, k, l, bragg_angle_deg)
+    if retBest: returns a list with the crystal with the highest Bragg angle only
+    if retAll: list of lists ["crystal", h, k, l, bragg_angle_deg, "Crystal(hkl)"]
     """
     if energy is None:
         print(findhkl.__doc__)
 
-    retDat = []
-    #retDat = [("#crystal", "h", "k", "l", "bragg_deg")]
-    import itertools
-
     def _find_theta(crystal, alat):
+
+        retDat = []
+        #retDat = [("#crystal", "h", "k", "l", "bragg_deg", "crystal_label")]
+        import itertools
+
         def _structure_factor(idx):
             """ fcc crystal: the structure factor is not 0 if h,k,l
-            are all odd or all even zincblende: as fcc but if all even
+            are all odd or all even -> zincblende: as fcc but if all even
             (0 is even) then h+k+l = 4n
             """
-            retSf = []
             # hkl = itertools.product(idx, idx, idx)
             hkl = itertools.combinations_with_replacement(idx, 3)
             for x in hkl:
@@ -263,15 +264,13 @@ def findhkl(energy=None, thetamin=65.0, crystal="all", retAll=False):
                     except Exception:
                         continue
                     if theta >= thetamin:
-                        crys_lab = f"{crystal}({x[0]}, {x[1]}, {x[2]})"
+                        crys_lab = f"{crystal}({x[0]}{x[1]}{x[2]})"
                         print(f"{crys_lab}, Bragg {theta:2.2f}")
-                        retSf.append((crystal, x[0], x[1], x[2], theta, crys_lab))
-            return retSf
-
+                        retDat.append([crystal, x[0], x[1], x[2], theta, crys_lab])
         # all permutations of odd (h,k,l)
-        retDat.extend(_structure_factor(reversed(range(1, HKL_MAX, 2))))
+        _structure_factor(reversed(range(1, HKL_MAX, 2)))
         # all permutations of even (h,k,l)
-        retDat.extend(_structure_factor(reversed(range(0, HKL_MAX, 2))))
+        _structure_factor(reversed(range(0, HKL_MAX, 2)))
         return retDat
 
     if crystal == "Si":
@@ -281,6 +280,10 @@ def findhkl(energy=None, thetamin=65.0, crystal="all", retAll=False):
     else:
         hkl_out = _find_theta("Si", SI_ALAT)
         hkl_out.extend(_find_theta("Ge", GE_ALAT))
+
+    if retBest:
+        thmax = max([c[4] for c in hkl_out])
+        return [c for c in hkl_out if c[4] == thmax][0]
 
     if retAll:
         return hkl_out
