@@ -217,7 +217,7 @@ def get_dspacing(mat, hkl):
     return dspacing
 
 
-def findhkl(energy=None, thetamin=65.0, crystal="all", retAll=False, retBest=False):
+def findhkl(energy=None, thetamin=65.0, crystal="all", retAll=False, retBest=False, verbose=True):
     """findhkl: for a given energy (eV) finds the Si and Ge reflections
     with relative Bragg angle
 
@@ -264,9 +264,20 @@ def findhkl(energy=None, thetamin=65.0, crystal="all", retAll=False, retBest=Fal
                     except Exception:
                         continue
                     if theta >= thetamin:
-                        crys_lab = f"{crystal}({x[0]}{x[1]}{x[2]})"
-                        print(f"{crys_lab}, Bragg {theta:2.2f}")
-                        retDat.append([crystal, x[0], x[1], x[2], theta, crys_lab])
+                        crys_lab = f"{crystal}({x[0]},{x[1]},{x[2]})"
+                        xa = np.array(x)
+                        for n in range(2,10):
+                            _in = 0
+                            if ((xa%n)==0).all():
+                                x0a = (xa/n).astype(int)
+                                if _in == 0:
+                                    crys0_lab = f"{crystal}({x0a[0]},{x0a[1]},{x0a[2]})"
+                            else:
+                                crys0_lab = crys_lab
+                            _in += 1
+                        if verbose:
+                            print(f"{crys_lab}, Bragg {theta:2.2f} -> {crys0_lab}")
+                        retDat.append([crystal, x[0], x[1], x[2], theta, crys_lab, crys0_lab])
         # all permutations of odd (h,k,l)
         _structure_factor(reversed(range(1, HKL_MAX, 2)))
         # all permutations of even (h,k,l)

@@ -394,7 +394,7 @@ def find_edge(emin, emax, shells=None):
                 _LOGGER.info("{0} \t {1} \t {2:>.2f} eV".format(el, sh, edge))
 
 
-def find_line(emin, emax, elements=None, lines=None, outDict=False, backend="xraylib", skip_zero_width=True):
+def find_line(emin, emax, elements=None, lines=None, outDict=False, backend="xraylib", skip_zero_width=True, thetamin=65):
     """Get the emission line energy in a given energy range [emin,emax] (eV)
 
     Parameters
@@ -440,6 +440,9 @@ def find_line(emin, emax, elements=None, lines=None, outDict=False, backend="xra
     _out["ln"] = []
     _out["en"] = []
     _out["w"] = []
+    _out["crys_lab"] = []
+    _out["crys0_lab"] = []
+    _out["crys_deg"] = [] 
     for el in elements:
         eln = get_element(el)
         for ln in lines:
@@ -463,6 +466,14 @@ def find_line(emin, emax, elements=None, lines=None, outDict=False, backend="xra
                 _out["ln"].append(ln)
                 _out["en"].append(line)
                 _out["w"].append(w)
+                try:
+                    hkl_out = findhkl(line, thetamin=thetamin, verbose=False, retBest=True)
+                except Exception:
+                    _LOGGER.warning(f"No Si/Ge crystal analyzer found for {eln[0]} {ln}")
+                    hkl_out = [None, None, None, None, None, None]
+                _out["crys_lab"].append(hkl_out[5])
+                _out["crys0_lab"].append(hkl_out[6])
+                _out["crys_deg"].append(hkl_out[4])
     #: returns
     if outDict:
         return _out
