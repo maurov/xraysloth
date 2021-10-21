@@ -250,6 +250,14 @@ def findhkl(energy=None, thetamin=65.0, crystal="all", retAll=False, retBest=Fal
             are all odd or all even -> zincblende: as fcc but if all even
             (0 is even) then h+k+l = 4n
             """
+
+            def _check_hkl(hkl):
+                a = np.array(hkl)
+                if (a % 2 == 0).all() and not (a.sum() % 4 == 0):
+                    return False
+                else:
+                    return True
+
             # hkl = itertools.product(idx, idx, idx)
             hkl = itertools.combinations_with_replacement(idx, 3)
             for x in hkl:
@@ -265,16 +273,12 @@ def findhkl(energy=None, thetamin=65.0, crystal="all", retAll=False, retBest=Fal
                         continue
                     if theta >= thetamin:
                         crys_lab = f"{crystal}({x[0]},{x[1]},{x[2]})"
-                        xa = np.array(x)
+                        crys0_lab = crys_lab
+                        ax = np.array(x)
                         for n in range(2,10):
-                            _in = 0
-                            if ((xa%n)==0).all():
-                                x0a = (xa/n).astype(int)
-                                if _in == 0:
-                                    crys0_lab = f"{crystal}({x0a[0]},{x0a[1]},{x0a[2]})"
-                            else:
-                                crys0_lab = crys_lab
-                            _in += 1
+                            if (ax % n == 0).all() and _check_hkl(x):
+                                ax0 = (ax/n).astype(int)
+                                crys0_lab = f"{crystal}({ax0[0]},{ax0[1]},{ax0[2]})"
                         if verbose:
                             print(f"{crys_lab}, Bragg {theta:2.2f} -> {crys0_lab}")
                         retDat.append([crystal, x[0], x[1], x[2], theta, crys_lab, crys0_lab])
