@@ -470,7 +470,7 @@ def find_line(emin, emax, elements=None, lines=None, outDict=False, backend="xra
                     hkl_out = findhkl(line, thetamin=thetamin, verbose=False, retBest=True)
                 except Exception:
                     _LOGGER.warning(f"No Si/Ge crystal analyzer found for {eln[0]} {ln}")
-                    hkl_out = [None, None, None, None, None, None]
+                    hkl_out = [None, None, None, None, None, None, None]
                 _out["crys_lab"].append(hkl_out[5])
                 _out["crys0_lab"].append(hkl_out[6])
                 _out["crys_deg"].append(hkl_out[4])
