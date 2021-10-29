@@ -3,8 +3,9 @@
 """
 braggutils: utilities around the Bragg's law ($ n \lambda = 2 d sin \theta $)
 """
-import numpy as np
 import warnings
+import numpy as np
+import logging
 
 try:
     import scipy.constants.codata as const
@@ -25,6 +26,7 @@ INSB_ALAT = 6.48  # cubic
 SIO2_A = 4.913  # beta-quartz, hexagonal
 SIO2_C = 5.405
 
+_logger = logging.getLogger(__name__)
 
 def ev2wlen(energy):
     """convert photon energy (E, eV) to wavelength ($\lambda$, \AA$^{-1}$)"""
@@ -49,7 +51,7 @@ def wlen2kev(wlen):
 def kev2ang(ene, d=0, deg=True):
     """energy (keV) to Bragg angle (deg/rad) for given d-spacing (\AA)"""
     if d == 0:
-        print("ERROR kev2deg: d-spacing is 0")
+        _logger.error("kev2deg: d-spacing is 0")
         return 0
     else:
         _ang = np.arcsin((kev2wlen(ene)) / (2 * d))
@@ -212,7 +214,7 @@ def get_dspacing(mat, hkl):
     elif mat == "Ge":
         dspacing = d_cubic(GE_ALAT, hkl)
     else:
-        print("ERROR get_dspacing: available materials -> 'Si' 'Ge'")
+        _logger.error("get_dspacing: available materials -> 'Si' 'Ge'")
         dspacing = 0
     return dspacing
 
@@ -237,7 +239,8 @@ def findhkl(energy=None, thetamin=65.0, crystal="all", retAll=False, retBest=Fal
     if retAll: list of lists ["crystal", h, k, l, bragg_angle_deg, "Crystal(hkl)"]
     """
     if energy is None:
-        print(findhkl.__doc__)
+        _logger.error(findhkl.__doc__)
+        return None
 
     def _find_theta(crystal, alat):
 
