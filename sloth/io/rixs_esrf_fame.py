@@ -47,7 +47,7 @@ def get_xyz_bm16(logobj, specobj, fit_elastic=False):
 
     """
     
-    _logger.warning("!!!DEPRECATED!!! -> use `get_rixs_bm16` from larch.io.rixs_esrf_fame")
+    _logger.warning("!!!DEPRECATED!!! -> use `from larch.io.rixs_esrf_fame import get_rixs_bm16`")
 
     if isinstance(logobj, str):
         logobj = np.genfromtxt(logobj, delimiter=',', comments='#')

@@ -38,6 +38,8 @@ class DataGroupRixs(DataGroup2D):
     def __init__(self, kwsd=None, _larch=None):
         super(DataGroupRixs, self).__init__(self, kwsd=kwsd, _larch=_larch)
 
+        _logger.warning("!!!DEPRECATED!!!: use `from larch.io.rixdata import RixsData`")
+
     def getspecmap(self, fname, scans, scanlab=None, **kws):
         """ 2D map from a list of scans read from SPEC data files"""
         cntx = kws.get('cntx', self.kwsd['spec']['cntx'])
@@ -75,6 +77,8 @@ class RixsData(object):
 
     def __init__(self, label=None, kwsd=None, logger=None):
         """initialize with keyword arguments dictionaries"""
+
+        _logger.warning("DEPRECATED: use `from larch.io.rixdata import RixsData`")
 
         if logger is not None:
             self._logger = logger
