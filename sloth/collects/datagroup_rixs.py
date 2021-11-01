@@ -29,7 +29,8 @@ from ..math.gridxyz import gridxyz
 from sloth.io.specfile_reader import SpecfileData
 
 from sloth.utils.logging import getLogger
-_logger = getLogger('datagroup_rixs')  #: module logger, used as self._logger if not given
+
+_logger = getLogger(__name__)  #: module logger, used as self._logger if not given
 
 class DataGroupRixs(DataGroup2D):
     """DataGroup for RIXS planes"""
@@ -400,14 +401,63 @@ class RixsDataPlotter(object):
     def __init__(self, rd):
         "initialize with keyword arguments dictionaries"
         if not 'RixsData' in str(type(rd)):
-            print('I can only plot "RixsData" objects!')
+            _logger.error('I can only plot "RixsData" objects!')
             return
-        self.kwsd = copy.deepcopy(rd.kwsd)
+        try:
+            self.kwsd = copy.deepcopy(rd.kwsd['plot'])
+        except Exception:
+            self.kwsd = self.get_plot_kwsd()
         self.rd = rd
 
-    def updatekwsd(self, kwsd):
-        """ update plot parameters """
-        return self.kwsd['plot'].update(kwsd)
+    def get_plot_kwsd(self):
+        """return a dictionary of dictionaries with default keywords arguments"""
+        kwsd = {'replace' : True,
+                          'figname' : 'RixsPlotter',
+                          'figsize' : (10,10),
+                          'figdpi' : 150,
+                          'title' : None,
+                          'xlabel' : None,
+                          'ylabel' : None,
+                          'x_nticks': 0,
+                          'y_nticks': 0,
+                          'z_nticks': 0,
+                          'xlabelE' : r'Incoming Energy (eV)',
+                          'ylabelE' : r'Emitted Energy (eV)',
+                          'ylabelEt' : r'Energy transfer (eV)',
+                          'zlabel' : r'Intensity (a.u)',
+                          'xystep' : 0.02,
+                          'xmin' : None,
+                          'xmax' : None,
+                          'ymin' : None,
+                          'ymax' : None,
+                          'xshift' : 0,
+                          'ystack' : 0,
+                          'xscale' : 1,
+                          'yscale' : 1,
+                          'cbar_show' : False,
+                          'cbar_pos': 'vertical',
+                          'cbar_nticks' : 0,
+                          'cbar_label' : 'Counts/s',
+                          'cbar_norm0' : False,
+                          'cmap': cm.gist_heat_r,
+                          'cmap2' : cm.RdBu,
+                          'cmap_linlog': 'linear',
+                          'cont_imshow' : True,
+                          'cont_type': 'line',
+                          'cont_lwidths': 0.25,
+                          'cont_levels': 50,
+                          'cont_labels': None,
+                          'cont_labelformat': '%.3f',
+                          'origin': 'lower',
+                          'lcuts' : False,
+                          'xcut' : None,
+                          'ycut' : None,
+                          'dcut' : None,
+                          'lc_dticks' : 2,
+                          'lc_color' : 'red',
+                          'lc_lw': 3}
+        return kwsd
+
 
     def plot(self, x=None, y=None, zz=None, **kws):
         """ make the plot """
@@ -421,51 +471,53 @@ class RixsDataPlotter(object):
             zz = self.rd.ezz
             zz0 = self.rd.zz
 
+        self.kwsd.update(**kws)
+
         # check if x and y are 1D or 2D arrays
         if ( (len(x.shape) == 1) and (len(y.shape) == 1) ):
             _xyshape = 1
         elif ( (len(x.shape) == 2) and (len(y.shape) == 2) ):
             _xyshape = 2
 
-        lcuts = kws.get('lcuts', self.kwsd['plot']['lcuts'])
-        xcut = kws.get('xcut', self.kwsd['plot']['xcut'])
-        ycut = kws.get('ycut', self.kwsd['plot']['ycut'])
-        dcut = kws.get('dcut', self.kwsd['plot']['dcut'])
+        lcuts = kws.get('lcuts', self.kwsd['lcuts'])
+        xcut = kws.get('xcut', self.kwsd['xcut'])
+        ycut = kws.get('ycut', self.kwsd['ycut'])
+        dcut = kws.get('dcut', self.kwsd['dcut'])
 
-        lc_dticks = kws.get('lc_dticks', self.kwsd['plot']['lc_dticks'])
-        lc_color = kws.get('lc_color', self.kwsd['plot']['lc_color'])
-        lc_lw = kws.get('lc_lw', self.kwsd['plot']['lc_lw'])
+        lc_dticks = kws.get('lc_dticks', self.kwsd['lc_dticks'])
+        lc_color = kws.get('lc_color', self.kwsd['lc_color'])
+        lc_lw = kws.get('lc_lw', self.kwsd['lc_lw'])
 
-        replace = kws.get('replace', self.kwsd['plot']['replace'])
-        figname = kws.get('figname', self.kwsd['plot']['figname'])
-        figsize = kws.get('figsize', self.kwsd['plot']['figsize'])
-        figdpi = kws.get('figdpi', self.kwsd['plot']['figdpi'])
-        title = kws.get('title', self.kwsd['plot']['title'])
-        xlabel = kws.get('xlabel', self.kwsd['plot']['xlabelE'])
+        replace = kws.get('replace', self.kwsd['replace'])
+        figname = kws.get('figname', self.kwsd['figname'])
+        figsize = kws.get('figsize', self.kwsd['figsize'])
+        figdpi = kws.get('figdpi', self.kwsd['figdpi'])
+        title = kws.get('title', self.kwsd['title'])
+        xlabel = kws.get('xlabel', self.kwsd['xlabelE'])
         if (y.max()/x.max() < 0.5):
-            ylabel = kws.get('ylabel', self.kwsd['plot']['ylabelEt'])
+            ylabel = kws.get('ylabel', self.kwsd['ylabelEt'])
         else:
-            ylabel = kws.get('ylabel', self.kwsd['plot']['ylabelE'])
-        zlabel = kws.get('zlabel', self.kwsd['plot']['zlabel'])
-        xmin = kws.get('xmin', self.kwsd['plot']['xmin'])
-        xmax = kws.get('xmax', self.kwsd['plot']['xmax'])
-        ymin = kws.get('ymin', self.kwsd['plot']['ymin'])
-        ymax = kws.get('ymax', self.kwsd['plot']['ymax'])
-        x_nticks = kws.get('x_nticks', self.kwsd['plot']['x_nticks'])
-        y_nticks = kws.get('y_nticks', self.kwsd['plot']['y_nticks'])
-        z_nticks = kws.get('z_nticks', self.kwsd['plot']['z_nticks'])
-        cmap = kws.get('cmap', self.kwsd['plot']['cmap'])
+            ylabel = kws.get('ylabel', self.kwsd['ylabelE'])
+        zlabel = kws.get('zlabel', self.kwsd['zlabel'])
+        xmin = kws.get('xmin', self.kwsd['xmin'])
+        xmax = kws.get('xmax', self.kwsd['xmax'])
+        ymin = kws.get('ymin', self.kwsd['ymin'])
+        ymax = kws.get('ymax', self.kwsd['ymax'])
+        x_nticks = kws.get('x_nticks', self.kwsd['x_nticks'])
+        y_nticks = kws.get('y_nticks', self.kwsd['y_nticks'])
+        z_nticks = kws.get('z_nticks', self.kwsd['z_nticks'])
+        cmap = kws.get('cmap', self.kwsd['cmap'])
 
-        cbar_show = kws.get('cbar_show', self.kwsd['plot']['cbar_show'])
-        cbar_pos = kws.get('cbar_pos', self.kwsd['plot']['cbar_pos'])
-        cbar_nticks = kws.get('cbar_nticks', self.kwsd['plot']['cbar_nticks'])
-        cbar_label = kws.get('cbar_label', self.kwsd['plot']['cbar_label'])
-        cbar_norm0 = kws.get('cbar_norm0', self.kwsd['plot']['cbar_norm0'])
+        cbar_show = kws.get('cbar_show', self.kwsd['cbar_show'])
+        cbar_pos = kws.get('cbar_pos', self.kwsd['cbar_pos'])
+        cbar_nticks = kws.get('cbar_nticks', self.kwsd['cbar_nticks'])
+        cbar_label = kws.get('cbar_label', self.kwsd['cbar_label'])
+        cbar_norm0 = kws.get('cbar_norm0', self.kwsd['cbar_norm0'])
 
-        cont_imshow = kws.get('cont_imshow', self.kwsd['plot']['cont_imshow'])
-        cont_type = kws.get('cont_type', self.kwsd['plot']['cont_type'])
-        cont_levels = kws.get('cont_levels', self.kwsd['plot']['cont_levels'])
-        cont_lwidths = kws.get('cont_lwidths', self.kwsd['plot']['cont_lwidths'])
+        cont_imshow = kws.get('cont_imshow', self.kwsd['cont_imshow'])
+        cont_type = kws.get('cont_type', self.kwsd['cont_type'])
+        cont_levels = kws.get('cont_levels', self.kwsd['cont_levels'])
+        cont_lwidths = kws.get('cont_lwidths', self.kwsd['cont_lwidths'])
 
         # NOTE: np.nanmin/np.nanmax fails with masked arrays! better
         #       to work with MaskedArray for zz
