@@ -38,6 +38,13 @@ Howtos
     git branch -a # to show all branches
     git checkout -b experimental origin/experimental  # creates a local tracking branch
 
+- `Change Github authentification from HTTPS to SSH <https://stackoverflow.com/questions/2432764/how-to-change-the-uri-url-for-a-remote-git-repository>`_::
+
+    #First add a public SSH key (e.g. `~/.ssh/id_rsa.pub`)
+    git remote -v
+    git remote set-url origin git@gihub.com:USERNAME/REPOSITORY.git
+    git remote -v
+
 
 Configuration
 '''''''''''''
