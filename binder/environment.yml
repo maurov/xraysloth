@@ -37,7 +37,7 @@ dependencies:
     - openpyxl
     - conda-forge::pint
     - esrf-bcu::ptpython >= 3.0.16
-    - conda-forge::silx >= 0.15.2
+    - conda-forge::silx >= 1.0.0
     - conda-forge::pymca >= 5.6.5
     - conda-forge::xraydb >= 4.4
     - conda-forge::xraylib
