@@ -5,6 +5,21 @@ Currently, the recommended installation method is from source on a Linux-like en
 
 .. note:: For Microsoft Windows users, it is recommended to run the following setup in a `Windows Subsystem for Linux (WSL) <https://docs.microsoft.com/en-us/windows/wsl/install-win10>`_. Debian or Ubuntu are preferred Linux distributions. Furthermore, an optimized experience is obtained with `MobaXterm <https://mobaxterm.mobatek.net/>`_.
 
+Jupyter kernel (for ESRF users)
+...............................
+
+You can install a `sloth` kernel and use it directly on the ESRF cloud.
+
+- First of all, login into [https://jupyter-slurm.esrf.fr]
+
+- Open a terminal and install the kernel::
+
+      /home/esrf/rovezzi/local/conda/envs/sloth/bin/python -m ipykernel install --user --name sloth --display-name "sloth"
+
+- You now create and run notebooks using the `sloth` kernel.
+
+.. note:: To get your experimental data accessible into the notebook, you should create a symbolic link in your home directory.
+
 Minimal setup
 .............
 
@@ -20,7 +35,7 @@ environment called `sloth` and install a minimal version of the library.
 
       $ source $HOME/local/conda/bin/activate
 
-- Update to the latest version of `conda`, `python` and `pip`:
+- Update to the latest version of `conda`, `python` and `pip`::
 
       (base)$ conda update -y conda python pip
 
@@ -28,7 +43,7 @@ environment called `sloth` and install a minimal version of the library.
 
       (base)$ conda install -y git
 
-- Clone Sloth repository::
+- Clone the Sloth repository::
 
       (base)$ git clone https://github.com/maurov/xraysloth.git
       
@@ -47,7 +62,7 @@ environment called `sloth` and install a minimal version of the library.
 
 .. note:: This will install a relatively large number of libraries. If you want to keep a minimal environment and install only those librariers you want, you can manually create the `sloth` environment::
 
-      (base)$ conda create -n sloth python==3.7
+      (base)$ conda create -n sloth python==3.8
 
 - Activate the environment::
 
@@ -91,12 +106,12 @@ Currently, the mandatory requirements are:
 * Matplotlib_
 * SciPy_
 * SILX_
+* Larch_
+* XrayLib_
 
 Nevertheless, other libraries are required to fully run all the scripts:
 
 * PyMca_
-* Larch_
-* XrayLib_
 * SHADOW3_
 * OASYS_
 * XOP_
