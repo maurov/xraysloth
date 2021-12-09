@@ -39,7 +39,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
     - re-enable larch imports in `_slothKit` (currently disabled
       because loading seems too slow!!!)
 
-### Broken backward compatibility
+### Changed
   - The whole library is not backward compatible at this stage!
   - Removed :mod:`sloth.utils.genericutils`
   - `sloth.collect`
