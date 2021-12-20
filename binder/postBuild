@@ -68,7 +68,7 @@ jupyter labextension install ipytree --no-build
 # HOLOVIZ
 # -------
 # https://holoviz.org/
-jupyter labextension install @pyviz/jupyterlab_pyviz --no-build
+#jupyter labextension install @pyviz/jupyterlab_pyviz --no-build  ##fails with Jupyterlab >3
 
 # ------------------------------------------------
 # /!\ EXPERIMENTAL PACKAGES: NOT INCLUDED YET /!\

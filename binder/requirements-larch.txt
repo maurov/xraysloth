@@ -1,17 +1,20 @@
 # -*- coding: utf-8 -*-
 #: pip requirements file for [Larch](https://github.com/xraypy/xraylarch)
 #-r requirements.txt
-scikit-learn
-scikit-image
+#scikit-learn  #: -> conda
+#scikit-image  #: -> conda
+#wxpython >= 4.0.4  #: -> conda
+#pymatgen  #: -> conda
+#pyepics >= 3.3.3  #: extra -> skipped
 peakutils >= 1.3
 asteval >= 0.9.22
 uncertainties >= 3.1
 pyshortcuts >= 1.7.2
-#pyepics >= 3.3.3
-#wxpython >= 4.0.4 #moved to conda
 wxutils >= 0.2.3
-wxmplot >= 0.9.43
+wxmplot >= 0.9.45
 pycifrw
-pymatgen
-#xraylarch >= 0.9.47
+lmfit >= 1.0.2
+termcolor
+xraydb >= 4.4
+#xraylarch >= 0.9.47  #: -> from source
 git+https://github.com/xraypy/xraylarch.git

@@ -16,6 +16,7 @@ lxml         #: (silx-dev) For test coverage in run_test.py
 coverage     #: (silx-dev) For test coverage in run_test.py
 doc8         #: style checker for rst
 pytest       #: test (larch)
+pytest-cov
 nose         #: test (larch)
 rstcheck
 
