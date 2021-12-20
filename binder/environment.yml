@@ -24,6 +24,7 @@ dependencies:
     - matplotlib >= 3.0
     - pandas >= 0.25
     - scikit-learn
+    #- scikit-learn-intelex  #: not used yet 
     - scikit-image
     - nodejs >= 12.0.0
     - wxpython >= 4.0.4  #: still not working with pip!
@@ -48,12 +49,12 @@ dependencies:
     - xraylib
     - pymatgen
     - esrf-bcu::ptpython >= 3.0.16
-    #- esrf-bcu::bliss >= 1.8.0 #NOT YET!
-    #- pyviz::holoviz # conda conflicts!!! :TODO:
-    - rtree  # -> `requirements-xrt.txt` (pip fails for some unknown reason)
-    #- conda-forge:dask        # for xarray (in requirements-jupyter.txt)
-    #- conda-forge:netCDF4     # for xarray (in requirements-jupyter.txt)
-    #- conda-forge:bottleneck  # for xarray (in requirements-jupyter.txt)
+    #- esrf-bcu::bliss >= 1.9.0  #: NOT YET USED HERE!
+    #- pyviz::holoviz  # conda conflicts!!! :TODO:
+    - rtree  #: -> `requirements-xrt.txt` (pip fails for some unknown reason)
+    #- conda-forge:dask        #: for xarray (in requirements-jupyter.txt)
+    #- conda-forge:netCDF4     #: for xarray (in requirements-jupyter.txt)
+    #- conda-forge:bottleneck  #: for xarray (in requirements-jupyter.txt)
     - pip:
         #- -r ../requirements.txt #: base // INSTALLED HERE VIA CONDA!!!
         - -r requirements-dev.txt #: IDE/dev tools
