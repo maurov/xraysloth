@@ -33,7 +33,8 @@ except ImportError:
     
 from ..io.specfile_reader import _str2rng as str2rng
 from ..io.specfile_reader import spec_getmap2group, spec_getmrg2group
-from .datagroup import DataGroup, _norm, MODNAME
+from .datagroup import DataGroup, MODNAME
+from sloth.math.normalization import norm1D
 
 # PyMca
 HAS_PYMCA = False
@@ -123,11 +124,11 @@ class DataGroup1D(DataGroup):
 
     def norint(self, y, x=None):
         """simple normalization by area"""
-        return _norm(y, norm="area", x=x)
+        return norm1D(y, norm="area", x=x)
         
     def normax(self, y):
         """simple normalization by maximum minus offset"""
-        return _norm(y, norm="max-min")
+        return norm1D(y, norm="max-min")
 
     def norxafs(self, g, xattr='x', yattr='y', outattr=None, **kws):
         """XAFS normalization on a given group (g)

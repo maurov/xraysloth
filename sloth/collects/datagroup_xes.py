@@ -7,7 +7,10 @@
   - DataGroup1D
     - DataGroupXes
 """
-from .datagroup import MODNAME
+import numpy as np
+from datetime import datetime
+from larch import Group
+from .datagroup import MODNAME, HAS_PYMCA
 from .datagroup1D import DataGroup1D
 
 class DataGroupXes(DataGroup1D):
@@ -27,7 +30,7 @@ class DataGroupXes(DataGroup1D):
         -------
         None -- output written to 'iads' group
         """
-        _debug =  kws.get('DEBUG', DEBUG)
+        _debug =  kws.get('DEBUG', False)
         self.iads = Group()
         self.iads.__name__ = 'IAD analysis'
         self.iads.header = [self.iads.__name__,
@@ -101,6 +104,7 @@ class DataGroupXes(DataGroup1D):
 
         if self._inlarch:
             # plot with Larch
+            from larch.wxlib.plotter import _scatterplot, _plot_text
             _scatterplot(_ids, _iads, xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax,
                          xlabel=xlabel, ylabel=ylabel,
                          win=win, new=replace, _larch=self._larch)
@@ -111,6 +115,7 @@ class DataGroupXes(DataGroup1D):
         elif HAS_PYMCA:
             # plot with PyMca
             if not hasattr(self, 'pw'):
+                from PyMca5 import ScanWindow
                 self.pw = ScanWindow.ScanWindow()
                 self.pw.setGraphTitle(title)
                 try:

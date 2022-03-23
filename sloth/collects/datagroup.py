@@ -62,7 +62,7 @@ except ImportError:
 # PyMca
 HAS_PYMCA = False
 try:
-    from PyMca import ScanWindow
+    from PyMca5 import ScanWindow
     HAS_PYMCA = True
 except ImportError:
     pass
