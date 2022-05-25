@@ -20,10 +20,11 @@ dependencies:
     - pip
     - cython
     - numpy >= 1.20
-    - scipy >= 1.5
+    - scipy >= 1.6
     - matplotlib >= 3.0
-    - pandas >= 0.25
     - scikit-learn
+    - pandas >= 0.25
+    - h5py >= 2.10
     #- scikit-learn-intelex  #: not used yet 
     - scikit-image
     - nodejs >= 12.0.0
@@ -31,7 +32,6 @@ dependencies:
     - pyqt >= 5.9
     - pyqtwebengine
     - qtconsole
-    - h5py >= 2.10
     - sqlalchemy >= 1.0
     - pillow >= 8.3.2
     - psutil
@@ -48,6 +48,7 @@ dependencies:
     - pymca >= 5.6.5
     - xraylib
     - pymatgen
+    - pycifrw
     - esrf-bcu::ptpython >= 3.0.16
     #- esrf-bcu::bliss >= 1.9.0  #: NOT YET USED HERE!
     #- pyviz::holoviz  # conda conflicts!!! :TODO:

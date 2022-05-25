@@ -1,12 +1,12 @@
+# /!\ DEPRECATED /!\ : use `mamba env create --file binder/environment.yml`
+# /!\ BUT NOTE /!\ : still used by .readthedocs.yml via binder/requirements-rtd.txt
 # pip requirements for sloth (requires pip >= 8.0)
-# !!! DEPRECATED !!! ->  `conda env create --file binder/environment.yml`
-# **NOTE** this file is currently used by .readthedocs.yml
 
 --trusted-host www.silx.org
 --find-links http://www.silx.org/pub/wheelhouse/
 --only-binary numpy,h5py,scipy,PySide2,PyQt5,PySide6
 
-numpy >= 1.12
+numpy >= 1.20
 setuptools
 setuptools_scm
 Cython >= 0.21.1
@@ -14,7 +14,7 @@ hdf5plugin
 h5py
 fabio >= 0.9
 six
-scipy >= 1.2
+scipy >= 1.6
 matplotlib >= 3.0
 pyopencl; platform_machine in "i386, x86_64, AMD64"  #: for silx.opencl
 Mako                   #: for pyopencl reduction
