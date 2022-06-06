@@ -51,6 +51,8 @@ dependencies:
     - xraylib
     - pymatgen
     - pycifrw
+    - spyder
+    - spyder-kernels
     - esrf-bcu::ptpython>=3.0.16
     #- esrf-bcu::bliss >= 1.9.0  #: NOT YET USED HERE!
     #- pyviz::holoviz  # conda conflicts!!! :TODO:
