@@ -23,7 +23,7 @@ dependencies:
     - pandoc
     - numpy>=1.20
     - scipy>=1.6
-    - matplotlib==3.1.2
+    - matplotlib>=3.1.2
     - scikit-learn
     #- scikit-learn-intelex  #: not used yet 
     - scikit-image

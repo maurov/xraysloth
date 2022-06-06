@@ -19,6 +19,6 @@ libgtk2.0-dev
 # lib64gcc1 #2021-04-22: not installing on mybinder.org (ubuntu bionic)
 #: To convert Jupyter notebooks to PDF
 #pandoc #: -> conda
-texlive-xetex
-texlive-fonts-recommended
-texlive-plain-generic
+#texlive-xetex
+#texlive-fonts-recommended
+#texlive-plain-generic

@@ -19,7 +19,7 @@ ipytree
 plotly==5.8.0
 kaleido  #: Static Image Export for plotly
 #h5glance
-jupyterlab-h5web==0.10.0
+jupyterlab-h5web
 k3d==2.9.3
 #h5web
 #h5netcdf
