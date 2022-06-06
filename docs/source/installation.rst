@@ -1,7 +1,8 @@
 Installation
 ------------
 
-Currently, the recommended installation method is from source on a Linux-like environment.
+Currently, the recommended installation method is from source on a Linux-like
+environment.
 
 .. note:: For Microsoft Windows users, it is recommended to run the following setup in a `Windows Subsystem for Linux (WSL) <https://docs.microsoft.com/en-us/windows/wsl/install-win10>`_. Debian or Ubuntu are preferred Linux distributions. Furthermore, an optimized experience is obtained with `MobaXterm <https://mobaxterm.mobatek.net/>`_.
 
@@ -20,28 +21,28 @@ You can install a `sloth` kernel and use it directly on the ESRF cloud.
 
 .. note:: To get your experimental data accessible into the notebook, you should create a symbolic link in your home directory.
 
-Minimal setup
-.............
+Environment setup
+...................
 
 The following instructions will guide you to set-up a dedicated Python
 environment called `sloth` and install a minimal version of the library.
 
-- First of all, install `Conda <https://conda.io>`_ on your system. If you are on Linux, this can be done just by::
+- First of all, install `Mambaforge <https://github.com/conda-forge/miniforge/#Mambaforge>`_ on your system. If you are on Linux, this can be done just by::
 
-      wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-      bash miniconda.sh -b -p $HOME/local/conda
+      wget https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh -O mambaforge.sh
+      bash mambaforge.sh -b -p $HOME/local/conda
 
 - Open a shell with the Conda `base` environment activated. I refer to it as `(base)$` in the following::
 
       $ source $HOME/local/conda/bin/activate
 
-- Update to the latest version of `conda`, `python` and `pip`::
+- Update to the latest version of `mamba`, `conda`, `python` and `pip`::
 
-      (base)$ conda update -y conda python pip
+      (base)$ mamba update -y mamba conda python pip
 
 - Install git (if not yet present in your environment)::
 
-      (base)$ conda install -y git
+      (base)$ mamba install -y git
 
 - Clone the Sloth repository::
 
@@ -51,18 +52,20 @@ environment called `sloth` and install a minimal version of the library.
 
       (base)$ git config --global http.proxy HOST:PORT
 
-- Make sure the packages listed in `binder/apt.txt` are available in your system, otherwise install them::
+- Make sure the packages listed in `binder/apt.txt` are available in your
+  system, otherwise install them (if you have root access, otherwise ignore
+  this step)::
 
       $ grep -v '^#' apt.txt | xargs sudo apt-get install -y
 
 - Create `sloth` Conda environment::
 
       (base)$ cd xraysloth/binder
-      (base)$ conda env create -f environment.yml
+      (base)$ mamba env create -f environment.yml
 
 .. note:: This will install a relatively large number of libraries. If you want to keep a minimal environment and install only those librariers you want, you can manually create the `sloth` environment::
 
-      (base)$ conda create -n sloth python==3.8
+      (base)$ mamba create -n sloth python==3.9 #install then the librariers you want with `mamba install ...`
 
 - Activate the environment::
 
