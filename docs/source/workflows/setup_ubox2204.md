@@ -15,7 +15,7 @@ Fresh install is `xubuntu-22.04-desktop-amd64.iso` image.
 - 128 MB video memory / 3D acceleration enabled / VMSVGA
 - USB 3.0
 
-## Guest Additions
+## Guest additions and related configs to access host services
 
 - Method 1
 
@@ -26,8 +26,14 @@ Fresh install is `xubuntu-22.04-desktop-amd64.iso` image.
 
         sudo sh /path/to/VobLinuxAdditions.run
 
+### Access shared folders
 
-## Configure guest network to work with host VPN
+- Add the user to the `vboxsf` group. In case you are missing a graphical interface to access groups:
+
+        sudo apt install gnome-system-tools
+
+
+### Configure guest network to work with host VPN
 
 Tested on CISCO AnyConnect: sometimes works, others not!
 
