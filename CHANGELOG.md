@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
   - Moved to Larch:
-    - Reading RIXS data from ESRF-BM16
+    - Reading RIXS data from ESRF-BM16 -> :mod:`larch.io.rixs_esrf_fame`
     - Spec/HDF5 files reading -> :mod:`larch.io.specfile_reader`
 
 ## [0.3.1 - unreleased]

@@ -3,18 +3,17 @@ Sloth: slowly evolving utilities for x-ray spectroscopy
 
 Sloth is a collection of Python scripts, examples of workflows and documentation
 that may result useful in the field of **x-ray instrumentation, optics and
-spectroscopy**. The project aims providing a full Python environment for the
-generic user of an x-ray spectroscopy beamline. It should help with the tasks of
-data reduction/analysis and simulation for x-ray Absorption Spectroscopy (XAS,
-XANES/EXAFS), x-ray emission spectroscopy (XES) and Resonant Inelastic x-ray
-Scattering (RIXS) techniques.
+spectroscopy**. The project aims providing a dedicated Python environment
+(called `sloth`) for scientists working on X-ray spectroscopy beamlines. It
+should help with the tasks of data reduction/analysis and simulation for X-ray
+Absorption Spectroscopy (XAS, XANES/EXAFS, HERFD-*), X-ray emission spectroscopy
+(XES) and Resonant Inelastic X-ray Scattering (RIXS) techniques.
 
 Sloth is lazy by nature and tries reusing as much as possible the existing
 open-source libraries of the Python ecosystem. It results in a large number of
 dependecies. Nevertheless, apart few very basic libraries that are mandatory,
 many other are used randomly in specific modules and you may discover them only
-by usage, so I strongly encourage to read the code and the work-in-progress
-documentation.
+by usage, so I strongly encourage to read the code and the documentation.
 
 Sloth is designed as a **Python environment running on a Linux-like
 (virtual)machine** (see Installation in the documentation for a full
