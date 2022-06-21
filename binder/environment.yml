@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # Conda environment configuration for: https://github.com/maurov/xraysloth
 # Target: *FULL* environment for sloth based on
-#   +> Larch (+Wx)
-#   +> SILX  (+PyQt5)
+#   +> Larch (with Wx)
+#   +> SILX  (with PyQt5)
 #   +> OASYS
 #   +> Jupyter
 #   +> GL/CL
@@ -16,10 +16,10 @@ channels:
     - conda-forge
     - defaults
 dependencies:
-    - python==3.9
+    - python==3.9  #: wxpython fails with 3.10
     - pip
     - cython
-    - nodejs >= 12.0.0
+    - nodejs>=12.0.0
     - pandoc
     - numpy>=1.20
     - scipy>=1.6
@@ -27,14 +27,14 @@ dependencies:
     - scikit-learn
     #- scikit-learn-intelex  #: not used yet 
     - scikit-image
-    - pandas >= 0.25
-    - h5py >= 2.10
-    - wxpython >= 4.0.4  #: still not working with pip!
-    - pyqt >= 5.9
+    - pandas>=0.25
+    - h5py>=2.10
+    - wxpython>=4.0.4  #: still not working with pip!
+    - pyqt>=5.9
     - pyqtwebengine
     - qtconsole
-    - sqlalchemy >= 1.0
-    - pillow >= 8.3.2
+    - sqlalchemy>=1.0
+    - pillow>=8.3.2
     - psutil
     - pyyaml
     - requests
