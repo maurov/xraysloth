@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
   - Moved to Larch:
     - Reading RIXS data from ESRF-BM16
-    - Spec/HDF5 files reading
+    - Spec/HDF5 files reading -> :mod:`larch.io.specfile_reader`
 
 ## [0.3.1 - unreleased]
 
@@ -17,15 +17,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - `sloth.gui.jupyx`
     - Jupyter UI -> :mod:`sloth.utils.jupyter` **deprecated**.
   - `sloth.gui.daxs`
-    - Qt-based GUI application featuring a TreeModel/View from **Marius Retegan** and the SILX group at ESRF. The GUI has an internal Jupyter kernel that give access to core components directly from a Qtconsole. DAXS stands for **Data Analysis in X-ray Spectroscopy**. It has its own name because this GUI-project may be consider as a submodule of Sloth.
+    - Qt-based GUI application featuring a TreeModel/View from **Marius
+      Retegan** and the SILX group at ESRF. The GUI has an internal Jupyter
+      kernel that give access to core components directly from a Qtconsole. DAXS
+      stands for **Data Analysis in X-ray Spectroscopy**. It has its own name
+      because this GUI-project may be consider as a submodule of Sloth.
   - `sloth.io.datasource_spech5`
     - unified way of reading Spec, HDF5 and NeXus files via :mod:`silx.io.open`
   - `sloth.utils`
     - strong refactoring!
   - `sloth.inst.spectro14`
-    - simple geometry calculations of the FAME-UHD (BM16 at ESRF) X-ray
-      emission spectrometer (2 rows of 7 spherically bent crystal
-      analyzers arranged in a _mixed_ Rowland circle)
+    - simple geometry calculations of the FAME-UHD (BM16 at ESRF) X-ray emission
+      spectrometer (2 rows of 7 spherically bent crystal analyzers arranged in a
+      _mixed_ Rowland circle)
   - `sloth.gui.sloth_main`
     - initial GUI layout (mainly an IPython embedded shell).
   - `sloth.raytracing.shadow_utils`
