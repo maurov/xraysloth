@@ -10,3 +10,4 @@ Notes on softwares
    :maxdepth: 2
 
    git.rst
+   setup_ubox2204.md

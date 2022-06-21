@@ -27,6 +27,10 @@ Environment setup
 The following instructions will guide you to set-up a dedicated Python
 environment called `sloth` and install a minimal version of the library.
 
+- We will work in `$HOME/local`::
+
+      cd; mkdir local; cd local
+
 - First of all, install `Mambaforge <https://github.com/conda-forge/miniforge/#Mambaforge>`_ on your system. If you are on Linux, this can be done just by::
 
       wget https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh -O mambaforge.sh

@@ -17,12 +17,19 @@ Fresh install is `xubuntu-22.04-desktop-amd64.iso` image.
 
 ## Guest Additions
 
-- mount the Guest Additions cdrom and run `VBoxLinuxAdditions.run` as root
-    sudo sh /path/to/VobLinuxAdditions.run
+- Method 1
+
+        sudo apt install virtualbox-guest-utils virtualbox-guest-x11
+
+
+- Alternatively, mount the Guest Additions cdrom and run `VBoxLinuxAdditions.run` as root
+
+        sudo sh /path/to/VobLinuxAdditions.run
+
 
 ## Configure guest network to work with host VPN
 
-Tested on CISCO AnyConnect)
+Tested on CISCO AnyConnect: sometimes works, others not!
 
 Explained here [https://superuser.com/questions/987150/virtualbox-guest-os-through-vpn/1035327]()
 
@@ -47,43 +54,35 @@ In quick summary:
     git config --global http.proxy http://proxy.esrf.fr:3128
     git config --global https.proxy https://proxy.esrf.fr:3128
     ```
+
 ## Fun stuff
 
 - Petname: a random combination of adverbs, an adjective, and an animal name `sudo apt install petname`
 
+## Build tools
+
+  ```bash
+  #Package managers
+  sudo apt install gdebi-core snapd
+  #basics
+  sudo apt install dkms build-essential module-assistant autoconf shtool libtool swig
+  sudo m-a prepare
+  #GL library/headers
+  sudo apt install libglu1-mesa-dev freeglut3-dev mesa-common-dev
+```
+
+## Utils
+
+- Disk Usage Analyzer
+
+        sudo apt install baobab
+
+
 ## NOT DONE (YET)
 
-#Building tools
-#==============
-#package managers
-sudo apt install gdebi-core snapd
-#basics
-sudo apt install dkms build-essential module-assistant autoconf shtool libtool swig
-sudo m-a prepare
-#GL library/headers
-sudo apt install libglu1-mesa-dev freeglut3-dev mesa-common-dev
+```bash
 
-#HWE kernel + headers
-#====================
-#https://wiki.ubuntu.com/Kernel/LTSEnablementStack
-sudo apt install --install-recommends linux-generic-hwe-18.04 xserver-xorg-hwe-18.04
-sudo apt install kernel-package u-boot-tools
 
-#Guest Additions
-#===============
-sudo apt install virtualbox-guest-dkms-hwe virtualbox-guest-utils-hwe virtualbox-guest-x11-hwe
-# ALTERNATIVELY:
-# mount the Guest Additions cdrom and run VBoxLinuxAdditions.run as root
-#sudo sh /path/to/VobLinuxAdditions.run
-#
-#GUIDE: How to configure network in the guest OS in order to work with VPN
-#https://superuser.com/questions/987150/virtualbox-guest-os-through-vpn/1035327
-
-#Bug in missing shared library
-#=============================
-#https://www.virtualbox.org/ticket/18324
-sudo apt install patchelf
-sudo patchelf --add-needed libcrypt.so.1 /opt/VBoxGuestAdditions-6.0.4/lib/VBoxOGLcrutil.so
 
 #Bug with Qt
 #===========
@@ -331,8 +330,3 @@ sudo apt install vlc
 #download JD2Setup_x64.sh from their website
 #the install manually: ./JD2Setup_x64.sh (chmod +x first)
 
-#############
-### UTILS ###
-#############
-# Disk Usage Analyzer
-sudo apt install baobab
