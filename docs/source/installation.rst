@@ -40,7 +40,7 @@ environment called `sloth` and install a minimal version of the library.
 
       $ source $HOME/local/conda/bin/activate
 
-- Update to the latest version of `mamba`, `conda`, `python` and `pip`::
+- *[optional]* Update to the latest version of `mamba`, `conda`, `python` and `pip`::
 
       (base)$ mamba update -y mamba conda python pip
 
