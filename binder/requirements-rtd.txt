@@ -2,4 +2,3 @@
 # pip requirements file for building documentation on readthedocs.org
 -r ../requirements.txt
 -r ./requirements-docs.txt
-- -e ../
