@@ -28,4 +28,3 @@ python:
   version: "3.9"
   install:
     - requirements: binder/requirements-rtd.txt
-    - setup_py_install: true
