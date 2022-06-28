@@ -27,7 +27,7 @@ Current version is |release|.
    :hidden:
 
    installation.rst
-   changelog.rst
+   ../../changelog.md
    data_model/index.rst
    modules/index.rst
    workflows/index.rst
