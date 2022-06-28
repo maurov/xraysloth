@@ -61,6 +61,20 @@ In quick summary:
     git config --global https.proxy https://proxy.esrf.fr:3128
     ```
 
+- Visual studio code (`codium` version)
+
+        sudo snap install codium --classic
+
+    Extensions installed directly from code
+
+    - Python
+    - markdownlint
+    - reStructuredText
+    - ~~kite~~
+    - LaTeX Workshop
+    - Awesome Emacs Keymap
+
+
 ## Fun stuff
 
 - Petname: a random combination of adverbs, an adjective, and an animal name `sudo apt install petname`
@@ -76,6 +90,14 @@ In quick summary:
   #GL library/headers
   sudo apt install libglu1-mesa-dev freeglut3-dev mesa-common-dev
 ```
+
+## Office
+
+- Libreoffice
+ 
+        sudo apt-add-repository ppa:libreoffice/ppa
+        sudo apt install libreoffice-calc libreoffice-dmaths libreoffice-draw libreoffice-math libreoffice-pdfimport libreoffice-l10n-en-gb hunspell-en-gb hyphen-en-gb mythes-en-us libreoffice-help-en-gb libreoffice-l10n-fr libreoffice-script-provider-python libreoffice-style-tango libreoffice-templates libreoffice-voikko libreoffice-wiki-publisher libreoffice-writer libreoffice-writer2latex hunspell-fr hyphen-fr mythes-fr libreoffice-l10n-it hunspell-it hyphen-it mythes-it libxrender1 libgl1 openclipart-libreoffice openclipart-libreoffice pstoedit imagemagick libpaper-utils libreoffice-java-common
+
 
 ## Utils
 
@@ -105,48 +127,6 @@ sudo apt install firefox
 #- Forget me not (https://addons.mozilla.org/en-US/firefox/addon/forget_me_not) or Self destructing cookies (https://addons.mozilla.org/en-US/firefox/addon/self-destructing-cookies-webex)
 
 
-#########################################
-### TEXT EDITORs/CONVERTERS/UTILITIES ###
-#########################################
-
-#VISUAL STUDIO CODE
-sudo snap install code --classic
-# Extensions installed directly from code
-#- Python
-#- markdownlint
-#- reStructuredText
-#- kite
-#- LaTeX Workshop
-#- Awesome Emacs Keymap
-
-#ATOM
-wget -O atom-amd64.deb https://atom.io/download/deb
-sudo gdebi atom-amd64.deb
-#if behind PROXY (example here at ESRF)
-#apm config set proxy "http://proxy.esrf.fr:3128"
-#apm config set https_proxy "http://proxy.esrf.fr:3128"
-#install packages
-apm install language-restructuredtext language-latex
-apm install sublime-style-column-selection column-select
-apm install autocomplete-python python-indent
-#in sloth-dev
-python -m pip install 'python-language-server[all]'
-apm install atom-ide-ui
-apm install ide-python
-#pip install black
-apm install atom-black
-
-#EMACS
-sudo add-apt-repository ppa:ubuntu-elisp/ppa
-sudo apt update
-sudo apt install emacs-snapshot aspell-en aspell-fr aspell-it
-sudo update-alternatives --config emacs #select emacs-snapshot
-#ln -s mydotemacsU1804.el .emacs
-#starter kit
-#https://github.com/bbatsov/prelude
-#Emacs as Python IDE:
-#http://chillaranand.github.io/emacs-py-ide/
-#
 
 #latex2rft (best for converting LaTeX to MS Word)
 sudo apt install latex2rtf latex2rtf-doc
@@ -280,11 +260,7 @@ sudo add-apt-repository ppa:inkscape.dev/stable
 sudo apt update
 sudo apt install inkscape xclip graphviz
 
-###################
-### LIBREOFFICE ###
-###################
-sudo apt-add-repository ppa:libreoffice/ppa
-sudo apt install libreoffice-calc libreoffice-dmaths libreoffice-draw libreoffice-math libreoffice-pdfimport libreoffice-l10n-en-gb hunspell-en-gb hyphen-en-gb mythes-en-us libreoffice-help-en-gb libreoffice-l10n-fr libreoffice-script-provider-python libreoffice-style-tango libreoffice-templates libreoffice-voikko libreoffice-wiki-publisher libreoffice-writer libreoffice-writer2latex hunspell-fr hyphen-fr mythes-fr libreoffice-l10n-it hunspell-it hyphen-it mythes-it libxrender1 libgl1 openclipart-libreoffice openclipart-libreoffice pstoedit imagemagick libpaper-utils libreoffice-java-common
+
 
 #########################
 ### TEXLIVE & RELATED ###
