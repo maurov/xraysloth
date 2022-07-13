@@ -42,7 +42,7 @@ Howtos
 
     #First add a public SSH key (e.g. `~/.ssh/id_rsa.pub`)
     git remote -v
-    git remote set-url origin git@gihub.com:USERNAME/REPOSITORY.git
+    git remote set-url origin git@github.com:USERNAME/REPOSITORY.git
     git remote -v
 
 
