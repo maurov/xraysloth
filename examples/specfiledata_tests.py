@@ -19,9 +19,8 @@ _curDir = os.path.dirname(os.path.realpath(__file__))
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
-#from sloth.io.specfile_reader import SpecfileData
 import larch
-from larch_plugins.io.specfile_reader import SpecfileData
+from sloth.io.specfile_reader import SpecfileData
 
 ### TESTS ###
 def test01():
