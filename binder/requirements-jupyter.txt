@@ -7,20 +7,20 @@ ipython>=7.16.3
 ipykernel>=5.2
 jupyterlab_server
 jupyterlab>=1.0
-ipywidgets==7.5.1  #: in each kernel’s environment that will use ipywidgets
+ipywidgets>=7.5.1  #: in each kernel’s environment that will use ipywidgets
 widgetsnbextension>=3.5.0  #: in the environment containing the Jupyter Notebook server
 notebook>=5.3
-jupyterhub==2.3.0
-batchspawner==1.1.0
-ipympl==0.5.8
+jupyterhub>=2.3.0
+batchspawner>=1.1.0
+ipympl>=0.5.8
 nbsphinx
 nbconvert[webpdf] #: to use Pyppeteer instead of Xetex for PDF conversion
 ipytree
-plotly==5.8.0
+plotly>=5.8.0
 kaleido  #: Static Image Export for plotly
 #h5glance
 jupyterlab-h5web
-k3d==2.9.3
+k3d>=2.9.3
 #h5web
 #h5netcdf
 #xarray
