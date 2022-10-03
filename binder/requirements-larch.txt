@@ -16,5 +16,6 @@ wxmplot>=0.9.45
 lmfit>=1.0.3
 termcolor
 xraydb>=4.4
+chardet
 #xraylarch >= 0.9.47  #: -> from source (below)
 git+https://github.com/xraypy/xraylarch.git
