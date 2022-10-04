@@ -18,9 +18,9 @@ nbconvert[webpdf] #: to use Pyppeteer instead of Xetex for PDF conversion
 ipytree
 plotly>=5.8.0
 kaleido  #: Static Image Export for plotly
-#h5glance
-jupyterlab-h5web
 k3d>=2.9.3
+jupyterlab-h5web
+#h5glance
 #h5web
 #h5netcdf
 #xarray

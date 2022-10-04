@@ -2,7 +2,7 @@
 # pip requirements file for building sloth documentation
 #-r requirements.txt
 sphinx>=1.8
-pandoc #: Python layer on pandoc installed via conda
+pandoc #: this is the Python layer (pandoc installed via conda)
 numpydoc
 recommonmark
 sphinx_rtd_theme
