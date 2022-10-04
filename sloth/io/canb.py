@@ -1,6 +1,7 @@
 import os
 import logging
 import tempfile
+from turtle import showturtle
 import matplotlib.pyplot as plt
 from matplotlib import cm
 
@@ -15,7 +16,7 @@ from larch.xafs import pre_edge, autobk
 from sloth.utils.strings import str2rng
 from sloth.utils.matplotlib import get_colors
 
-def canb2athena(fname, scans=None, datadir=None, save=True, **kws):
+def canb2athena(fname, scans=None, datadir=None, save=True, bad_channels=[], **kws):
     '''convert ESRF-BM30 multi-element fluorescence channels Spec file (aka 'canb') to an Athena project''' 
 
     sx_logger = logging.getLogger("silx")
@@ -68,15 +69,19 @@ def canb2athena(fname, scans=None, datadir=None, save=True, **kws):
 
         ene = d.get_array("Energy") * 1000
         norm = d.get_array("I0")
-        bad_channels = []
             
         for cnt in d.get_counters():
             if 't' in cnt:
                 continue
             if cnt in ['I0', 'T', 'Energy']:
                 continue
-            mu = d.get_array(cnt)
-            g = Group(id=f"{scan_label}_{cnt}", datatype='xas', energy=ene, mu=mu, i0=norm)
+
+            if cnt in bad_channels:
+                #print(f"skipped {cnt} (-> bad_channels)")
+                continue
+
+            mu = d.get_array(cnt) / norm
+            g = Group(id=f"{scan_label}_{cnt}", datatype='xas', energy=ene, mu=mu, i0=norm, scan_idx=iscan, scan_no=scan_no)
             try:
                 pre_edge(g)
                 #autobk(g) #slow
@@ -94,22 +99,24 @@ def canb2athena(fname, scans=None, datadir=None, save=True, **kws):
     return apj
 
 
-def plot_canb(apj):
+def plot_canb(apj, yoffset=0.1):
+    """plot canb data"""
     scans = apj.info['scans']
     cnts = apj.info['cnts']
+    nscans = len(scans)
     
-    fig = make_subplots(rows=len(scans), cols=1, subplot_titles=[f"scan {scan[0]}" for scan in scans])
+    fig = make_subplots(rows=nscans, cols=1, subplot_titles=[f"scan {scan}" for scan in scans])
 
     yshift=0
     for ig, (gid, g) in enumerate(apj.groups.items()):
         
         fig.add_trace(
             go.Scatter(x=g.energy, y=g.norm+yshift, name=cnts[ig], marker=None),
-                row=1, col=1
+                row=g.scan_idx+1, col=1
             )
-        yshift += 0.1
+        yshift += yoffset
         
-    fig.update_layout(height=800, width=1000, title_text=f"{file_in}")
+    fig.update_layout(height=800*nscans, width=1000, title_text="canb2athena", showlegend=False)
     fig.show()
 
     return fig
