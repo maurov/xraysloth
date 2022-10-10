@@ -1,7 +1,12 @@
+# -*- coding: utf-8 -*-
+"""
+Utility for reading "CANB" files at ESRF/BM30 (FAME beamline)
+-------------------------------------------------------------
+"""
+
 import os
 import logging
 import tempfile
-from turtle import showturtle
 import matplotlib.pyplot as plt
 from matplotlib import cm
 
