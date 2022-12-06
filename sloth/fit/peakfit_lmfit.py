@@ -133,7 +133,10 @@ def fit_peak(
         assert type(expressions) is dict, "Expressions should be a dictionary"
         for key, value in expressions.items():
             try:
-                pars[key].set(expr=value)
+                if isinstance(value, str):
+                    pars[key].set(expr=value)
+                else:
+                    pars[key].set(value)
             except KeyError:
                 _logger.warning(f"[fit_peak] cannot set expression 'key':'value'")
     _logger.info("Running fit...")
