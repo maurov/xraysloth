@@ -50,6 +50,7 @@ dependencies:
     - pymca>=5.6.5
     - xraylib
     - pymatgen
+    - nglview
     - pycifrw
     - spyder
     - spyder-kernels

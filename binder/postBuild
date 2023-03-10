@@ -64,6 +64,13 @@ jupyter labextension install @jupyterlab/toc --no-build
 # https://github.com/QuantStack/ipytree
 jupyter labextension install ipytree --no-build
 
+
+# -------
+# NGLVIEW
+# -------
+# https://github.com/nglviewer/nglview
+jupyter-nbextension enable nglview --py --sys-prefix
+
 # -------
 # HOLOVIZ
 # -------
