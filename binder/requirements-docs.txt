@@ -10,4 +10,4 @@ sphinxcontrib-napoleon
 sphinxcontrib-bibtex
 sphinxcontrib-argdoc
 nbsphinx #: for converting ipynb in documentation
-pillow #: For loading images in documentation generation
+#pillow #: For loading images in documentation generation -> conda

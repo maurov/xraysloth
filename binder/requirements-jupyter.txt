@@ -5,22 +5,19 @@
 #   pip install -r ../requirements.txt
 ipython>=7.16.3
 ipykernel>=5.2
-jupyterlab_server
+ipywidgets>=7.5.1  #: in each kernel’s environment that will use ipywidgets
 jupyterlab>=1.0
-jupyter-book>=0.11
+jupyterlab_server
 jupytext
 beautifulsoup4
-ipywidgets>=7.5.1  #: in each kernel’s environment that will use ipywidgets
 widgetsnbextension>=3.5.0  #: in the environment containing the Jupyter Notebook server
 notebook>=5.3
-jupyterhub==2.3.1
-batchspawner==1.1.0
 ipympl>=0.5.8
 nbsphinx
 nbconvert[webpdf] #: to use Pyppeteer instead of Xetex for PDF conversion
 ipytree
 seaborn
-plotly>=5.8.0
+#plotly>=5.8.0  #: -> conda
 kaleido  #: Static Image Export for plotly
 k3d>=2.9.3
 jupyterlab-h5web
@@ -31,3 +28,7 @@ jupyter-book
 #xarray
 git+https://github.com/wholden/jupyter-lmfit.git
 # run postBuild
+### => custom Jupyter environment in jupyter-slurm.esrf.fr
+batchspawner~=1.1.0
+jupyterhub~=2.3.1
+jupyter_server~=1.23.5
