@@ -22,6 +22,19 @@ else:
 finally:
     pass
 
+### interactive console utils: this works only in the interactive console
+
+def get_average(method="average"):
+	"""average the current plotted curves"""
+
+	from sloth.utils.arrays import merge_arrays_1d
+	
+	curves = plugin.getAllCurves()
+    for (x, y, leg, info) in curves:
+        plugin.removeCurve(leg)
+    avg = merge_arrays_1d(curves, method=method)
+    plugin.addCurve(avg[0], avg[1], legend=f"average of {len(curves)}", replace=True)
+
 
 def getPyMcaMain(fload=None):
     """show PyMcaMain from a shell (e.g. IPython) and return its obj"""
