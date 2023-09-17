@@ -23,17 +23,75 @@ finally:
     pass
 
 ### interactive console utils: this works only in the interactive console
+import numpy as np
+import matplotlib.pyplot as plt
+from sloth.utils.arrays import merge_arrays_1d
+
+def get_curves(remove=False):
+    """get curves from plugin plot"""
+	curves = plugin.getAllCurves()
+    if remove:
+        for (x, y, leg, info) in curves:
+            plugin.removeCurve(leg)
+    return curves
 
 def get_average(method="average"):
 	"""average the current plotted curves"""
+    curves = get_curves(remove=True)
+    avg_legs = [leg for (x, y, leg, info) in curves]
+    avg = merge_arrays_1d(curves, method=method)
+    avg_leg = " + ".join(avg_legs)
+    plugin.addCurve(avg[0][iskip:], avg[1][iskip:], legend=f"AVG OF {len(curves)} [{avg_leg}]", replace=True)
 
-	from sloth.utils.arrays import merge_arrays_1d
-	
-	curves = plugin.getAllCurves()
+def get_std(estart):
+    """get curves (remove) and calculate the std """
+    curves = get_curves()
+    outcurves = []
     for (x, y, leg, info) in curves:
         plugin.removeCurve(leg)
-    avg = merge_arrays_1d(curves, method=method)
-    plugin.addCurve(avg[0], avg[1], legend=f"average of {len(curves)}", replace=True)
+        if estart is None:
+            istart = 1 #skip first energy point
+        else:
+            istart = index_of(x, estart)
+        std = np.std(y[istart:])
+        print(f"{std:.4f}: {leg}")
+        info["std"] = std
+        outcurves.append((x, y, leg, info))  
+    return outcurves
+
+def select_curves_by_std(std_frac=None, estart=None, plot=True):
+    """push back curves from below std level"""
+    print("----- get curves from plot:")
+    curves = get_std(estart)
+    stds = [info['std'] for (x, y, leg, info) in curves]
+    stds = np.array(stds)
+    nstds = stds/np.std(stds) #normalized to 
+    if plot:
+        plt.close("all")
+        fig, ax = plt.subplots(num="stds")
+        ax.set_title("standard deviations of curves")
+        ax.plot(nstds, ls="--", marker="o", color="blue", fillstyle='none')
+        ax.hlines(std_frac - 0.05, 0, 16, colors=['red'], ls='-')
+        if std_frac is not None:
+            ax.set_ylim(nstds.min(), 2*nstds.min())
+        ax.set_xlabel("index of curves")
+        ax.set_ylabel("stds/std(stds)")
+        ax.minorticks_on()
+        ax.xaxis.set_tick_params(which='minor', bottom=False)
+        ax.grid(True, axis="y", which="both", linewidth=0.5)
+    if std_frac is None:
+        return
+    std_level = (np.std(stds) * std_frac)
+    print(f"----- curves with std below {std_level}:")
+    for (x, y, leg, info) in curves:
+        std = info["std"]
+        if std <= std_level:
+            print(f"{std}: {leg}")
+            plugin.addCurve(x, y, leg, info)
+
+
+
+
 
 
 def getPyMcaMain(fload=None):
