@@ -25,21 +25,31 @@ finally:
 ### interactive console utils: this works only in the interactive console
 import numpy as np
 import matplotlib.pyplot as plt
+
+from larch.io.mergegroups import index_of
+
 from sloth.utils.arrays import merge_arrays_1d
 
 def get_curves(remove=False):
-    """get curves from plugin plot"""
-	curves = plugin.getAllCurves()
+    """get *ALL* plotted curves from PyMca `plugin`
+    
+    Parameters
+    ----------
+
+    remove: boolean
+        to remove the curves from the plot (in case you want to push back something else)
+    """
+    curves = plugin.getAllCurves()
     if remove:
         for (x, y, leg, info) in curves:
             plugin.removeCurve(leg)
     return curves
 
-def get_average(method="average"):
-	"""average the current plotted curves"""
+def get_average(**kws):
+    """average the current plotted curves"""
     curves = get_curves(remove=True)
     avg_legs = [leg for (x, y, leg, info) in curves]
-    avg = merge_arrays_1d(curves, method=method)
+    avg = merge_arrays_1d(curves, **kws)
     avg_leg = " + ".join(avg_legs)
     plugin.addCurve(avg[0][iskip:], avg[1][iskip:], legend=f"AVG OF {len(curves)} [{avg_leg}]", replace=True)
 
@@ -54,7 +64,7 @@ def get_std(estart):
         else:
             istart = index_of(x, estart)
         std = np.std(y[istart:])
-        print(f"{std:.4f}: {leg}")
+        print(f"{std:.4E}: {leg}")
         info["std"] = std
         outcurves.append((x, y, leg, info))  
     return outcurves
@@ -71,7 +81,7 @@ def select_curves_by_std(std_frac=None, estart=None, plot=True):
         fig, ax = plt.subplots(num="stds")
         ax.set_title("standard deviations of curves")
         ax.plot(nstds, ls="--", marker="o", color="blue", fillstyle='none')
-        ax.hlines(std_frac - 0.05, 0, 16, colors=['red'], ls='-')
+        ax.hlines(std_frac, 0, len(curves), colors=['red'], ls='-')
         if std_frac is not None:
             ax.set_ylim(nstds.min(), 2*nstds.min())
         ax.set_xlabel("index of curves")
@@ -82,11 +92,11 @@ def select_curves_by_std(std_frac=None, estart=None, plot=True):
     if std_frac is None:
         return
     std_level = (np.std(stds) * std_frac)
-    print(f"----- curves with std below {std_level}:")
+    print(f"----- curves with std < {std_level:.4E}:")
     for (x, y, leg, info) in curves:
         std = info["std"]
-        if std <= std_level:
-            print(f"{std}: {leg}")
+        if std < std_level:
+            print(f"{std:.4E}: {leg}")
             plugin.addCurve(x, y, leg, info)
 
 
