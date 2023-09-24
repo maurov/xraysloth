@@ -24,32 +24,12 @@ finally:
 
 
 ### MOVE TO LARCH
-def reject_outliers(data, m=5.189, return_ma=False):
-    """Reject outliers
-
-    Modified from: https://stackoverflow.com/questions/11686720/is-there-a-numpy-builtin-to-reject-outliers-from-a-list
-    See also: https://www.itl.nist.gov/div898/handbook/eda/section3/eda35h.htm
-    """
-    if not isinstance(data, np.ndarray):
-        data = np.array(data)
-    d = np.abs(data - np.median(data))
-    mdev = np.median(d)
-    s = d / (mdev if mdev else 1.0)
-    mask = s < m
-    if return_ma:
-        imask = s > m
-        return np.ma.masked_array(data=data, mask=imask)
-    else:
-        return data[mask]
-
 
 ### interactive console utils: this works only in the interactive console
 import numpy as np
 import matplotlib.pyplot as plt
 
-from larch.io.mergegroups import index_of
-
-from sloth.utils.arrays import merge_arrays_1d
+from larch.io.mergegroups import index_of, reject_outliers, merge_arrays_1d
 
 def get_curves(remove=False):
     """get *ALL* plotted curves from PyMca `plugin`
