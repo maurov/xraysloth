@@ -168,9 +168,40 @@ def select_curves_by_std(std_frac=None, estart=None, plot=True, m=6):
             plugin.addCurve(x, y, leg, info)
     #return stds2, fig, ax
     
+def dt_corr(signal, tau):
+    """dead time correction"""
+    return signal/(1-tau*signal)
 
+def get_tau(counting_time=1, xmax=None):
+    """get tau for dead time correction"""
 
+    from lmfit.models import LinearModel
+    
+    curves = get_curves()
+    taus = []
+    figs = []
 
+    for curve in curves:
+        x, y, legend, info = curve  
+
+        x /= counting_time
+        y /= counting_time
+
+        if xmax is not None:
+            ixmax = index_of(x, xmax)
+            x = x[:ixmax]
+            y = y[:ixmax]
+
+        linmod = LinearModel()
+        pars =  linmod.guess(y, x=x)
+        linfit = linmod.fit(y, pars, x=x)
+        fig = linfit.plot(title=legend)
+    
+        tau = linfit.result.params['slope'].value
+        print(f'tau ({legend}): {tau}')
+        taus.append(tau)
+
+    return taus
 
 
 def getPyMcaMain(fload=None):
