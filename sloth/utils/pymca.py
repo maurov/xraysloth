@@ -5,6 +5,7 @@
 ======================================
 
 """
+import copy
 import logging
 _logger = logging.getLogger('sloth.utils.pymca')
 
@@ -172,8 +173,12 @@ def dt_corr(signal, tau):
     """dead time correction"""
     return signal/(1-tau*signal)
 
-def get_tau(counting_time=1, xmax=None):
+def get_tau(counting_time=1, xmax=None, iskip=0, plot=False):
     """get tau for dead time correction"""
+
+    if plot:
+        plt.ion()
+        plt.close('all')
 
     from lmfit.models import LinearModel
     
@@ -181,27 +186,40 @@ def get_tau(counting_time=1, xmax=None):
     taus = []
     figs = []
 
+    print("-> COPY THE FOLLOWING IN BLISS:")
+    print("--- blisadm@bm16ctrl: beamline_configuration/counters/calc_counters.yml")
+
     for curve in curves:
-        x, y, legend, info = curve  
+        x, y, legend, info = curve
 
-        x /= counting_time
-        y /= counting_time
+        detn = legend.split("det")[1].split(" ")[0]
 
-        if xmax is not None:
+        ct = np.ones_like(y) * counting_time
+
+        if xmax is None:
+            ixmax = len(x)
+        else:
             ixmax = index_of(x, xmax)
-            x = x[:ixmax]
-            y = y[:ixmax]
+
+        xtofit = copy.deepcopy(x[iskip:ixmax] / ct[iskip:ixmax])
+        ytofit = copy.deepcopy(x[iskip:ixmax] / y[iskip:ixmax])
 
         linmod = LinearModel()
-        pars =  linmod.guess(y, x=x)
-        linfit = linmod.fit(y, pars, x=x)
-        fig = linfit.plot(title=legend)
+        pars =  linmod.guess(ytofit, x=xtofit)
+        linfit = linmod.fit(ytofit, pars, x=xtofit)
+        if plot:
+            fig = linfit.plot(title=f"det{detn}")
     
         tau = linfit.result.params['slope'].value
-        print(f'tau ({legend}): {tau}')
+        print(f'det{detn}: {tau:.7E}')
+        info["tau"] = tau
         taus.append(tau)
+        ycorr = dt_corr(y, tau)
+        legcorr = f"{legend}_dtcorr"
+        if plot:
+            plugin.addCurve(x, ycorr, legcorr, info)
 
-    return taus
+    #return taus
 
 
 def getPyMcaMain(fload=None):
