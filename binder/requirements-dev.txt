@@ -20,6 +20,7 @@ pytest         #: test (larch)
 pytest-cov  
 nose           #: test (larch)
 rstcheck
+pdbpp
 
 #DEVEL/EVALUATION
 #python-language-server
