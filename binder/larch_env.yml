@@ -1,0 +1,36 @@
+# -*- coding: utf-8 -*-
+# Conda environment configuration for: https://github.com/xraypy/xraylarch
+# Following Linux installer instructions: https://github.com/xraypy/xraylarch/blob/master/installers/GetLarch.sh
+name: larch_env
+channels:
+    - conda-forge
+    - defaults
+dependencies:
+    - python==3.11.5
+    - pip  #: because we install pip packages below!
+    - numpy>=1.22
+    - scipy>=1.8
+    - matplotlib>=3.6
+    - scikit-image
+    - scikit-learn
+    - pycifrw
+    - pandas
+    - jupyter
+    - plotly
+    - wxpython>=4.1
+    - fabio
+    - pyfai
+    - pymatgen
+    - mkl_fft
+    - tomopy
+    - pip:
+        - wxmplot
+        - wxutils
+        - lmfit
+        - peakutils
+        - asteval
+        - pyshortcuts
+        - pyepics
+        - epicsapps
+        - psycopg2-binary
+        - git+https://github.com/xraypy/xraylarch.git
