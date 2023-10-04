@@ -187,7 +187,7 @@ def get_tau(counting_time=1, xmax=None, iskip=0, plot=False):
     figs = []
 
     print("-> COPY THE FOLLOWING IN BLISS:")
-    print("--- blisadm@bm16ctrl: beamline_configuration/counters/calc_counters.yml")
+    print("--- blisadm@bm16ctrl: beamline_configuration/counters/fluo_corrections.yml")
 
     for curve in curves:
         x, y, legend, info = curve
