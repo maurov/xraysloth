@@ -35,4 +35,6 @@ dependencies:
         - pyepics
         - epicsapps
         - psycopg2-binary
+        - py3Dmol
+        - mp_api
         - git+https://github.com/xraypy/xraylarch.git

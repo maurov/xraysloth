@@ -119,6 +119,11 @@ npm install -g configurable-http-proxy
 # https://github.com/jupyterlab/jupyterlab-google-drive
 # jupyter labextension install @jupyterlab/google-drive --no-build
 
+# ------------
+# py3Dmol
+# ------------
+#jupyter labextension install jupyterlab_3dmol
+
 # --------------------------------------------------------------------- 
 # Build extensions in one run
 # (must be done to activate extensions since --no-build is used above)
