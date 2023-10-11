@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Conda environment configuration for: https://github.com/xraypy/xraylarch
 # Following Linux installer instructions: https://github.com/xraypy/xraylarch/blob/master/installers/GetLarch.sh
-name: larch_env
+name: xraylarch
 channels:
     - conda-forge
     - defaults
@@ -20,9 +20,11 @@ dependencies:
     - wxpython>=4.1
     - fabio
     - pyfai
+    - silx
     - pymatgen
     - mkl_fft
     - tomopy
+    - openbabel
     - pip:
         - wxmplot
         - wxutils
