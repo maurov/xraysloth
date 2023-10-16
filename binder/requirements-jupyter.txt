@@ -28,7 +28,7 @@ jupyter-book
 #xarray
 git+https://github.com/wholden/jupyter-lmfit.git
 # run postBuild
-### => custom Jupyter environment in jupyter-slurm.esrf.fr
-#batchspawner~=1.1.0
-#jupyterhub~=2.3.1
+### => to use custom Jupyter environment in jupyter-slurm.esrf.fr
+batchspawner~=1.1.0
+jupyterhub~=2.3.1
 #jupyter_server~>2.7.2

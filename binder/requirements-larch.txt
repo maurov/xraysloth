@@ -19,6 +19,8 @@ wxutils>=0.2.4
 wxmplot>=0.9.48
 termcolor
 xraydb>=4.5
-numexpr==2.8.4
+numexpr==2.8.4; python_version < '3.9'
+numexpr>=2.8.7; python_version > '3.8'
+importlib_metadata; python_version < '3.8'
 #xraylarch           #: -> from source (below)
 git+https://github.com/xraypy/xraylarch.git
