@@ -29,13 +29,14 @@ dependencies:
     - cython
     - nodejs>=12.0.0
     - pandoc
-    - numpy>=1.20
-    - scipy>=1.7
-    - matplotlib>=3.5
+    - numpy>=1.22
+    - scipy>=1.8
+    - matplotlib>=3.6
     - plotly
     - scikit-learn>=1.1.1
     #- scikit-learn-intelex  #: not used yet 
     - scikit-image
+    - mkl_fft
     - tomopy
     - opencv
     - sqlalchemy>=1.4
@@ -61,7 +62,7 @@ dependencies:
     - charset-normalizer
     - pycifrw
     - xraylib
-    - silx>=1.0.0
+    - silx>=1.1
     - pymca>=5.6.5
     - py3dmol
     # EXTRA / OPTIONAL / DEPRECATED
@@ -78,7 +79,7 @@ dependencies:
     - pip:
         #- -r ../requirements.txt #: base // INSTALLED HERE VIA CONDA!!!
         - -r requirements-dev.txt #: IDE/dev tools
-        - -r requirements-docs.txt #: to build docs
+        - -r requirements-doc.txt #: to build docs
         - -r requirements-jupyter.txt #: Jupyter
         - -r requirements-nexus.txt #: NeXus
         #- -r requirements-xrt.txt #: XRT (ray tracing)

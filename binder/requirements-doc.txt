@@ -5,9 +5,11 @@ sphinx>=1.8
 pandoc #: this is the Python layer (pandoc installed via conda)
 numpydoc
 recommonmark
-sphinx_rtd_theme
+sphinx-rtd-theme
+sphinx-copybutton
 sphinxcontrib-napoleon
 sphinxcontrib-bibtex
 sphinxcontrib-argdoc
 nbsphinx #: for converting ipynb in documentation
+nbsphinx-link
 #pillow #: For loading images in documentation generation -> conda
