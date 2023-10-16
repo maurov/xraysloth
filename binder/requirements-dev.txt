@@ -21,6 +21,7 @@ pytest         #: test (larch)
 pytest-cov  
 nose           #: test (larch)
 rstcheck
+pdbpp
 twine          #: utility for publishing on PyPI
 
 

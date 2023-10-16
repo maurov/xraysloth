@@ -5,6 +5,7 @@
 ======================================
 
 """
+import copy
 import logging
 _logger = logging.getLogger('sloth.utils.pymca')
 
@@ -168,9 +169,57 @@ def select_curves_by_std(std_frac=None, estart=None, plot=True, m=6):
             plugin.addCurve(x, y, leg, info)
     #return stds2, fig, ax
     
+def dt_corr(signal, tau):
+    """dead time correction"""
+    return signal/(1-tau*signal)
 
+def get_tau(counting_time=1, xmax=None, iskip=0, plot=False):
+    """get tau for dead time correction"""
 
+    if plot:
+        plt.ion()
+        plt.close('all')
 
+    from lmfit.models import LinearModel
+    
+    curves = get_curves()
+    taus = []
+    figs = []
+
+    print("-> COPY THE FOLLOWING IN BLISS:")
+    print("--- blisadm@bm16ctrl: beamline_configuration/counters/fluo_corrections.yml")
+
+    for curve in curves:
+        x, y, legend, info = curve
+
+        detn = legend.split("det")[1].split(" ")[0]
+
+        ct = np.ones_like(y) * counting_time
+
+        if xmax is None:
+            ixmax = len(x)
+        else:
+            ixmax = index_of(x, xmax)
+
+        xtofit = copy.deepcopy(x[iskip:ixmax] / ct[iskip:ixmax])
+        ytofit = copy.deepcopy(x[iskip:ixmax] / y[iskip:ixmax])
+
+        linmod = LinearModel()
+        pars =  linmod.guess(ytofit, x=xtofit)
+        linfit = linmod.fit(ytofit, pars, x=xtofit)
+        if plot:
+            fig = linfit.plot(title=f"det{detn}")
+    
+        tau = linfit.result.params['slope'].value
+        print(f'det{detn}: {tau:.7E}')
+        info["tau"] = tau
+        taus.append(tau)
+        ycorr = dt_corr(y, tau)
+        legcorr = f"{legend}_dtcorr"
+        if plot:
+            plugin.addCurve(x, ycorr, legcorr, info)
+
+    #return taus
 
 
 def getPyMcaMain(fload=None):
