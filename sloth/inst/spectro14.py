@@ -22,6 +22,7 @@ from sloth.utils.bragg import (
     ang2kev,
 )
 
+DIGITS_TOLERANCE = 8  # tolerance digits
 
 def calc_det_dzh(theta):
     """Calculate detector vertical offset of the top raw
@@ -239,17 +240,55 @@ def normalize(vector):
     else:
         return vector / n
 
+def get_normal_plane(vector, w, h, center):
+    w, h = w / 2, h / 2
+    ex = normalize(vector)
+    ez = np.array([0, 0, 1])
+    ey = np.cross(ez, ex)
+    ez = np.cross(ex, ey)
+
+    p0 = ez * h - ey * w
+    p1 = ez * h + ey * w
+    p2 = -p0
+    p3 = -p1
+
+    return [p0 + center, p1 + center, p2 + center, p3 + center]
+
 def get_angle(v1, v2):
     """angle (degrees) between two vectors"""
     n1 = getnorm(v1)
     n2 = getnorm(v2)
     return np.rad2deg(np.arccos(np.dot(v1, v2) / (n1 * n2)))
 
+def direction_to_angles(direction):
+    x, y, z = direction
+    r = getnorm(direction)
+    if r != 0:
+        pitch = -np.rad2deg(np.arcsin(z / r))
+        yaw = np.rad2deg(np.arctan2(y, x))
+    else:
+        pitch = yaw = 0
+
+    return pitch, yaw
+
+
+def bragg_from_vect(incident, normal, miscut=0):
+    beta = np.rad2deg(np.arccos(np.dot(incident, normal)))
+    if normal[2] >= incident[2]:
+        sign = 1
+    else:
+        sign = -1
+    beta = beta * sign
+    return 90 - beta + miscut
+
+
+
 
 class AnalyserBM16:
-    """Base class for a spherical crystal analyser on a Rowland circle for the BM16 spectrometer (a.k.a spectro14)"""
+    """Base class for a spherical crystal analyser on a Rowland circle for the
+    BM16 spectrometer (a.k.a spectro14)"""
     
-    def __init__(self, theta, pos, dz, row=None, beta=8, R=1000, pos_cen=4, sz=500, flag=1):
+    def __init__(self, theta, pos, dz, row=None, beta=8, R=1000, pos_cen=4, sz=500, flag=1, miscut=0):
         """constructor
         
         Parameters
@@ -259,21 +298,20 @@ class AnalyserBM16:
             Bragg angle in degrees
         
         pos : int
-            module position possible (e.g. 1,2,3,4,5,6,7)
-            the central analyser is given by 'pos_cen' variable (below)
+            module position possible (e.g. 1,2,3,4,5,6,7) the central analyser
+            is given by 'pos_cen' variable (below)
 
         dz : float
-            vertical distance from the central row in mm
-            *NOTE* spectro14 +- 82 mm
+            vertical distance from the central row in mm *NOTE* spectro14 +- 82
+            mm
 
         row : string (optional)
-            string identifying the row of analysers
-            dz > 0 => "h", top
-            dz < 0 => "b", bottom
-            dz = 0 => "c", central
+            string identifying the row of analysers dz > 0 => "h", top dz < 0
+            => "b", bottom dz = 0 => "c", central
         
         beta : float (optional)
-            radial spacing between analysers in degrees [default: 8 (spectro14)]
+            radial spacing between analysers in degrees [default: 8
+            (spectro14)]
                        
         R : float
             diameter of the Rowland circle in mm [default: 1000]
@@ -282,7 +320,8 @@ class AnalyserBM16:
             position of the central analyser, that is at beta = 0 [default: 4]
             
         sz : float
-            sample offset in Z, that is, sample position is at (0, 0, sz) [default: 500]
+            sample offset in Z, that is, sample position is at (0, 0, sz)
+            [default: 500]
             
         flag : int
             to use (1) or not (0) the given analyses [default: 1]
@@ -290,7 +329,9 @@ class AnalyserBM16:
         Notes
         -----
         
-        - [Reference system] Here a global XYZ reference system is used, that is, the ESRF XYZ starndard reference system (right hand, X along the beam) rotated by -90 de counterclockwise around Z
+        - [Reference system] Here a global XYZ reference system is used, that
+          is, the ESRF XYZ starndard reference system (right hand, X along the
+          beam) rotated by -90 de counterclockwise around Z
             
         """
         self.pos_cen = pos_cen
@@ -305,9 +346,11 @@ class AnalyserBM16:
         assert isinstance(row, str) 
         self.row = row
         self.sz = sz
+        self.referential_origin = np.array([0, 0, self.sz])
         self.theta = theta
         self.beta = beta
         self.R = R
+        self.miscut = miscut
         self.flag = flag
         self._init_position = True
         self.info = {}
@@ -367,7 +410,7 @@ class AnalyserBM16:
     @property
     def virt_cen_pos(self):
         """position of the central analyser of the virtual row"""
-        return np.array([self.R * np.sin(self._rtheta)**2, 0 , self.R * np.sin(self._rtheta) * np.cos(self._rtheta)])
+        return np.array([self.R * np.sin(self._rtheta)**2, 0, self.R * np.sin(self._rtheta) * np.cos(self._rtheta)])
 
     @property
     def x0(self):
@@ -403,7 +446,48 @@ class AnalyserBM16:
         self._init_position = False
         assert (isinstance(value, np.ndarray) and len(value)==3), f"{value} should be a numpy array of 3 elements"
         self._pos = value
-    
+
+
+    @property
+    def direction(self):
+        """Compute the direction vector (normalized) based on the current pitch and yaw angles.
+        If pitch = yaw = 0 the direction vector is colinear to the x axis of this positioner referential.
+        """
+
+        # start with a default direction along ex and apply pitch and yaw rotations
+        v = numpy.array([1, 0, 0])
+
+        pit = numpy.deg2rad(self.pitch)
+        yaw = numpy.deg2rad(self.yaw)
+
+        cp = numpy.cos(pit)
+        sp = numpy.sin(pit)
+        cy = numpy.cos(yaw)
+        sy = numpy.sin(yaw)
+
+        # Rx = numpy. array([[1, 0, 0], [ 0, cr, -sr], [0, sr, cr]]) # rot mat around ex (roll)
+        Ry = numpy.array(
+            [[cp, 0, sp], [0, 1, 0], [-sp, 0, cp]]
+        )  # rot mat around ey (pitch)
+        Rz = numpy.array(
+            [[cy, -sy, 0], [sy, cy, 0], [0, 0, 1]]
+        )  # rot mat around ez (yaw)
+
+        v = Rz @ Ry @ v  # Rz @ Ry @ Rx @ v  # apply rotations in the order:  Z->Y->X
+
+        return v
+
+    @property
+    def incident(self):
+        """Compute the normalized direction of the incident ray"""
+        return normalize(self.position - self.referential_origin) * -1
+
+    @property
+    def geo_bragg(self):
+        return round(
+            bragg_from_vect(self.incident, self.normal, self.miscut), DIGITS_TOLERANCE
+        )
+
     @property
     def x(self):
         return self.position[0]
@@ -470,10 +554,11 @@ class AnalyserBM16:
     
     @property
     def yaw(self):
-        return self.beta
+        return 0
     
     @property
     def roll(self):
+        """rotation around analyzer normal"""
         raise NotImplementedError
 
     @property
