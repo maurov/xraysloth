@@ -10,12 +10,20 @@ Howtos
 
 - Add upstream tracking of a forked project::
 
-    git remote add --track master upstream https://forked_project.git
+    git remote add --track master upstream https://path/to/forked_repo.git
+    # This is equivalent to:
+    git remote add upstream https://path/to/forked_repo.git  #: adds "upstream" to list of remotes
+    git fetch upstream
+    git checkout --track upstream/master  #: instead of master, can be any other branch
 
 - Fetch a specific branch from a source (here the case of `upstream`)::
 
     git remote -v  # shows all remote sources
     git fetch upstream remote_branch_name:local_brach_name
+
+- `The same thing as before, but without adding to the remote list <https://stackoverflow.com/questions/5884784/how-to-pull-remote-branch-from-somebody-elses-repo>`_:
+
+    git fetch git://path/to/coworkers/repo.git theirbranch:ournameforbranch
 
 - Delete a branch::
 
