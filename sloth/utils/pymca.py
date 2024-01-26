@@ -221,6 +221,27 @@ def get_tau(counting_time=1, xmax=None, iskip=0, plot=False):
 
     #return taus
 
+def apply_dt_corr(tau: float, remove: bool = False) -> None:
+    """apply dead time correction to the current curves
+    
+    Parameters
+    ----------
+
+    tau : float
+        time constant
+    remove : boolean
+        if True, removes the initially plotted curves
+    """
+    curves = get_curves(remove=remove)
+
+    for curve in curves:
+        x, y, legend, info = curve
+        ycorr = dt_corr(y, tau)
+        legcorr = f"{legend}_dtcorr"
+        info["tau"] = tau
+        plugin.addCurve(x, ycorr, legcorr, info)
+
+
 
 def getPyMcaMain(fload=None):
     """show PyMcaMain from a shell (e.g. IPython) and return its obj"""
