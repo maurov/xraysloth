@@ -42,6 +42,9 @@ def get_curves(remove=False):
         to remove the curves from the plot (in case you want to push back something else)
     """
     curves = plugin.getAllCurves()
+    if len(curves) == 0:
+        _logger.error("SOMETHING WRONG WITH THE INTERACTIVE PLUGIN: close and reopen")
+        return []
     if remove:
         for (x, y, leg, info) in curves:
             plugin.removeCurve(leg)
@@ -146,7 +149,7 @@ def select_curves_by_std(std_frac=None, estart=None, plot=True, m=6):
         fig, ax = plt.subplots(num="stds")
         ax.set_title("standard deviations of curves")
         ax.plot(stds1, ls="--", marker="o", color="blue", fillstyle='none', label="all")
-        ax.plot(stds2, ls=" ", marker="o", color="green", label=f"selected")
+        ax.plot(stds2, ls=" ", marker="o", color="green", label="selected")
         ax.hlines(mstds0, 0, len(curves), colors=['orange'], ls='--', label=f"median: {mstds0:.3E}", linewidth=1)
         if std_frac is not None:
             ax.set_ylim(stds0.min()*0.95, max_std*1.05)
@@ -159,7 +162,7 @@ def select_curves_by_std(std_frac=None, estart=None, plot=True, m=6):
         ax.grid(True, axis="both", which="both", linewidth=0.5)
     #if std_frac is not None:
     #std_level = (np.std(stds) * std_frac)
-    print(f"---> selected curves:")
+    print("---> selected curves:")
     for icurve, (x, y, leg, info) in enumerate(curves):
         std = info["std"]
         #print(f"{icurve}, {len(curve)}, {stds2.mask[icurve]}, {std}")
