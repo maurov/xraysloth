@@ -7,7 +7,7 @@ Currently applied to BLISS data collected at ESRF/BM16 beamline
 
 __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@esrf.fr"
-__version__ = "2024.1"
+__version__ = "24.2.5"
 __license__ = "MIT"
 __copyright__ = "2024, CNRS"
 
@@ -23,7 +23,8 @@ from IPython.display import display
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 
-from larch.io.specfile_reader import DataSourceSpecH5, __version__, _str2rng
+from larch.io.specfile_reader import DataSourceSpecH5, _str2rng
+from larch.io.specfile_reader import __version__ as ds_version
 from larch.plot.plotly_xafsplots import PlotlyFigure
 
 from larch.math.deglitch import remove_spikes_medfilt1d
@@ -36,9 +37,10 @@ from larch.xafs.rebin_xafs import rebin_xafs
 from larch.io.mergegroups import merge_arrays_1d
 
 _logger = logging.getLogger("WKFL_BLISS2LARCH_FLUO")
-_logger.setLevel(logging.INFO)  # adjust logger level .INFO, .WARNING, .ERROR
+_logger.setLevel(logging.DEBUG)  # adjust logger level .DEBUG, .INFO, .WARNING, .ERROR
 
-_logger.debug(f"using DataSourceSpecH5 version {__version__}")
+_logger.debug(f"DataSourceSpecH5 version: {ds_version}")
+_logger.debug(f"workflow version: {__version__}")
 
 
 # colors
@@ -69,6 +71,24 @@ class ExpCounters(NamedTuple):
     mu: list
 
 
+# define counters names
+DEFAULT_CNTS = ExpCounters(
+    ene="energy_enc",
+    ix=["p201_1_bkg_sub", "p201_3_bkg_sub", "p201_5_bkg_sub"],
+    fluo_roi1=[
+        f"xglab_det{ich}_roi1" for ich in range(0, 16)
+    ],  # all detector names for ROI1
+    fluo_corr=[
+        f"roi1_corr_dtc_det{ich}" for ich in range(0, 16)
+    ],  # all detector names (DT corrected)
+    fluo_time=[
+        f"xglab_det{ich}_elapsed_time" for ich in range(0, 16)
+    ],  # elapsed time, which is different for the spikes
+    time="sec",  # "musst_timer"
+    mu=["muT1", "muT2", "muF1_corr_dtc"],
+)
+
+
 class ExpDataset(NamedTuple):
     sample_name: str
     name: str
@@ -93,6 +113,37 @@ class EneScan(NamedTuple):
     comment: str
 
 
+def search_samples(datadir):
+    """search for samples names in `datadir/RAW_DATA`
+
+    - file search string is: f"{datadir}/RAW_DATA/*"
+    """
+    search_str = f"{datadir}/RAW_DATA/*"
+    fnames = glob.glob(search_str)
+    fnames.sort(key=os.path.getctime)  ##sort by creation time
+    samps = []
+    isamp = 0
+    infosamps = []
+    for fname in fnames:
+        samp = fname.split(os.sep)[-1]
+        if "rack" in samp.lower():
+            continue
+        if "align" in samp.lower():
+            continue
+        if "bl_" in samp.lower():
+            continue
+        if ".h5" in samp.lower():
+            continue
+        samps.append(samp)
+        infosamps.append(f"- {isamp}: {samp}")
+        isamp += 1
+    outlist = [f"Found {len(samps)} samples:"]
+    outlist.extend(infosamps)
+    _logger.info("\n".join(outlist))
+
+    return samps
+
+
 def search_data(sample_name, datadir):
     """search for HDF5 files and enetraj scans, grouped by datasets
 
@@ -102,6 +153,7 @@ def search_data(sample_name, datadir):
     """
     search_str = f"{datadir}/RAW_DATA/{sample_name}/**/*.h5"
     fnames = glob.glob(search_str)
+    fnames.sort(key=os.path.getctime)  ##sort by creation time
 
     datasets = []
     outinfo = ["idx: [nscans] dataset name"]
@@ -157,7 +209,9 @@ def search_data(sample_name, datadir):
     return datasets
 
 
-def load_data(samp, cnts, use_fluo_corr=True, filter_spikes=False, wrong_scans=[], **kws):
+def load_data(
+    samp, cnts, use_fluo_corr=True, filter_spikes=False, wrong_scans=[], **kws
+):
     """load fluorescence data into ExpSample
 
     Parameters
@@ -195,7 +249,7 @@ def load_data(samp, cnts, use_fluo_corr=True, filter_spikes=False, wrong_scans=[
 
     for iscan, scan in enumerate(samp.scans):
         _logger.debug(f"{samp.name}: scan {scan}")
-        #eliminate problematic scans
+        # eliminate problematic scans
         if scan in wrong_scans:
             samp.scans_flag[iscan] = 0
             continue
@@ -274,8 +328,8 @@ def load_data(samp, cnts, use_fluo_corr=True, filter_spikes=False, wrong_scans=[
             samp.fluo_flag[scan].append(1)
 
         # load mu data
-        #data_mu = []
-        #for isig, sig in enumerate(cnts.mu):
+        # data_mu = []
+        # for isig, sig in enumerate(cnts.mu):
         #    ysig = ds.get_array(sig)
         #    if not ysig.shape == ene.shape:
         #        ysig = ysig[ptsdiff:]
@@ -303,7 +357,7 @@ def load_data(samp, cnts, use_fluo_corr=True, filter_spikes=False, wrong_scans=[
         #    pre_edge(g)
         #    rebin_xafs(g)
         #    data_mu.append(g)
-        #samp.scans_mu[iscan].append(data_mu)
+        # samp.scans_mu[iscan].append(data_mu)
 
         # load ix data
         # samp.data_ix[scan] = []
@@ -389,11 +443,11 @@ def set_bad_channels(samp, bad_channels, scan=None):
 
     if scan is None:
         allscans = []
-        #do not consider the problematic scans, identified as wrong during loading
-        for iscn,scn in enumerate(samp.scans):
+        # do not consider the problematic scans, identified as wrong during loading
+        for iscn, scn in enumerate(samp.scans):
             if samp.scans_flag[iscn]:
-                 allscans.append(scn)
-        #allscans = samp.scans
+                allscans.append(scn)
+        # allscans = samp.scans
     else:
         assert scan in samp.scans, f"available scans: {samp.scans}"
         allscans = [scan]
@@ -430,7 +484,7 @@ def set_bad_scans(samp, bad_scans):
     _logger.info(f"flagged {len(scans_flag0)} bad scans: {scans_flag0}")
 
 
-def merge_data(samp):
+def merge_data(samp, method="sum"):
     """merge data"""
 
     scans = samp.scans
@@ -452,9 +506,9 @@ def merge_data(samp):
             curves_to_mrg.append(curve)
 
         nmrg = len(curves_to_mrg)
-        ene, ymrg = merge_arrays_1d(curves_to_mrg, method="sum", data_fmt="curves")
+        ene, ymrg = merge_arrays_1d(curves_to_mrg, method=method, data_fmt="curves")
 
-        gname = f"{samp.name}_scan{scn}_sum{nmrg}"
+        gname = f"{samp.name}_scan{scn}_{method}{nmrg}"
         g = Group(
             id=gname,
             name=gname,
@@ -516,19 +570,20 @@ def save_data(samp, datadir):
 
     apj.info["scans"] = samp.scans
     apj.info["cnts"] = []
+    outgrps = ["Groups:"]
 
     for iscn, (grp, flag) in enumerate(zip(samp.scans_mrg, samp.scans_flag)):
         if flag == 0:
             continue
-        
-        #apj.add_group(grp)
+
+        # apj.add_group(grp)
         g = grp.rebinned
-        g.id=f"{grp.id}_rebin"
-        print(g.id)
+        g.id = f"{grp.id}_rebin"
         apj.add_group(g)
+        outgrps.append(g.id)
 
-
-    #for mu in samp.data_mu:
+    # for mu in samp.data_mu:
 
     apj.save()
     _logger.info(f"data saved in {fnameout}")
+    _logger.info("\n".join(outgrps))
