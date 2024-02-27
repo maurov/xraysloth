@@ -7,14 +7,14 @@ Currently applied to BLISS data collected at ESRF/BM16 beamline
 
 __author__ = "Mauro Rovezzi"
 __email__ = "mauro.rovezzi@esrf.fr"
-__version__ = "24.2.5"
+__version__ = "2024.2.5"
 __license__ = "MIT"
 __copyright__ = "2024, CNRS"
 
 import os
 import glob
 import numpy as np
-import logging
+#import logging
 import palettable
 from typing import NamedTuple
 
@@ -22,6 +22,8 @@ from IPython.display import display
 
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
+
+import larch.utils.logging as logging
 
 from larch.io.specfile_reader import DataSourceSpecH5, _str2rng
 from larch.io.specfile_reader import __version__ as ds_version
@@ -36,8 +38,8 @@ from larch.xafs import pre_edge
 from larch.xafs.rebin_xafs import rebin_xafs
 from larch.io.mergegroups import merge_arrays_1d
 
-_logger = logging.getLogger("WKFL_BLISS2LARCH_FLUO")
-_logger.setLevel(logging.DEBUG)  # adjust logger level .DEBUG, .INFO, .WARNING, .ERROR
+_logger = logging.getLogger("WKFL_FLUO")
+_logger.setLevel("INFO")  # adjust logger level .DEBUG, .INFO, .WARNING, .ERROR
 
 _logger.debug(f"DataSourceSpecH5 version: {ds_version}")
 _logger.debug(f"workflow version: {__version__}")
@@ -255,15 +257,18 @@ def load_data(
             continue
 
         ds.set_scan(scan)
-        ene = ds.get_array(cnts.ene) * 1000  # in eV
-        i0 = ds.get_array(cnts.ix[0])
-        fluo0 = ds.get_array(cnts_fluo[0])
-        stime = ds.get_array(cnts.time)
+        try:
+            ene = ds.get_array(cnts.ene) * 1000  # in eV
+            i0 = ds.get_array(cnts.ix[0])
+            fluo0 = ds.get_array(cnts_fluo[0])
+            stime = ds.get_array(cnts.time)
+        except ValueError as _err:
+            _logger.warning(f"{samp.name}/{scan}: not loaded -> probably wrong/interrupted scan")
+            continue
 
         _logger.debug(
             f"{cnts.ene} [{ene.shape}], {cnts.ix[0]} [{i0.shape}], {cnts_fluo[0]} [{fluo0.shape}]"
         )
-        print(ene.shape, i0.shape)
         assert (
             ene.shape == i0.shape
         ), f"{samp.name}/{scan}: array shape mismatch ene/i0/i1/i2"
@@ -273,7 +278,7 @@ def load_data(
         ptsfluo = fluo0.shape[0]
         ptsdiff = ptsene - ptsfluo
         if ptsdiff:
-            _logger.warning(
+            _logger.info(
                 f"{samp.name}/{scan}: ene/fluo pts mismatch -> skipping {ptsdiff} initial points"
             )
             ene = ene[ptsdiff:]
@@ -561,7 +566,7 @@ def save_data(samp, datadir):
     """save all data to an Athena project file"""
 
     sx_logger = logging.getLogger("silx")
-    sx_logger.setLevel(logging.ERROR)
+    sx_logger.setLevel("ERROR")
 
     fnameout = os.path.join(datadir, "PROCESSED_DATA", f"{samp.name}.prj")
 
