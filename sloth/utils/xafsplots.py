@@ -734,7 +734,7 @@ def extend_plotrange(x, y, xmin=None, xmax=None, extend=0.10):
 
 def plot_prepeaks_baseline(dgroup, subtract_baseline=False, show_fitrange=True,
                            show_peakrange=True, win=1, _larch=None, **kws):
-    """Plot pre-edge peak baseline fit, as from `pre_edge_baseline` or XAS Viewer
+    """Plot pre-edge peak baseline fit, as from `pre_edge_baseline` or Larix
 
     dgroup must have a 'prepeaks' attribute
     """
@@ -787,7 +787,7 @@ def plot_prepeaks_baseline(dgroup, subtract_baseline=False, show_fitrange=True,
 
 def plot_prepeaks_fit(dgroup, nfit=0, show_init=False, subtract_baseline=False,
                       show_residual=False, win=1, _larch=None):
-    """plot pre-edge peak fit, as from XAS Viewer
+    """plot pre-edge peak fit, as from Larix
 
     dgroup must have a 'peakfit_history' attribute
     """
