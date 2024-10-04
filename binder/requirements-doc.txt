@@ -6,9 +6,18 @@ nbsphinx-link
 sphinx>=1.8
 sphinx-copybutton
 sphinx-rtd-theme
+pydata-sphinx-theme
+myst-parser #to mix rst with md
 sphinxcontrib-napoleon
 sphinxcontrib-bibtex
 sphinxcontrib-argdoc
+# esbonio language server
+pyspellchecker
+cattrs
+lsprotocol
+pygls
+esbonio
+# /esbonio language server
 #pandoc #: this is the Python layer (pandoc installed via conda)
 #numpydoc
 #recommonmark
