@@ -12,4 +12,5 @@ sphinxcontrib-bibtex
 sphinxcontrib-argdoc
 nbsphinx #: for converting ipynb in documentation
 nbsphinx-link
+myst_parser
 #pillow #: For loading images in documentation generation -> conda
