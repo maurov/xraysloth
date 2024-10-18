@@ -1,16 +1,24 @@
 # -*- coding: utf-8 -*-
 # pip requirements file for building sloth documentation
 #-r requirements.txt
+nbsphinx #: for converting ipynb in documentation
+nbsphinx-link
 sphinx>=1.8
-pandoc #: this is the Python layer (pandoc installed via conda)
-numpydoc
-recommonmark
-sphinx-rtd-theme
 sphinx-copybutton
+sphinx-rtd-theme
+pydata-sphinx-theme
+myst-parser #to mix rst with md
 sphinxcontrib-napoleon
 sphinxcontrib-bibtex
 sphinxcontrib-argdoc
-nbsphinx #: for converting ipynb in documentation
-nbsphinx-link
-myst_parser
+# esbonio language server
+pyspellchecker
+cattrs
+lsprotocol
+pygls
+esbonio
+# /esbonio language server
+#pandoc #: this is the Python layer (pandoc installed via conda)
+#numpydoc
+#recommonmark
 #pillow #: For loading images in documentation generation -> conda
