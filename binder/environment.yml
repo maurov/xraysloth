@@ -71,20 +71,20 @@ dependencies:
     #- spyder-kernels
     #- pyviz::holoviz  # conda conflicts!!! :TODO:
     #- rtree  #: -> `requirements-xrt.txt` (pip fails for some unknown reason)
-    #- conda-forge:dask        #: for xarray (in requirements-jupyter.txt)
-    #- conda-forge:netCDF4     #: for xarray (in requirements-jupyter.txt)
+    #- conda-forge:dask  #: for xarray (in requirements-jupyter.txt)
+    #- conda-forge:netCDF4  #: for xarray (in requirements-jupyter.txt)
     #- conda-forge:bottleneck  #: for xarray (in requirements-jupyter.txt)
     - pip:
-        #- -r ../requirements.txt #: base // INSTALLED HERE VIA CONDA!!!
-        - -r requirements-dev.txt #: IDE/dev tools
-        - -r requirements-doc.txt #: to build docs
-        - -r requirements-jupyter.txt #: Jupyter
-        - -r requirements-nexus.txt #: NeXus
-        #- -r requirements-xrt.txt #: XRT (ray tracing)
-        #- -r requirements-oasys.txt #: SHADOW & OASYS
-        - -r requirements-larch.txt #: Larch
-        - -r requirements-ewoks.txt #: Ewoks & Orange
+        #- -r ../requirements.txt  #: base // INSTALLED HERE VIA CONDA!!!
+        - -r requirements-dev.txt  #: IDE/dev tools
+        - -r requirements-doc.txt  #: to build docs
+        - -r requirements-jupyter.txt  #: Jupyter
+        - -r requirements-nexus.txt  #: NeXus
+        #- -r requirements-xrt.txt  #: XRT (ray tracing)
+        #- -r requirements-oasys.txt  #: SHADOW & OASYS
+        - -r requirements-larch.txt  #: Larch
+        - -r requirements-ewoks.txt  #: Ewoks & Orange
         #- -e git+https://github.com/maurov/xraysloth.git  #: Sloth dev mode
-        #- -e ../                        #: Sloth dev mode (local)
+        #- -e ../  #: Sloth dev mode (local)
 
 #: -> run 'postBuild' script to complete install of Jupyter extensions (NOTE: automatically run on binderhub)
