@@ -10,17 +10,18 @@
 #tomopy              #: -> conda
 #sqlalchemy          #: -> conda 
 #pyepics             #: -> skipped (extra)
-lmfit>=1.2.0
+lmfit>=1.2.2
 peakutils
-asteval>=0.9.28
-uncertainties>=3.1
-pyshortcuts>=1.7.2
-wxutils>=0.2.4
-wxmplot>=0.9.48
+asteval>=1.0
+uncertainties>=3.2.1
+pyshortcuts>=1.9.0
+wxutils>=0.3.0
+wxmplot>=0.9.57
 termcolor
 xraydb>=4.5
-numexpr==2.8.4; python_version < '3.9'
-numexpr>=2.8.7; python_version > '3.8'
-importlib_metadata; python_version < '3.8'
+numexpr>=2.8.7
+tabulate
+mp_api
 #xraylarch           #: -> from source (below)
 git+https://github.com/xraypy/xraylarch.git
+git+https://github.com/xraypy/larixite.git

@@ -1,0 +1,11 @@
+# -*- coding: utf-8 -*-
+# pip requirements file for building sloth environment
+# EWOKS
+orange3
+orange-canvas-core
+orange-widget-base
+ewokscore
+ewoksorange
+ewoksdask
+ewoksppf
+#ewoksweb

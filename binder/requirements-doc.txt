@@ -1,24 +1,24 @@
 # -*- coding: utf-8 -*-
 # pip requirements file for building sloth documentation
 #-r requirements.txt
-nbsphinx #: for converting ipynb in documentation
-nbsphinx-link
-sphinx>=1.8
+sphinx>=5
+sphinx-tabs
+sphinx-toolbox
 sphinx-copybutton
 sphinx-rtd-theme
+sphinx-autodoc-typehints
 pydata-sphinx-theme
-myst-parser #to mix rst with md
+myst-parser  #: to mix rst with md
 sphinxcontrib-napoleon
 sphinxcontrib-bibtex
 sphinxcontrib-argdoc
-# esbonio language server
-pyspellchecker
-cattrs
-lsprotocol
-pygls
-esbonio
-# /esbonio language server
+sphinxcontrib-bibtex
+jupyter-book
+numpydoc
+pycairo; platform_system=="Windows"
+nbsphinx #: for converting ipynb in documentation
+nbsphinx-link
+nbconvert[webpdf] #: to use Pyppeteer instead of Xetex for PDF conversion
 #pandoc #: this is the Python layer (pandoc installed via conda)
-#numpydoc
 #recommonmark
 #pillow #: For loading images in documentation generation -> conda

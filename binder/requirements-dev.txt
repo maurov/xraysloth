@@ -4,28 +4,36 @@
 #: [comparison](https://realpython.com/python-code-quality/)
 #: [full list](https://github.com/vintasoftware/python-linters-and-code-analysis)
 #-r requirements.txt
-build          #: A simple, correct Python build frontend.
-twine          #: utility for publishing on PyPI
-pytest         #: pytest
-pytest-cov     #: plugin to produce coverage reports
-ruff           #: linter and formatter (faster than others!)
-pdbpp          #: pdb++, a drop-in replacement for pdb
+build  #: A simple, correct Python build frontend.
+pre-commit
+twine  #: utility for publishing on PyPI
+pytest  #: pytest
+pytest-cov  #: plugin to produce coverage reports
+coverage  #: for test coverage in run_test.py
+ruff  #: linter and formatter (faster than others!)
+black[jupyter]>=22.3  #: formatter (preferred over: yapf and autopep8)
+flake8>=4  #: linter (wrapper on top of +pyflakes, +pycodestyle and +mccabe)
+isort>=5.10
+pdbpp   #: pdb++, a drop-in replacement for pdb
+doc8   #: style checker for rst
+rstcheck
+lxml
+#<esbonio language server>
+pyspellchecker
+cattrs
+lsprotocol
+pygls
+esbonio
+#</esbonio language server>
 
 ### DEPRECATED ###
 #rope           #: completions and renaming
 #pyflakes       #: linter (used by flake8, faster than pylint)
 #mccabe         #: linter (used by flake8)
 #pycodestyle    #: linter (used by flake8, for style checking)
-#flake8         #: linter (wrapper on top of +pyflakes, +pycodestyle and +mccabe)
 #pydocstyle     #: linter (for docstring style checking)
-#black[jupyter] #: formatter (preferred over: yapf and autopep8)
 #wheel          #: to build wheels
-#lxml           #: (silx-dev) For test coverage in run_test.py
-#coverage       #: (silx-dev) For test coverage in run_test.py
-#doc8           #: style checker for rst
 #nose           #: test (larch)
-#rstcheck
-
 
 #DEVEL/EVALUATION
 #python-language-server

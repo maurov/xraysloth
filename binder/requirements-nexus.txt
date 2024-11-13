@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 #: pip requiremets file for NeXus
 #-r requirements.txt
+#pymca>=5.5.4  #: -> conda
 pyresttable
 spec2nexus
 nexusformat
 nexpy
-#pymca>=5.5.4  #: -> conda
+nyaml
+#h5glance
+#h5web
+#h5netcdf
+#xarray

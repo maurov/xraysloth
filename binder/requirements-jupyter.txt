@@ -3,39 +3,36 @@
 # Minimum requirements:
 #   conda install nodejs
 #   pip install -r ../requirements.txt
-# compatibility with 'Conda - October 2023` at jupyter-slurm.esrf.fr
 # https://confluence.esrf.fr/display/DAUWK/Jupyter+at+ESRF
-ipympl>=0.9.3
 #matplotlib==3.8.0  #: -> conda
+#bokeh==3.3.0  #: -> conda
+#plotly>=5.8.0  #: -> conda
+jupyter_core>=5.0
+jupyter_client
+jupyter_server
+jupyter_bokeh>=3.0.7
+#
+ipympl>=0.9.3
 ipyvolume>=0.6.3
 ipywidgets>=8.1.1  #: in each kernel’s environment that will use ipywidgets
-jupyter_bokeh>=3.0.7
-#bokeh==3.3.0  #: -> conda
-jupyterlab-h5web>=8.0.0
 k3d>=2.16.0
-#
 ipython>=7.16.3
 ipykernel>=5.2
+ipytree
+#
 jupyterlab>=1.0
 jupyterlab_server
+jupyterlab-h5web>=8.0.0
+### => to use custom Jupyter environment in jupyter-slurm.esrf.fr
+batchspawner~=1.3.0
+jupyterhub~=4.1.5
+#
 jupytext
 beautifulsoup4
 widgetsnbextension>=3.5.0  #: in the environment containing the Jupyter Notebook server
 notebook>=5.3
-nbsphinx
-nbconvert[webpdf] #: to use Pyppeteer instead of Xetex for PDF conversion
-ipytree
+nbformat
 seaborn
-#plotly>=5.8.0  #: -> conda
 kaleido  #: Static Image Export for plotly
-jupyter-book
-#h5glance
-#h5web
-#h5netcdf
-#xarray
-git+https://github.com/wholden/jupyter-lmfit.git
 # run postBuild
-### => to use custom Jupyter environment in jupyter-slurm.esrf.fr
-batchspawner~=1.3.0
-jupyterhub~=4.1.5
-#jupyter_server~>2.7.2
+git+https://github.com/wholden/jupyter-lmfit.git
