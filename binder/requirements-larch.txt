@@ -25,3 +25,4 @@ mp_api
 #xraylarch           #: -> from source (below)
 git+https://github.com/xraypy/xraylarch.git
 git+https://github.com/xraypy/larixite.git
+git+https://gitlab.esrf.fr/F-CRG/fames/famewoks.git
