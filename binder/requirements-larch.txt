@@ -15,8 +15,8 @@ peakutils
 asteval>=1.0
 uncertainties>=3.2.1
 pyshortcuts>=1.9.0
-wxutils>=0.3.0
-wxmplot>=0.9.57
+wxutils>=0.3.4
+wxmplot>=2025.1.1
 termcolor
 xraydb>=4.5
 numexpr>=2.8.7
