@@ -22,6 +22,7 @@ xraydb>=4.5
 numexpr>=2.8.7
 tabulate
 mp_api
+darkdetect
 #xraylarch           #: -> from source (below)
 git+https://github.com/xraypy/xraylarch.git
 git+https://github.com/xraypy/larixite.git
