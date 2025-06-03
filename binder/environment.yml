@@ -17,7 +17,7 @@
 # - OASYS
 # - GL/CL
 # - XRT
-name: sloth2502
+name: sloth2506
 channels:
     - conda-forge
     - nodefaults
@@ -27,9 +27,9 @@ dependencies:
     - cython
     - nodejs>=12.0.0
     - pandoc
-    - numpy>=1.23,<2
-    - scipy>=1.8
-    - matplotlib>=3.6
+    - numpy>=1.23
+    - scipy>=1.12
+    - matplotlib>=3.8
     - bokeh
     - plotly
     - scikit-learn>=1.1.1
@@ -55,7 +55,7 @@ dependencies:
     - openpyxl
     - pint
     - mendeleev
-    - pymatgen>=2024.9.10
+    - pymatgen>=2024.10.22
     - pillow>=9.4.0
     - pycifrw
     - xraylib

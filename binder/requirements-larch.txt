@@ -10,19 +10,20 @@
 #tomopy              #: -> conda
 #sqlalchemy          #: -> conda 
 #pyepics             #: -> skipped (extra)
-lmfit>=1.2.2
+lmfit>=1.3.1
 peakutils
-asteval>=1.0
+asteval>=1.0.4
 uncertainties>=3.2.1
-pyshortcuts>=1.9.0
+pyshortcuts>=1.9.5
 wxutils>=0.3.4
 wxmplot>=2025.1.1
 termcolor
-xraydb>=4.5
+xraydb>=4.5.6
 numexpr>=2.8.7
 tabulate
 mp_api
 darkdetect
+crystal-toolkit==2025.1.24rc0
 #xraylarch           #: -> from source (below)
 git+https://github.com/xraypy/xraylarch.git
 git+https://github.com/xraypy/larixite.git
