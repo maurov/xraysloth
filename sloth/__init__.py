@@ -20,7 +20,7 @@ warnings.filterwarnings("ignore", message="numpy.dtype size changed")
 warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
 
 __author__ = "Mauro Rovezzi"
-__version__ = "2022.12"
+__version__ = "25.1.0"
 
 _libDir = os.path.dirname(os.path.realpath(__file__))
 _resourcesPath = os.path.join(_libDir, "resources")

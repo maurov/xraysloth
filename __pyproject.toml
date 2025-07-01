@@ -1,0 +1,66 @@
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "sloth"
+description = "slowly evolving utilies for x-ray spectroscopy data analysis"
+authors = [{ name = "Mauro Rovezzi", email = "mauro.rovezzi@esrf.fr" }]
+license = { text = "LICENSE" }
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GPL License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+]
+requires-python = ">=3.12"
+dependencies = ["xraylarch"]
+dynamic = ["version"]
+
+[project.readme]
+file = "README.rst"
+content-type = "text/x-rst"
+
+[project.urls]
+Homepage = "https://https://github.com/maurov/xraysloth"
+Source = "https://github.com/maurov/xraysloth"
+Documentation = "https://xraysloth.readthedocs.io/"
+Tracker = "https://github.com/maurov/xraysloth/issues"
+
+[project.optional-dependencies]
+dev = ["build", "twine", "ruff", "pytest", "pytest-cov"]
+doc = [
+    "ipympl",
+    "ipykernel",
+    "nbsphinx",
+    "nbsphinx-link",
+    "sphinx",
+    "sphinx-copybutton",
+    #"sphinx-rtd-theme",
+    "pydata-sphinx-theme",
+    "myst-parser",
+]
+all = ["sloth[dev,doc]"]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+license-files = ["LICENSE"]
+include-package-data = false
+
+[tool.setuptools.packages.find]
+where = ["sloth"]
+namespaces = false
+
+[tool.setuptools.dynamic]
+version = { attr = "sloth.__version__" }
+
+[tool.pyright]
+typeCheckingMode = "strict"
+reportMissingImports = false
+reportMissingTypeStubs = false
+reportPrivateUsage = false
+reportUnknownArgumentType = false
+reportUnknownLambdaType = false
+reportUnknownMemberType = false
+reportUnknownParameterType = false
+reportUnknownVariableType = false
