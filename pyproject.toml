@@ -4,9 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sloth"
-description = "slowly evolving utilities for X-ray spectroscopy data analysis""
+description = "slowly evolving utilities for X-ray spectroscopy data analysis"
 authors = [{ name = "Mauro Rovezzi", email = "mauro.rovezzi@esrf.fr" }]
-license = { text = "LICENSE" }
+license = { text = "GPL" }
 classifiers = [
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: GPL License",
@@ -14,7 +14,11 @@ classifiers = [
     "Programming Language :: Python :: 3 :: Only",
 ]
 requires-python = ">=3.12"
-dependencies = ["xraylarch", "palettable"]
+dependencies = [
+    "xraylarch",
+    "pymca",
+    "xraylib",
+    "palettable"]
 dynamic = ["version"]
 
 [project.readme]
