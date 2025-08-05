@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
 #: pip requirements file for [XRT](https://xrt.readthedocs.io/)
-#rtree >=0.8.3  #: -> conda
-#spyder>=4.0.0 #: -> conda
-xrt>=1.3.3
+#rtree >= 0.8.3  #: -> conda
+#spyder >= 4.0.0 #: -> conda
+xrt >= 1.3.3

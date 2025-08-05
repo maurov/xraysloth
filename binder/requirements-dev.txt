@@ -11,9 +11,9 @@ pytest  #: pytest
 pytest-cov  #: plugin to produce coverage reports
 coverage  #: for test coverage in run_test.py
 ruff  #: linter and formatter (faster than others!)
-black[jupyter]>=22.3  #: formatter (preferred over: yapf and autopep8)
-flake8>=4  #: linter (wrapper on top of +pyflakes, +pycodestyle and +mccabe)
-isort>=5.10
+black[jupyter] >= 22.3  #: formatter (preferred over: yapf and autopep8)
+flake8 >= 4  #: linter (wrapper on top of +pyflakes, +pycodestyle and +mccabe)
+isort >= 5.10
 pdbpp   #: pdb++, a drop-in replacement for pdb
 doc8   #: style checker for rst
 rstcheck

@@ -22,50 +22,50 @@ channels:
     - conda-forge
     - nodefaults
 dependencies:
-    - python~=3.12
+    - python ~= 3.12
     - pip
     - cython
-    - nodejs>=12.0.0
+    - nodejs >= 12.0.0
     - pandoc
-    - numpy>=1.23
-    - scipy>=1.12
-    - matplotlib>=3.8
+    - numpy >= 1.23
+    - scipy >= 1.12
+    - matplotlib >= 3.8
     - bokeh
     - plotly
-    - scikit-learn>=1.1.1
+    - scikit-learn >= 1.1.1
     #- scikit-learn-intelex  #: not used yet 
     - scikit-image
     - mkl_fft
-    - tomopy
+    #- tomopy  #: not used yet (not compatible with numpy >2)
     - opencv
-    - sqlalchemy>=2
-    - pandas>=1
-    - h5py>=3.5
-    - wxpython>=4.2  #: still not working with pip!
-    - pyqt>=5.9
+    - sqlalchemy >= 2
+    - pandas >= 1
+    - h5py >= 3.5
+    - wxpython >= 4.2  #: still not working with pip!
+    - pyqt >= 5.9
     - pyqtwebengine
     - qtconsole
     - psutil
     - requests
     - psycopg2-binary
-    - numdifftools>=0.9.41
+    - numdifftools >= 0.9.41
     - emcee
     - pytools
     - palettable
     - openpyxl
     - pint
     - mendeleev
-    - pymatgen>=2024.10.22
-    - pillow>=9.4.0
+    - pymatgen >= 2024.10.22
+    - pillow >= 9.4.0
     - pycifrw
     - xraylib
-    - silx>=1.1
-    - pymca>=5.6.5
+    - silx >= 1.1
+    - pymca >= 5.6.5
     - py3dmol
     - flask
     # EXTRA / OPTIONAL / DEPRECATED
     #- nglview  #: using py3Dmol
-    #- esrf-bcu::ptpython>=3.0.16
+    #- esrf-bcu::ptpython >= 3.0.16
     #- esrf-bcu::bliss >= 1.9.0  #: NOT YET USED HERE!
     #- spyder
     #- spyder-kernels

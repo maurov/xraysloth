@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # pip requirements file for building sloth documentation
 #-r requirements.txt
-sphinx>=5
+sphinx >= 5
 sphinx-tabs
 sphinx-toolbox
 sphinx-copybutton

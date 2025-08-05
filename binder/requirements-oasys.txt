@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #: pip requiremets file for SHADOW & OASYS
 #-r requirements.txt
-shadow3==18.5.30
+shadow3 == 18.5.30
 resources
 oasys-canvas-core
 oasys-widget-core
