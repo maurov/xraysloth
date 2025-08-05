@@ -20,7 +20,7 @@ ipython>=7.16.3
 ipykernel>=5.2
 ipytree
 #
-jupyterlab==3  #: foreced by crystal-toolkit==2025.1.24rc0
+jupyterlab~>3.6.7
 jupyterlab_server
 jupyterlab-h5web>=8.0.0
 ### => to use custom Jupyter environment in jupyter-slurm.esrf.fr

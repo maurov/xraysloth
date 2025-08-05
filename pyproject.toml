@@ -1,16 +1,121 @@
+[build-system]
+requires = ["setuptools>=61.2", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "sloth"
-version = "sloth.__version__"
-description = "slowly evolving utilities for X-ray spectroscopy data analysuis"
-authors = [
-    {name = "Mauro Rovezzi",email = "mauro.rovezzi@gmail.com"}
+description = "slowly evolving utilities for X-ray spectroscopy data analysis""
+authors = [{ name = "Mauro Rovezzi", email = "mauro.rovezzi@esrf.fr" }]
+license = { text = "LICENSE" }
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GPL License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
 ]
-readme = "README.md"
 requires-python = ">=3.12"
-dependencies = [
+dependencies = ["xraylarch", "palettable"]
+dynamic = ["version"]
+
+[project.readme]
+file = "README.rst"
+content-type = "text/x-rst"
+
+[project.urls]
+Homepage = "https://https://github.com/maurov/xraysloth"
+Source = "https://github.com/maurov/xraysloth"
+Documentation = "https://xraysloth.readthedocs.io/"
+Tracker = "https://github.com/maurov/xraysloth/issues"
+
+[project.optional-dependencies]
+dev = ["build", "twine", "ruff", "pytest", "pytest-cov"]
+doc = [
+    "ipympl",
+    "ipykernel",
+    "nbsphinx",
+    "nbsphinx-link",
+    "sphinx",
+    "sphinx-copybutton",
+    #"sphinx-rtd-theme",
+    "pydata-sphinx-theme",
+    "myst-parser",
+]
+all = ["sloth[dev,doc]"]
+
+[tool.setuptools]
+package-dir = { "" = "." }
+license-files = ["LICENSE"]
+include-package-data = false
+
+[tool.setuptools.packages.find]
+where = ["."]
+namespaces = false
+
+[tool.setuptools.dynamic]
+version = { attr = "sloth.__version__" }
+
+[tool.pytest.ini_options]
+filterwarnings = ["ignore::DeprecationWarning"]
+addopts = [
+    "--cov=sloth",
+    "--cov-report=html",
+    "--log-disable=h5py._conv",
+    "--log-disable=matplotlib",
+    "--log-disable=matplotlib.font_manager",
+]
+log_cli = true
+log_level = "DEBUG"
+
+[tool.coverage.run]
+omit = ["setup.py", "*/tests/*"]
+
+[tool.ruff]
+line-length = 88
+indent-width = 4
+target-version = "py312"
+
+[tool.ruff.lint]
+ignore = [
+    "D100", # Missing docstring in public module
+    "D101", # Missing docstring in public class
+    "D102", # Missing docstring in public method
+    "D103", # Missing docstring in public function
+    "D104", # Missing docstring in public package
+    "D105", # Missing docstring in magic method
+    "D107", # Missing docstring in __init__
+    "D203", # 1 blank line required before class docstring
+    "D205", # 1 blank line required between summary line and description
+    "D212", # Multi-line docstring summary should start at the first line
+    "D400", # First line should end with a period 
+    "D415", # First line should end with a period, question mark, or exclamation point
+]
+select = [
+    "C4",  # flake8-comprehensions
+    "C90", # mccabe
+    "D",   # pydocstyle
+    "E",   # pycodestyle errors
+    "F",   # Pyflakes
+    "I",   # isort
+    "NPY", # NumPy-specific rules 
+    "PL",  # Pylint
+    "RUF", # Ruff
+    "SIM", # flake8-simplify
+    "TC",  # flake8-type-checking
 ]
 
+[tool.ruff.lint.isort]
 
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.pyright]
+typeCheckingMode = "strict"
+reportMissingImports = false
+reportMissingTypeStubs = false
+reportPrivateUsage = false
+reportUnknownArgumentType = false
+reportUnknownLambdaType = false
+reportUnknownMemberType = false
+reportUnknownParameterType = false
+reportUnknownVariableType = false
+reportUnnecessaryIsInstance = false

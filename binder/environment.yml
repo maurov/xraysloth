@@ -17,7 +17,7 @@
 # - OASYS
 # - GL/CL
 # - XRT
-name: sloth2506
+name: sloth2507
 channels:
     - conda-forge
     - nodefaults
