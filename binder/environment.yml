@@ -59,8 +59,8 @@ dependencies:
     - pillow >= 9.4.0
     - pycifrw
     - xraylib
-    - silx >= 1.1
-    - pymca >= 5.6.5
+    - silx ~= 2.2
+    - pymca ~= 5.9
     - py3dmol
     - flask
     # EXTRA / OPTIONAL / DEPRECATED

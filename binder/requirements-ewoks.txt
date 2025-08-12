@@ -4,10 +4,6 @@
 orange3
 orange-canvas-core
 orange-widget-base
-ewokscore
-ewoksorange
-ewoksdask
-ewoksppf
-#ewoksweb
+ewoks[orange,dask,ppf,test]
+est[full]
 blissdata
-
