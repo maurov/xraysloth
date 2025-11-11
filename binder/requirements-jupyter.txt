@@ -33,6 +33,11 @@ widgetsnbextension >= 3.5.0  #: in the environment containing the Jupyter Notebo
 notebook >= 5.3
 nbformat
 seaborn
+#
+anywidget  #: plotly in jupyterlab
 kaleido  #: Static Image Export for plotly
+#
+ipywidgets_bokeh
+jupyter_bokeh
+
 # run postBuild
-git+https://github.com/wholden/jupyter-lmfit.git
