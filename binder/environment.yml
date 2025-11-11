@@ -22,10 +22,10 @@ channels:
     - conda-forge
     - nodefaults
 dependencies:
-    - python ~= 3.12
+    - python = 3.12.*
     - pip
     - cython
-    - nodejs >= 12.0.0
+    - nodejs >= 18
     - pandoc
     - numpy >= 1.23
     - scipy >= 1.12
