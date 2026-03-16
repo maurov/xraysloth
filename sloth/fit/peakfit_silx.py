@@ -274,7 +274,7 @@ def fit_splitpvoigt(x, y, dy=False,
     residual = y - yfit
 
     # outputs
-    pk_area = np.trapz(yfit, x=x)
+    pk_area = np.trapezoid(yfit, x=x)
     fit.resdict = fit_results(fit, output='dict', pk_info=True)
     fit.resdict.update({'area': pk_area})
     fit.yfit = yfit

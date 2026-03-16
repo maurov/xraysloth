@@ -423,7 +423,7 @@ def plot_curves(samp, scan=None, yoffset=0, ynorm=False):
             detlab = info["signal"].split("_")[-1]
 
             if ynorm == "area":
-                y = y / np.trapz(y)
+                y = y / np.trapezoid(y)
 
             fig.add_trace(
                 go.Scatter(

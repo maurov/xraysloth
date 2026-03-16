@@ -20,7 +20,7 @@ dependencies:
     - mp-api
     - numdifftools >= 0.9.41
     - numexpr >= 2.8.7  # [py>38]
-    - numpy >= 1.23
+    - numpy >= 2.0
     - packaging
     - pandas
     - peakutils

@@ -44,8 +44,8 @@ class DataGroupXes(DataGroup1D):
         for _n, _g in enumerate(self.gs):
             yda = self.norint(_g.ynew, x=_g.xnew) - self.norint(self.gs[ref].ynew, x=self.gs[ref].xnew)
             ydm = self.normax(_g.ynew) - self.normax(self.gs[ref].ynew)
-            iad_area = np.trapz(np.abs(yda), x=_g.xnew)
-            iad_max = np.trapz(np.abs(ydm), x=_g.xnew)
+            iad_area = np.trapezoid(np.abs(yda), x=_g.xnew)
+            iad_max = np.trapezoid(np.abs(ydm), x=_g.xnew)
             if _debug:
                 try:
                     setattr(_g, 'iad_area', iad_area)

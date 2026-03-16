@@ -150,7 +150,7 @@ def eval_scan(
 
     infodict.update(
         {
-            "y_area": np.trapz(y),
+            "y_area": np.trapezoid(y),
             "y_max": np.max(y),
             "y_imax": imax(y),
             "y_min": np.min(y),

@@ -375,13 +375,13 @@ class ExpDataV1:
 
         for x, y, label, info in curves:
             if norm:
-                y /= np.trapz(y)
+                y /= np.trapezoid(y)
             fig.add_plot(x, y, label=label)
 
         if show_merge:
             xmrg, ymrg, labmrg, imrg = self.get_merge(curves)
             if norm:
-                ymrg /= np.trapz(ymrg)
+                ymrg /= np.trapezoid(ymrg)
             fig.add_plot(xmrg, ymrg, label=labmrg, color="black")
 
         if norm:

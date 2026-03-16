@@ -278,7 +278,7 @@ class SpecWithEdfStack(SpecfileData):
                     except:
                         print("WARNING: something wrong with 'noisy_pxs'")
                         continue
-            _int = np.trapz(np.trapz(data))
+            _int = np.trapezoid(np.trapezoid(data))
             self.imgs.append(data)
             self.imgs_head.append(header)
             self.imgs_int.append(_int)
@@ -310,7 +310,7 @@ class SpecWithEdfStack(SpecfileData):
             shp = img.shape
             try:
                 self.imgs[idx] = img[rowmin:rowmax, colmin:colmax]
-                _int = np.trapz(np.trapz(self.imgs[idx]))
+                _int = np.trapezoid(np.trapezoid(self.imgs[idx]))
                 self.imgs_int[idx] = _int
             except:
                 print('ERROR: slicing image {0}, shape is {1}'.format(idx, shp))

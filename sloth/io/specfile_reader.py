@@ -503,7 +503,7 @@ class SpecfileData(object):
                 )
             elif norm == "area":
                 scan_datz = _check_zero_div(
-                    scan_datz - np.min(scan_datz), np.trapz(scan_datz, x=scan_datx)
+                    scan_datz - np.min(scan_datz), np.trapezoid(scan_datz, x=scan_datx)
                 )
             elif norm == "sum":
                 scan_datz = _check_zero_div(
