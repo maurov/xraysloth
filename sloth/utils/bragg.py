@@ -89,7 +89,7 @@ def theta_b(wlen, d, n=1):
 
 def bragg_th(ene, d, n=1):
     """return the Bragg angle, $\theta_{B}$, (deg) for a given energy (eV)
-    and d-spacing (\AA)"""
+    and d-spacing ($\AA$)"""
     return theta_b(ev2wlen(ene), d, n=n)
 
 

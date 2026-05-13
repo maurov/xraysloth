@@ -181,7 +181,7 @@ class RowlandCircle(object):
 
         d : float, None
 
-            crystal d-spacing in \AA (this is simply an utility to
+            crystal d-spacing in $\AA$ (this is simply an utility to
             convert theta to energy - in eV)
 
         aW : float, 0.
@@ -282,7 +282,7 @@ class RowlandCircle(object):
         #return self
 
     def set_dspacing(self, d):
-        """set crystal d-spacing (\AA)"""
+        """set crystal d-spacing (Angstrom)"""
         self.d = d
         
     def set_theta0(self, theta0, showInfos=None):
@@ -326,7 +326,7 @@ class RowlandCircle(object):
             print("INFO: alpha = {0:.3f} deg".format(self.alpha))
             if self.d is not None:
                 print("INFO: ene0 = {0:.2f} eV".format(self.get_ene()))
-                print("INFO: d = {0:.3f} \AA".format(self.d))
+                print("INFO: d = {0:.3f} $\AA$".format(self.d))
             print("INFO: p = {0:.3f} {1}".format(self.p, self.uDist))
             print("INFO: q = {0:.3f} {1}".format(self.q, self.uDist))
             print("INFO: Rm = {0:.3f} {1}".format(self.Rm, self.uDist))
