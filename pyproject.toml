@@ -32,7 +32,21 @@ Documentation = "https://xraysloth.readthedocs.io/"
 Tracker = "https://github.com/maurov/xraysloth/issues"
 
 [project.optional-dependencies]
-dev = ["build", "twine", "ruff", "pytest", "pytest-cov"]
+dev = [
+    "build",
+    "twine",
+    "pre-commit",
+    "ruff",
+    "mypy",
+    "pyright",
+    "scipy-stubs",
+    "pytest",
+    "pytest-cov",
+    "pytest-xdist",
+    "pytest-xvfb; platform_system=='Linux'",
+    "coverage",
+    "hypothesis",
+]
 doc = [
     "ipympl",
     "ipykernel",
@@ -111,6 +125,21 @@ select = [
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
+
+[tool.mypy]
+python_version = "3.12"
+plugins = ["pydantic.mypy"]
+ignore_missing_imports = true
+follow_imports = "silent"
+exclude = [
+    "^binder/",
+    "^data/",
+    "^docs/",
+    "^examples/",
+    "^macros/",
+    "^notebooks/",
+    "^scripts/",
+]
 
 [tool.pyright]
 typeCheckingMode = "strict"

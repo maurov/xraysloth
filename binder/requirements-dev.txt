@@ -1,39 +1,61 @@
 # -*- coding: utf-8 -*-
-#: pip requirements file for development tools (linters and formatters)
+#: pip requirements file for development tools (build, test, lint, type check)
 #: [overview](http://books.agiliq.com/projects/essential-python-tools/en/latest/linters.html)
 #: [comparison](https://realpython.com/python-code-quality/)
 #: [full list](https://github.com/vintasoftware/python-linters-and-code-analysis)
 #-r requirements.txt
-build  #: A simple, correct Python build frontend.
-pre-commit
-twine  #: utility for publishing on PyPI
-pytest  #: pytest
-pytest-cov  #: plugin to produce coverage reports
+
+#<build & publish>
+build  #: PEP 517 build frontend, makes sdist and wheel
+twine  #: upload built distributions to PyPI
+#</build & publish>
+
+#<code quality>
+pre-commit  #: runs ruff/mypy hooks on staged files at each `git commit`
+ruff  #: linter + formatter (+ notebooks), replaces black, flake8 and isort
+mypy  #: static type checker, used in the pre-commit hook (pydantic plugin)
+pyright  #: strict type checker from the CLI, same engine as VS Code Pylance ([tool.pyright])
+scipy-stubs  #: type hints for scipy (numpy already ships its own)
+#</code quality>
+
+#<testing>
+pytest  #: test runner
+pytest-cov  #: coverage reports from pytest (`--cov`)
+pytest-xdist  #: run tests in parallel (`pytest -n auto`)
+pytest-xvfb; platform_system=="Linux"  #: virtual display for headless wx/Qt GUI tests
+hypothesis  #: property-based tests (random inputs, e.g. old vs vectorized code equivalence)
 coverage  #: for test coverage in run_test.py
-ruff  #: linter and formatter (faster than others!)
-black[jupyter] >= 22.3  #: formatter (preferred over: yapf and autopep8)
-flake8 >= 4  #: linter (wrapper on top of +pyflakes, +pycodestyle and +mccabe)
-isort >= 5.10
-pdbpp   #: pdb++, a drop-in replacement for pdb
-doc8   #: style checker for rst
-rstcheck
-lxml
+#</testing>
+
+#<debugging>
+pdbpp  #: pdb++, a drop-in replacement for pdb (colors, sticky mode, completion)
+#</debugging>
+
+#<docs checking>
+doc8  #: style checker for rst
+rstcheck  #: syntax checker for rst (also checks code blocks)
+lxml  #: kept from the previous setup, not imported by sloth code (to review)
+#</docs checking>
+
 #<esbonio language server>
-pyspellchecker
-cattrs
-lsprotocol
-pygls
-esbonio
+esbonio  #: rst/sphinx language server for the editor
+pygls  #: language server framework (esbonio dependency)
+lsprotocol  #: LSP types (esbonio dependency)
+cattrs  #: (de)serialization of LSP types (esbonio dependency)
+pyspellchecker  #: spell checking in esbonio
 #</esbonio language server>
 
 ### DEPRECATED ###
+#black          #: formatter -> replaced by `ruff format` (same style, also notebooks)
+#flake8         #: linter -> replaced by `ruff check` (same pyflakes/pycodestyle rules)
+#isort          #: import sorting -> replaced by ruff "I" rules
 #rope           #: completions and renaming
 #pyflakes       #: linter (used by flake8, faster than pylint)
 #mccabe         #: linter (used by flake8)
 #pycodestyle    #: linter (used by flake8, for style checking)
-#pydocstyle     #: linter (for docstring style checking)
-#wheel          #: to build wheels
-#nose           #: test (larch)
+#pydocstyle     #: linter -> replaced by ruff "D" rules
+#wheel          #: to build wheels -> `build`
+#nose           #: test (larch) -> pytest
 
 #DEVEL/EVALUATION
 #python-language-server
