@@ -185,7 +185,7 @@ class Plotter:
     def _initPlotsTitle(self, titles=None):
         """init title for all subplots"""
         if titles is None:
-            self._titles = ["win={0}".format(i) for i in range(self._nplots)]
+            self._titles = [f"win={i}" for i in range(self._nplots)]
         else:
             assert type(titles) is list, "titles should be a list"
             assert (
@@ -333,9 +333,9 @@ class Plotter:
             return None
         if self._outdir is not None:
             fig_out = path.join(self._outdir, fig_out)
-        self._fig.savefig("{0}.pdf".format(fig_out), dpi=dpi_out, bbox_inches="tight")
-        self._fig.savefig("{0}.png".format(fig_out), dpi=dpi_out, bbox_inches="tight")
-        self._fig.savefig("{0}.svg".format(fig_out), dpi=dpi_out, bbox_inches="tight")
+        self._fig.savefig(f"{fig_out}.pdf", dpi=dpi_out, bbox_inches="tight")
+        self._fig.savefig(f"{fig_out}.png", dpi=dpi_out, bbox_inches="tight")
+        self._fig.savefig(f"{fig_out}.svg", dpi=dpi_out, bbox_inches="tight")
         self._logger.info("Saved figures .pdf/.png/.svg figures to: %s", fig_out)
 
 

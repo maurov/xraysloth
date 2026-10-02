@@ -140,7 +140,7 @@ def jscyl(
     elif src_shape == "ellipse":
         src.FSOUR = 2
     else:
-        raise NameError('src_shape "{0}" not understood!'.format(src_shape))
+        raise NameError(f'src_shape "{src_shape}" not understood!')
     #
     src.WXSOU = src_x
     src.WZSOU = src_z
@@ -224,8 +224,8 @@ def jscyl(
         if iwrite:
             oe.write("end.01")
             beam.write("star.01")
-    _LOGGER.info("JsCBCA => R={0:.0f} mm, theta0={1:.3f}".format(R, theta0))
-    _LOGGER.info("JsCBCA => p[q]={0:.4f} mm , ene0={1:.3f} eV".format(p, ene0))
+    _LOGGER.info(f"JsCBCA => R={R:.0f} mm, theta0={theta0:.3f}")
+    _LOGGER.info(f"JsCBCA => p[q]={p:.4f} mm , ene0={ene0:.3f} eV")
     return (beam, src, oe)
 
 

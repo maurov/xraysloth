@@ -40,7 +40,7 @@ def test_diffpat(fname=None):
     try:
         sf = specfile.Specfile(fname)
     except Exception:
-        print("{0} not found".format(fname))
+        print(f"{fname} not found")
         return
     sd = sf.select("1")
     x = sd.datacol(1)
@@ -57,7 +57,7 @@ def test_real(scanno, fname=None, noreturn=False):
     try:
         sf = specfile.Specfile(fname)
     except Exception:
-        print("{0} not found".format(fname))
+        print(f"{fname} not found")
         return
     sd = sf.select(str(scanno))
     x = sd.datacol(1) * 1000  # eV

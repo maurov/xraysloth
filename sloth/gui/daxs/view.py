@@ -171,7 +171,7 @@ class TreeView(qt.QTreeView):
         rootItem = self.model().rootItem
         row = rootItem.childCount()
         if name is None or not name:
-            name = 'Experiment{}'.format(row)
+            name = f'Experiment{row}'
         item = ExperimentItem(name=name, parentItem=rootItem)
         self.model().appendRow(item)
         return item
@@ -185,7 +185,7 @@ class TreeView(qt.QTreeView):
         row = parentItem.childCount()
 
         if name is None or not name:
-            name = 'Group{}'.format(row)
+            name = f'Group{row}'
 
         item = GroupItem(name, parentItem)
         self.model().appendRow(item)

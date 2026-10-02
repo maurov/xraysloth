@@ -108,7 +108,7 @@ class PlotWindow(PlotWidget):
     def setIndex(self, value):
         self._index = value
         if self._index is not None:
-            self.setWindowTitle('{}: Plot Window'.format(self._index))
+            self.setWindowTitle(f'{self._index}: Plot Window')
 
     def _plotEvent(self, event):
         if event['event'] == 'mouseMoved':

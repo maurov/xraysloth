@@ -93,7 +93,7 @@ def _cprint_bad_contrast3(fgcolor, bgcolor, bold, underlined):
 
 def bprint(str):
     """Returns a bold <str>"""
-    return "\033[1m{0}\033[0m".format(str)
+    return f"\033[1m{str}\033[0m"
 
 
 def cprint_bold(str):
@@ -103,7 +103,7 @@ def cprint_bold(str):
 
 def buprint(str):
     """Underlined bold <str>"""
-    return "\033[1m\033[4m{0}\033[0m".format(str)
+    return f"\033[1m\033[4m{str}\033[0m"
 
 
 def cprint_bold_underlined(str):
@@ -113,7 +113,7 @@ def cprint_bold_underlined(str):
 
 def uprint(str):
     """Underlined <str> """
-    return "\033[4m{0}\033[0m".format(str)
+    return f"\033[4m{str}\033[0m"
 
 
 def cprint_underlined(str):
@@ -146,12 +146,12 @@ def cprint(_str, fgcolor, bgcolor, bold, underlined, st, retStr=False):
     # Formating the color strings.
     if _bad_contrast3:
         # replace (current fg color black) on black by white on black.
-        _fg_str = "\033[3{0}m".format(7)
+        _fg_str = f"\033[3{7}m"
     else:
-        _fg_str = "\033[3{0}m".format(fgcolor)
+        _fg_str = f"\033[3{fgcolor}m"
 
     if bgcolor >= 0:
-        _bg_str = "\033[4{0}m".format(bgcolor)
+        _bg_str = f"\033[4{bgcolor}m"
     else:
         _bg_str = ""
 
@@ -171,7 +171,7 @@ def cprint(_str, fgcolor, bgcolor, bold, underlined, st, retStr=False):
     if st:
         _mod_str = _mod_str + _st_str
 
-    _colored_str = "{0}{1}{2}{3}\033[0m\n".format(_mod_str, _fg_str, _bg_str, _str)
+    _colored_str = f"{_mod_str}{_fg_str}{_fg_str}{_str}\033[0m\n"
 
     print(_colored_str)
 
@@ -190,12 +190,12 @@ def cprint_examples():
     print("p1\\p2-> 0  1  2  3  4  5  6 7  8")
 
     for ii in range(9):
-        print("{0}--".format(ii))
+        print(f"{ii}--")
         for jj in range(9):
-            cprint("{0}{1}".format(mystr, ii), ii, jj, 0, 0, 0)
-            cprint("{0}{1}".format(mystr, ii), ii, jj, 1, 0, 0)
-            cprint("{0}{1}".format(mystr, ii), ii, jj, 0, 1, 0)
-            cprint("{0}{1}".format(mystr, ii), ii, jj, 1, 1, 0)
+            cprint(f"{mystr}{ii}", ii, jj, 0, 0, 0)
+            cprint(f"{mystr}{ii}", ii, jj, 1, 0, 0)
+            cprint(f"{mystr}{ii}", ii, jj, 0, 1, 0)
+            cprint(f"{mystr}{ii}", ii, jj, 1, 1, 0)
 
 
 def main():

@@ -1071,7 +1071,7 @@ class ShadowPlotter:
         try:
             sf = specfile.Specfile(fname)
         except:
-            print('{0} not found'.format(fname))
+            print(f'{fname} not found')
             return
 
         scanno = kws.get('scanno', 1)
@@ -1303,17 +1303,17 @@ class ShadowSpectro1:
             self.oe1.F_MOVE = 0
         if self.rc.showInfos:
             print(' --- mirror movement infos ---')
-            print('OE1: F_MOVE = {0}'.format(self.oe1.F_MOVE))
-            print('OE1: OFFX   = {0}'.format(self.oe1.OFFX))
-            print('OE1: OFFY   = {0}'.format(self.oe1.OFFY))
-            print('OE1: OFFZ   = {0}'.format(self.oe1.OFFZ))
-            print('OE1: X_ROT  = {0}'.format(self.oe1.X_ROT))
-            print('OE1: Y_ROT  = {0}'.format(self.oe1.Y_ROT))
-            print('OE1: Z_ROT  = {0}'.format(self.oe1.Z_ROT))
-            print('SRC: HDIV1  = {0}'.format(self.src.HDIV1)) 
-            print('SRC: HDIV2  = {0}'.format(self.src.HDIV2)) 
-            print('SRC: VDIV1  = {0}'.format(self.src.VDIV1)) 
-            print('SRC: VDIV2  = {0}'.format(self.src.VDIV2)) 
+            print(f'OE1: F_MOVE = {self.oe1.F_MOVE}')
+            print(f'OE1: OFFX   = {self.oe1.OFFX}')
+            print(f'OE1: OFFY   = {self.oe1.OFFY}')
+            print(f'OE1: OFFZ   = {self.oe1.OFFZ}')
+            print(f'OE1: X_ROT  = {self.oe1.X_ROT}')
+            print(f'OE1: Y_ROT  = {self.oe1.Y_ROT}')
+            print(f'OE1: Z_ROT  = {self.oe1.Z_ROT}')
+            print(f'SRC: HDIV1  = {self.src.HDIV1}') 
+            print(f'SRC: HDIV2  = {self.src.HDIV2}') 
+            print(f'SRC: VDIV1  = {self.src.VDIV1}') 
+            print(f'SRC: VDIV2  = {self.src.VDIV2}') 
 
     def move_analyser(self, aXoff, **kws):
         """move analyser center to another Rowland circle by aXoff in cm
@@ -1397,17 +1397,17 @@ class ShadowSpectro1:
 
         if self.rc.showInfos:
             print(' --- theta movement infos --- ')
-            print('OE1: PHOT_CENT    = {0}'.format(self.oe1.PHOT_CENT   )) 
-            print('SRC: PH1          = {0}'.format(self.src.PH1         )) 
-            print('SRC: PH2          = {0}'.format(self.src.PH2         )) 
-            print('SRC: VDIV1        = {0}'.format(self.src.VDIV1       )) 
-            print('SRC: VDIV2        = {0}'.format(self.src.VDIV2       )) 
-            print('SRC: HDIV1        = {0}'.format(self.src.HDIV1       )) 
-            print('SRC: HDIV2        = {0}'.format(self.src.HDIV2       )) 
-            print('OE1: T_SOURCE     = {0}'.format(self.oe1.T_SOURCE    )) 
-            print('OE1: T_IMAGE      = {0}'.format(self.oe1.T_IMAGE     )) 
-            print('OE1: T_INCIDENCE  = {0}'.format(self.oe1.T_INCIDENCE )) 
-            print('OE1: T_REFLECTION = {0}'.format(self.oe1.T_REFLECTION)) 
+            print(f'OE1: PHOT_CENT    = {self.oe1.PHOT_CENT}') 
+            print(f'SRC: PH1          = {self.src.PH1}') 
+            print(f'SRC: PH2          = {self.src.PH2}') 
+            print(f'SRC: VDIV1        = {self.src.VDIV1}') 
+            print(f'SRC: VDIV2        = {self.src.VDIV2}') 
+            print(f'SRC: HDIV1        = {self.src.HDIV1}') 
+            print(f'SRC: HDIV2        = {self.src.HDIV2}') 
+            print(f'OE1: T_SOURCE     = {self.oe1.T_SOURCE}') 
+            print(f'OE1: T_IMAGE      = {self.oe1.T_IMAGE}') 
+            print(f'OE1: T_INCIDENCE  = {self.oe1.T_INCIDENCE}') 
+            print(f'OE1: T_REFLECTION = {self.oe1.T_REFLECTION}') 
 
 if __name__ == '__main__':
     # NOTE: works within 'ipython'

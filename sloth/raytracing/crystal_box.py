@@ -253,16 +253,16 @@ class XCrystalBox:
         outstr = "\n".join(outlst)
         outstr = outstr.format(**self.opts)
         _LOGGER.debug(outstr)
-        with open("{0}".format(fname), "w") as f:
+        with open(f"{fname}", "w") as f:
             f.write(outstr)
 
     def run(self):
         """runs diff_pat"""
         self.write_inp_file()  # write xcrystal.inp
-        cmdstr = "{} < xcrystal.inp".format(DIFFPAT_EXEC)
+        cmdstr = f"{DIFFPAT_EXEC} < xcrystal.inp"
         try:
             subprocess.call(cmdstr, shell=True)
-            _LOGGER.debug("RUN: {0}".format(cmdstr))
+            _LOGGER.debug(f"RUN: {cmdstr}")
         except OSError:
             _LOGGER.error("check $DIFFPAT_EXEC")
 
@@ -334,7 +334,7 @@ class XCrystalBox:
                 self.y = sd[:, scol - 1]
                 sd = 0  # flush memory
         except Exception:
-            _LOGGER.error("[load_refl]: cannot read {0}".format(fname))
+            _LOGGER.error(f"[load_refl]: cannot read {fname}")
             return
         self.refl = interp1d(
             self.x, self.y, kind=kind, bounds_error=False, fill_value=fill_value

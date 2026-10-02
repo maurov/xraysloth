@@ -216,7 +216,7 @@ def fit_splitpvoigt(x, y, dy=False,
         dconf.update(conf)
 
     if show_infos:
-        print('{0:=^64}'.format('FIT INFOS'))
+        print('{:=^64}'.format('FIT INFOS'))
 
     # init Specfit object
     fit = Specfit.Specfit()
@@ -254,8 +254,8 @@ def fit_splitpvoigt(x, y, dy=False,
     theory = 'Split Pseudo-Voigt'
 
     if show_infos:
-        print('backgroung: {0}'.format(bkg))
-        print('theory: {0} {1}'.format(npeaks, theory))
+        print(f'backgroung: {bkg}')
+        print(f'theory: {npeaks} {theory}')
 
     # update configuration
     fit_conf = fit.configure(**dconf)
@@ -331,7 +331,7 @@ def fit_results(fitobj, output='print', pk_info=True):
 
     # STATISTICS
     out.append(tmpl_head.format(' STATISTICS '))
-    out.append('chi_squared = {0}'.format(fitobj.chisq))
+    out.append(f'chi_squared = {fitobj.chisq}')
 
     # FITTED PARAMETERS
     out.append(tmpl_head.format(' FITTED PARAMETERS '))

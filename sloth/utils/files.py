@@ -27,7 +27,7 @@ def cp_replace(grepfns, grepstr, rplstr, splitstr='_'):
     for fn in fns:
         _fn2 = [w.replace(grepstr, rplstr) for w in fn.split(splitstr)]
         fn2 = splitstr.join(_fn2)
-        subprocess.call('cp {0} {1}'.format(fn, fn2), shell=True)
+        subprocess.call(f'cp {fn} {fn2}', shell=True)
         print(fn2)
 
 def get_fnames(grepstr, rpath=os.getcwd(), substr1=None):

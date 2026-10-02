@@ -182,11 +182,11 @@ def plot_mu(ax, dgroup, show_norm=False, show_deriv=False,
     if show_deriv:
         mu = np.gradient(mu)/np.gradient(dgroup.energy)
         ylabel = plotlabels.dmude
-        dlabel = '%s (deriv)' % label
+        dlabel = f'{label} (deriv)'
     elif show_norm:
         mu = dgroup.norm
-        ylabel = "%s (norm)" % ylabel
-        dlabel = "%s (norm)" % label
+        ylabel = f"{ylabel} (norm)"
+        dlabel = f"{label} (norm)"
     emin, emax = _get_erange(dgroup, emin, emax)
 
     title = _get_title(dgroup, title=title)
@@ -201,7 +201,7 @@ def plot_mu(ax, dgroup, show_norm=False, show_deriv=False,
     if with_deriv:
         dmu = np.gradient(mu)/np.gradient(dgroup.energy)
         _plot(dgroup.energy, dmu+offset, ylabel=plotlabels.dmude,
-              label='%s (deriv)' % label, zorder=18, side='right', **opts)
+              label=f'{label} (deriv)', zorder=18, side='right', **opts)
     if (not show_norm and not show_deriv):
         if show_pre:
             _plot(dgroup.energy, dgroup.pre_edge+offset, label='pre_edge',
@@ -270,8 +270,8 @@ def plot_bkg(dgroup, norm=True, emin=None, emax=None, show_e0=False,
     if norm:
         mu  = dgroup.norm
         bkg = (dgroup.bkg - dgroup.pre_edge) / dgroup.edge_step
-        ylabel = "%s (norm)" % ylabel
-        label = "%s (norm)" % label
+        ylabel = f"{ylabel} (norm)"
+        label = f"{label} (norm)"
     #endif
     title = _get_title(dgroup, title=title)
 
@@ -436,15 +436,15 @@ def plot_chir(dgroup, show_mag=True, show_real=False, show_imag=False,
         label = 'chir'
     #endif
     if show_mag:
-        _plot(dgroup.r, dgroup.chir_mag+offset, label='%s (mag)' % label, **opts)
+        _plot(dgroup.r, dgroup.chir_mag+offset, label=f'{label} (mag)', **opts)
         opts['new'] = False
     #endif
     if show_real:
-        _plot(dgroup.r, dgroup.chir_re+offset, label='%s (real)' % label, **opts)
+        _plot(dgroup.r, dgroup.chir_re+offset, label=f'{label} (real)', **opts)
         opts['new'] = False
     #endif
     if show_imag:
-        _plot(dgroup.r, dgroup.chir_im+offset, label='%s (imag)' % label, **opts)
+        _plot(dgroup.r, dgroup.chir_im+offset, label=f'{label} (imag)', **opts)
     #endif
     redraw(win=win, xmax=rmax, _larch=_larch)
 #enddef
@@ -548,7 +548,7 @@ def plot_path_k(dataset, ipath=0, kmin=0, kmax=None, offset=0, label=None,
     """
     kweight = dataset.transform.kweight
     path = dataset.pathlist[ipath]
-    if label is None: label = 'path %i' % (1+ipath)
+    if label is None: label = f'path {1 + ipath}'
 
     chi_kw = offset + path.chi * path.k**kweight
 
@@ -587,7 +587,7 @@ def plot_path_r(dataset, ipath, rmax=None, offset=0, label=None,
     """
     path = dataset.pathlist[ipath]
     if label is None:
-        label = 'path %i' % (1+ipath)
+        label = f'path {1 + ipath}'
     #endif
     kweight =dataset.transform.kweight
     ylabel = plotlabels.chirlab(kweight, show_mag=show_mag,
@@ -745,7 +745,7 @@ def plot_prepeaks_baseline(dgroup, subtract_baseline=False, show_fitrange=True,
     px0, px1, py0, py1 = extend_plotrange(dgroup.xdat, dgroup.ydat,
                                           xmin=ppeak.emin, xmax=ppeak.emax)
 
-    title = "pre_edge baseline\n %s" % dgroup.filename
+    title = f"pre_edge baseline\n {dgroup.filename}"
 
     popts = dict(xmin=px0, xmax=px1, ymin=py0, ymax=py1, title=title,
                  xlabel='Energy (eV)', ylabel='mu (normalized)', delay_draw=True,
@@ -829,7 +829,7 @@ def plot_prepeaks_fit(dgroup, nfit=0, show_init=False, subtract_baseline=False,
             if label in opts['bkg_components']:
                 baseline += ycomp
 
-    plotopts = dict(title='%s:\npre-edge peak' % dgroup.filename,
+    plotopts = dict(title=f'{dgroup.filename}:\npre-edge peak',
                     xlabel='Energy (eV)', ylabel=opts['array_desc'],
                     delay_draw=True, show_legend=True, style='solid',
                     linewidth=3, marker='None', markersize=4)
@@ -839,7 +839,7 @@ def plot_prepeaks_fit(dgroup, nfit=0, show_init=False, subtract_baseline=False,
         yfit -= baseline
         ydat_full = 1.0*ydat
         xdat_full = 1.0*xdat
-        plotopts['ylabel'] = '%s-baseline' % plotopts['ylabel']
+        plotopts['ylabel'] = f"{plotopts['ylabel']}-baseline"
 
     dx0, dx1, dy0, dy1 = extend_plotrange(xdat_full, ydat_full,
                                           xmin=opts['emin'], xmax=opts['emax'])
@@ -921,7 +921,7 @@ def plot_pca_components(result, min_weight=0, ncomps=None, win=1, _larch=None, *
 
     _plot(result.x, result.mean, label='Mean', **popts)
     for i, comp in enumerate(result.components[:ncomps+1]):
-        label = 'Comp# %d (%.4f)' % (i+1, result.variances[i])
+        label = f'Comp# {i + 1} ({result.variances[i]:.4f})'
         _oplot(result.x, comp, label=label, **popts)
 
     redraw(win=win, show_legend=True, _larch=_larch)
@@ -969,7 +969,7 @@ def plot_pca_fit(dgroup, win=1, with_components=False, _larch=None, **kws):
     result must be output of `pca_fit`
     """
 
-    title = "PCA fit: %s" % (dgroup.filename)
+    title = f"PCA fit: {dgroup.filename}"
     result = dgroup.pca_result
     model = result.pca_model
 
@@ -987,5 +987,5 @@ def plot_pca_fit(dgroup, win=1, with_components=False, _larch=None, **kws):
         disp.panel.oplot(result.x, model.mean, label='mean')
         for n in range(len(result.weights)):
             cval = model.components[n]*result.weights[n]
-            disp.panel.oplot(result.x, cval, label='Comp #%d' % (n+1))
+            disp.panel.oplot(result.x, cval, label=f'Comp #{n + 1}')
     redraw(win=win, show_legend=True, stacked=True, _larch=_larch)

@@ -152,10 +152,10 @@ class TreeItem:
 
     def insertRows(self, row, count):
         for i in range(count):
-            name = 'TreeItem{}'.format(self.childCount())
+            name = f'TreeItem{self.childCount()}'
             item = TreeItem(name=name, parentItem=self)
             self.childItems.insert(row, item)
-            logger.debug('Inserted {}'.format(name))
+            logger.debug(f'Inserted {name}')
         return True
 
     def removeRows(self, row, count):
@@ -167,7 +167,7 @@ class TreeItem:
         for i in range(count):
             self.childItems.pop(row)
 
-        logger.debug('Removed {}'.format(childItem.name))
+        logger.debug(f'Removed {childItem.name}')
         return True
 
     def flags(self, column):

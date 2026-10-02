@@ -342,7 +342,7 @@ def mapLine2Trans(line):
         idx = LINES2TRANS[line]
         return (LINES[idx[0]], TRANSITIONS[idx[0]], SHELLS[idx[1]], SHELLS[idx[2]])
     except KeyError:
-        _LOGGER.error("Line {0} not known; returning 0".format(line))
+        _LOGGER.error(f"Line {line} not known; returning 0")
         return 0
 
 
@@ -390,7 +390,7 @@ def find_edge(emin, emax, shells=None):
         for sh in shells:
             edge = (xl.EdgeEnergy(eln[1], getattr(xl, sh + "_SHELL")) * 1000)
             if (edge >= emin) and (edge <= emax):
-                _LOGGER.info("{0} \t {1} \t {2:>.2f} eV".format(el, sh, edge))
+                _LOGGER.info(f"{el} \t {sh} \t {edge:>.2f} eV")
 
 
 def find_line(emin, emax, elements=None, lines=None, outDict=False, backend="xraylib", skip_zero_width=True, thetamin=65):
@@ -451,7 +451,7 @@ def find_line(emin, emax, elements=None, lines=None, outDict=False, backend="xra
                 else:
                     line = xl.LineEnergy(eln[1], getattr(xl, ln + "_LINE")) * 1000
             except Exception:
-                _LOGGER.debug("{0}.{1} none".format(el, ln))
+                _LOGGER.debug(f"{el}.{ln} none")
                 continue
             if (line >= emin) and (line <= emax):
                 w = fluo_width(elem=el, line=ln, showInfos=False)
@@ -659,7 +659,7 @@ def xray_edge(element, initial_level=None):
             outdict["ene"].append(edge_ene)
         except Exception:
             _LOGGER.warning(
-                "{0} {1} edge unknown".format(get_element(element)[0], _level)
+                f"{get_element(element)[0]} {_level} edge unknown"
             )
             continue
     if _retNum:
@@ -743,7 +743,7 @@ def fluo_spectrum(elem, line, xwidth=3, xstep=0.05, plot=False, showInfos=True, 
             legend=legend,
             replace=True,
             xlabel="energy (eV)",
-            ylabel="intensity ({0})".format(yunit),
+            ylabel=f"intensity ({yunit})",
         )
         p1.show()
         input("PRESS ENTER to close the plot window and return")
@@ -779,7 +779,7 @@ def fluo_lines(elem, lines, retAll=False, **fluokws):
             yi.append(y)
             ii.append(i)
         except Exception:
-            _LOGGER.info("no line found for {0}-{1}".format(elem, ln))
+            _LOGGER.info(f"no line found for {elem}-{ln}")
     xmin = min([x.min() for x in xi])
     xmax = max([x.max() for x in xi])
     xcom = np.arange(xmin, xmax, xstep)

@@ -36,6 +36,6 @@ def timeit(method):
         start = time.time()
         result = method(*args, **kwargs)
         stop = time.time()
-        print('{}, {:.3g} seconds.'.format(method, (stop - start)))
+        print(f'{method}, {stop - start:.3g} seconds.')
         return result
     return wrapper

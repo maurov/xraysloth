@@ -139,7 +139,7 @@ class RootGroup(BaseGroup):
             "NX_class": "NXroot",
             "file_time": datetime.datetime.now().isoformat(),
             "file_name": ft,
-            "creator": "sloth %s" % sloth_version,
+            "creator": f"sloth {sloth_version}",
         }
         self._file_name = ft
         if mode is None:

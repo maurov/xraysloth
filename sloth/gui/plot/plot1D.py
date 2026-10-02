@@ -94,7 +94,7 @@ class CustomCurveLegendsWidget(CurveLegendsWidget):
 
             # Add an action to switch the Y axis of a curve
             yaxis = 'right' if curve.getYAxis() == 'left' else 'left'
-            menu.addAction('Map to %s' % yaxis,
+            menu.addAction(f'Map to {yaxis}',
                            functools.partial(self._switchCurveYAxis, curve))
 
             menu.addSeparator()
@@ -152,7 +152,7 @@ class Plot1D(PlotWindow):
     def setIndex(self, value):
         self._index = value
         if self._index is not None:
-            self.setWindowTitle('{0}: {1}'.format(self._index, self._title))
+            self.setWindowTitle(f'{self._index}: {self._title}')
 
     def reset(self):
         self.clear()

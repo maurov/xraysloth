@@ -55,10 +55,10 @@ def get_xyz_bm16(logobj, specobj, fit_elastic=False):
     _counter = 0
     for scan, ene in zip(scans, enes):
         try:
-            x, z, mot, info = specobj.get_scan('{0}.2'.format(int(scan)))
+            x, z, mot, info = specobj.get_scan(f'{int(scan)}.2')
         except KeyError:
-            x, z, mot, info = specobj.get_scan('{0}.1'.format(int(scan)))
-        print("INFO: loaded scan {0}".format(int(scan)))
+            x, z, mot, info = specobj.get_scan(f'{int(scan)}.1')
+        print(f"INFO: loaded scan {int(scan)}")
         y = _mot2array(ene, x)
         # perform some data treatment -> TODO: move elsewhere!!!
         if fit_elastic is True:

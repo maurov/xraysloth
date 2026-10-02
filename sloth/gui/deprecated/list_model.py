@@ -20,7 +20,7 @@ class PaletteListModel(qt.QAbstractListModel):
             if orientation == qt.Qt.Horizontal:
                 return "Palette"
             else:
-                return "Color {0}".format(section)
+                return f"Color {section}"
 
 
     def rowCount(self, parent):

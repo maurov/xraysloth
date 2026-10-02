@@ -12,8 +12,8 @@ class InternalIPyKernel:
 
     def init_kernel(self, backend='qt', log_level='INFO'):
         _optslist = ['python',
-                     '--gui={0}'.format(backend),
-                     '--log-level={0}'.format(log_level)]
+                     f'--gui={backend}',
+                     f'--log-level={log_level}']
 
         self.kernel = IPKernelApp.instance()
         self.kernel.initialize(_optslist)
@@ -29,7 +29,7 @@ class InternalIPyKernel:
         print("\n***Variables in User namespace***")
         for k, v in self.namespace.items():
             if not k.startswith('_'):
-                print('%s -> %r' % (k, v))
+                print(f'{k} -> {v!r}')
         sys.stdout.flush()
 
     def add_to_namespace(self, namestr, nameobj):

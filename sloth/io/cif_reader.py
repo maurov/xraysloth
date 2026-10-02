@@ -83,7 +83,7 @@ class CIFReader:
             return
 
         self.key = list(self.cf.keys())[0]
-        print('Read key: {0}'.format(self.key))
+        print(f'Read key: {self.key}')
 
 
     def get_subkey(self, k):
@@ -168,12 +168,12 @@ def readCifFile(cifFile):
         return
 
     if not os.path.exists(cifFile):
-        raise OSError("CIF file '%s' was not found!" % (cifFile))
+        raise OSError(f"CIF file '{cifFile}' was not found!")
     
     cf = CifFile.CifFile(cifFile)
     print("------------------------------------------------------------------")
     if len(cf) != 1:
-        raise ValueError("The cif file contains %i data blocks, while one was expected" % len(cf))
+        raise ValueError(f"The cif file contains {len(cf)} data blocks, while one was expected")
         # A cif file can contain several "datablocks" that each start
         # with "data_".
     
@@ -263,11 +263,11 @@ if __name__ == '__main__':
     if 0:
         c = CIFReader()
         c.read_cif(mycif)
-        print('Label: {0}'.format(c.get_label()))
+        print(f'Label: {c.get_label()}')
         print('---')
-        print('Cell: {0}'.format(c.get_cell()))
+        print(f'Cell: {c.get_cell()}')
         print('---')
-        print('Atoms:\n {0}'.format(c.get_atoms()))
+        print(f'Atoms:\n {c.get_atoms()}')
     if 0:
         ### NOT WORKING ###
         lfs = readCifFile(mycif)
@@ -312,7 +312,7 @@ if __name__ == '__main__':
         pmg = calc_set(abs_at, struct, edge=_edge, radius=_radius,\
                        user_tag_settings=myexa)
 
-        out_dir = '{0}_{1}'.format(mylabel, 'test') 
+        out_dir = '{}_{}'.format(mylabel, 'test') 
         pmg.write_input(output_dir=out_dir)
         
         feff = pmg.all_input()

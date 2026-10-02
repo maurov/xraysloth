@@ -214,7 +214,7 @@ def dThetaXZ(x, z, thetab, case=None):
         R2 = 1.
         R2p = 1.
     else:
-        raise NameError("case '{0}' unknown".format(case))
+        raise NameError(f"case '{case}' unknown")
 
     # COEFFICIENTS
     if (R2p == 1. or R2p == np.inf):
@@ -228,14 +228,14 @@ def dThetaXZ(x, z, thetab, case=None):
     A4 = (1./(2.*R2)) + (1./(2.*R2p)) - (1/(2.*R2p**2)) + (1./(math.sin(rthetab)**2)) * ((1./R2p) - (1./(2*R2)) - 1.)
 
     if DEBUG:
-        print('Analytical DeltaTheta(x,z) for {0}'.format(case))
-        print('Radii: R1={0}, R1p={1}, R2={2}, R2p={3}'.format(R1, R1p, R2, R2p))
+        print(f'Analytical DeltaTheta(x,z) for {case}')
+        print(f'Radii: R1={R1}, R1p={R1p}, R2={R2}, R2p={R2p}')
         print('Coefficients:')
-        print('A1 = {0}'.format(A1))
-        print('A2 = {0}'.format(A2))
-        print('A3 = {0}'.format(A3))
-        print('A4p = {0}'.format(A4p))
-        print('A4 = {0}'.format(A4))
+        print(f'A1 = {A1}')
+        print(f'A2 = {A2}')
+        print(f'A3 = {A3}')
+        print(f'A4p = {A4p}')
+        print(f'A4 = {A4}')
     
     return A1 * x**2 + A2 * x**3 + A3 * z**2 + A4 * x * z**2
 
@@ -318,7 +318,7 @@ def getDthetaDats(mxx, mzz, wrc=1.25E-4,
         dd[cs]['mdth'] = []
         dd[cs]['sa'] = []
         dd[cs]['eres'] = []
-        print('Angle loop for {0}...'.format(cs))
+        print(f'Angle loop for {cs}...')
         for th in angles:
             dth = dThetaXZ(mxx, mzz, th, case=cs)
             # calc effective (< wrc) solid angle and energy resolution
@@ -332,7 +332,7 @@ def getDthetaDats(mxx, mzz, wrc=1.25E-4,
                 mm = ma.ones(mzz.shape)
                 mm = mm * gridSizeZZ
             else:
-                print('Error: 0 grid size in solid angle for {0} at {1} deg'.format(cs, th))
+                print(f'Error: 0 grid size in solid angle for {cs} at {th} deg')
                 continue
             mm.mask = mdth.mask
             #eff_area = (mm.sum()/(mm.shape[0]*mm.shape[1]))*(np.pi*(r_cryst**2))
@@ -352,12 +352,12 @@ def writeScanDats(dd, fname, scanLabel=None, motpos=None):
     mots = ['case', 'r1p', 'mask', 'cryst_x', 'cryst_z', 'wrc', 'csteps']
     ncols = ['thetaB', 'sa', 'eres']
     sfw = SpecfileDataWriter(fname)
-    if DEBUG: print('scanOnly mode is {0}'.format(sfw.scanOnly))
+    if DEBUG: print(f'scanOnly mode is {sfw.scanOnly}')
     sfw.wHeader(title='scan data from dthetaxz.py', motnames=mots)
     for cs in dd.keys():
         dcols = [np.array(dd[cs][ncol]) for ncol in ncols]
         if scanLabel is None:
-            _title = '{0}'.format(cs)
+            _title = f'{cs}'
         else:
             _title = scanLabel
         sfw.wScan(ncols, dcols, title=_title, motpos=motpos)

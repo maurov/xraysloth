@@ -88,7 +88,7 @@ class RixsData:
         self.kwsd = kwsd
 
         if label is None:
-            label = 'rd{0}'.format(hex(id(self)))
+            label = f'rd{hex(id(self))}'
         self.label = label
 
         self.plotter = None
@@ -230,9 +230,9 @@ class RixsData:
 
         try:
             self.dat = np.loadtxt(fname)
-            print('Loaded {0}'.format(fname))
+            print(f'Loaded {fname}')
         except Exception:
-            print('Error in loading {0}'.format(fname))
+            print(f'Error in loading {fname}')
             return
 
         self.xcol = self.dat[:, 0]

@@ -45,7 +45,7 @@ if __name__ == "__main__":
         sys.exit(1)
     try:
         qtversion = QtCore.QT_VERSION_STR.split('.')[0]
-        print('INFO: QtCore already loaded with version {0}'.format(qtversion))
+        print(f'INFO: QtCore already loaded with version {qtversion}')
     except:
         qtversion = None
     if qtversion == '5':

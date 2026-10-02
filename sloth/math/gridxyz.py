@@ -36,7 +36,7 @@ def gridxyz(xcol, ycol, zcol, xystep=None, lib='scipy', method='cubic'):
     """
     if xystep is None:
         xystep = 0.1
-        _logger.warning("'xystep' not given: using a default value of {0}".format(xystep))
+        _logger.warning(f"'xystep' not given: using a default value of {xystep}")
     #create the XY meshgrid and interpolate the Z on the grid
     nxpoints = int((xcol.max()-xcol.min())/xystep)
     nypoints = int((ycol.max()-ycol.min())/xystep)
@@ -50,8 +50,8 @@ def gridxyz(xcol, ycol, zcol, xystep=None, lib='scipy', method='cubic'):
             _logger.error("Cannot load griddata from Matplotlib")
             return
         if not (method == 'nn' or method == 'nearest'):
-            _logger.warning("Interpolation method {0} not supported by {1}".format(method, lib))
-        _logger.info("Gridding data with {0}...".format(lib))
+            _logger.warning(f"Interpolation method {method} not supported by {lib}")
+        _logger.info(f"Gridding data with {lib}...")
         zz = griddata(xcol, ycol, zcol, xx, yy)
         return xgrid, ygrid, zz
     elif ('scipy' in lib.lower()):
@@ -60,7 +60,7 @@ def gridxyz(xcol, ycol, zcol, xystep=None, lib='scipy', method='cubic'):
         except ImportError:
             _logger.error("Cannot load griddata from Scipy")
             return
-        _logger.info("Gridding data with {0}...".format(lib))
+        _logger.info(f"Gridding data with {lib}...")
         zz = griddata((xcol, ycol), zcol, (xgrid[None,:], ygrid[:,None]), method=method, fill_value=0)
         return xgrid, ygrid, zz
 

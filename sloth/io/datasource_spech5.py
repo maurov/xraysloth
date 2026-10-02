@@ -54,7 +54,7 @@ def _str2rng(rngstr, keeporder=True, rebin=None):
     _rng = []
     for _r in rngstr.split(", "):  # the space is important!
         if len(_r.split(",")) > 1:
-            raise NameError("Space after comma(s) is missing in '{0}'".format(_r))
+            raise NameError(f"Space after comma(s) is missing in '{_r}'")
         _rsplit2 = _r.split(":")
         if len(_rsplit2) == 1:
             _rng.append(_r)
@@ -62,12 +62,12 @@ def _str2rng(rngstr, keeporder=True, rebin=None):
             if len(_rsplit2) == 2:
                 _rsplit2.append("1")
             if _rsplit2[0] == _rsplit2[1]:
-                raise NameError("Wrong range '{0}' in string '{1}'".format(_r, rngstr))
+                raise NameError(f"Wrong range '{_r}' in string '{rngstr}'")
             if int(_rsplit2[0]) > int(_rsplit2[1]):
-                raise NameError("Wrong range '{0}' in string '{1}'".format(_r, rngstr))
+                raise NameError(f"Wrong range '{_r}' in string '{rngstr}'")
             _rng.extend(range(int(_rsplit2[0]), int(_rsplit2[1]) + 1, int(_rsplit2[2])))
         else:
-            raise NameError("Too many colon in {0}".format(_r))
+            raise NameError(f"Too many colon in {_r}")
 
     # create the list and return it (removing the duplicates)
     _rngout = [int(x) for x in _rng]
@@ -76,7 +76,7 @@ def _str2rng(rngstr, keeporder=True, rebin=None):
         try:
             _rngout = _rngout[:: int(rebin)]
         except Exception:
-            raise NameError("Wrong rebin={0}".format(int(rebin)))
+            raise NameError(f"Wrong rebin={int(rebin)}")
 
     def uniquify(seq):
         # Order preserving uniquifier by Dave Kirby

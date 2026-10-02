@@ -39,7 +39,7 @@ class SlothMainWindow(qt.QMainWindow):
         qt.loadUi(uiPath, baseinstance=self, package='sloth.gui')
         logoPath = os.path.join(sloth._resourcesPath, 'logo',
                                 'xraysloth_logo_03.svg')
-        self.setWindowTitle('Sloth {0}'.format(sloth.__version__))
+        self.setWindowTitle(f'Sloth {sloth.__version__}')
         self.setWindowIcon(qt.QIcon(logoPath))
 
         # About dialog
@@ -131,7 +131,7 @@ class AboutDialog(qt.QDialog):
         uiPath = os.path.join(sloth._resourcesPath, 'gui', 'uis',
                               'sloth_about.ui')
         qt.loadUi(uiPath, baseinstance=self, package='sloth.gui')
-        self.nameLabel.setText('Sloth {0}'.format(sloth.__version__))
+        self.nameLabel.setText(f'Sloth {sloth.__version__}')
 
 
 def sloth_main_gui_app():

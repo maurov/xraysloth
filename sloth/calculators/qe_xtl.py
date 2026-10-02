@@ -164,9 +164,9 @@ def read_qe_in(fileobj):
     for line in positions:
         if ('angstrom' in method.lower()):
             line_s = line.split()
-            line_s[1] = '{0:.7f}'.format( ( float(line_s[1]) - xn ) / float(qedict['alat']))
-            line_s[2] = '{0:.7f}'.format( ( float(line_s[2]) - yn ) / float(qedict['blat']) )
-            line_s[3] = '{0:.7f}'.format( ( float(line_s[3]) - zn ) / float(qedict['clat']) )
+            line_s[1] = '{:.7f}'.format( ( float(line_s[1]) - xn ) / float(qedict['alat']))
+            line_s[2] = '{:.7f}'.format( ( float(line_s[2]) - yn ) / float(qedict['blat']) )
+            line_s[3] = '{:.7f}'.format( ( float(line_s[3]) - zn ) / float(qedict['clat']) )
             line_s.append('\n')
             line = '   '.join(l for l in line_s)
         positions_lst.append(line.split())
@@ -180,9 +180,9 @@ def read_qe_in(fileobj):
 def qe2xtl(fin, fout=None, title=None):
     """converts a QE input to XTL out file"""
     if fout is None:
-        fout = '{0}.xtl'.format(fin.split('.')[0])
+        fout = '{}.xtl'.format(fin.split('.')[0])
     dats = read_qe_in(fin)
-    print('QE input: {0}\n'.format(fin))
+    print(f'QE input: {fin}\n')
     if title: dats.update({'title' : title})
     xtl_tmpl = Template('''
 TITLE ${title}\n\
@@ -199,7 +199,7 @@ EOF
     f = open(fout, 'w')
     f.write(xtlout)
     f.close()
-    print('XTL output: {0}\n'.format(fout))
+    print(f'XTL output: {fout}\n')
 
 if __name__ == '__main__':
     pass

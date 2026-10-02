@@ -187,7 +187,7 @@ class SwPlot:
 
         if xtitle is None: xtitle = (stp.getLabel(col))[0]
         if (ytitle is None) and (ref != 0):
-            ytitle = 'Weighted by {0}'.format(stp.getLabel(ref)[0])
+            ytitle = f'Weighted by {stp.getLabel(ref)[0]}'
         else:
             ytitle = 'No weight'
 

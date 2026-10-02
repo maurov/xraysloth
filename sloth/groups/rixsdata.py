@@ -34,7 +34,7 @@ class RixsData:
     def __init__(self, name=None, logger=None):
         """Constructor"""
 
-        self.__name__ = name or "RixsData_{0}".format(hex(id(self)))
+        self.__name__ = name or f"RixsData_{hex(id(self))}"
         self._logger = logger or _logger
 
     def load_from_dict(self, rxdict):

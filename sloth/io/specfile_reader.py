@@ -132,7 +132,7 @@ def _check_scans(scans):
             nscans = _str2rng(scans)
         except Exception:
             raise NameError(
-                "scans string '{0}' not understood by str2rng".format(scans)
+                f"scans string '{scans}' not understood by str2rng"
             )
     elif type(scans) is list:
         nscans = scans
@@ -356,7 +356,7 @@ class SpecfileData:
         if fname is None:
             raise NameError("Provide a SPEC data file to load with full path")
         elif not os.path.isfile(fname):
-            raise OSError("File not found: '%s'" % fname)
+            raise OSError(f"File not found: '{fname}'")
         else:
             if hasattr(self, "sf") and hasattr(self, "fname"):
                 if self.fname == fname:
@@ -365,7 +365,7 @@ class SpecfileData:
                 self.sf = specfile.Specfile(fname)  # sf = specfile file
                 self.fname = fname
                 if self.verbosity > 0:
-                    print("Loaded: {0} ({1} scans)".format(fname, self.sf.scanno()))
+                    print(f"Loaded: {fname} ({self.sf.scanno()} scans)")
         # if HAS_SIMPLEMATH: self.sm = SimpleMath.SimpleMath()
         # set common attributes
         self.cntx = cntx
@@ -415,14 +415,12 @@ class SpecfileData:
         # input checks
         if scan is None:
             raise NameError(
-                "Give a scan number [integer]: between 1 and {0}".format(
-                    self.sf.scanno()
-                )
+                f"Give a scan number [integer]: between 1 and {self.sf.scanno()}"
             )
         if cntx is None:
             raise NameError("Give the counter for x, the abscissa [string]")
         if cnty is not None and not (cnty in self.sf.allmotors()):
-            raise NameError("'{0}' is not in the list of motors".format(cnty))
+            raise NameError(f"'{cnty}' is not in the list of motors")
         if csig is None:
             raise NameError("Give the counter for signal [string]")
 
@@ -434,7 +432,7 @@ class SpecfileData:
         if "." in _scanstr:
             _scansel = _scanstr
         else:
-            _scansel = "{0}.1".format(_scanstr)
+            _scansel = f"{_scanstr}.1"
         self.sd = self.sf.select(_scansel)  # sd = specfile data
 
         # the case cntx is not given, the first counter is taken by default
@@ -481,19 +479,19 @@ class SpecfileData:
         # data counts
         if csec == "counts":
             scan_datz = (datasig / datamon) * np.mean(datamon)
-            _zlabel = "((signal/{0})*mean({0}))".format(labmon)
+            _zlabel = f"((signal/{labmon})*mean({labmon}))"
         elif csec is not None:  # data in cps
             scan_datz = (
                 (datasig / datamon) * np.mean(datamon)
             ) / self.sd.data_column_by_name(csec)
-            _zlabel = "((signal/{0})*mean({0}))/seconds".format(labmon)
+            _zlabel = f"((signal/{labmon})*mean({labmon}))/seconds"
         else:
             scan_datz = datasig / datamon
-            _zlabel = "signal/{0}".format(labmon)
+            _zlabel = f"signal/{labmon}"
 
         # z-axis normalization, if required
         if norm is not None:
-            _zlabel = "{0} norm by {1}".format(_zlabel, norm)
+            _zlabel = f"{_zlabel} norm by {norm}"
             if norm == "max":
                 scan_datz = _check_zero_div(scan_datz, np.max(scan_datz))
             elif norm == "max-min":
@@ -519,12 +517,12 @@ class SpecfileData:
             scan_mots = dict(zip(self.sf.allmotors(), self.sd.allmotorpos()))
         except Exception:
             if self.verbosity > 0:
-                print("INFO: NO MOTORS IN {0}".format(self.fname))
+                print(f"INFO: NO MOTORS IN {self.fname}")
             scan_mots = {}
 
         # y-axis
         if cnty is not None:
-            _ylabel = "motor {0} at {1}".format(cnty, scan_mots[cnty])
+            _ylabel = f"motor {cnty} at {scan_mots[cnty]}"
         else:
             _ylabel = _zlabel
 
@@ -582,7 +580,7 @@ class SpecfileData:
             )
             y = _mot2array(moty, x)
             if self.verbosity > 0:
-                print("INFO loading scan {0} into the map...".format(scan))
+                print(f"INFO loading scan {scan} into the map...")
             if _counter == 0:
                 xcol = x
                 ycol = y
@@ -633,7 +631,7 @@ class SpecfileData:
         mdats = []
         idats = []
         if self.verbosity > 0:
-            print("INFO loading {0} scans from SPEC ...".format(len(nscans)))
+            print(f"INFO loading {len(nscans)} scans from SPEC ...")
         for scan in nscans:
             _x, _z, _m, _i = self.get_scan(
                 scan=scan,
@@ -650,7 +648,7 @@ class SpecfileData:
             if motinfo:
                 mdats.append(_m)
                 idats.append(_i)
-            print("Loading scan {0}...".format(scan))
+            print(f"Loading scan {scan}...")
             _ct += 1
         if motinfo:
             return xdats, zdats, mdats, idats
@@ -681,7 +679,7 @@ class SpecfileData:
 
         actions = ["single", "average", "sum", "join"]
         if action not in actions:
-            raise NameError("'action={0}' not in known actions {1}".format(actions))
+            raise NameError("'action={}' not in known actions {}".format(actions))
 
         # moved to get_scans
         xdats, zdats = self.get_scans(scans=nscans, motinfo=False, **kws)
@@ -727,7 +725,7 @@ class SpecfileData:
         xmrgs = []
         zmrgs = []
         if scans == "all":
-            scans = "{0}:{1}".format(1, self.sf.scanno())
+            scans = f"{1}:{self.sf.scanno()}"
         try:
             nScans = _str2rng(scans)
             nAvg = nScans[::nbin]
@@ -739,14 +737,14 @@ class SpecfileData:
             if Avg == nAvg[-1] and not nScansLast == 0:
                 if self.verbosity > 1:
                     print(
-                        "WARNING avg {0} is of {1} scans only".format(iAvg, nScansLast)
+                        f"WARNING avg {iAvg} is of {nScansLast} scans only"
                     )
                 nAdd = nScansLast
             else:
                 nAdd = nbin
             mscans = nScans[iStart : iStart + nAdd]
             if self.verbosity > 0:
-                print("INFO avg {0}: scans='{1}'".format(iAvg, str(mscans)))
+                print(f"INFO avg {iAvg}: scans='{str(mscans)}'")
             _xmrg, _zmrg = self.get_mrg(
                 scans=mscans,
                 action=action,
@@ -881,7 +879,7 @@ class SpecfileData:
                 norm=norm,
             )
             fout = SpecfileDataWriter(
-                "{0}_S{1}".format(self.fname, str(scn).rjust(3, "0"))
+                "{}_S{}".format(self.fname, str(scn).rjust(3, "0"))
             )
             fout.wHeader(
                 epoch=self.sf.epoch(),
@@ -890,9 +888,9 @@ class SpecfileData:
                 motnames=self.sf.allmotors(),
             )
             fout.wScan(
-                ["Energy", "{0}".format(i["zlabel"])],
+                ["Energy", "{}".format(i["zlabel"])],
                 [x, y],
-                title="{0}".format(self.sd.command()),
+                title=f"{self.sd.command()}",
                 motpos=self.sd.allmotorpos(),
             )
 
@@ -901,7 +899,7 @@ class SpecfileData:
 def _specfiledata_getdoc(method):
     """to get the docstring of method inside a class"""
     s = SpecfileData("DUMMY!")
-    head = "\n Docstring from {0}:\n -------------------\n".format(method)
+    head = f"\n Docstring from {method}:\n -------------------\n"
     return head + getattr(getattr(s, method), "__doc__")
 
 
@@ -922,7 +920,7 @@ def spec_getscan2group(
 
     s = SpecfileData(fname)
     group = _larch.symtable.create_group()
-    group.__name__ = "SPEC data file %s" % fname
+    group.__name__ = f"SPEC data file {fname}"
     x, y, motors, infos = s.get_scan(
         scan=scan, cntx=cntx, csig=csig, cmon=cmon, csec=csec, scnt=scnt, norm=norm
     )
@@ -955,7 +953,7 @@ def spec_getmap2group(
 
     s = SpecfileData(fname)
     group = _larch.symtable.create_group()
-    group.__name__ = "SPEC data file %s" % fname
+    group.__name__ = f"SPEC data file {fname}"
     xcol, ycol, zcol = s.get_map(
         scans=scans, cntx=cntx, cnty=cnty, csig=csig, cmon=cmon, csec=csec, norm=norm
     )
@@ -987,9 +985,7 @@ def spec_getmrg2group(
 
     s = SpecfileData(fname)
     group = _larch.symtable.create_group()
-    group.__name__ = "SPEC data file {0}; scans {1}; action {2}".format(
-        fname, scans, action
-    )
+    group.__name__ = f"SPEC data file {fname}; scans {scans}; action {action}"
     x, y = s.get_mrg(
         scans=scans,
         cntx=cntx,

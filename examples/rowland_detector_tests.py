@@ -119,12 +119,12 @@ def fig2DetMove(thTot, thStops=None, figName='spectroTravelYZ',
                 bot.vlines(x=dpos2[0], ymin=dpos2[1]-yMajTicks, ymax=dpos2[1]+yMajTicks, linewidth=2, color=lcs[irm], alpha=0.5)
             
     if figTitle is None:
-        figTitle = r'Detector travel in {0}-{1} deg range'.format(int(thTot[-1]), int(thTot[0]))
+        figTitle = rf'Detector travel in {int(thTot[-1])}-{int(thTot[0])} deg range'
 
     for p, ref, xlab, ylab in zip((top, bot), ('global', 'local'), ('y', 'dpar/dy'), ('z', 'dper/dz')):
-        p.set_title('{0} - {1} ref'.format(figTitle, ref))
-        p.set_xlabel(r'{0} (mm)'.format(xlab))
-        p.set_ylabel(r'{0} (mm)'.format(ylab))
+        p.set_title(f'{figTitle} - {ref} ref')
+        p.set_xlabel(rf'{xlab} (mm)')
+        p.set_ylabel(rf'{ylab} (mm)')
         p.xaxis.set_major_locator(MultipleLocator(xMajTicks))
         p.xaxis.set_minor_locator(MultipleLocator(xMinTicks))
         p.yaxis.set_major_locator(MultipleLocator(yMajTicks))
@@ -141,10 +141,10 @@ def fig2DetMove(thTot, thStops=None, figName='spectroTravelYZ',
     plt.show()
 
     if figSaveName:
-        print('Saving plot to {0}.pdf/.png/.svg'.format(figSaveName))
-        plt.savefig('{0}.pdf'.format(figSaveName), bbox_inches='tight')
-        plt.savefig('{0}.png'.format(figSaveName), bbox_inches='tight')
-        plt.savefig('{0}.svg'.format(figSaveName), bbox_inches='tight')
+        print(f'Saving plot to {figSaveName}.pdf/.png/.svg')
+        plt.savefig(f'{figSaveName}.pdf', bbox_inches='tight')
+        plt.savefig(f'{figSaveName}.png', bbox_inches='tight')
+        plt.savefig(f'{figSaveName}.svg', bbox_inches='tight')
     
     return fig
 
@@ -160,7 +160,7 @@ if __name__ == "__main__":
         thStops = np.arange(40, 85, 5)
         figOut = None
         #figOut = 'spectrotravel_20170404'
-        figTitle = 'Detector travel {0}--{1} deg (stops every 5 deg)'.format(thMin, thMax)
+        figTitle = f'Detector travel {thMin}--{thMax} deg (stops every 5 deg)'
         fig = fig2DetMove(thTot, thStops=thStops, figTitle=figTitle, figSaveName=figOut)
     if 1:
         print("Detector positions plot with theta intevals")

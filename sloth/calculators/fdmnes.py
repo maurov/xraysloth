@@ -14,5 +14,5 @@ def get_efermi(fn):
     line = f.readline()
     f.close()
     ef = float(line.split()[6])
-    print('Calculated Fermi level: {0}'.format(ef))
+    print(f'Calculated Fermi level: {ef}')
     return ef

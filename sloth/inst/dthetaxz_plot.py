@@ -203,7 +203,7 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
                 gsplt.set_xlabel(xlabel)
             if gsy == 0:
                 gsplt.set_ylabel(ylabel)
-                gsplt.annotate(r'{0}$^\circ$'.format(th),
+                gsplt.annotate(rf'{th}$^\circ$',
                                horizontalalignment='center',
                                verticalalignment='center',
                                fontsize=fontSize+2,
@@ -219,9 +219,9 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
     plt.tight_layout()
     plt.show()
     if figOut:
-        plt.savefig('{0}.pdf'.format(figOut), bbox_inches='tight')
-        plt.savefig('{0}.png'.format(figOut), bbox_inches='tight')
-        plt.savefig('{0}.svg'.format(figOut), bbox_inches='tight')
+        plt.savefig(f'{figOut}.pdf', bbox_inches='tight')
+        plt.savefig(f'{figOut}.png', bbox_inches='tight')
+        plt.savefig(f'{figOut}.svg', bbox_inches='tight')
 
 
 def plotScanThetaFile(fname, scans, signal='eres', xlims=None, ylims=None, ylog=True,
@@ -294,7 +294,7 @@ def plotScanThetaFile(fname, scans, signal='eres', xlims=None, ylims=None, ylog=
     elif 'sa' in signal.lower():
         gsplt.set_ylabel(r'Effective solid angle (sr)')
     else:
-        gsplt.set_ylabel(r'{0}'.format(signal))
+        gsplt.set_ylabel(rf'{signal}')
     if ylog: gsplt.set_yscale('log')
     if xlims: gsplt.set_xlim(xlims)
     if ylims: gsplt.set_ylim(ylims)

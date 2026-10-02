@@ -33,7 +33,7 @@ class DataGroupXes(DataGroup1D):
         self.iads = Group()
         self.iads.__name__ = 'IAD analysis'
         self.iads.header = [self.iads.__name__,
-                            'Saved on {0}'.format(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))]
+                            'Saved on {}'.format(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))]
         self.iads.id = []
         self.iads.lab = []
         self.iads.area = []
@@ -49,7 +49,7 @@ class DataGroupXes(DataGroup1D):
                 try:
                     setattr(_g, 'iad_area', iad_area)
                     setattr(_g, 'iad_max', iad_max)
-                    print('DEBUG: {0}: area {1}\t max {2}'.format(_n, iad_area, iad_max))
+                    print(f'DEBUG: {_n}: area {iad_area}\t max {iad_max}')
                     setattr(_g, 'iad_yda', yda)
                     setattr(_g, 'iad_ydm', ydm)
                 except AttributeError:

@@ -246,7 +246,7 @@ def get_beam_from_file(bin_fname):
     try:
         beam.load(bin_fname)
     except Exception:
-        print("ERROR: get_beam_from_file cannot load {0}".format(bin_fname))
+        print(f"ERROR: get_beam_from_file cannot load {bin_fname}")
         beam = None
     return beam
 

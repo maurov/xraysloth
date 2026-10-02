@@ -79,7 +79,7 @@ class TestSagittalFocusing:
         self.rc.set_theta0(theta0, showInfos=showInfos) #to refresh positions
         self.rs0 = self.rc.Rs #store Rs for updated Rm/theta0
         self.sb = self.get_sb() #self.rc.Rs is updated in set_theta0
-        print('INFO: bender motor at {0:.3f}'.format(self.sb))
+        print(f'INFO: bender motor at {self.sb:.3f}')
         
     def read_data(self, fname, pts_shape=(12,3), retAll=False):
         """read data (custom format) using flushing technique
@@ -162,7 +162,7 @@ class TestSagittalFocusing:
                         _rnx = 0
                         _runs = {}
                 except:
-                    print('ERROR reading line {0}: {1}'.format(irow+1, row))
+                    print(f'ERROR reading line {irow+1}: {row}')
                     break
             #final flush all
             _apos[str(_bpos)] = _pts
@@ -179,13 +179,13 @@ class TestSagittalFocusing:
         try:
             d = dats[ang][run]
         except:
-            raise NameError('dats[{0}][{1}] not found!'.format(ang, run))
+            raise NameError(f'dats[{ang}][{run}] not found!')
         datslist = list(d.items())
         _retlist = []
         for _pos, _pts in datslist:
             _pos = float(_pos)
             if _pos == pos:
-                if self.rc.showInfos: print("=> data for actuator position '{0}'".format(_pos))
+                if self.rc.showInfos: print(f"=> data for actuator position '{_pos}'")
                 _retlist = [_pos, _pts]
                 break
             else:
@@ -300,7 +300,7 @@ class TestSagittalFocusing:
         ax.xaxis.set_minor_locator(MultipleLocator(50))
         ax.yaxis.set_major_locator(MultipleLocator(0.3))
         ax.yaxis.set_minor_locator(MultipleLocator(0.1))
-        ax.set_title('Proto pos {0}, run {1}: <th0> = {2:.3f} deg'.format(ang, run, self.th0))
+        ax.set_title(f'Proto pos {ang}, run {run}: <th0> = {self.th0:.3f} deg')
         ax.grid(alpha=0.5)
         ax.legend(loc='upper left', ncol=6, numpoints=1, frameon=True)
         #ax.legend(bbox_to_anchor=(1.05, 1.), loc=2, ncol=1, mode="expand", borderaxespad=0.)
@@ -317,7 +317,7 @@ class TestSagittalFocusing:
             poss, cens, rss, chis = self.eval_data_rs(ang, 0)
             xplt = rss[:,0]
             yplt = ( np.array([np.mean(abs(rss[idx,:6]-np.mean(rss[idx,:6]))) for idx in range(15)]) + np.array([np.mean(abs(rss[idx,6:]-np.mean(rss[idx,6:]))) for idx in range(15)]) ) / 2.
-            ax.plot(xplt, yplt, label='{0:.0f} deg'.format(self.th0), linewidth=2, marker='o')
+            ax.plot(xplt, yplt, label=f'{self.th0:.0f} deg', linewidth=2, marker='o')
         ax.set_xlabel('sagittal radius for central analyzer (mm)')
         ax.set_ylabel('average deviation all sagittal radii (mm)')
         ax.xaxis.set_major_locator(MultipleLocator(400))
@@ -343,7 +343,7 @@ class TestSagittalFocusing:
             xmax = max(xplt)+1.5
             xmin = min(xplt)-1.5
             ymin = min(yplt)-0.55
-            ax.plot(xplt, yplt, label='{0:.0f} deg'.format(self.th0), linewidth=2, marker='o')
+            ax.plot(xplt, yplt, label=f'{self.th0:.0f} deg', linewidth=2, marker='o')
         ax.set_xlabel('chi angle first analyzer (deg)')
         ax.set_ylabel('average deviation chi (deg)')
         ax.set_xlim(xmin, xmax)
@@ -479,9 +479,9 @@ class TestSagittalFocusing:
                 beta = math.atan((z0-z6)/(y6-y0))
             except:
                 print('ERROR getting measured theta0')
-                print('z0 = {0}; z6 = {1}; z0-z6 = {2}'.format(z0, z6, z0-z6))
-                print('y0 = {0}; y6 = {1}; y6-y0 = {2}'.format(y0, y6, y6-y0))
-                print('(z0-z6)/(y6-y0) = {0}'.format((z0-z6)/(y6-y0)))
+                print(f'z0 = {z0}; z6 = {z6}; z0-z6 = {z0-z6}')
+                print(f'y0 = {y0}; y6 = {y6}; y6-y0 = {y6-y0}')
+                print(f'(z0-z6)/(y6-y0) = {(z0-z6)/(y6-y0)}')
                 return 0
             th0 = math.degrees(math.pi/2.-beta)
             th0s.append(th0)
@@ -502,13 +502,9 @@ class TestSagittalFocusing:
         stdth0 = np.std(ath0s)
         if showInfos and (retAll is False):
             print('INFO: mean theta and P0')
-            print('th0_mean = {0:.4f} +/- {1:.4f} deg'.format(avgth0, stdth0))
-            print('P0_mean ( {0:.4f}, {1:.4f}, {2:.4f} ) mm'.format(avgP0[0],\
-                                                                    avgP0[1],\
-                                                                    avgP0[2]))
-            print('P0_std ({0:.4f}, {1:.4f}, {2:.4f}) mm'.format(stdP0[0],\
-                                                                 stdP0[1],\
-                                                                 stdP0[2]))
+            print(f'th0_mean = {avgth0:.4f} +/- {stdth0:.4f} deg')
+            print(f'P0_mean ( {avgP0[0]:.4f}, {avgP0[1]:.4f}, {avgP0[2]:.4f} ) mm')
+            print(f'P0_std ({stdP0[0]:.4f}, {stdP0[1]:.4f}, {stdP0[2]:.4f}) mm')
 
  
         if set_sp:
@@ -568,7 +564,7 @@ class TestSagittalFocusing:
             ax.xaxis.set_minor_locator(MultipleLocator(2))
             ax.yaxis.set_major_locator(MultipleLocator(0.05))
             ax.yaxis.set_minor_locator(MultipleLocator(0.01))
-            ax.set_title('Proto pos {0}, run {1}: th0 = {2:.3f} deg'.format(ang, run, self.th0))
+            ax.set_title(f'Proto pos {ang}, run {run}: th0 = {self.th0:.3f} deg')
             ax.grid(alpha=0.5)
             ax.legend(loc='upper left', ncol=6, numpoints=1, frameon=True)
             #ax.legend(bbox_to_anchor=(1.05, 1.), loc=2, ncol=1, mode="expand", borderaxespad=0.)
@@ -692,9 +688,9 @@ if __name__ == "__main__":
         if 0:
             #get average theta0 for the six angular positions T0--T5
             for ang in angs:
-                print('T{0} : {1}'.format(ang, t1.eval_data_th0s(ang, 0, set_sp=False, retAll='avg')))
-                print('T{0} : {1}'.format(ang, t2.eval_data_th0s(ang, 0, set_sp=False, retAll='avg')))
-                print('T{0} : {1}'.format(ang, t3.eval_data_th0s(ang, 0, set_sp=False, retAll='avg')))
+                print('T{} : {}'.format(ang, t1.eval_data_th0s(ang, 0, set_sp=False, retAll='avg')))
+                print('T{} : {}'.format(ang, t2.eval_data_th0s(ang, 0, set_sp=False, retAll='avg')))
+                print('T{} : {}'.format(ang, t3.eval_data_th0s(ang, 0, set_sp=False, retAll='avg')))
                 print('---')
 
 

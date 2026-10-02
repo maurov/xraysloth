@@ -112,8 +112,8 @@ def testMiscutOff1Ana(Rm, theta, alpha, d=dSi111):
     tv_mo = tv.get_miscut_off()
     th = RcHoriz(Rm=Rm, theta0=theta, alpha=alpha, d=d)
     th_mo = th.get_miscut_off()
-    print('RcVert: {0}'.format(tv_mo))
-    print('RcHor: {0}'.format(th_mo))
+    print(f'RcVert: {tv_mo}')
+    print(f'RcHor: {th_mo}')
 
 if __name__ == "__main__":
     #plt.close('all')

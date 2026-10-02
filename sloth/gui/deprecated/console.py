@@ -124,7 +124,7 @@ try:
 except ImportError:
     pass
 
-SLOTH_BANNER = "Sloth console, version {0}\n".format(sloth.__version__)
+SLOTH_BANNER = f"Sloth console, version {sloth.__version__}\n"
 
 
 class customIPythonWidget(IPythonWidget):

@@ -16,7 +16,7 @@ try:
     Shadow.ShadowTools.plt.ion()
     HAS_SHADOW = True
 except ImportError:
-    print("WARNING: {0}\n => this test will probably fail!".format(sys.exc_info()[1]))
+    print(f"WARNING: {sys.exc_info()[1]}\n => this test will probably fail!")
     pass
 
 CURDIR = os.path.dirname(os.path.realpath(__file__))
@@ -130,8 +130,8 @@ def sbca_si555(
             oe.write("end.01")
             beam.write("star.01")
 
-    print("INFO: Si(555) SBCA, R = {0:.0f} cm, theta0 = {1:.3f}".format(rmirr, theta0))
-    print("INFO: => p[q] = {0:.4f} cm , ene0 = {1:.3f}".format(p, ene0))
+    print(f"INFO: Si(555) SBCA, R = {rmirr:.0f} cm, theta0 = {theta0:.3f}")
+    print(f"INFO: => p[q] = {p:.4f} cm , ene0 = {ene0:.3f}")
 
     return (beam, src, oe)
 

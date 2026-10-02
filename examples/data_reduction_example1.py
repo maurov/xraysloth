@@ -77,7 +77,7 @@ def eval_scan(
     """
     infodict.update(
         {
-            "date": "{0}_{1}_{2}_{3}_{4}_{5}".format(*time.localtime()),
+            "date": "{}_{}_{}_{}_{}_{}".format(*time.localtime()),
             "fndat": fndat,
             "scan": scan,
             "norm": norm,
@@ -131,9 +131,9 @@ def eval_scan(
             x, y, dy=True, bkg="Constant", plot=showFit, show_res=showFit
         )
         fit.xrel = x - fit.resdict["cfwhm"]
-        print("=> OK PEAK FIT [{0}] <=".format(label))
+        print(f"=> OK PEAK FIT [{label}] <=")
     except Exception:
-        print("=> ERROR PEAK FIT [{0}] <=".format(label))
+        print(f"=> ERROR PEAK FIT [{label}] <=")
         fit.resdict = {
             "area": np.nan,
             "cfwhm": np.nan,
@@ -255,7 +255,7 @@ def eval_loop(
         sfout.write_header(title="eval_loop", motnames=motnames)
         for lcol, ldat, linf in zip(lcols, ldats, linfs):
             motpos = [val for val in linf.values()]
-            title = "{0}_R{1:.0f}_P{2}_M{3}_{4}".format(
+            title = "{}_R{:.0f}_P{}_M{}_{}".format(
                 linf["label"],
                 linf["radius"],
                 linf["stage"],
@@ -336,7 +336,7 @@ if __name__ == "__main__":
         }
 
         out_root = os.path.join(_curDir, "data_reduction_example1")
-        out_date = "{0:04d}-{1:02d}-{2:02d}".format(*time.localtime())
+        out_date = "{:04d}-{:02d}-{:02d}".format(*time.localtime())
         fnout_el = "{0}_{2}.spec".format(out_root, out_date, "out")
         resl_el = []
         resl_fc = []

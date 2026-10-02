@@ -99,7 +99,7 @@ def get_ene_index(ene, cen, hwhm):
             ene_imax = min(np.where(ene > (cen + hwhm))[0])
         return ene_imin, ene_imax
     except Exception:
-        print("index not found for {0} +/- {1}".format(cen, hwhm))
+        print(f"index not found for {cen} +/- {hwhm}")
         return None, None
 
 
@@ -186,7 +186,7 @@ def conv(e, mu, kernel="gaussian", fwhm_e=None, efermi=None):
         eimin, eimax = get_ene_index(eup, eup[n], 1.5 * fwhm_e[n])
         if (eimin is None) or (eimax is None):
             if DEBUG:
-                raise IndexError("e[{0}]".format(n))
+                raise IndexError(f"e[{n}]")
         if len(range(eimin, eimax)) % 2 == 0:
             kx = eup[eimin:eimax + 1]  # odd range centered at the convolution point
         else:
@@ -198,7 +198,7 @@ def conv(e, mu, kernel="gaussian", fwhm_e=None, efermi=None):
         elif "lor" in kernel.lower():
             ky = lorentzian(kx, cen=eup[n], gamma=hwhm)
         else:
-            raise ValueError("convolution kernel '{0}' not implemented".format(kernel))
+            raise ValueError(f"convolution kernel '{kernel}' not implemented")
         ky = ky / ky.sum()  # normalize
         zn = 0
         lk = int(len(kx))

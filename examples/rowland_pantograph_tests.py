@@ -121,7 +121,7 @@ def testFrictionPrototype(Rm, theta0, d=dSi111):
     rd = math.asin((act_axoff - pb[1]) / act_dist)
     #print(math.degrees(rd))
     mot_sagoff = act_dist * math.cos(rd) + pb[2]
-    print('Actuator position = {0} (test)'.format(mot_sagoff))
+    print(f'Actuator position = {mot_sagoff} (test)')
     # WORKS!!!!!
     return t
 
@@ -140,7 +140,7 @@ def testFrictionPrototypeInMethod(Rm, theta0, d=dSi111,\
                 bender_version=bender_version,\
                 showInfos=showInfos)
     mot_sagoff = t.get_bender_mot(t.get_bender_pos(aN=5))
-    print('INFO: Actuator position = {0} (in method)'.format(mot_sagoff))
+    print(f'INFO: Actuator position = {mot_sagoff} (in method)')
     return t
 
 ### TESTS FOR THE PANTOGRAPH VERSION 2017 ###
@@ -235,12 +235,12 @@ def testPantograph2017(Rm, theta0, d=dSi111,\
     pb_in = rc.get_bender_pos(aN=5)
     
     print("Test bender point:")
-    print("(here) at ({0:.5f}, {1:.5f})".format(pb_axoff, pb_sagoff))
-    print("(in method) at ({0:.5f}, {1:.5f})".format(pb_in[0], pb_in[1]))
+    print(f"(here) at ({pb_axoff:.5f}, {pb_sagoff:.5f})")
+    print(f"(in method) at ({pb_in[0]:.5f}, {pb_in[1]:.5f})")
 
     act_mot_pos = rc.get_bender_mot(pb_in)
     
-    print("Actuator motor position (in local sagittal reference): {0:.5f}".format(act_mot_pos))
+    print(f"Actuator motor position (in local sagittal reference): {act_mot_pos:.5f}")
     
     return rc
     

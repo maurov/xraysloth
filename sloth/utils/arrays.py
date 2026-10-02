@@ -17,7 +17,7 @@ def imin(arr, debug=False):
     """index of minimum value"""
     _im = np.argmin(arr)
     if debug:
-        _logger.debug("Check: {0} = {1}".format(np.min(arr), arr[_im]))
+        _logger.debug(f"Check: {np.min(arr)} = {arr[_im]}")
     return _im
 
 
@@ -25,7 +25,7 @@ def imax(arr, debug=False):
     """index of maximum value"""
     _im = np.argmax(arr)
     if debug:
-        _logger.debug("Check: {0} = {1}".format(np.max(arr), arr[_im]))
+        _logger.debug(f"Check: {np.max(arr)} = {arr[_im]}")
     return _im
 
 
@@ -206,7 +206,7 @@ def merge_arrays_1d(data, method="average", axis=None, weights=None, **kws):
     elif method == "average":
         return avg_arrays_1d(data, axis=axis, weights=weights, **kws)
     else:
-        raise NameError("wrong 'method': %s" % method)
+        raise NameError(f"wrong 'method': {method}")
 
 
 def rebin_piecewise_constant(x1, y1, x2):

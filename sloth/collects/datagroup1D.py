@@ -89,7 +89,7 @@ class DataGroup1D(DataGroup):
 
     def getxy(self, fname, xattr='x', yattr='y', scanlab=None, **kws):
         """load two colums ascii data """
-        g = _read_ascii(fname, labels='{0} {1}'.format(xattr, yattr),
+        g = _read_ascii(fname, labels=f'{xattr} {yattr}',
                         _larch=self._larch)
         g.norint = self.norint(getattr(g, yattr))#, x=getattr(g, xattr))
         g.normax = self.normax(getattr(g, yattr))
@@ -173,7 +173,7 @@ class DataGroup1D(DataGroup):
             self.mkinterpxy(xmin=xmin, xmax=xmax)
             cmdiff = self.getcom(ref, xattr='xnew', yattr='ynew') - self.getcom(g, xattr='xnew', yattr='ynew')
             self.gs[g].x = self.gs[g].x + cmdiff
-            print('{0}.x shifted by {1}'.format(self.gs[g].label, cmdiff))
+            print(f'{self.gs[g].label}.x shifted by {cmdiff}')
             if set_attr:
                 self.gs[g].xcalib = cmdiff
         else:
@@ -221,14 +221,14 @@ class DataGroup1D(DataGroup):
                 xstep = min(np.diff(xref))
             xnew = np.linspace(xmin, xmax, (xmax-xmin)/xstep)
         if DEBUG:
-            print('DEBUG: {0} interp, {1} to {2}, {3} xstep = {4} points'.format(kind, xmin, xmax, xstep, len(xnew)))
+            print(f'DEBUG: {kind} interp, {xmin} to {xmax}, {xstep} xstep = {len(xnew)} points')
         self.selector(sel)
         for _n, _g in enumerate(self.gs_sel):
             try:
                 setattr(_g, 'xnew', xnew)
                 setattr(_g, 'ynew', _interp(getattr(_g, xattr), getattr(_g, yattr), xnew, kind=kind))
                 if DEBUG:
-                    print('DEBUG: group {0} interpolated'.format(_n))
+                    print(f'DEBUG: group {_n} interpolated')
             except AttributeError:
                 pass
 
@@ -253,7 +253,7 @@ class DataGroup1D(DataGroup):
         yattr = kws.get('yattr', 'y')
         xref = self.get(xattr, sel=[iref])[0]
         yref = self.get(yattr, sel=[iref])[0]
-        label = kws.get('label', 'sum_of_{}'.format(sel))
+        label = kws.get('label', f'sum_of_{sel}')
         self.gs.append(Group())
         gsum = self.gs[-1]
         gsum.label = label

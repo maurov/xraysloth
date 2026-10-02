@@ -155,7 +155,7 @@ def test009d():
         absWrc=False,
         xyFigSize=(6.0 * 150, 4.0 * 150),
         xylab=(0.04, 0.96),
-        figName="{0}mm.{1}".format(int(rd), msks[0]),
+        figName=f"{int(rd)}mm.{msks[0]}",
         fontSize=9,
         colSpan=2,
         xyTicks=0.1,
@@ -180,7 +180,7 @@ def test009d():
         absWrc=False,
         xyFigSize=(6.0 * 150, 4.0 * 150),
         xylab=(0.04, 0.96),
-        figName="{0}mm.{1}".format(int(rd), msks[1]),
+        figName=f"{int(rd)}mm.{msks[1]}",
         fontSize=9,
         colSpan=2,
         xyTicks=0.1,
@@ -205,7 +205,7 @@ def test010():
                 nlevels=30,
                 plotMask=True,
                 absWrc=False,
-                figName="{0}mm.{1}".format(int(rd), msk),
+                figName=f"{int(rd)}mm.{msk}",
                 xyFigHalfRange=0.1,
                 xyFigSize=(8 * 150, 4.3 * 150),
             )
@@ -229,7 +229,7 @@ def plotDats011(_d):
                 mC = 3.0
                 _mk = None
                 _ms = 2
-            lab = "{0}mm.{1}".format(int(rd), msk)
+            lab = f"{int(rd)}mm.{msk}"
             for cs, cl in zip(_d["cases"], _d["colors"]):
                 gsplt.plot(
                     _d[lab][cs]["thetaB"],
@@ -239,12 +239,12 @@ def plotDats011(_d):
                     ls=_ls,
                     marker=_mk,
                     ms=_ms,
-                    label=r"{0} $\times$ {1} {2}".format(int(mC), msk[:4], cs),
+                    label=rf"{int(mC)} $\times$ {msk[:4]} {cs}",
                 )
         gsplt.set_ylim(0.0, 0.05)
         gsplt.set_xlabel(r"Bragg angle $\theta_B$ (deg)")
         gsplt.set_ylabel(r"Effective solid angle (sr)")
-        gsplt.set_title(r"Rect vs Circ at {0} mm bending".format(int(rd)))
+        gsplt.set_title(rf"Rect vs Circ at {int(rd)} mm bending")
         gsplt.legend(loc="best")
     plt.tight_layout()
     plt.show()
@@ -269,8 +269,8 @@ def test011(retDats=True, plotDats=False):
             mxx, mzz = getMeshMasked(
                 mask=msk, r1p=rd, cryst_x=cx, cryst_z=cz, csteps=_d["csteps"]
             )
-            lab = "{0}mm.{1}".format(int(rd), msk)
-            print("{0}:".format(lab))
+            lab = f"{int(rd)}mm.{msk}"
+            print(f"{lab}:")
             _d["label"] = lab
             _d[lab] = getDthetaDats(
                 mxx, mzz, wrc=_d["wrc"], cases=_d["cases"], angles=_d["angles"]
@@ -296,7 +296,7 @@ def plotDats012(_d):
     for ird, rd in enumerate(_d["rds"]):
         gsplt = plt.subplot(gs[ird])
         for cz, cl in zip(_d["czs"], _d["colors"]):
-            lab = "{0}mm/{1}".format(int(rd), cz)
+            lab = f"{int(rd)}mm/{cz}"
             gsplt.plot(
                 _d[lab][cs]["thetaB"],
                 _d[lab][cs]["eres"],
@@ -305,12 +305,12 @@ def plotDats012(_d):
                 ls=_ls,
                 marker=_mk,
                 ms=_ms,
-                label=r"{0}mm".format(cz * 2),
+                label=rf"{cz * 2}mm",
             )
         # gsplt.set_ylim(0.,0.05)
         gsplt.set_xlabel(r"Bragg angle $\theta_B$ (deg)")
         gsplt.set_ylabel(r"Energy resolution $\frac{\Delta E}{E}$")
-        gsplt.set_title(r"Js 80 mm height at {0} mm bending".format(int(rd)))
+        gsplt.set_title(rf"Js 80 mm height at {int(rd)} mm bending")
         gsplt.legend(loc="best")
     plt.tight_layout()
     plt.show()
@@ -335,7 +335,7 @@ def test012(retDats=True):
             mxx, mzz = getMeshMasked(
                 mask=d["msks"], r1p=rd, cryst_x=d["cxs"], cryst_z=cz, csteps=d["csteps"]
             )
-            lab = "{0}/{1}mm/{2}".format(d["cases"][0], int(rd), cz * 2)
+            lab = "{}/{}mm/{}".format(d["cases"][0], int(rd), cz * 2)
             motpos = [
                 mapCase2Num(d["cases"][0]),
                 rd,
@@ -345,7 +345,7 @@ def test012(retDats=True):
                 d["wrc"],
                 d["csteps"],
             ]
-            print("{0}:".format(lab))
+            print(f"{lab}:")
             d[lab] = getDthetaDats(
                 mxx, mzz, wrc=d["wrc"], cases=d["cases"], angles=d["angles"]
             )
@@ -356,7 +356,7 @@ def test012(retDats=True):
             mxx, mzz = getMeshMasked(
                 mask=d["msks"], r1p=rd, cryst_x=d["cxs"], cryst_z=cz, csteps=d["csteps"]
             )
-            lab = "{0}/{1}mm/{2}".format(case, int(rd), cz * 2)
+            lab = f"{case}/{int(rd)}mm/{cz * 2}"
             motpos = [
                 mapCase2Num(case),
                 rd,
@@ -366,7 +366,7 @@ def test012(retDats=True):
                 d["wrc"],
                 d["csteps"],
             ]
-            print("{0}:".format(lab))
+            print(f"{lab}:")
             d[lab] = getDthetaDats(
                 mxx, mzz, wrc=d["wrc"], cases=[case], angles=d["angles"]
             )
@@ -402,7 +402,7 @@ def test013(retDats=True):
                 cryst_z=d["czs"],
                 csteps=d["csteps"],
             )
-            lab = "{0}/{1}mm/{2}{3}".format(
+            lab = "{}/{}mm/{}{}".format(
                 case, int(rd), d["msks"][:4], int(d["czs"] * 2)
             )
             motpos = [
@@ -414,7 +414,7 @@ def test013(retDats=True):
                 d["wrc"],
                 d["csteps"],
             ]
-            print("{0}:".format(lab))
+            print(f"{lab}:")
             d[lab] = getDthetaDats(
                 mxx, mzz, wrc=d["wrc"], cases=[case], angles=d["angles"]
             )

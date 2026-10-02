@@ -363,11 +363,11 @@ if __name__ == "__main__":
         #pp.fp = pp.plotxy_footprint('rmir.01')
         
         print('=== RESULTS ===')
-        print('Source energy FWHM {0:.3f} eV (50% intensity)'.format(fwhm_src))
-        print('OE1 energy FWHM {0:.3f} eV (50% intensity)'.format(fwhm_oe1))
-        print('Bragg angle {0:.2f} deg'.format(s.rc.theta0))
-        print('Central energy {0:.5f} eV'.format(s.rc.get_ene()))
-        print('Energy resolution {0:.3f}E-4'.format((fwhm_oe1/s.rc.get_ene())*1E4))
+        print(f'Source energy FWHM {fwhm_src:.3f} eV (50% intensity)')
+        print(f'OE1 energy FWHM {fwhm_oe1:.3f} eV (50% intensity)')
+        print(f'Bragg angle {s.rc.theta0:.2f} deg')
+        print(f'Central energy {s.rc.get_ene():.5f} eV')
+        print(f'Energy resolution {(fwhm_oe1/s.rc.get_ene())*1E4:.3f}E-4')
 
     # ---------------------------------------------------------------#
     # ShadowSpectro1 tests

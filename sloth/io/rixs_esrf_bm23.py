@@ -86,7 +86,7 @@ def get_rixs_bm23(
     """
     _writer = "get_rixs_bm23"
     _writer_version = "1.5"  #: used for reading back in RixsData.load_from_h5()
-    _writer_timestamp = "{0:04d}-{1:02d}-{2:02d}_{3:02d}{4:02d}".format(
+    _writer_timestamp = "{:04d}-{:02d}-{:02d}_{:02d}{:02d}".format(
         *time.localtime()
     )
 

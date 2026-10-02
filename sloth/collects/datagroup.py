@@ -125,7 +125,7 @@ class DataGroup:
     def show(self, attr='label', sel=None, none_value=None):
         """show a given attribute ['label']"""
         if sel is not None: self.selector(sel)
-        print("(sel) gs[#] : {0}".format(attr))
+        print(f"(sel) gs[#] : {attr}")
         for ig, g in enumerate(self.gs):
             # get the attribute
             try:
@@ -138,7 +138,7 @@ class DataGroup:
             else:
                 flag_sel = ' '
             # then show
-            print("({0}) {1} : {2}".format(flag_sel, ig, _attr))
+            print(f"({flag_sel}) {ig} : {_attr}")
 
     def kick(self, selrng):
         """delete a given element in self.gs list"""
@@ -147,7 +147,7 @@ class DataGroup:
                 try:
                     del self.gs[ig]
                 except:
-                    print('Error deleting gs[{}] ({})'.format(ig, self.gs[ig].label))
+                    print(f'Error deleting gs[{ig}] ({self.gs[ig].label})')
         if type(selrng) is list:
             if (selrng[0] < selrng[1]): selrng.reverse()
             _dlist(selrng)
@@ -188,7 +188,7 @@ class DataGroup:
             try:
                 setattr(g, str(attr), value)
             except:
-                print('Error setting {0} in {1}'.format(attr, g.label))
+                print(f'Error setting {attr} in {g.label}')
         map(_safe_setattr, self.gs_sel)
 
     def copyattr(self, attr1, attr2):
@@ -197,7 +197,7 @@ class DataGroup:
             try:
                 setattr(_g, str(attr2), getattr(_g, attr1))
             except AttributeError:
-                print("Attribute {0} does not exist in group {1}".format(attr1, _g.label))
+                print(f"Attribute {attr1} does not exist in group {_g.label}")
 
     def get_kwsd(self):
         """return a dictionary with default keyword arguments"""
@@ -320,13 +320,13 @@ class EvalData:
         self.fname_pickle = fname_pickle
         with open(fname_pickle, write_access) as f:
             pickle.dump(self, f)
-        print('INFO: data saved to\n.... {0}'.format(fname_pickle))
+        print(f'INFO: data saved to\n.... {fname_pickle}')
 
     def load_data(self, fname_pickle):
         """pickle load evaluation results from file"""
         with open(fname_pickle, read_access) as f:
             self = pickle.load(f)
-            print('INFO: data loaded from\n.... {0}'.format(fname_pickle))
+            print(f'INFO: data loaded from\n.... {fname_pickle}')
         return self
 
     def overwrite_labels(self, new_labels):
@@ -335,7 +335,7 @@ class EvalData:
         for ilab, newlab in enumerate(new_labels):
             oldlab = self.linfs[ilab]['label']
             self.linfs[ilab]['label'] = newlab
-            print("{0} -> {1}".format(oldlab, newlab))
+            print(f"{oldlab} -> {newlab}")
 
     def overwrite_flags(self, new_flags):
         """overwrites data flags"""
@@ -343,7 +343,7 @@ class EvalData:
         for ilab, newflag in enumerate(new_flags):
             oldflag = self.linfs[ilab]['flag']
             self.linfs[ilab]['flag'] = newflag
-            print("{0} -> {1}".format(oldflag, newflag))
+            print(f"{oldflag} -> {newflag}")
 
     def show_label(self, infd):
         """show label"""

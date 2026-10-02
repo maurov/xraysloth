@@ -40,7 +40,7 @@ class RixsROIManager(RegionOfInterestManager):
     def updateAddedRegionOfInterest(self, roi):
         """Called for each added region of interest: set the name"""
         if roi.getLabel() == '':
-            roi.setLabel('%d' % len(self.getRois()))
+            roi.setLabel(str(len(self.getRois())))
         if isinstance(roi, LineMixIn):
             roi.setLineWidth(2)
             roi.setLineStyle('--')

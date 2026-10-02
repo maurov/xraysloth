@@ -137,7 +137,7 @@ def det_pos_rotated(dxyz, drot=35., doffsets=[0,0]):
         alpha = math.pi/2. - math.radians(drot)
     else:
         alpha = math.atan(z/y) - math.radians(drot)
-    if DEBUG: print('DEBUG(det_pos_rotated): alpha is {0} deg'.format(math.degrees(alpha)))
+    if DEBUG: print(f'DEBUG(det_pos_rotated): alpha is {math.degrees(alpha)} deg')
     dpar = dr * math.cos(alpha)
     dper = dr * math.sin(alpha)
     #insert offset of the detector origin
@@ -316,18 +316,18 @@ class RowlandCircle:
             print('WARNING: sagittal focusing generic (CHECK FORMULA!)')
             self.Rs = ( 2. * math.sin(self.rtheta0) * self.p * self.q ) / (self.p + self.q)
         if showInfos:
-            print("INFO: theta0 = {0:.3f} deg".format(self.theta0))
-            print("INFO: alpha = {0:.3f} deg".format(self.alpha))
+            print(f"INFO: theta0 = {self.theta0:.3f} deg")
+            print(f"INFO: alpha = {self.alpha:.3f} deg")
             if self.d is not None:
-                print("INFO: ene0 = {0:.2f} eV".format(self.get_ene()))
-                print("INFO: d = {0:.3f} $\AA$".format(self.d))
-            print("INFO: p = {0:.3f} {1}".format(self.p, self.uDist))
-            print("INFO: q = {0:.3f} {1}".format(self.q, self.uDist))
-            print("INFO: Rm = {0:.3f} {1}".format(self.Rm, self.uDist))
-            print("INFO: Rs = {0:.3f} {1}".format(self.Rs, self.uDist))
-            print("INFO: aW = {0:.3f} {1}".format(self.aW, self.uDist))
-            print("INFO: aWext = {0:.3f} {1}".format(self.aWext, self.uDist))
-            print("INFO: aL = {0:.3f} {1}".format(self.aL, self.uDist))
+                print(f"INFO: ene0 = {self.get_ene():.2f} eV")
+                print(f"INFO: d = {self.d:.3f} $\AA$")
+            print(f"INFO: p = {self.p:.3f} {self.uDist}")
+            print(f"INFO: q = {self.q:.3f} {self.uDist}")
+            print(f"INFO: Rm = {self.Rm:.3f} {self.uDist}")
+            print(f"INFO: Rs = {self.Rs:.3f} {self.uDist}")
+            print(f"INFO: aW = {self.aW:.3f} {self.uDist}")
+            print(f"INFO: aWext = {self.aWext:.3f} {self.uDist}")
+            print(f"INFO: aL = {self.aL:.3f} {self.uDist}")
         return self
 
     def get_infos(self):
@@ -445,8 +445,8 @@ class RowlandCircle:
             chihalf = chi/2.
         aDist = 2 * Rs * math.sin(chihalf) - aW * math.cos(chihalf)
         if self.showInfos:
-            print('INFO: analyser #{0:.0f}-#{1:.0f} (edge-to-edge) = {2:.4f} {3}'.format(aN, aN-1, aDist, self.uDist))
-            print('INFO: delta chi = {0:.4f} deg'.format(chi))
+            print(f'INFO: analyser #{aN:.0f}-#{aN-1:.0f} (edge-to-edge) = {aDist:.4f} {self.uDist}')
+            print(f'INFO: delta chi = {chi:.4f} deg')
         return aDist
 
     def get_axoff(self, chi, Rs=None, aL=None):
@@ -514,7 +514,7 @@ class RowlandCircle:
         if (phi == 0):
             if self.showInfos:
                 print('INFO: simple case where aXoff is constant at aXoffMin')
-                print('INFO: aXoffMin = {0:.5f}'.format(aXoffMin))
+                print(f'INFO: aXoffMin = {aXoffMin:.5f}')
             return aXoffMin
         sinphi = math.sin(phi)
         cosphi = math.cos(phi)
@@ -526,16 +526,16 @@ class RowlandCircle:
         y2 = (-b - math.sqrt(b**2 - 4*a*c)) / (2*a)
         if self.showInfos:
             print('INFO: two solutions for polar distance d:')
-            print('INFO: 1 = {0:.5f} (good)'.format(y1))
-            print('INFO: 2 = {0:.5f} (bad)'.format(y2))
+            print(f'INFO: 1 = {y1:.5f} (good)')
+            print(f'INFO: 2 = {y2:.5f} (bad)')
         aXoff1 = y1*sinphi + aXoffMin
         SagOff1 = SagOffMin - y1*cosphi
         aXoff2 = y2*sinphi + aXoffMin
         SagOff2 = SagOffMin - y2*cosphi
         if self.showInfos:
-            print('INFO: aXoffMin = {0:.5f}, SagOffMin = {1:.5f}, degRot = {2:.3f}'.format(aXoffMin, SagOffMin, degRot))
-            print('INFO: aXoff1 = {0:.5f}, SagOff1 = {1:.5f}'.format(aXoff1, SagOff1))
-            print('INFO: aXoff2 = {0:.5f}, SagOff2 = {1:.5f}'.format(aXoff2, SagOff2))
+            print(f'INFO: aXoffMin = {aXoffMin:.5f}, SagOffMin = {SagOffMin:.5f}, degRot = {degRot:.3f}')
+            print(f'INFO: aXoff1 = {aXoff1:.5f}, SagOff1 = {SagOff1:.5f}')
+            print(f'INFO: aXoff2 = {aXoff2:.5f}, SagOff2 = {SagOff2:.5f}')
         return aXoff1
 
     def get_sag_off(self, aXoff, Rs=None, aL=None, retAll=False):
@@ -573,7 +573,7 @@ class RowlandCircle:
         SagOff0 = cs_h(aXoff0*2, Rs)
         SagOff = SagOff0 - aL*math.cos(rchi) + aL
         if self.showInfos:
-            print("INFO: === surface (0) vs pivot (aL={0:.0f}) ===".format(aL))
+            print(f"INFO: === surface (0) vs pivot (aL={aL:.0f}) ===")
             _tmpl_ihead = "INFO: {0:=^10} {1:=^12} {2:=^13}"
             _tmpl_idata = "INFO: {0:^ 10.5f} {1:^ 12.5f} {2:^ 13.5f}"
             print(_tmpl_ihead.format('Chi', 'aXoff', 'SagOff'))
@@ -622,8 +622,8 @@ class RowlandCircle:
         dchi = _c2[2]-_c2[0]
         if self.showInfos:
             print('INFO: == CHI ==')
-            print('INFO: \chi{0:.0f} = {1:.5f}'.format(aN, _c2[2]))
-            print('INFO: \Delta\chi{0}{1} = {2:.5f} deg'.format(aN, aN-2, dchi))
+            print(f'INFO: \chi{aN:.0f} = {_c2[2]:.5f}')
+            print(f'INFO: \Delta\chi{aN}{aN - 2} = {dchi:.5f} deg')
         _p = [self.get_sag_off(self.get_axoff(_cn), retAll=True) for _cn in _c2] #SagOffs
             
         #find the angle between the last pivot point _p[-1] and the bender point (B)
@@ -660,7 +660,7 @@ class RowlandCircle:
             raise NameError("ERROR with bender_version")
         if self.showInfos:
                 print('INFO: bender point (B) coordinates (local sagittal reference)')
-                print('INFO: aXoff={0:.5f}, SagOff={1:.5f}'.format(pb_axoff, pb_sagoff)) 
+                print(f'INFO: aXoff={pb_axoff:.5f}, SagOff={pb_sagoff:.5f}') 
         return (pb_axoff, pb_sagoff)
 
     def get_bender_mot(self, bender_pos, actuator=None, bender_version=None):
@@ -709,9 +709,9 @@ class RowlandCircle:
             Rm = self.Rm
         _dth = self.get_dth(eDelta)
         if self.showInfos:
-            print('INFO: dth = {0:.1f} urad ({1:.5f} deg)'.format(_dth*1e6, math.degrees(_dth)))
-            print('INFO: daz [tan(dth) ~ dth] = {0}'.format(_dth * 2 * Rm * math.sin(rtheta0) ))
-            print('INFO: daz [tan(dth) ~ dth and sin(th) ~ 1 = {0}'.format(_dth * 2 * Rm) )
+            print(f'INFO: dth = {_dth*1e6:.1f} urad ({math.degrees(_dth):.5f} deg)')
+            print(f'INFO: daz [tan(dth) ~ dth] = {_dth * 2 * Rm * math.sin(rtheta0)}')
+            print(f'INFO: daz [tan(dth) ~ dth and sin(th) ~ 1 = {_dth * 2 * Rm}' )
         return 2 * Rm * math.sin(rtheta0) * math.tan(_dth)
 
     def get_ay_off(self, eDelta, rtheta0=None, d=None, Rm=None):
@@ -728,7 +728,7 @@ class RowlandCircle:
             Rm = self.Rm
         _dth = self.get_dth(eDelta)
         if self.showInfos:
-            print('INFO: dth = {0:.1f} urad ({1:.5f} deg)'.format(_dth*1e6, math.degrees(_dth)))
+            print(f'INFO: dth = {_dth*1e6:.1f} urad ({math.degrees(_dth):.5f} deg)')
         return 2 * Rm * math.tan(rtheta0) * math.tan(_dth)
         
     def get_ene_off(self, aZoff, rtheta0=None, d=None, Rm=None):
@@ -746,7 +746,7 @@ class RowlandCircle:
         #
         _dth = math.atan( aZoff /  (2 * Rm * math.sin(rtheta0)) )
         if self.showInfos:
-            print('INFO: dth = {0:.1f} urad ({1:.5f} deg)'.format(_dth*1e6, math.degrees(_dth)))
+            print(f'INFO: dth = {_dth*1e6:.1f} urad ({math.degrees(_dth):.5f} deg)')
         _ene = self.get_ene(theta=rtheta0, d=d, isDeg=False)
         _de = _ene * _dth / math.tan(rtheta0)
         return _de

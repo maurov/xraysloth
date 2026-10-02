@@ -41,8 +41,7 @@ def testFluoWidth(elem='Au', lines=['LB6', 'LB4', 'LB1', 'LB2', 'LB3', 'LB5']):
     this example: Au Lbeta lines
     """
     for line in lines:
-        print("{0} {1} : {2:>.4f} eV".format(elem, line,
-                                             fluo_width(elem, line)))
+        print(f"{elem} {line} : {fluo_width(elem, line):>.4f} eV")
 
 
 def testFluoSulphurK():

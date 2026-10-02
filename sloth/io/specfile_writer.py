@@ -39,13 +39,13 @@ class SpecfileDataWriter:
         self.scanStart = 0
         self.scanOnly = False
         if os.path.isfile(self.fn) and os.access(self.fn, os.R_OK):
-            if DEBUG: print('WARNING: {0} exists'.format(self.fn))
+            if DEBUG: print(f'WARNING: {self.fn} exists')
             if HAS_SPECFILE:
                 try:
                     sf = specfile.Specfile(self.fn)
                     self.scanStart = sf.scanno()
                     self.scanOnly = True
-                    if DEBUG: print('INFO: scanStart = {0}'.format(self.scanStart))
+                    if DEBUG: print(f'INFO: scanStart = {self.scanStart}')
                 except:
                     pass
         if owrt:
@@ -79,29 +79,29 @@ class SpecfileDataWriter:
             if DEBUG: print("'scanOnly' mode: header skipped")
             return
 
-        _hl = [ '#F {0}'.format(self.fn) ]
+        _hl = [ f'#F {self.fn}' ]
         # epoch
         if epoch is not None:
-            _hl.append('#E {0}'.format(epoch))
+            _hl.append(f'#E {epoch}')
         else:
-            _hl.append('#E {0}'.format(int(time.time())))
+            _hl.append(f'#E {int(time.time())}')
         # date
         if date is not None:
-            _hl.append('#D {0}'.format(date))
+            _hl.append(f'#D {date}')
         else:
-            _hl.append('#D {0}'.format(time.ctime()))
+            _hl.append(f'#D {time.ctime()}')
         # title
-        _hl.append('#C {0}'.format(str(title)))
+        _hl.append(f'#C {str(title)}')
         # motnames
         if motnames is not None:
             _mnl = ['#O0 ']
             for _mn in motnames:
                 _mnl.append(str(_mn))
-            _hl.append('{0}'.format('  '.join(_mnl)))
+            _hl.append('{}'.format('  '.join(_mnl)))
         # comms
         if comms is not None:
             for _com in comms:
-                _hl.append('#C {0}'.format(str(_com)))
+                _hl.append(f'#C {str(_com)}')
 
         _hl.append('\n')
 
@@ -139,29 +139,29 @@ class SpecfileDataWriter:
         None, write to file
         """
         _sl = []
-        _sl.append('#S {0} {1}'.format(int(self.scan), str(title)))
-        _sl.append('#D {0}'.format(time.ctime()))
+        _sl.append(f'#S {int(self.scan)} {str(title)}')
+        _sl.append(f'#D {time.ctime()}')
 
         if motpos is not None:
             _mpl = ['#P0 ']
             for _mp in motpos:
                 _mpl.append(str(_mp))
-            _sl.append('{0}'.format('  '.join(_mpl)))
+            _sl.append('{}'.format('  '.join(_mpl)))
 
         if comms is not None:
             for _com in comms:
-                _sl.append('#C {0}'.format(str(_com)))
-        _sl.append('#N {0}'.format(len(cols)))
+                _sl.append(f'#C {str(_com)}')
+        _sl.append(f'#N {len(cols)}')
         _cs = ['#L ']
         for _c in cols:
-            _cs.append('{0}'.format(str(_c)))
-        _sl.append('{0}'.format('  '.join(_cs)))
+            _cs.append(f'{str(_c)}')
+        _sl.append('{}'.format('  '.join(_cs)))
 
         for idx in range(len(dats[0])):
             _dl = []
             for _dat in dats:
-                _dl.append('{0:.7f}'.format(_dat[idx]))
-            _sl.append('{0}'.format(' '.join(_dl)))
+                _dl.append(f'{_dat[idx]:.7f}')
+            _sl.append('{}'.format(' '.join(_dl)))
 
         _sl.append('\n')
 

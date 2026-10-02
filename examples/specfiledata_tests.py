@@ -30,7 +30,7 @@ def test01():
     t = SpecfileData(fname)
     for norm in [None, "area", "max", "max-min", "sum"]:
         x, y, motors, infos = t.get_scan(scan, cntx=counter, csig=signal, cmon=monitor, csec=seconds, norm=norm)
-        print("Read scan {0} with normalization {1}".format(scan, norm))
+        print(f"Read scan {scan} with normalization {norm}")
         plt.ion()
         plt.figure(num=test01.__doc__)
         plt.plot(x, y)
@@ -80,13 +80,13 @@ def test03():
     t = SpecfileData(fname)
     for norm in [None, "area", "max-min", "sum"]:
         x, y = t.get_mrg(scans, cntx=counter, csig=signal, cmon=monitor, csec=seconds, norm=norm)
-        print("Merged scans '{0}' with normalization {1}".format(scans, norm))
+        print(f"Merged scans '{scans}' with normalization {norm}")
         import matplotlib.pyplot as plt
         plt.ion()
         plt.figure(num=test03.__doc__)
         plt.plot(x, y)
         plt.xlabel(counter)
-        plt.ylabel("merged with norm {0}".format(norm))
+        plt.ylabel(f"merged with norm {norm}")
         plt.show()
         input("Press Enter to continue...")
         plt.close()

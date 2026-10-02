@@ -75,7 +75,7 @@ class Plot2D(silxPlot2D):
                             "linewidth": 0.5,
                             "color": color}
             for polygon in polygons:
-                legend = "polygon-%d" % ipolygon
+                legend = f"polygon-{ipolygon}"
                 xpoly = polygon[:, 1]
                 ypoly = polygon[:, 0]
                 xscale = np.ones_like(xpoly) * self._scale[0]
@@ -156,7 +156,7 @@ class Plot2D(silxPlot2D):
     def setIndex(self, value):
         self._index = value
         if self._index is not None:
-            self.setWindowTitle('{0}: {1}'.format(self._index, self._title))
+            self.setWindowTitle(f'{self._index}: {self._title}')
 
     def addImage(self, data, x=None, y=None, title=None, xlabel=None, ylabel=None,
                  vmin=None, vmax=None, **kwargs):
@@ -184,7 +184,7 @@ class Plot2D(silxPlot2D):
             self._title = title
             self.setGraphTitle(title)
             if self._index is not None:
-                self.setWindowTitle('{0}: {1}'.format(self._index, self._title))
+                self.setWindowTitle(f'{self._index}: {self._title}')
             else:
                 self.setWindowTitle(self._title)
         if xlabel is not None:

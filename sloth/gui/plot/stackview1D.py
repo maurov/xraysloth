@@ -179,7 +179,7 @@ class StackView1D(qt.QMainWindow):
     def setIndex(self, value):
         self._index = value
         if self._index is not None:
-            self.setWindowTitle('{}: StackView1D'.format(self._index))
+            self.setWindowTitle(f'{self._index}: StackView1D')
 
 
 def main():

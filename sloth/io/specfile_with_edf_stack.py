@@ -86,14 +86,13 @@ listener."""
         yEnd = histoY['extent'][1]  # End row
 
         # InfoBox
-        self._text = """X: [%d, %d[
-\tmin: %g
-\tmax: %g
+        self._text = f"""X: [{int(xStart)}, {int(xEnd)}[
+\tmin: {xHisto.min():g}
+\tmax: {xHisto.max():g}
 
-Y: [%d, %d[
-\tmin: %g
-\tmax: %g""" % (xStart, xEnd, xHisto.min(), xHisto.max(),
-                yStart, yEnd, yHisto.min(), yHisto.max())
+Y: [{int(yStart)}, {int(yEnd)}[
+\tmin: {yHisto.min():g}
+\tmax: {yHisto.max():g}"""
 
         self.update()
 
@@ -228,8 +227,7 @@ class SpecWithEdfStack(SpecfileData):
 
         # load images stack
         if edf_root is None:
-            self.edf_root = '{0}_{1}_'.format(self.fname.split(os.sep)[-1],
-                                              spec_scanno)
+            self.edf_root = f'{self.fname.split(os.sep)[-1]}_{spec_scanno}_'
         else:
             self.edf_root = edf_root
         if edf_dir is None:
@@ -256,17 +254,14 @@ class SpecWithEdfStack(SpecfileData):
         self.imgs_int = []
         self.imgs_fname = []
         for idx, x in enumerate(self.x):
-            _fname = '{0}{1}{2}{3:04d}{4}'.format(self.edf_dir,
-                                                  os.sep,
-                                                  self.edf_root, idx,
-                                                  self.edf_ext)
+            _fname = f'{self.edf_dir}{os.sep}{os.sep}{idx:04d}{self.edf_root}'
             #print(_fname)
             try:
                 edf = EdfFile.EdfFile(_fname, "rb")
                 self.imgs_fname.append(_fname)
                 _iload += 1
             except:
-                print("WARNING: {0} not found => NOT LOADED!".format(_fname))
+                print(f"WARNING: {_fname} not found => NOT LOADED!")
                 continue
             data = edf.GetData(0)
             header = edf.GetHeader(0)
@@ -283,7 +278,7 @@ class SpecWithEdfStack(SpecfileData):
             self.imgs_int.append(_int)
         edf = None
         self.y = np.array(self.imgs_int)
-        print('Loaded {0} images'.format(_iload))
+        print(f'Loaded {_iload} images')
 
     def fit_xy(self, *args, **kwargs):
         """fit xy"""
@@ -312,7 +307,7 @@ class SpecWithEdfStack(SpecfileData):
                 _int = np.trapezoid(np.trapezoid(self.imgs[idx]))
                 self.imgs_int[idx] = _int
             except:
-                print('ERROR: slicing image {0}, shape is {1}'.format(idx, shp))
+                print(f'ERROR: slicing image {idx}, shape is {shp}')
         self.y = np.array(self.imgs_int)
 
     def set_roi_rect(self, xmin, xmax, ymin, ymax):
@@ -384,7 +379,7 @@ class SpecWithEdfStack(SpecfileData):
             iint_mk, = self.anim_int.plot(_x*xscale+xshift, _int, linestyle='',\
                                           marker='o', markersize=5,\
                                           color='black')
-            iint_txt = self.anim_int.text(0.05, 0.8, 'Img: {0}'.format(idx),
+            iint_txt = self.anim_int.text(0.05, 0.8, f'Img: {idx}',
                                           horizontalalignment='left',
                                           verticalalignment='center',
                                           transform=self.anim_int.transAxes,
