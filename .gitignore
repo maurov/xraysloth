@@ -79,3 +79,6 @@ docs/source/_build
 
 # Conda temporary files
 condaenv*
+# Claude Code private context and local env (private side projects)
+CLAUDE.local.md
+binder/devstack.local.txt
