@@ -31,6 +31,10 @@ import matplotlib.pyplot as plt
 
 from larch.io.mergegroups import index_of, reject_outliers, merge_arrays_1d
 
+#: PyMca interactive `plugin` instance: set it from the PyMca console with
+#: `sloth.utils.pymca.plugin = plugin` before using the functions below
+plugin = None
+
 def get_curves(remove=False):
     """get *ALL* plotted curves from PyMca `plugin`
     
@@ -40,6 +44,9 @@ def get_curves(remove=False):
     remove: boolean
         to remove the curves from the plot (in case you want to push back something else)
     """
+    if plugin is None:
+        _logger.error("PyMca plugin not set: `sloth.utils.pymca.plugin = plugin`")
+        return []
     curves = plugin.getAllCurves()
     if len(curves) == 0:
         _logger.error("SOMETHING WRONG WITH THE INTERACTIVE PLUGIN: close and reopen")

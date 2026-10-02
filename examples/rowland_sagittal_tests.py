@@ -677,6 +677,7 @@ if __name__ == "__main__":
         t3.read_data(fn3, pts_shape=(13,3))
         
         print('TestSagittalFocusing objects are "t1, t2, t3", enjoy!')
+        t = t1  # session analysed in the blocks below
 
         #angular positions of the prototype
         angs_labs = ('T0', 'T1', 'T2', 'T3', 'T4', 'T5')

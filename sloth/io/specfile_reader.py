@@ -288,10 +288,10 @@ def savitzky_golay(y, window_size, order, deriv=0):
     order_range = range(order + 1)
     half_window = (window_size - 1) // 2
     # precompute coefficients
-    b = np.mat(
+    b = np.array(
         [[k ** i for i in order_range] for k in range(-half_window, half_window + 1)]
     )
-    m = np.linalg.pinv(b).A[deriv]
+    m = np.linalg.pinv(b)[deriv]
     # pad the signal at the extremes with
     # values taken from the signal itself
     firstvals = y[0] - np.abs(y[1 : half_window + 1][::-1] - y[0])
@@ -679,7 +679,7 @@ class SpecfileData:
 
         actions = ["single", "average", "sum", "join"]
         if action not in actions:
-            raise NameError("'action={}' not in known actions {}".format(actions))
+            raise NameError(f"'action={action}' not in known actions {actions}")
 
         # moved to get_scans
         xdats, zdats = self.get_scans(scans=nscans, motinfo=False, **kws)

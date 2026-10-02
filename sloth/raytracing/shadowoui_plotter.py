@@ -29,6 +29,7 @@ HAS_SHADOW = False
 HAS_OSHADOW = False
 
 try:
+    from Shadow import ShadowTools as st
     from Shadow import ShadowToolsPrivate as stp
     HAS_SHADOW = True
 except:

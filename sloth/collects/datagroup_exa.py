@@ -7,6 +7,9 @@
     - DataGroupXanes
       - DataGroupExafs
 """
+from larch.xafs import xftf
+from larch.wxlib.plotter import _plot
+
 from .datagroup import MODNAME
 from .datagroup_xan import DataGroupXanes
 
@@ -29,7 +32,7 @@ class DataGroupExafs(DataGroupXanes):
                 try:
                     setattr(_g, _attr, _g.chi*_g.k**int(kw))
                 except AttributeError:
-                    print("group {0} ({1}): attr {3} does not exist".format(_n, _g.label, _attr))
+                    print(f"group {_n} ({_g.label}): attr {_attr} does not exist")
 
     def mkftf(self, **kws):
         """forward Fourier transform
@@ -52,7 +55,7 @@ class DataGroupExafs(DataGroupXanes):
                 _k = getattr(_g, xattr)
                 _chi = getattr(_g, yattr)
             except AttributeError:
-                print("group {0} ({1}): attr {3} does not exist".format(_n, _g.label, _attr))
+                print(f"group {_n} ({_g.label}): attr {xattr} or {yattr} does not exist")
                 continue
             
             xftf(_k, _chi, group=_g, kmin=kmin, kmax=kmax, dk=dk,

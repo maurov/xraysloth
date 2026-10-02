@@ -336,8 +336,7 @@ if __name__ == "__main__":
         }
 
         out_root = os.path.join(_curDir, "data_reduction_example1")
-        out_date = "{:04d}-{:02d}-{:02d}".format(*time.localtime())
-        fnout_el = "{0}_{2}.spec".format(out_root, out_date, "out")
+        fnout_el = f"{out_root}_out.spec"
         resl_el = []
         resl_fc = []
 

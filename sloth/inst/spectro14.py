@@ -454,21 +454,21 @@ class AnalyserBM16:
         """
 
         # start with a default direction along ex and apply pitch and yaw rotations
-        v = numpy.array([1, 0, 0])
+        v = np.array([1, 0, 0])
 
-        pit = numpy.deg2rad(self.pitch)
-        yaw = numpy.deg2rad(self.yaw)
+        pit = np.deg2rad(self.pitch)
+        yaw = np.deg2rad(self.yaw)
 
-        cp = numpy.cos(pit)
-        sp = numpy.sin(pit)
-        cy = numpy.cos(yaw)
-        sy = numpy.sin(yaw)
+        cp = np.cos(pit)
+        sp = np.sin(pit)
+        cy = np.cos(yaw)
+        sy = np.sin(yaw)
 
         # Rx = numpy. array([[1, 0, 0], [ 0, cr, -sr], [0, sr, cr]]) # rot mat around ex (roll)
-        Ry = numpy.array(
+        Ry = np.array(
             [[cp, 0, sp], [0, 1, 0], [-sp, 0, cp]]
         )  # rot mat around ey (pitch)
-        Rz = numpy.array(
+        Rz = np.array(
             [[cy, -sy, 0], [sy, cy, 0], [0, 0, 1]]
         )  # rot mat around ez (yaw)
 

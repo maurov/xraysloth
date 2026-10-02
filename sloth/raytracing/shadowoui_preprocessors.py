@@ -44,6 +44,7 @@ if __name__ == "__main__":
         print('TIP: import and init the preprocessor within "ipython --gui=qt"')
         sys.exit(1)
     try:
+        from PyQt4 import QtCore
         qtversion = QtCore.QT_VERSION_STR.split('.')[0]
         print(f'INFO: QtCore already loaded with version {qtversion}')
     except:
