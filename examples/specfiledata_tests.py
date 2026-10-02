@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Tests/Examples for SpecfileData and SpecfileDataWriter
 
@@ -7,10 +6,6 @@ TODO
 ====
 - spefiledatawriter examples
 """
-# Fix Python 2.x
-try: input = raw_input
-except NameError: pass
-
 import os, sys
 # from __init__ import _libDir
 # sys.path.append(_libDir)

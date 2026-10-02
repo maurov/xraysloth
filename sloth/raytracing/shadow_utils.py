@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """shadow_utils: simple various utilities for SHADOW3_
 

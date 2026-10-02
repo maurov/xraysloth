@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Tests/Examples for dThetaXZ
 
@@ -7,12 +6,6 @@ TODO
 ====
 
 """
-# Fix Python 2.x
-try:
-    input = raw_input
-except NameError:
-    pass
-
 import os, sys
 import numpy as np
 import matplotlib.pyplot as plt

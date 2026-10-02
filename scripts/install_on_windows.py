@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Script for installing packages on Microsoft Windows using wheels
    from [GOHLKE WINDOWS REPOSITORY](https://www.lfd.uci.edu/~gohlke/pythonlibs/)

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """DataGroup: generic container for data objects
 ================================================
 
@@ -77,7 +76,7 @@ DEBUG = 0
 
 
 ### CLASS ###
-class DataGroup(object):
+class DataGroup:
     """a list of groups with some wrapped methods from Larch & friends"""
 
     def __init__(self, kwsd=None, _larch=None):
@@ -307,7 +306,7 @@ def registerLarchPlugin():
 ###############################################
 ### PICKLE-BASED // TEMPORARY DO NOT USE!!! ###
 ###############################################
-class EvalData(object):
+class EvalData:
     """.. warning:: this is a temporary (=work-in-progress) data object -> DO NOT USE IT IN PRODCTION!"""
 
     def __init__(self, lcols=None, ldats=None, linfs=None, **kws):

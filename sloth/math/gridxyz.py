@@ -1,10 +1,8 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Utilities to work with 2D grids and interpolation
 =================================================
 """
-from __future__ import division, print_function
 
 import numpy as np
 

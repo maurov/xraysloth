@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 Plot RIXS data
@@ -34,7 +33,7 @@ _DEFAULT_OVERLAY_COLORS = cycle(['#1F77B4', '#AEC7E8', '#FF7F0E', '#FFBB78',
 class RixsROIManager(RegionOfInterestManager):
 
     def __init__(self, plot, color='pink'):
-        super(RixsROIManager, self).__init__(plot)
+        super().__init__(plot)
         self.setColor(color)
         self.sigRoiAdded.connect(self.updateAddedRegionOfInterest)
 
@@ -56,7 +55,7 @@ class RixsROIDockWidget(qt.QDockWidget):
 
         assert isinstance(plot, RixsPlot2D), "'plot' should be an instance of RixsPlot2D"
         _title = f"Plot {plot._index} : cursors infos"
-        super(RixsROIDockWidget, self).__init__(_title, parent=parent)
+        super().__init__(_title, parent=parent)
 
         self._roiManager = RixsROIManager(plot)
 
@@ -120,7 +119,7 @@ class RixsProfileToolBar(ProfileToolBar):
     def __init__(self, parent=None, plot=None, profileWindow=None, overlayColors=None,
                  title='RIXS profile'):
         """Constructor"""
-        super(RixsProfileToolBar, self).__init__(parent=parent, plot=plot,
+        super().__init__(parent=parent, plot=plot,
                                                  profileWindow=profileWindow, title=title)
 
         self._overlayColors = overlayColors or _DEFAULT_OVERLAY_COLORS
@@ -150,7 +149,7 @@ class RixsPlot2D(Plot2D):
     def __init__(self, parent=None, backend=None, logger=None,
                  profileWindow=None, overlayColors=None, title="RixsPlot2D"):
         """Constructor"""
-        super(RixsPlot2D, self).__init__(parent=parent, backend=backend, title=title)
+        super().__init__(parent=parent, backend=backend, title=title)
 
         self._title = title
         self._logger = logger or getLogger("RixsPlot2D")
@@ -177,7 +176,7 @@ class RixsPlotArea(PlotArea):
     """RIXS equivalent of PlotArea"""
 
     def __init__(self, parent=None, profileWindow=None, overlayColors=None):
-        super(RixsPlotArea, self).__init__(parent=parent)
+        super().__init__(parent=parent)
 
         self._overlayColors = overlayColors or _DEFAULT_OVERLAY_COLORS
         self._profileWindow = profileWindow or self._addProfileWindow()
@@ -234,7 +233,7 @@ class RixsMainWindow(qt.QMainWindow):
 
     def __init__(self, parent=None):
 
-        super(RixsMainWindow, self).__init__(parent=parent)
+        super().__init__(parent=parent)
 
         if parent is not None:
             #: behave as a widget

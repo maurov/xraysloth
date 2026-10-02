@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 """View based on :mod:`silx.gui.hdf5.Hdf5TreeView`
 """
 
@@ -12,7 +11,7 @@ class TreeView(Hdf5TreeView):
     """TreeView class based on :mod:`silx.gui.hdf5.Hdf5TreeView`"""
 
     def __init__(self, parent=None):
-        super(TreeView, self).__init__(parent)
+        super().__init__(parent)
 
         # headerView = HorizontalHeaderView()
         # self.setHeader(headerView)
@@ -23,7 +22,7 @@ class TreeView(Hdf5TreeView):
         """Context menu"""
 
     def setModel(self, model):
-        super(TreeView, self).setModel(model)
+        super().setModel(model)
 
     def showContextMenu(self, position):
         menu = qt.QMenu('Tree View Menu', self)
@@ -53,7 +52,7 @@ class TreeViewWidget(TreeView):
     def __init__(self):
         """Constructor"""
 
-        super(TreeViewWidget, self).__init__()
+        super().__init__()
         from .model import TreeModel
         self.setModel(TreeModel())
         self.setWindowTitle("Minimal TreeView widget (with TreeModel)")

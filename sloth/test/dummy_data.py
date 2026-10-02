@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """Generate dummy data for tests/examples
 """
 import numpy as np

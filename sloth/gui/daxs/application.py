@@ -1,4 +1,3 @@
-# coding: utf-8
 # /*##########################################################################
 # MIT License
 #
@@ -24,7 +23,6 @@
 # THE SOFTWARE.
 #
 # ###########################################################################*/
-from __future__ import absolute_import, division
 
 __authors__ = ['Marius Retegan', 'Mauro Rovezzi']
 __license__ = 'MIT'

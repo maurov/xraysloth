@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Jupyter UI for Athena project files
 -----------------------------------
@@ -64,7 +63,7 @@ def edit_athena_groups(aprj):
     return display(editor)
 
 
-class AthenaGroupWidget(object):
+class AthenaGroupWidget:
     def __init__(self, idx, lab, sel):
 
         self._changed = False

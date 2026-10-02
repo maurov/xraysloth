@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """shadow_plotter: custom plotting utility for SHADOW3_
 
@@ -21,7 +20,6 @@ __email__ = "mauro.rovezzi@gmail.com"
 __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __year__ = "2015--2018"
 
-import sys
 import os
 import math
 import numpy as np
@@ -30,11 +28,6 @@ from silx.gui import qt
 from silx.gui.plot import PlotWindow
 from PyMca5.PyMcaGui.plotting.MaskImageWidget import MaskImageWidget
 from sloth import _resourcesPath
-
-if sys.version_info >= (3, 2, 0):
-    HAS_PY3 = True
-else:
-    HAS_PY3 = False
 
 # see README.rst how to install XOP and SHADOW3
 try:
@@ -63,7 +56,7 @@ def _calcFWHM(h, binSize, factor=0.5):
     return binSize * (t[0][-1] - t[0][0] + 1), t[0][-1], t[0][0]
 
 
-class ShadowPlotter(object):
+class ShadowPlotter:
     """ShadowPlotter: plotxy and histo1"""
 
     def __init__(self):
@@ -381,10 +374,10 @@ class ShadowPlotter(object):
         return st.plt.close("all")
 
 
-class SwPlot(object):
+class SwPlot:
 
     def __init__(self, beam=None):
-        if not (HAS_PY3 and HAS_OSHADOW):
+        if not HAS_OSHADOW:
             raise ImportError("Orange-shadow not found")
 
         self.set_instance(beam)
@@ -759,7 +752,7 @@ class SwPlotterMain(qt.QMainWindow):
     def __init__(self, parent=None):
         """constructor"""
 
-        super(SwPlotterMain, self).__init__(parent)
+        super().__init__(parent)
 
         _uifile = os.path.join(_resourcesPath, "gui", "uis", "shadowoui_plotter.ui")
         qt.loadUi(_uifile, self)

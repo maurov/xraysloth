@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """sloth main window
 ====================
@@ -34,7 +33,7 @@ from sloth.gui.deprecated.plot1D import SlothPlot1D
 class SlothMainWindow(qt.QMainWindow):
 
     def __init__(self, parent=None):
-        super(SlothMainWindow, self).__init__(parent)
+        super().__init__(parent)
         uiPath = os.path.join(sloth._resourcesPath, 'gui', 'uis',
                               'sloth_main_common.ui')
         qt.loadUi(uiPath, baseinstance=self, package='sloth.gui')
@@ -128,7 +127,7 @@ class SlothMainWindow(qt.QMainWindow):
 class AboutDialog(qt.QDialog):
 
     def __init__(self, parent=None):
-        super(AboutDialog, self).__init__()
+        super().__init__()
         uiPath = os.path.join(sloth._resourcesPath, 'gui', 'uis',
                               'sloth_about.ui')
         qt.loadUi(uiPath, baseinstance=self, package='sloth.gui')

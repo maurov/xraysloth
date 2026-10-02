@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 Tests/Examples for sloth.inst.rowland (sagittal focusing part)
@@ -46,7 +45,7 @@ epsilon = 1.E-10 # Default epsilon for equality testing of points and vectors
 SI_ALAT = 5.431065 # Ang at 25C
 dSi111 = d_cubic(SI_ALAT, (1,1,1))
 
-class TestSagittalFocusing(object):
+class TestSagittalFocusing:
     """test class for the sagittal focusing design prototype
 
     Description

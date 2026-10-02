@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """Some common lineshapes and distribution functions
 
 .. note:: this simply imports functions from

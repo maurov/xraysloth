@@ -1,4 +1,3 @@
-# coding: utf-8
 # /*##########################################################################
 # MIT License
 #
@@ -24,7 +23,6 @@
 # THE SOFTWARE.
 #
 # ###########################################################################*/
-from __future__ import absolute_import, division
 
 __authors__ = ["Marius Retegan", "Mauro Rovezzi"]
 __license__ = "MIT"
@@ -49,7 +47,7 @@ from sloth import _resourcesPath
 
 class MainWindow(qt.QMainWindow):
     def __init__(self, app, parent=None, with_ipykernel=False, logger=None):
-        super(MainWindow, self).__init__(parent=parent)
+        super().__init__(parent=parent)
 
         if logger is None:
             from sloth.utils.logging import getLogger
@@ -200,11 +198,11 @@ class MainWindow(qt.QMainWindow):
 
     def showEvent(self, event):
         self.loadSettings()
-        super(MainWindow, self).showEvent(event)
+        super().showEvent(event)
 
     def closeEvent(self, event):
         self.saveSettings()
-        super(MainWindow, self).closeEvent(event)
+        super().closeEvent(event)
 
     def loadSettings(self):
         config = Config()

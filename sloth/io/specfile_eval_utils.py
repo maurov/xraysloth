@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Specfile File Evaluation Utilities
 
@@ -40,7 +39,7 @@ from matplotlib import gridspec
 ### local imports
 from .specfile_reader import SpecfileData, _check_scans
 
-class SpecfileDataCollector(object):
+class SpecfileDataCollector:
     """wrapper"""
 
     def __init__(self, fndats, scans,\

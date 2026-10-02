@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Created on Mon Oct 29 17:34:01 2018
 
@@ -17,7 +16,7 @@ class DataModel(qt.QAbstractItemModel):
     """INPUTS: Node, QObject"""
 
     def __init__(self, root, parent=None):
-        super(DataModel, self).__init__(parent=parent)
+        super().__init__(parent=parent)
         self._header = ['Name', 'TypeInfo', 'AnotherHeader']
         self._rootNode = root
 
@@ -171,13 +170,13 @@ class SortFilterProxyModel(qt.QSortFilterProxyModel):
                 qt.Qt.DefaultLocaleShortDate)) >= 0)
 
         # Not our business.
-        return super(SortFilterProxyModel, self).filterAcceptsRow(sourceRow,
+        return super().filterAcceptsRow(sourceRow,
                                                                   sourceParent)
 
 
 class TestWindow(qt.QWidget):
     def __init__(self):
-        super(TestWindow, self).__init__()
+        super().__init__()
 
         self.proxyModel = SortFilterProxyModel()
         self.proxyModel.setDynamicSortFilter(True)

@@ -1,14 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """examples/tests for peakfit"""
-
-# Fix Python 2.x
-from __future__ import print_function
-
-try:
-    input = raw_input
-except NameError:
-    pass
 
 import os, sys
 import numpy as np

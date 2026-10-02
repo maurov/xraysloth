@@ -141,7 +141,7 @@ class FluoSource(ShadowLibExtensions.Source):
     """
 
     def __init__(self, **kws):
-        super(FluoSource, self).__init__(**kws)
+        super().__init__(**kws)
         self_repair_src(self)
         self.set_rays()
         self.set_sampling()
@@ -332,7 +332,7 @@ class ShadowOE(ShadowLibExtensions.OE):
         ------------------
 
         """
-        super(ShadowOE, self).__init__(**kws)
+        super().__init__(**kws)
         self_repair_oe(self)
         # self.set_screens()
         # self.set_empty()
@@ -446,7 +446,7 @@ class PlaneCrystal(ShadowOE):
     """plane crystal"""
     
     def __init__(self, **kws):
-        super(PlaneCrystal, self).__init__(**kws)
+        super().__init__(**kws)
         self.init_plane_crystal()
         self.set_reflectivity(f_reflec=0, f_refl=0)
 
@@ -647,7 +647,7 @@ class SphericalCrystal(PlaneCrystal):
                 meridional radius
 
         """
-        super(SphericalCrystal, self).__init__(**kws)
+        super().__init__(**kws)
         self.init_spherical_crystal()
 
         # convex/concave
@@ -758,7 +758,7 @@ class SphericalCrystal(PlaneCrystal):
 ##################################################
 ### PLOTTER => TODO: move to shadow_plotter.py ###
 ##################################################
-class ShadowPlotter(object):
+class ShadowPlotter:
     """ShadowPlotter: plotxy and histo1"""
     def __init__(self):
         #self.pw1 = PlotWindow.PlotWindow()
@@ -1110,7 +1110,7 @@ class ShadowPlotter(object):
 # ----------------------------------------------------------------------- #
 # ShadowSpectro1: Spectrometer w 1 crystal analyser based on SHADOW3 only #
 # ----------------------------------------------------------------------- #
-class ShadowSpectro1(object):
+class ShadowSpectro1:
     """Spectrometer w 1 crystal analyser based on SHADOW3"""
     def __init__(self, file_refl, oe_shape='rect', dimensions=np.array([0., 0., 0., 0.]),\
                  cyl_ang=None, set_johansson=False, init_from_file=False, **kws):

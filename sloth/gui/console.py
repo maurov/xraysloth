@@ -1,16 +1,14 @@
 #!/usr/bin/env python
-# coding: utf-8
 """This module provides integration of an IPython kernel.
 
 .. note:: Initial idea taken from ipykernel example `internal_ipkernel.py`.
 """
-from __future__ import absolute_import, division
 import sys
 from ipykernel import connect_qtconsole
 from ipykernel.kernelapp import IPKernelApp
 
 
-class InternalIPyKernel(object):
+class InternalIPyKernel:
 
     def init_kernel(self, backend='qt', log_level='INFO'):
         _optslist = ['python',

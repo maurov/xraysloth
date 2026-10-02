@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """DataGroupXanes: work with XANES data sets
 ============================================
 
@@ -13,7 +12,7 @@ from .datagroup1D import DataGroup1D
 class DataGroupXanes(DataGroup1D):
     """DataGroup for XANES scans"""
     def __init__(self, kwsd=None, _larch=None):
-        super(DataGroupXanes, self).__init__(kwsd=kwsd, _larch=_larch)
+        super().__init__(kwsd=kwsd, _larch=_larch)
 
 ### LARCH ###    
 def datagroup_xan(kwsd=None, _larch=None):

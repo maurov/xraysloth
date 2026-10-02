@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Basic data groups that mimics HDF5 tree-like structure
 ======================================================
@@ -55,7 +54,7 @@ class BaseGroup(commonh5.Group):
 
     def __init__(self, name, parent=None, attrs=None, logger=None):
         """Constructor"""
-        super(BaseGroup, self).__init__(name, parent=parent, attrs=attrs)
+        super().__init__(name, parent=parent, attrs=attrs)
         self._logger = logger or _logger
 
     def add_group(self, name, attrs=None, cls=None):
@@ -147,7 +146,7 @@ class RootGroup(BaseGroup):
             mode = "w"
         assert mode in ["r", "w"]
         self._mode = mode
-        super(RootGroup, self).__init__(
+        super().__init__(
             self._file_name, parent=None, attrs=attrs, logger=self._logger
         )
 
@@ -191,7 +190,7 @@ class EntryGroup(BaseGroup):
             attrs.update(_attrs)
         else:
             attrs = _attrs
-        super(EntryGroup, self).__init__(
+        super().__init__(
             name, parent=parent, attrs=attrs, logger=logger
         )
 
@@ -211,7 +210,7 @@ class BaseDataset(commonh5.Dataset):
             attrs.update(_attrs)
         else:
             attrs = _attrs
-        super(BaseDataset, self).__init__(name, data, parent=parent, attrs=attrs)
+        super().__init__(name, data, parent=parent, attrs=attrs)
 
     def __str__(self, level=0):
         """Dataset representation"""

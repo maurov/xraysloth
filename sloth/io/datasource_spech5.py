@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """Utility wrapper for h5py-like API to Spec files
 ===================================================
 
@@ -18,8 +17,7 @@ __version__ = "larch_0.9.57"
 import os
 import copy
 import datetime
-import six
-import collections
+import collections.abc
 import numpy as np
 import h5py
 from silx.io.utils import open as silx_open
@@ -32,12 +30,6 @@ from larch import Group
 from larch.utils.strutils import bytes2str
 from larch.math.normalization import norm1D
 from larch.math.deglitch import remove_spikes_medfilt1d
-
-#: Python 3.8+ compatibility
-try:
-    collectionsAbc = collections.abc
-except Exception:
-    collectionsAbc = collections
 
 # UTILITIES (the class is below!)
 
@@ -149,11 +141,11 @@ def update_nested(d, u):
 
     From: https://stackoverflow.com/questions/3232943/update-value-of-a-nested-dictionary-of-varying-depth
     """
-    for k, v in six.iteritems(u):
+    for k, v in u.items():
         dv = d.get(k, {})
-        if not isinstance(dv, collectionsAbc.Mapping):
+        if not isinstance(dv, collections.abc.Mapping):
             d[k] = v
-        elif isinstance(v, collectionsAbc.Mapping):
+        elif isinstance(v, collections.abc.Mapping):
             d[k] = update_nested(dv, v)
         else:
             d[k] = v
@@ -163,7 +155,7 @@ def update_nested(d, u):
 # ==================================================================
 # CLASS BASED ON SPECH5 (CURRENT/RECOMMENDED)
 # ==================================================================
-class DataSourceSpecH5(object):
+class DataSourceSpecH5:
     """Data source utility wrapper for a Spec/BLISS file read as HDF5 object
     via silx.io.open"""
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 """
 Sloth customization of NeXpy
 ============================
@@ -33,7 +32,7 @@ class myNXConsoleApp(NXConsoleApp):
     """Customized version of the NeXpy console application"""
 
     def __init__(self):
-        super(myNXConsoleApp, self).__init__()
+        super().__init__()
 
 
 def createParser():

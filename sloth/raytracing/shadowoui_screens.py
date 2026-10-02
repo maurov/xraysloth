@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """shadow_screens: custom wrapper classes of *ShadowOpticalElement*
 from ShadowOui_ (was Orange-Shadow_) from SHADOW3_ project
@@ -23,12 +22,10 @@ __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
 __year__ = "2015"
 
-import sys, os, copy, math
+import os, copy, math
 import numpy as np
 
 # requirements for ShadowOpticalElement
-HAS_PY3 = False
-if sys.version_info >= (3,2,0): HAS_PY3 = True
 HAS_OSHADOW = False
 try:
     from orangecontrib.shadow.util.shadow_objects import ShadowOpticalElement
@@ -54,7 +51,7 @@ class SwScreen(SwOE):
                             slit aperture Z axis [cm]
 
         """
-        super(SwScreen, self).__init__()
+        super().__init__()
         self.sw = self.create_instance()
 
         self.set_output_files(fwrite=0, f_angle=0) #write all, TODO: remove

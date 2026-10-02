@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 Tests/Examples for sloth.inst.rowland (pantograph movements part)

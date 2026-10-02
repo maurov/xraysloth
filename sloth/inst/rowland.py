@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Rowland circle geometry
 ==========================
@@ -80,11 +79,6 @@ import numpy as np
 
 from ..math.rotmatrix import rotate
 
-try:
-    xrange
-except NameError:
-    xrange = range
-
 DEBUG = 0
 
 ### GLOBAL VARIABLES ###
@@ -153,7 +147,7 @@ def det_pos_rotated(dxyz, drot=35., doffsets=[0,0]):
     return np.array([dy, dz])
     
 ### CLASS ###
-class RowlandCircle(object):
+class RowlandCircle:
     """Rowland circle geometry"""
 
     def __init__(self, Rm=500., theta0=0., alpha=0., d=None,\
@@ -624,7 +618,7 @@ class RowlandCircle(object):
         if bender_version is None: bender_version = self.bender_version
 
         #map last 3 pivot points positions
-        _c2 = [self.get_chi2(_n) for _n in xrange( int(aN-2), int(aN+1) )] #CHIs
+        _c2 = [self.get_chi2(_n) for _n in range( int(aN-2), int(aN+1) )] #CHIs
         dchi = _c2[2]-_c2[0]
         if self.showInfos:
             print('INFO: == CHI ==')

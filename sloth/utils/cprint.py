@@ -1,8 +1,6 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """Simple color print """
 
-from __future__ import print_function
 
 # settings
 CPRINT_PAR = {}

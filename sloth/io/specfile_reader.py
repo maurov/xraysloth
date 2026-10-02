@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """SpecfileData object to read data in SPEC_ format
 ===================================================
@@ -304,7 +303,7 @@ def savitzky_golay(y, window_size, order, deriv=0):
 # ==================================================================
 # MAIN CLASS
 # ==================================================================
-class SpecfileData(object):
+class SpecfileData:
     """SpecfileData object"""
 
     def __init__(

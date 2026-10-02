@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 RIXS data reader for beamline 13-ID-E @ APS

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """sloth dataView application
 =============================
@@ -15,7 +14,7 @@ from sloth.gui.deprecated.dataview import DataViewDockWidget
 class SlothDataViewMainWindow(qt.QMainWindow):
 
     def __init__(self, parent=None):
-        super(SlothDataViewMainWindow, self).__init__(parent)
+        super().__init__(parent)
         uiPath = os.path.join(sloth._resourcesPath, 'gui', 'uis',
                               'main_base.ui')
         qt.loadUi(uiPath, baseinstance=self, package='sloth.gui')

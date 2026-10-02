@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 spectro14: FAME-UHD (ESRF/BM16) X-ray emission spectrometer

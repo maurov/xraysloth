@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """crystal_box: a toolbox to work with CRYSTAL_ from Python via a system
 call to diff_pat
@@ -60,7 +59,7 @@ _parpardir = os.path.realpath(os.path.join(_pardir, os.path.pardir))
 DATA_DIR = os.path.join(_parpardir, "data")
 
 
-class XCrystalBox(object):
+class XCrystalBox:
     """XCrystalBox
 
     xcrystal.inp

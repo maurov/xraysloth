@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 JupyX: Jupyter UI for X-ray data analysis
 -----------------------------------------
@@ -14,8 +13,8 @@ def ipythonAutoreload():
     """Force ipython to autoreload imported modules"""
     from IPython import get_ipython
     mgc = get_ipython().magic
-    mgc(u'%load_ext autoreload')
-    mgc(u'%autoreload 2')
+    mgc('%load_ext autoreload')
+    mgc('%autoreload 2')
 
 
 def run_from_ipython():

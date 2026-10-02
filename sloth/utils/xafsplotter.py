@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Simple Matplotlib plotter for XAFS data
 =======================================
@@ -16,7 +15,7 @@ class XAFSPlotter(Plotter):
 
     def __init__(self, name='XAFSplotter', data=None, **kws):
 
-        super(XAFSPlotter, self).__init__(name=name, **kws)
+        super().__init__(name=name, **kws)
         self._data = data
 
     def _updateLabels(self, labels=None):

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """Plot area
 ============
 
@@ -19,11 +18,11 @@ __credits__ = ["Marius Retegan"]
 class MdiSubWindow(qt.QMdiSubWindow):
 
     def __init__(self, parent=None):
-        super(MdiSubWindow, self).__init__(parent=parent)
+        super().__init__(parent=parent)
         self.setAttribute(qt.Qt.WA_DeleteOnClose, True)
 
     def closeEvent(self, event):
-        super(MdiSubWindow, self).closeEvent(event)
+        super().closeEvent(event)
         # Renumber the plot windows and emit the changed signal.
         self.mdiArea().renumberPlotWindows()
         self.mdiArea().changed.emit()
@@ -34,7 +33,7 @@ class PlotArea(qt.QMdiArea):
     changed = qt.pyqtSignal()
 
     def __init__(self, parent=None):
-        super(PlotArea, self).__init__(parent=parent)
+        super().__init__(parent=parent)
 
         #: Context menu
         self.setContextMenuPolicy(qt.Qt.CustomContextMenu)
@@ -125,7 +124,7 @@ class PlotArea(qt.QMdiArea):
 class PlotAreaMainWindow(qt.QMainWindow):
 
     def __init__(self, app=None, parent=None):
-        super(PlotAreaMainWindow, self).__init__(parent=parent)
+        super().__init__(parent=parent)
 
         self.app = app
 

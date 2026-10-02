@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 """
 RIXS data view
 """
@@ -14,7 +13,7 @@ from sloth.gui.rixs.items import RixsItem
 class RixsTreeView(TreeView):
 
     def __init__(self, parent=None):
-        super(RixsTreeView, self).__init__(parent)
+        super().__init__(parent)
 
     def loadFiles(self):
         paths, _ = qt.QFileDialog.getOpenFileNames(
@@ -57,7 +56,7 @@ class RixsTreeView(TreeView):
 class RixsListView(qt.QListView):
 
     def __init__(self, parent=None):
-        super(RixsListView, self).__init__(parent)
+        super().__init__(parent)
 
 
         #: Context menu

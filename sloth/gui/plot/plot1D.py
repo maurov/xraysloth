@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Sloth custom version of SILX Plot1D
 ======================================
@@ -10,7 +9,6 @@ This class is based on:
 - https://github.com/silx-kit/silx/blob/master/examples/plotCurveLegendWidget.py
 
 """
-from __future__ import absolute_import, division, unicode_literals
 import functools
 from silx.gui import qt
 from silx.gui.plot import PlotWindow
@@ -32,7 +30,7 @@ class CustomCurveLegendsWidget(CurveLegendsWidget):
     """
 
     def __init__(self, parent=None):
-        super(CustomCurveLegendsWidget, self).__init__(parent)
+        super().__init__(parent)
 
         # Activate/Deactivate curve with left click on the legend widget
         self.sigCurveClicked.connect(self._switchCurveActive)
@@ -115,7 +113,7 @@ class Plot1D(PlotWindow):
 
     def __init__(self, parent=None, backend=None, title='Plot1D'):
         """Constructor"""
-        super(Plot1D, self).__init__(parent=parent, backend=backend,
+        super().__init__(parent=parent, backend=backend,
                                      resetzoom=True, autoScale=True,
                                      logScale=True, grid=False,
                                      curveStyle=True, colormap=False,

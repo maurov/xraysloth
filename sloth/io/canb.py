@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Utility for reading "CANB" files at ESRF/BM30 (FAME beamline)
 -------------------------------------------------------------

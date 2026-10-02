@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 braggutils: utilities around the Bragg's law ($ n \lambda = 2 d sin \theta $)
 """

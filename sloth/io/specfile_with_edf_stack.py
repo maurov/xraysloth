@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """SpecfileData object mapped with a stack of EDF images
 
@@ -69,7 +68,7 @@ listener."""
         self._text = ''
         self._imageView._imagePlot.sigPlotSignal.connect(self.limitsChanged)
 
-        super(RadarViewWithOverlay, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def limitsChanged(self, event):
         if event['event'] != 'limitsChanged':
@@ -169,7 +168,7 @@ class SpecWithEdfStack(SpecfileData):
         **kws : as in SpecfileData
 
         """
-        super(SpecWithEdfStack, self).__init__(spec_fname, **kws)
+        super().__init__(spec_fname, **kws)
 
         # init image plot window
         #self.miw = MaskImageWidget.MaskImageWidget()

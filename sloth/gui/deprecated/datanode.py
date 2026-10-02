@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """DataNode objects to be used in TreeView
 ==========================================
 
@@ -17,7 +16,7 @@ from silx.gui import qt
 class DataNode(qt.QObject):
 
     def __init__(self, name, parent=None):
-        super(DataNode, self).__init__()
+        super().__init__()
         self._name = name
         self._children = []
         self._parent = parent

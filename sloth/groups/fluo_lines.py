@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Data groups for x-ray fluorescence lines
 ========================================
@@ -60,7 +59,7 @@ class FluoLine(EntryGroup):
         self._update_attrs(dict(width=self.get_width()))
         self._update_attrs(dict(amplitude=self.get_amplitude()))
 
-        super(FluoLine, self).__init__(self.label, attrs=self.attrs, parent=parent)
+        super().__init__(self.label, attrs=self.attrs, parent=parent)
 
         self._init_spectrum()
         self._plotWin = None

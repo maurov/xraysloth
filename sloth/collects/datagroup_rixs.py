@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """DataGroupRixs: work with  RIXS data sets (2D maps)
 =====================================================
@@ -11,7 +10,6 @@
     - DataGroupRixs
 """
 
-from __future__ import print_function, division
 
 import os
 import copy
@@ -36,7 +34,7 @@ class DataGroupRixs(DataGroup2D):
     """DataGroup for RIXS planes"""
 
     def __init__(self, kwsd=None, _larch=None):
-        super(DataGroupRixs, self).__init__(self, kwsd=kwsd, _larch=_larch)
+        super().__init__(self, kwsd=kwsd, _larch=_larch)
 
         _logger.warning("!!!DEPRECATED!!!: use `from larch.io.rixdata import RixsData`")
 
@@ -72,7 +70,7 @@ class DataGroupRixs(DataGroup2D):
         return
 
 
-class RixsData(object):
+class RixsData:
     """RIXS plane object"""
 
     def __init__(self, label=None, kwsd=None, logger=None):
@@ -400,7 +398,7 @@ class RixsData(object):
 
 
 
-class RixsDataPlotter(object):
+class RixsDataPlotter:
     """ plotter for a RixsData object """
     def __init__(self, rd):
         "initialize with keyword arguments dictionaries"

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Simple utility to convert Quantum ESPRESSO input files to XTL
 

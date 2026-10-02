@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """CIFreader utility class based on PyCifRW library
 
@@ -18,7 +17,7 @@ try:
 except ImportError:
     pass
 
-class CIFSymmetry(object):
+class CIFSymmetry:
     def __init__(self):
         self.no = None
         self.name = None
@@ -26,7 +25,7 @@ class CIFSymmetry(object):
         self.xyz = None
         self.xyz_id = None
 
-class CIFAtom(object):
+class CIFAtom:
     def __init__(self):
         self.site_H = None
         self.B_iso = None
@@ -41,7 +40,7 @@ class CIFAtom(object):
         self.symm_multi = None
         self.symm_wyckoff = None
 
-class CIFCitation(object):
+class CIFCitation:
     def __init__(self):
         self.year = None
         self.author = None
@@ -53,7 +52,7 @@ class CIFCitation(object):
         self.first_page = None
         self.last_page = None
 
-class CIFReader(object):
+class CIFReader:
     """CIF reader utility"""
 
     def __init__(self):
@@ -83,7 +82,7 @@ class CIFReader(object):
             self.cf = None
             return
 
-        self.key = self.cf.keys()[0]
+        self.key = list(self.cf.keys())[0]
         print('Read key: {0}'.format(self.key))
 
 
@@ -169,16 +168,16 @@ def readCifFile(cifFile):
         return
 
     if not os.path.exists(cifFile):
-        raise IOError("CIF file '%s' was not found!" % (cifFile))
+        raise OSError("CIF file '%s' was not found!" % (cifFile))
     
     cf = CifFile.CifFile(cifFile)
     print("------------------------------------------------------------------")
     if len(cf) != 1:
-        raise StandardError("The cif file contains %i data blocks, while one was expected")
+        raise ValueError("The cif file contains %i data blocks, while one was expected" % len(cf))
         # A cif file can contain several "datablocks" that each start
         # with "data_".
     
-    cb = cf[cf.keys()[0]]                               # open the first block
+    cb = cf[list(cf.keys())[0]]                               # open the first block
     AA = float(re.match('([0-9.]*)',cb['_cell_length_a']).group(0))
     BB = float(re.match('([0-9.]*)',cb['_cell_length_b']).group(0))
     CC = float(re.match('([0-9.]*)',cb['_cell_length_c']).group(0))

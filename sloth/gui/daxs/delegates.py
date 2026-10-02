@@ -1,4 +1,3 @@
-# coding: utf-8
 # /*##########################################################################
 # MIT License
 #
@@ -24,7 +23,6 @@
 # THE SOFTWARE.
 #
 # ###########################################################################*/
-from __future__ import absolute_import, division
 
 __authors__ = ['Marius Retegan']
 __license__ = 'MIT'
@@ -36,7 +34,7 @@ from silx.gui import qt
 class ComboBoxDelegate(qt.QStyledItemDelegate):
 
     def __init__(self, parent=None):
-        super(ComboBoxDelegate, self).__init__(parent=parent)
+        super().__init__(parent=parent)
 
     def createEditor(self, parent, option, index):
         editor = qt.QComboBox(parent)

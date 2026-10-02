@@ -1,4 +1,3 @@
-# coding: utf-8
 # /*##########################################################################
 # MIT License
 #
@@ -28,7 +27,6 @@
 spectroscopy data.
 """
 
-from __future__ import absolute_import, division
 
 __authors__ = ['Marius Retegan', 'Mauro Rovezzi']
 __license__ = 'MIT'
@@ -38,7 +36,7 @@ from silx.gui import qt
 from .items import TreeItem, RootItem
 
 
-class HeaderSection(object):
+class HeaderSection:
 
     def __init__(self, name, roles, delegate=None, removable=False):
         self.name = name
@@ -105,7 +103,7 @@ class Header(list):
 class TreeModel(qt.QAbstractItemModel):
 
     def __init__(self, parent=None):
-        super(TreeModel, self).__init__(parent=parent)
+        super().__init__(parent=parent)
         self.rootItem = RootItem()
         self.header = Header()
         section = 0

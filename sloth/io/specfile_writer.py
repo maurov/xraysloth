@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Simple data export tool in SPEC_ format
 ==========================================
@@ -30,7 +29,7 @@ try:
 except ImportError:
     pass
 
-class SpecfileDataWriter(object):
+class SpecfileDataWriter:
     """Specfile data format is defined here:
     http://www.certif.com/spec_manual/user_1_4_1.html"""
 

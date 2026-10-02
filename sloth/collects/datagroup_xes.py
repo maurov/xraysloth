@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """DataGroupXes: work with XES data sets
 ========================================
 
@@ -16,7 +15,7 @@ from .datagroup1D import DataGroup1D
 class DataGroupXes(DataGroup1D):
     """DataGroup for XES scans"""
     def __init__(self, kwsd=None, _larch=None):
-        super(DataGroupXes, self).__init__(kwsd=kwsd, _larch=_larch)
+        super().__init__(kwsd=kwsd, _larch=_larch)
 
     def mkiads(self, ref=0, plot=False, **kws):
         """IAD analysis for XES

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """shadow_sources: custom wrapper classes of *ShadowSource* from
 ShadowOui_ (was Orange-Shadow_) from SHADOW3_ project
@@ -23,24 +22,22 @@ __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
 __year__ = "2014-2015"
 
-import sys, os, copy, math
+import os, copy, math
 import numpy as np
 
 # requirements for ShadowSource
-HAS_PY3 = False
 HAS_OSHADOW = False
-if sys.version_info >= (3,2,0): HAS_PY3 = True
 try:
     from orangecontrib.shadow.util.shadow_objects import ShadowSource
     HAS_OSHADOW = True
 except:
     pass
 
-class SwSource(object):
+class SwSource:
     """wrapper to ShadowSource"""
     
     def __init__(self):
-        if not (HAS_PY3 and HAS_OSHADOW): raise ImportError("ShadowOui not found")
+        if not HAS_OSHADOW: raise ImportError("ShadowOui not found")
         self.sw = self.create_instance()
 
     def create_instance(self):
@@ -56,7 +53,7 @@ class GeoSource(SwSource):
         default: point source w conical angular divergence w uniform
         energy distribution
         """
-        super(GeoSource, self).__init__()
+        super().__init__()
         
         self.set_sampling()
         self.set_spatial_type()

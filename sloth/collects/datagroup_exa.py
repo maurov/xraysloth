@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """DataGroupExafs: work with EXAFS data sets
 ============================================
 
@@ -14,7 +13,7 @@ from .datagroup_xan import DataGroupXanes
 class DataGroupExafs(DataGroupXanes):
     """DataGroup for EXAFS scans"""
     def __init__(self, kwsd=None, _larch=None):
-        super(DataGroupExafs, self).__init__(kwsd=kwsd, _larch=_larch)
+        super().__init__(kwsd=kwsd, _larch=_larch)
 
     def mkchikw(self, kws=[1,2,3]):
         """makes kws-weighted groups

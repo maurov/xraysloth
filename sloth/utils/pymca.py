@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Utilities for daily work with PyMca
 ======================================
@@ -266,7 +265,7 @@ class myPyMcaMain(PyMcaMain):
     """customized version of PyMcaMain to run within IPython shell"""
 
     def __init__(self, fload=None, name="slothPyMca", **kws):
-        super(myPyMcaMain, self).__init__(name=name, **kws)
+        super().__init__(name=name, **kws)
 
         #self.conf = self.getConfig()
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Plotting macros for XAFS data sets and fits
 ===========================================

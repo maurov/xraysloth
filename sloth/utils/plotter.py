@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Matplotlib (inline) plotter
 ===========================
@@ -17,7 +16,7 @@ from matplotlib import rcParams
 from sloth.utils.logging import getLogger
 
 
-class Plotter(object):
+class Plotter:
 
     #: default colors palette
     _DEFAULT_COLORS = (

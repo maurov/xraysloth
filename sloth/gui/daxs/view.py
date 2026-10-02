@@ -1,4 +1,3 @@
-# coding: utf-8
 # /*##########################################################################
 # MIT License
 #
@@ -28,7 +27,6 @@
 spectroscopy data.
 """
 
-from __future__ import absolute_import, division
 
 __authors__ = ['Marius Retegan', 'Mauro Rovezzi']
 __license__ = 'MIT'
@@ -47,7 +45,7 @@ logger = getLogger('sloth.gui.daxs.view')
 class HorizontalHeaderView(qt.QHeaderView):
 
     def __init__(self, parent=None):
-        super(HorizontalHeaderView, self).__init__(qt.Qt.Horizontal, parent)
+        super().__init__(qt.Qt.Horizontal, parent)
 
         # Some properties
         self.setStretchLastSection(True)
@@ -87,7 +85,7 @@ class HorizontalHeaderView(qt.QHeaderView):
 class TreeView(qt.QTreeView):
 
     def __init__(self, parent=None):
-        super(TreeView, self).__init__(parent)
+        super().__init__(parent)
 
         # Header
         headerView = HorizontalHeaderView()
@@ -101,7 +99,7 @@ class TreeView(qt.QTreeView):
         self.setSelectionMode(qt.QAbstractItemView.ExtendedSelection)
 
     def setModel(self, model):
-        super(TreeView, self).setModel(model)
+        super().setModel(model)
         self.setItemsDelegates()
 
     def setItemsDelegates(self):

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 """
 QMainWindow based on :mod:`silx.examples.customHdf5TreeModel`
 """
@@ -24,7 +23,7 @@ class MainWindowHdf5Tree(qt.QMainWindow):
         """
         Constructor
         """
-        super(MainWindowHdf5Tree, self).__init__(parent=parent)
+        super().__init__(parent=parent)
 
         self._app = app
         self._with_ipykernel = with_ipykernel
@@ -108,11 +107,11 @@ class MainWindowHdf5Tree(qt.QMainWindow):
 
     def showEvent(self, event):
         self.loadSettings()
-        super(MainWindowHdf5Tree, self).showEvent(event)
+        super().showEvent(event)
 
     def closeEvent(self, event):
         self.saveSettings()
-        super(MainWindowHdf5Tree, self).closeEvent(event)
+        super().closeEvent(event)
 
     def loadSettings(self):
         """TODO"""

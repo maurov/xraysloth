@@ -1,10 +1,8 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Analytical expression of $\Delta \theta (x, z)$ from Wittry
 
 """
-from __future__ import print_function
 import sys, os
 import math
 import numpy as np

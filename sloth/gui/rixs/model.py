@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 """
 RIXS data model
 """
@@ -12,7 +11,7 @@ class RixsTreeModel(TreeModel):
 
     def __init__(self, parent=None):
 
-        super(RixsTreeModel, self).__init__(parent=parent)
+        super().__init__(parent=parent)
 
 
 class RixsListModel(qt.QAbstractListModel):
@@ -20,7 +19,7 @@ class RixsListModel(qt.QAbstractListModel):
     def __init__(self, *args, data=None, **kwargs):
         """Constructor"""
 
-        super(RixsListModel, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._rixs_data = data or []
 
     def data(self, index, role):

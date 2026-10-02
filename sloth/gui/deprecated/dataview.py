@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """dataView widget
 ==================
@@ -13,7 +12,7 @@ import sloth
 class DataViewDockWidget(qt.QDockWidget):
 
     def __init__(self, parent=None):
-        super(DataViewDockWidget, self).__init__(parent=parent)
+        super().__init__(parent=parent)
 
         uiPath = os.path.join(sloth._resourcesPath,\
                               'gui', 'uis', 'dock_dataview_filter.ui')

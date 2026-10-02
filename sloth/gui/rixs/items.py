@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 """
 RIXS items
 """
@@ -11,7 +10,7 @@ class RixsItem(TreeItem):
 
     def __init__(self, name=None, parentItem=None, isChecked=False, data=None):
 
-        super(RixsItem, self).__init__(name, parentItem, isChecked)
+        super().__init__(name, parentItem, isChecked)
         self._plotWindows = None
         self._currentPlotWindow = None
         self._rixsdata = data
@@ -23,7 +22,7 @@ class RixsItem(TreeItem):
                     return qt.Qt.Checked
                 else:
                     return qt.Qt.Unchecked
-        return super(RixsItem, self).data(column, name, role)
+        return super().data(column, name, role)
 
     def setData(self, column, name, value, role):
         if role == qt.Qt.CheckStateRole:
@@ -32,10 +31,10 @@ class RixsItem(TreeItem):
             else:
                 self.isChecked = False
             return True
-        return super(RixsItem, self).setData(column, name, value, role)
+        return super().setData(column, name, value, role)
 
     def flags(self, column):
-        flags = super(RixsItem, self).flags(column)
+        flags = super().flags(column)
         if column == 0:
             return flags | qt.Qt.ItemIsUserCheckable
         else:

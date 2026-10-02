@@ -1,4 +1,3 @@
-# coding: utf-8
 # /*##########################################################################
 #
 # Copyright (c) 2016-2017 European Synchrotron Radiation Facility
@@ -23,7 +22,6 @@
 #
 # ###########################################################################*/
 
-from __future__ import absolute_import, division, unicode_literals
 
 __authors__ = ['Marius Retegan']
 __license__ = 'MIT'

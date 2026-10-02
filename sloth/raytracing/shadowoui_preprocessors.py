@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """shadow_preprocessors: utility to run SHADOW3_ preprocessors via
 ShadowOui_ layer

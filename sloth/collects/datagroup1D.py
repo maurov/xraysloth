@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """DataGroup1D: work with 1D data sets (line scans)
 ===================================================
@@ -58,7 +57,7 @@ class DataGroup1D(DataGroup):
     """1D version of DataGroup"""
     
     def __init__(self, kwsd=None, _larch=None):
-        super(DataGroup1D, self).__init__(kwsd=kwsd, _larch=_larch)
+        super().__init__(kwsd=kwsd, _larch=_larch)
 
     def read_ascii(self, fname, labels=None, sort=False, sort_column=0):
         """see 'read_ascii' in Larch"""

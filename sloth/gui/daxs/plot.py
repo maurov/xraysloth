@@ -1,4 +1,3 @@
-# coding: utf-8
 # /*##########################################################################
 # MIT License
 #
@@ -24,7 +23,6 @@
 # THE SOFTWARE.
 #
 # ###########################################################################*/
-from __future__ import absolute_import, division
 
 __authors__ = ['Marius Retegan']
 __license__ = 'MIT'
@@ -41,7 +39,7 @@ from silx.gui.plot import actions, tools, items, PlotWidget
 class PlotWindow(PlotWidget):
 
     def __init__(self, parent=None, **kwargs):
-        super(PlotWindow, self).__init__(parent=parent, **kwargs)
+        super().__init__(parent=parent, **kwargs)
 
         if sys.platform == 'darwin':
             self.setIconSize(qt.QSize(24, 24))
@@ -171,11 +169,11 @@ class PlotWindow(PlotWidget):
 class MdiSubWindow(qt.QMdiSubWindow):
 
     def __init__(self, parent=None):
-        super(MdiSubWindow, self).__init__(parent=parent)
+        super().__init__(parent=parent)
         self.setAttribute(qt.Qt.WA_DeleteOnClose, True)
 
     def closeEvent(self, event):
-        super(MdiSubWindow, self).closeEvent(event)
+        super().closeEvent(event)
         # Renumber the plot windows and emit the changed signal.
         self.mdiArea().renumberPlotWindows()
         self.mdiArea().changed.emit()
@@ -186,7 +184,7 @@ class PlotArea(qt.QMdiArea):
     changed = qt.pyqtSignal()
 
     def __init__(self, parent=None):
-        super(PlotArea, self).__init__(parent=parent)
+        super().__init__(parent=parent)
 
         # Context menu
         self.setContextMenuPolicy(qt.Qt.CustomContextMenu)

@@ -1,19 +1,11 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Dictionaries utilities
 =========================
 
 Basic dictionary manipulation
 """
-import collections
-import six
-
-#: Python 3.8+ compatibility
-try:
-    collectionsAbc = collections.abc
-except Exception:
-    collectionsAbc = collections
+import collections.abc
 
 
 def update_nested(d, u):
@@ -21,11 +13,11 @@ def update_nested(d, u):
 
     From: https://stackoverflow.com/questions/3232943/update-value-of-a-nested-dictionary-of-varying-depth
     """
-    for k, v in six.iteritems(u):
+    for k, v in u.items():
         dv = d.get(k, {})
-        if not isinstance(dv, collectionsAbc.Mapping):
+        if not isinstance(dv, collections.abc.Mapping):
             d[k] = v
-        elif isinstance(v, collectionsAbc.Mapping):
+        elif isinstance(v, collections.abc.Mapping):
             d[k] = update_nested(dv, v)
         else:
             d[k] = v

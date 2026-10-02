@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Generic discrete convolution
 
@@ -224,7 +223,7 @@ glinbroad.__doc__ = conv.__doc__
 # CONVOLUTION WITH FDMNES VIA SYSTEM CALL #
 
 
-class FdmnesConv(object):
+class FdmnesConv:
     """ Performs convolution with FDMNES within Python """
 
     def __init__(self, opts=None, calcroot=None, fn_in=None, fn_out=None):

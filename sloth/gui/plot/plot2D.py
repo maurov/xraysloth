@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Sloth custom version of SILX Plot2D
 ======================================
@@ -15,7 +14,7 @@ class Plot2D(silxPlot2D):
 
     def __init__(self, parent=None, backend=None, logger=None, title="Plot2D"):
 
-        super(Plot2D, self).__init__(parent=parent, backend=backend)
+        super().__init__(parent=parent, backend=backend)
 
         self._logger = logger or getLogger("Plot2D")
         self._index = None
@@ -199,7 +198,7 @@ class Plot2D(silxPlot2D):
         if (vmax is None):
             vmax = self._image.max()
         self.getDefaultColormap().setVRange(vmin, vmax)
-        return super(Plot2D, self).addImage(data, origin=self._origin,
+        return super().addImage(data, origin=self._origin,
                                             scale=self._scale,
                                             **kwargs)
 

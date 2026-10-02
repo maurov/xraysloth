@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 Main window of RIXS GUI
@@ -30,7 +29,7 @@ class RixsAppWindow(qt.QMainWindow):
 
         self._logger = logger or getLogger('RixsAppWindow')
 
-        super(RixsAppWindow, self).__init__(parent=parent)
+        super().__init__(parent=parent)
 
         if parent is not None:
             #: behave as a widget
@@ -124,11 +123,11 @@ class RixsAppWindow(qt.QMainWindow):
 
     def showEvent(self, event):
         self.loadSettings()
-        super(RixsAppWindow, self).showEvent(event)
+        super().showEvent(event)
 
     def closeEvent(self, event):
         self.saveSettings()
-        super(RixsAppWindow, self).closeEvent(event)
+        super().closeEvent(event)
 
     def loadSettings(self):
         """TODO"""

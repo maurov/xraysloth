@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """shadow_oes: custom wrapper classes of *ShadowOpticalElement* from
 ShadowOui_ (was Orange-Shadow_) from SHADOW3_ project
@@ -23,24 +22,22 @@ __license__ = "BSD license <http://opensource.org/licenses/BSD-3-Clause>"
 __organization__ = "European Synchrotron Radiation Facility"
 __year__ = "2015"
 
-import sys, os, copy, math
+import os, copy, math
 import numpy as np
 
 # requirements for ShadowOpticalElement
-HAS_PY3 = False
 HAS_OSHADOW = False
-if sys.version_info >= (3,2,0): HAS_PY3 = True
 try:
     from orangecontrib.shadow.util.shadow_objects import ShadowOpticalElement
     HAS_OSHADOW = True
 except:
     pass
 
-class SwOE(object):
+class SwOE:
     """wrapper to ShadowOpticalElement"""
 
     def __init__(self):
-        if not (HAS_PY3 and HAS_OSHADOW):
+        if not HAS_OSHADOW:
             raise ImportError("ShadowOui not found")
         self.sw = self.create_instance()
 
@@ -152,7 +149,7 @@ class PlaneCrystal(SwOE):
     """plane crystal"""
     
     def __init__(self):
-        super(PlaneCrystal, self).__init__()
+        super().__init__()
         self.sw = self.create_instance()
         self.set_reflectivity(f_reflec=0, f_refl=0)
         self.set_output_files(fwrite=0, f_angle=0) #write all, TODO: remove
@@ -353,7 +350,7 @@ class SphericalCrystal(PlaneCrystal):
                 meridional radius
 
         """
-        super(SphericalCrystal, self).__init__()
+        super().__init__()
         self.sw = self.create_instance()
         self.set_output_files(fwrite=0, f_angle=0) #write all, TODO: remove
 

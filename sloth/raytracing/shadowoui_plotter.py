@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """shadow_plotter: custom plotting utility for SHADOW3_
 
@@ -26,11 +25,8 @@ import sys, os
 import math
 import numpy as np
 
-HAS_PY3 = False
 HAS_SHADOW = False
 HAS_OSHADOW = False
-
-if sys.version_info >= (3,2,0): HAS_PY3 = True
 
 try:
     from Shadow import ShadowToolsPrivate as stp
@@ -60,10 +56,10 @@ def _calcFWHM(h, binSize, factor=0.5):
     t = np.where(h>max(h)*factor)
     return binSize*(t[0][-1]-t[0][0]+1), t[0][-1], t[0][0]
 
-class SwPlot(object):
+class SwPlot:
 
     def __init__(self, beam=None):
-        if not (HAS_PY3 and HAS_OSHADOW): raise ImportError("Orange-shadow not found")
+        if not HAS_OSHADOW: raise ImportError("Orange-shadow not found")
 
         self.set_instance(beam)
 
@@ -322,7 +318,7 @@ class SwPlot(object):
 class SwPlotterMain(BaseClass, UiClass):
 
     def __init__(self, parent=None):
-        super(SwPlotterMain, self).__init__(parent)
+        super().__init__(parent)
         self.setupUi(self)
         self.actionExit.triggered.connect(self.close)
 

@@ -1,4 +1,3 @@
-# coding: utf-8
 # /*##########################################################################
 # MIT License
 #
@@ -24,7 +23,6 @@
 # THE SOFTWARE.
 #
 # ###########################################################################*/
-from __future__ import absolute_import, division
 
 __authors__ = ['Marius Retegan']
 __license__ = 'MIT'
@@ -34,7 +32,7 @@ import sys
 from silx.gui import qt
 
 
-class Config(object):
+class Config:
 
     def __init__(self):
         if sys.platform in ('win32'):

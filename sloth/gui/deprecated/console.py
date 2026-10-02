@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """custom version of IPythonWidget (from silx.gui.console)
 ==========================================================
@@ -132,7 +131,7 @@ class customIPythonWidget(IPythonWidget):
     """customized IPythonWidget"""
 
     def __init__(self, *args, **kwargs):
-        super(customIPythonWidget, self).__init__(custom_banner=SLOTH_BANNER,\
+        super().__init__(custom_banner=SLOTH_BANNER,\
                                                   *args, **kwargs)
 
         self.pushVariables({'os': os,

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """Sloth: utilies for x-ray spectroscopy
 
 Naming
@@ -10,14 +9,7 @@ Naming
 * functions underscore_separated _or_ lowerUpper
 
 """
-from __future__ import absolute_import, print_function, division, unicode_literals
 import os
-
-# filter annoying numpy<1.8 warnings
-import warnings
-
-warnings.filterwarnings("ignore", message="numpy.dtype size changed")
-warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
 
 __author__ = "Mauro Rovezzi"
 __version__ = "25.1.0"
@@ -43,7 +35,7 @@ __pkgs__ = [
 ]
 
 
-class NullClass(object):
+class NullClass:
     """Null object reliably doing nothing."""
 
     __version__ = __version__
@@ -57,8 +49,8 @@ class NullClass(object):
     def __repr__(self):
         return "Null(  )"
 
-    def __nonzero__(self):
-        return 0
+    def __bool__(self):
+        return False
 
     def __getattr__(self, name):
         return self

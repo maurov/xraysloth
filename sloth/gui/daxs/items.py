@@ -1,4 +1,3 @@
-# coding: utf-8
 # /*##########################################################################
 # MIT License
 #
@@ -28,7 +27,6 @@
 This module provides classes to implement model items for spectroscopy data.
 """
 
-from __future__ import absolute_import, division
 
 __authors__ = ['Marius Retegan', 'Mauro Rovezzi']
 __license__ = 'MIT'
@@ -42,7 +40,7 @@ from sloth.utils.logging import getLogger
 logger = getLogger('sloth.gui.daxs.items')
 
 
-class Signal(object):
+class Signal:
     """Base class for signal objects."""
 
     def __init__(self):
@@ -80,7 +78,7 @@ class Signal(object):
             slot(*args, **kwargs)
 
 
-class TreeItem(object):
+class TreeItem:
 
     def __init__(self, name=None, parentItem=None, isChecked=False):
         """Base class for items of the tree model.
@@ -193,37 +191,37 @@ class TreeItem(object):
 class RootItem(TreeItem):
 
     def __init__(self, name=None, parentItem=None):
-        super(RootItem, self).__init__(name, parentItem)
+        super().__init__(name, parentItem)
 
 
 class ExperimentItem(TreeItem):
 
     def __init__(self, name=None, parentItem=None):
-        super(ExperimentItem, self).__init__(name, parentItem)
+        super().__init__(name, parentItem)
 
 
 class GroupItem(TreeItem):
 
     def __init__(self, name=None, parentItem=None):
-        super(GroupItem, self).__init__(name, parentItem)
+        super().__init__(name, parentItem)
 
 
 class DatasetItem(TreeItem):
 
     def __init__(self, name=None, parentItem=None):
-        super(DatasetItem, self).__init__(name, parentItem)
+        super().__init__(name, parentItem)
 
 
 class FileItem(TreeItem):
 
     def __init__(self, name=None, parentItem=None):
-        super(FileItem, self).__init__(name, parentItem)
+        super().__init__(name, parentItem)
 
 
 class ScanItem(TreeItem):
 
     def __init__(self, name=None, parentItem=None, isChecked=False, data=None):
-        super(ScanItem, self).__init__(name, parentItem, isChecked)
+        super().__init__(name, parentItem, isChecked)
         self._xLabel = None
         self._signalLabel = None
         self._monitorLabel = None
@@ -239,7 +237,7 @@ class ScanItem(TreeItem):
                     return Qt.Checked
                 else:
                     return Qt.Unchecked
-        return super(ScanItem, self).data(column, name, role)
+        return super().data(column, name, role)
 
     def setData(self, column, name, value, role):
         if role == Qt.CheckStateRole:
@@ -248,10 +246,10 @@ class ScanItem(TreeItem):
             else:
                 self.isChecked = False
             return True
-        return super(ScanItem, self).setData(column, name, value, role)
+        return super().setData(column, name, value, role)
 
     def flags(self, column):
-        flags = super(ScanItem, self).flags(column)
+        flags = super().flags(column)
         if column == 0:
             return flags | Qt.ItemIsUserCheckable
         else:

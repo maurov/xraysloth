@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 RIXS data object
@@ -14,7 +13,7 @@ from sloth.utils.logging import getLogger
 _logger = getLogger("rixsdata")  #: module logger
 
 
-class RixsData(object):
+class RixsData:
     """RIXS plane object"""
 
     sample_name = "Unknown"

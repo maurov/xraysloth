@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """shadowoui_spectro1: an utility toolbox to raytrace a
 wavelength-dispersive spectrometer with SHADOW3_ from Python, via
@@ -74,7 +73,7 @@ from sloth.raytracing.shadow_plotter import SwPlot
 # ---------------------------------------------------------------#
 # SwSpectro1 (see also ShadowSpectro1 below)
 # ---------------------------------------------------------------#
-class SwSpectro1(object):
+class SwSpectro1:
     """ Example of usage for shadow_objects in ShadowOui"""
 
     def __init__(self, nrays=10000, seed=0, file_refl=None, **kws):
@@ -189,7 +188,7 @@ class SwSpectro1(object):
 # ---------------------------------------------------------------#
 # ShadowSpectro1
 # ---------------------------------------------------------------#
-class ShadowSpectro1(object):
+class ShadowSpectro1:
     """Spectrometer w 1 crystal analyser based on SHADOW3 only
 
     .. note:: as was in shadow_spectro1_old.py but updated to
