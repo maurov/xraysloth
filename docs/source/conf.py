@@ -39,16 +39,16 @@ ON_RTD = os.environ.get('READTHEDOCS') == 'True'
 # ones.
 extensions = ['sphinx.ext.mathjax',
               'sphinx.ext.autosummary',
-              'sphinxcontrib.napoleon',
+              'sphinx.ext.napoleon',
               'sphinx.ext.todo',
               'sphinx.ext.githubpages',
               'sphinx.ext.autodoc',
               'sphinx.ext.coverage',
-              'sphinx.ext.mathjax',
               'sphinx.ext.viewcode',
               'sphinx.ext.doctest',
               'sphinx.ext.autosectionlabel',
-              'recommonmark']
+              'sphinx_copybutton',
+              'myst_parser']
 
 autodoc_member_order = 'bysource'
 suppress_warnings = ["app.add_node"]
@@ -108,10 +108,7 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-if ON_RTD:
-    html_theme = 'sphinx_rtd_theme'
-else:
-    html_theme = 'sphinx_rtd_theme'
+html_theme = 'pydata_sphinx_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the

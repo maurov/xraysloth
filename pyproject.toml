@@ -1,15 +1,15 @@
 [build-system]
-requires = ["setuptools>=61.2", "wheel"]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "sloth"
 description = "slowly evolving utilities for X-ray spectroscopy data analysis"
 authors = [{ name = "Mauro Rovezzi", email = "mauro.rovezzi@esrf.fr" }]
-license = { text = "GPL" }
+license = "GPL-3.0-or-later"
+license-files = ["sloth/LICENSE"]
 classifiers = [
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: GPL License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
 ]
@@ -26,7 +26,7 @@ file = "README.rst"
 content-type = "text/x-rst"
 
 [project.urls]
-Homepage = "https://https://github.com/maurov/xraysloth"
+Homepage = "https://github.com/maurov/xraysloth"
 Source = "https://github.com/maurov/xraysloth"
 Documentation = "https://xraysloth.readthedocs.io/"
 Tracker = "https://github.com/maurov/xraysloth/issues"
@@ -62,11 +62,14 @@ all = ["sloth[dev,doc]"]
 
 [tool.setuptools]
 package-dir = { "" = "." }
-license-files = ["LICENSE"]
 include-package-data = false
+
+[tool.setuptools.package-data]
+sloth = ["resources/**/*.png", "resources/**/*.svg", "resources/**/*.ui"]
 
 [tool.setuptools.packages.find]
 where = ["."]
+include = ["sloth*"]
 namespaces = false
 
 [tool.setuptools.dynamic]

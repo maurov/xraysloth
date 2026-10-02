@@ -6,7 +6,7 @@ that may result useful in the field of **x-ray instrumentation, optics and
 spectroscopy**. The project aims providing a dedicated Python environment
 (called `sloth`) for scientists working on X-ray spectroscopy beamlines. It
 should help with the tasks of data reduction/analysis and simulation for X-ray
-Absorption Spectroscopy (XAS, XANES/EXAFS, HERFD-*), X-ray emission spectroscopy
+Absorption Spectroscopy (XAS, XANES/EXAFS, HERFD-\*), X-ray emission spectroscopy
 (XES) and Resonant Inelastic X-ray Scattering (RIXS) techniques.
 
 Sloth is lazy by nature and tries reusing as much as possible the existing
@@ -38,7 +38,8 @@ Resources
 ---------
 
 - **Documentation**: https://xraysloth.readthedocs.io |rtd|
-- Documentation (*backup*): http://mauro.rovezzi.net/xraysloth |travis|
+- Documentation (*backup*): http://mauro.rovezzi.net/xraysloth
+- Tests: |tests|
 - Citation: |zenodo|
 - License: |license|
 - BinderHub (*experimental*): |binder|
@@ -51,9 +52,9 @@ Resources
     :target: https://doi.org/10.5281/zenodo.821221
     :alt: Citation DOI
 
-.. |travis| image:: https://travis-ci.org/maurov/xraysloth.svg?branch=master
-    :target: https://travis-ci.org/maurov/xraysloth
-    :alt: Travis-CI status
+.. |tests| image:: https://github.com/maurov/xraysloth/actions/workflows/test-ubuntu.yml/badge.svg?branch=master
+    :target: https://github.com/maurov/xraysloth/actions/workflows/test-ubuntu.yml
+    :alt: Tests status
 
 .. |rtd| image:: https://readthedocs.org/projects/xraysloth/badge/?version=latest
     :target: https://xraysloth.readthedocs.io/en/latest/?badge=latest

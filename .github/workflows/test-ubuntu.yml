@@ -1,0 +1,39 @@
+name: Ubuntu, Conda Python 3.12 through 3.14
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 5
+      fail-fast: false
+      matrix:
+        python-version: ['3.12', '3.13', '3.14']
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python from Miniforge/conda-forge
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+          channels: conda-forge
+          channel-priority: strict
+          activate-environment: sloth
+          python-version: ${{ matrix.python-version }}
+      - name: Install conda dependencies
+        run: |
+          conda install -y python=${{ matrix.python-version }} "numpy>=2" "scipy>=1.12" "matplotlib>=3.8" "h5py>=3.5" xraylib pymca pip
+          conda list
+      - name: Install sloth and dev dependencies with pip
+        run: |
+          python -m pip install ".[dev]"
+      - name: Run test suite
+        run: |
+          python -m pytest sloth/test
