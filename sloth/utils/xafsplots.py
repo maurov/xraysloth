@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""
+r"""
 Plotting macros for XAFS data sets and fits
 ===========================================
 

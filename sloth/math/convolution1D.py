@@ -137,7 +137,7 @@ def lin_gamma(ene, fwhm=1.0, linbroad=None):
 
 
 def atan_gamma(ene, gamma_hole, gamma_max=15.0, e0=0, eslope=1.0):
-    """returns arctangent-like broadening, $\Gamma(E)$
+    r"""returns arctangent-like broadening, $\Gamma(E)$
 
     ..math
 

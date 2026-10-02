@@ -26,7 +26,7 @@ def plotEffScatt(xx, zz, wrc=1.25E-4,\
                  cbarTicks=2.5E-5, cbarOrientation='vertical',\
                  cbarLabel=r'$\Delta \theta$',\
                  figCmap=cm.RdYlGn, figOut=None):
-    """plots the effective scattering angle given a masked array
+    r"""plots the effective scattering angle given a masked array
 
     Parameters
     ----------

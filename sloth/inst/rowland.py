@@ -154,7 +154,7 @@ class RowlandCircle:
                  aW=0., aWext=0., rSext=0., aL=0.,\
                  bender_version=None, bender=(0., 0., 0.), actuator=(0., 0.),\
                  inCircle=False, useCm=False, showInfos=True, **kws):
-        """
+        r"""
         Parameters
         ----------
         
@@ -320,7 +320,7 @@ class RowlandCircle:
             print(f"INFO: alpha = {self.alpha:.3f} deg")
             if self.d is not None:
                 print(f"INFO: ene0 = {self.get_ene():.2f} eV")
-                print(f"INFO: d = {self.d:.3f} $\AA$")
+                print(rf"INFO: d = {self.d:.3f} $\AA$")
             print(f"INFO: p = {self.p:.3f} {self.uDist}")
             print(f"INFO: q = {self.q:.3f} {self.uDist}")
             print(f"INFO: Rm = {self.Rm:.3f} {self.uDist}")
@@ -342,7 +342,7 @@ class RowlandCircle:
                                 'aL' : [self.aL, self.uDist]})
 
         if self.d is not None:
-            self.infos_dict.update({'d' : [self.d, '\AA'],
+            self.infos_dict.update({'d' : [self.d, r'\AA'],
                                     'ene0' : [self.get_ene(), 'eV']})
         return self.infos_dict
 
@@ -386,7 +386,7 @@ class RowlandCircle:
             wlen = 2 * d * math.sin(rtheta)
             return ( HC / wlen ) * 1e10
         else:
-            raise NameError("give d-spacing (\AA)")
+            raise NameError(r"give d-spacing (\AA)")
 
     def get_dth(self, eDelta):
         """Delta\theta using differential Bragg law"""
@@ -396,7 +396,7 @@ class RowlandCircle:
         return -1 * ( eDelta / ene ) * math.tan(self.rtheta0)
             
     def get_chi(self, aXoff, Rs=None, aL=None, inDeg=True):
-        """get \chi angle in sagittal focusing using offset from
+        r"""get \chi angle in sagittal focusing using offset from
         centre analyser (aXoff)"""
         if Rs is None: Rs = self.Rs
         if aL is None: aL = self.aL
@@ -408,7 +408,7 @@ class RowlandCircle:
             return rchi
 
     def get_chi2(self, aN=1., aWext=None, Rs=None, rSext=None, inDeg=True):
-        """get \chi angle in sagittal focusing using touching/connected analysers
+        r"""get \chi angle in sagittal focusing using touching/connected analysers
 
         Description
         -----------
@@ -622,8 +622,8 @@ class RowlandCircle:
         dchi = _c2[2]-_c2[0]
         if self.showInfos:
             print('INFO: == CHI ==')
-            print(f'INFO: \chi{aN:.0f} = {_c2[2]:.5f}')
-            print(f'INFO: \Delta\chi{aN}{aN - 2} = {dchi:.5f} deg')
+            print(rf'INFO: \chi{aN:.0f} = {_c2[2]:.5f}')
+            print(rf'INFO: \Delta\chi{aN}{aN - 2} = {dchi:.5f} deg')
         _p = [self.get_sag_off(self.get_axoff(_cn), retAll=True) for _cn in _c2] #SagOffs
             
         #find the angle between the last pivot point _p[-1] and the bender point (B)

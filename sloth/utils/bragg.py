@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""
+r"""
 braggutils: utilities around the Bragg's law ($ n \lambda = 2 d sin \theta $)
 """
 import warnings
@@ -28,27 +28,27 @@ SIO2_C = 5.405
 _logger = logging.getLogger(__name__)
 
 def ev2wlen(energy):
-    """convert photon energy (E, eV) to wavelength ($\lambda$, \AA$^{-1}$)"""
+    r"""convert photon energy (E, eV) to wavelength ($\lambda$, \AA$^{-1}$)"""
     return (HC / energy) * 1e10
 
 
 def wlen2ev(wlen):
-    """convert photon wavelength ($\lambda$, \AA$^{-1}$) to energy (E, eV)"""
+    r"""convert photon wavelength ($\lambda$, \AA$^{-1}$) to energy (E, eV)"""
     return (HC / wlen) * 1e10
 
 
 def kev2wlen(energy):
-    """convert photon energy (E, keV) to wavelength ($\lambda$, \AA$^{-1}$)"""
+    r"""convert photon energy (E, keV) to wavelength ($\lambda$, \AA$^{-1}$)"""
     return (HC / energy) * 1e7
 
 
 def wlen2kev(wlen):
-    """convert photon wavelength ($\lambda$, \AA$^{-1}$) to energy (E, keV)"""
+    r"""convert photon wavelength ($\lambda$, \AA$^{-1}$) to energy (E, keV)"""
     return (HC / wlen) * 1e7
 
 
 def kev2ang(ene, d=0, deg=True):
-    """energy (keV) to Bragg angle (deg/rad) for given d-spacing (\AA)"""
+    r"""energy (keV) to Bragg angle (deg/rad) for given d-spacing (\AA)"""
     if d == 0:
         _logger.error("kev2deg: d-spacing is 0")
         return 0
@@ -60,19 +60,19 @@ def kev2ang(ene, d=0, deg=True):
 
 
 def ang2kev(theta, d=0, deg=True):
-    """Bragg angle (deg/rad) to energy (keV) for given d-spacing (\AA)"""
+    r"""Bragg angle (deg/rad) to energy (keV) for given d-spacing (\AA)"""
     if deg is True:
         theta = np.deg2rad(theta)
     return wlen2kev(2 * d * np.sin(theta))
 
 
 def bragg_ev(theta, d, n=1):
-    """return the Bragg energy (eV) for a given d-spacing (\AA) and angle (deg)"""
+    r"""return the Bragg energy (eV) for a given d-spacing (\AA) and angle (deg)"""
     return wlen2ev((2 * d * np.sin(np.deg2rad(theta))) / n)
 
 
 def theta_b(wlen, d, n=1):
-    """return the Bragg angle, $\theta_{B}$, (deg) for a given wavelength
+    r"""return the Bragg angle, $\theta_{B}$, (deg) for a given wavelength
     (\AA$^{-1}$) and d-spacing (\AA)"""
     if not (d == 0):
         try:
@@ -87,7 +87,7 @@ def theta_b(wlen, d, n=1):
 
 
 def bragg_th(ene, d, n=1):
-    """return the Bragg angle, $\theta_{B}$, (deg) for a given energy (eV)
+    r"""return the Bragg angle, $\theta_{B}$, (deg) for a given energy (eV)
     and d-spacing ($\AA$)"""
     return theta_b(ev2wlen(ene), d, n=n)
 
@@ -115,7 +115,7 @@ def cotdeg(theta):
 
 
 def de_bragg(theta, dth):
-    """energy resolution $\frac{\Delta E}{E}$ from derivative of Bragg's law
+    r"""energy resolution $\frac{\Delta E}{E}$ from derivative of Bragg's law
 
     $|\frac{\Delta E}{E}| = |\frac{\Delta \theta}{\theta} = \Delta \theta \cot(\theta)|$
     """

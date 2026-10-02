@@ -225,7 +225,7 @@ def readCifFile(cifFile):
         atomPos = [atom._atom_site_fract_x, atom._atom_site_fract_y, atom._atom_site_fract_z]
         for p in atomPos:
             pp = p.split(".")
-            if len(pp) is 2:
+            if len(pp) == 2:
                 decimals = p.split(".")[1]
                 if len(decimals) > 3 and len(decimals) < 6 and decimals[0] == decimals[1] and decimals[-1] != "0":
                     print("\n---------------------\n"\

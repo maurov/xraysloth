@@ -79,7 +79,7 @@ def fig2DetMove(thTot, thStops=None, figName='spectroTravelYZ',
     radii =    [490.,   500.,               510.,   240.,    250.,              260.]
     rmasks =   [1,      1,                  1,      1,       1,                 1]
     rthstops = [0,      1,                  0,      0,       1,                 0] 
-    labels =   [None,   '1000 $\pm$ 20 mm', None,   None,    '500 $\pm$ 20 mm', None]
+    labels =   [None,   r'1000 $\pm$ 20 mm', None,   None,    r'500 $\pm$ 20 mm', None]
     lcs =      ['blue', 'blue',             'blue', 'green', 'green',           'green']
     lss =      ['--',   '-',                '--',   '--',    '-',               '--']
     alphas =   [0.5,    None,               0.5,    0.5,     None,              0.5]

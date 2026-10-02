@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Analytical expression of $\Delta \theta (x, z)$ from Wittry
+r"""Analytical expression of $\Delta \theta (x, z)$ from Wittry
 
 """
 import sys, os
@@ -84,7 +84,7 @@ def mapNum2Case(case, mode='label'):
         return 'Unknown'
 
 def dThetaXZ(x, z, thetab, case=None):
-    """Analytical espression of the angular deviation from Bragg
+    r"""Analytical espression of the angular deviation from Bragg
     reflection over a diffractor in conventional point-to-point
     focusing geometries
 
@@ -289,7 +289,7 @@ def getMeshMasked(mask='circular', r1p=1000., cryst_x=50., cryst_z=10., csteps=1
 def getDthetaDats(mxx, mzz, wrc=1.25E-4,
                   cases=['Johann', 'Johansson', 'Spherical plate', 'Wittry'],
                   angles=[15, 45, 75]):
-    """calculates data (see returns for details) in given loops
+    r"""calculates data (see returns for details) in given loops
     
     Parameters
     ----------

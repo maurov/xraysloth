@@ -1234,7 +1234,7 @@ class ShadowSpectro1:
             self.oe1.set_radius(Rm*2.)
 
     def set_dspacing(self, d=None, hkl=None, latfunz=None, **kws):
-        """set the crystal d-spacing [Ang]
+        r"""set the crystal d-spacing [Ang]
 
         Parameters
         ----------
